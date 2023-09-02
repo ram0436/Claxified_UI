@@ -23,6 +23,7 @@ export class BookPostsComponent {
     this.route.queryParams.subscribe(params => {
       this.isLoading = true;
       this.category = params['type'];
+      if(params['sub'] !=undefined)
       this.subCategoryId = Number(params['sub']);
       this.getPosts();
     });
@@ -33,21 +34,15 @@ export class BookPostsComponent {
   }
   getPosts() {
     this.cards = [];
-    if (this.subCategoryId) {
       this.bookService.getAllBookPosts().subscribe((data: any) => {
         this.actualCards = data;
+        if(this.subCategoryId !=0)
         this.cards = this.actualCards.filter((card: any) => card.subCategoryId == this.subCategoryId);
+        else
+        this.cards = data;
         this.isLoading = false;
+        this.subCategoryId = 0;
       })
-    }
-    else if (this.category === 'Book') {
-      // Show all posts within the "Book" category
-      this.bookService.getAllBookPosts().subscribe((data: any) => {
-        this.actualCards = data;
-        this.cards = this.actualCards;
-        this.isLoading = false;
-      })
-    }
   }
   ngOnDestroy() {
     this.subscription.unsubscribe();

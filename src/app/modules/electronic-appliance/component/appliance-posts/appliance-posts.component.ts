@@ -42,6 +42,7 @@ export class AppliancePostsComponent {
       else
         this.cards = data;
       this.isLoading = false;
+      this.subCategoryId = 0;
     })
   }
   ngOnDestroy() {
