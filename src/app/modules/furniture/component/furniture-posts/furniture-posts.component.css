@@ -1,0 +1,40 @@
+.flex {
+    display: flex;
+  }
+  
+  .cards {
+    width: 100%;
+  }
+  
+  .spinner__loading {
+    display: flex;
+    justify-content: center;
+    margin-top: 10%;
+    margin-left: 30%;
+  }
+  
+  .ml-10 {
+    margin-left: 10px;
+  }
+  
+  .w-30 {
+    width: 30%;
+  }
+
+  .bg-white{
+    background-color: #fff;
+  }
+
+  /* changes made by hamza */
+
+.mr-20 {
+  margin-right: 20px;
+}
+
+.bg{
+  background-color: #fafafa;
+}
+
+.mat-app-background{
+  padding-left: 40px !important;
+}

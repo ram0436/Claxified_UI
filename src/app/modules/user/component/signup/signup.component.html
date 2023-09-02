@@ -1,0 +1,31 @@
+<!-- <mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="true"><mat-icon>close</mat-icon></button>
+</mat-dialog-actions> -->
+<mat-card class="mat-elevation-z12">
+    <mat-card-title style="text-align:center;">SignUp</mat-card-title>
+        <mat-card-content>
+            <form action="">
+                <mat-form-field>
+                    <input matInput placeholder="First name" name="firstName" [(ngModel)]="payload.firstName">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Last name" name="lastName" [(ngModel)]="payload.lastName">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Email" name="email" [(ngModel)]="payload.email">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Phone number" name="mobileNo" [(ngModel)]="payload.mobileNo">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Password" type="password" name="password" [(ngModel)]="payload.password">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Confirm Password" type="text" name="confirmPassword" (change)="handleConfirmPassword($event)">
+                </mat-form-field>
+                <button mat-raised-button color="primary" class="login-button" (click)="signUp()">
+                    Sign Up
+                </button>
+            </form>
+        </mat-card-content>
+</mat-card>

@@ -1,0 +1,72 @@
+<div class="mat-app-background" *ngIf="!isLoading">
+  <button
+    class="back-to-top-btn"
+    (click)="scrollToTop()"
+    *ngIf="isScrolledDown"
+  >
+    <span class="material-icons-outlined"> keyboard_double_arrow_up </span>
+    Back to Top
+  </button>
+  <mat-card
+    class="example-card"
+    *ngFor="let card of paginatedCards; let isFirst = first"
+  >
+    <a
+      class="custom-link"
+      [routerLink]="
+        '/' + card.mainCategory + '/post-details/' + card.tableRefGuid
+      "
+      target="_self"
+    >
+      <div class="post-image">
+        <img
+          mat-card-image
+          [src]="getCardImageURL(card)"
+          alt="{{ card?.title }}"
+          class="card-image"
+        />
+        <span class="ribbon-featured" *ngIf="isFirst && card?.isFeatured">
+          <strong class="ribbon">
+            <span class="hide-visually">This ad is</span>
+            Premium
+          </strong>
+        </span>
+        <div class="image-count">
+          <span class="material-icons"> photo_camera </span>
+          {{ imagesList.length }}
+        </div>
+      </div>
+      <mat-card-title class="title" *ngIf="card?.price > 0">{{
+        card?.price | currency : "INR"
+      }}</mat-card-title>
+      <mat-card-title class="title" *ngIf="card?.salaryPeriodType"> 
+        ₹ {{card?.salaryFrom}} - {{card?.salaryTo}} | {{ getSalaryPeriod(card?.salaryPeriodType)}}</mat-card-title>
+      <mat-card-content class="description">
+        <p style="margin: 0">{{ card?.title }}</p>
+        <p *ngIf="card?.year">
+          {{ card?.year || "" }} -
+          {{ card?.kmDriven ? card.kmDriven + " kms" : "" }}
+        </p>
+        <div class="loc-date">
+          <p class="loc">{{ card?.nearBy }}, {{ card?.city }}</p>
+          <p class="date">{{ formatDate(card?.createdOn) }}</p>
+        </div>
+      </mat-card-content>
+    </a>
+  </mat-card>
+  <div *ngIf="paginatedCards.length == 0">
+    <p class="noposts">No Posts found</p>
+  </div>
+
+  <div class="load-more-container" *ngIf="displayedCardCount < cards.length">
+    <button class="load-more-btn" (click)="loadMoreCards()">
+      <span class="material-icons-outlined"> keyboard_double_arrow_down </span>
+      Load More
+    </button>
+  </div>
+</div>
+
+<!-- <div>
+  <mat-paginator [length]="cards.length" [pageSize]="pageSize" [pageIndex]="currentPage"
+    (page)="onPageChange($event)"></mat-paginator>
+</div> -->

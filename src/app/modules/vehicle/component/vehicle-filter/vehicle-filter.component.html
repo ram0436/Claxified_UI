@@ -1,0 +1,259 @@
+<div class="grid sidebar-container">
+  <div class="filters-head">
+    <div class="filter-heading">Filters</div>
+    <div
+      class="clear-filters"
+      *ngIf="filtersSelected && appliedFilters.length > 0"
+      (click)="clearFilters()"
+    >
+      Reset
+    </div>
+    <iframe id="hiddenFrame" style="display: none"></iframe>
+  </div>
+  <!-- Price Range Filter -->
+  <div>
+    <div class="selected-states-container">
+      <mat-chip-listbox>
+        <div class="selected-states">
+          <mat-chip-option
+            *ngFor="let filter of appliedFilters"
+            (removed)="removeItem(filter)"
+            >{{ filter.value }}
+            <button matChipRemove aria-label="Remove orange">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-option>
+        </div>
+      </mat-chip-listbox>
+    </div>
+  </div>
+  <br />
+  <hr class="filterSepreator" />
+  <!-- Location Filter -->
+  <mat-form-field appearance="fill" class="form-field-w-100">
+    <mat-label>State</mat-label>
+    <input
+      type="text"
+      placeholder="Pick one"
+      aria-label="Number"
+      matInput
+      [formControl]="stateControl"
+      [matAutocomplete]="state"
+    />
+    <mat-autocomplete
+      #stateMatAutocomplete
+      autoActiveFirstOption
+      #state="matAutocomplete"
+      (optionSelected)="onDistrictChange($event)"
+      [displayWith]="displayLocation"
+    >
+      <!-- <mat-option [value]="null">None</mat-option> -->
+      <mat-option
+        *ngFor="let district of filteredStates | async"
+        [value]="district"
+      >
+        {{ district.name }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    *ngIf="filterObj?.state"
+    class="form-field-w-100"
+  >
+    <mat-label>City</mat-label>
+    <input
+      type="text"
+      placeholder="Pick one"
+      aria-label="Number"
+      matInput
+      [formControl]="cityControl"
+      [matAutocomplete]="city"
+    />
+    <mat-autocomplete
+      #cityMatAutocomplete
+      autoActiveFirstOption
+      #city="matAutocomplete"
+      (optionSelected)="onCityChange($event)"
+      [displayWith]="displayLocation"
+    >
+      <!-- <mat-option [value]="null">None</mat-option> -->
+      <mat-option *ngFor="let city of filteredCities | async" [value]="city">
+        {{ city.name }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field
+    appearance="fill"
+    *ngIf="filterObj?.city"
+    class="form-field-w-100"
+  >
+    <mat-label>Near By</mat-label>
+    <input
+      type="text"
+      placeholder="Pick one"
+      aria-label="Number"
+      matInput
+      [formControl]="nearByControl"
+      [matAutocomplete]="nearBy"
+    />
+    <mat-autocomplete
+      #nearByMatAutocomplete
+      autoActiveFirstOption
+      #nearBy="matAutocomplete"
+      (optionSelected)="onNearByChange($event)"
+      [displayWith]="displayLocation"
+    >
+      <!-- <mat-option [value]="null">None</mat-option> -->
+      <mat-option
+        *ngFor="let nearBy of filteredNearBy | async"
+        [value]="nearBy"
+      >
+        {{ nearBy.name }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <!-- Brand Filter -->
+  <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="subCategory !=undefined">
+    <mat-label>Brand</mat-label>
+    <mat-select
+      #brandMultiSelect
+      [(ngModel)]="selectedBrand"
+      multiple
+      (selectionChange)="onBrandSelect($event)"
+    >
+      <mat-option *ngFor="let brand of brands" [value]="brand">{{
+        brand.brandName
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="example-label-container" *ngIf="subCategory !=undefined">
+    <label id="example-name-label" class="example-name-label">Price</label>
+    <div class="pd-5">
+      <label class="example-value-label">{{
+        fromPrice | currency : "INR" : "symbol" : "1.0-0"
+      }}</label>
+      <label class="example-value-label fl-r">{{
+        toPrice | currency : "INR" : "symbol" : "1.0-0"
+      }}</label>
+    </div>
+  </div>
+  <div style="display: flex" class="price-slider" *ngIf="subCategory !=undefined">
+    <mat-slider
+      class="example-margin"
+      min="0"
+      max="1000000"
+      discrete="false"
+      showTickMarks="false"
+      invert="false"
+    >
+      <input matSliderStartThumb [(ngModel)]="fromPrice" />
+      <input matSliderEndThumb [(ngModel)]="toPrice" />
+    </mat-slider>
+    <button
+      class="post"
+      mat-raised-button
+      color="primary"
+      (click)="priceChange()"
+    >
+      Apply
+    </button>
+  </div>
+  <label id="example-name-label" class="example-name-label" *ngIf="subCategory !=undefined">Year</label>
+  <div style="display: flex" *ngIf="subCategory !=undefined">
+    <mat-form-field class="wt-95">
+      <mat-label>From</mat-label>
+      <input matInput placeholder="Enter from year" [(ngModel)]="fromYear" />
+    </mat-form-field>
+    <mat-form-field class="wt-95 toYear">
+      <mat-label>To</mat-label>
+      <input matInput placeholder="Enter to year" [(ngModel)]="toYear" />
+    </mat-form-field>
+    <br />
+    <button
+      class="post ml-8"
+      mat-raised-button
+      color="primary"
+      (click)="yearChange()"
+    >
+      Apply
+    </button>
+  </div>
+  <div *ngIf="subCategory !=undefined">
+    <div class="example-label-container">
+      <label id="example-name-label" class="example-name-label"
+        >Km driven</label
+      >
+      <div class="pd-5">
+        <label class="example-value-label">{{
+          fromKms | number : "1.0-0"
+        }}</label>
+        <label class="example-value-label fl-r">{{
+          toKms | number : "1.0-0"
+        }}</label>
+      </div>
+    </div>
+    <div style="display: flex" class="price-slider" *ngIf="subCategory !=undefined">
+      <mat-slider
+        class="example-margin"
+        min="0"
+        max="100000"
+        discrete="false"
+        showTickMarks="false"
+        invert="false"
+      >
+        <input matSliderStartThumb [(ngModel)]="fromKms" />
+        <input matSliderEndThumb [(ngModel)]="toKms" />
+      </mat-slider>
+      <button
+        class="post"
+        mat-raised-button
+        color="primary"
+        (click)="kmsChange()"
+      >
+        Apply
+      </button>
+    </div>
+  </div>
+  <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="subCategory !=undefined">
+    <mat-label>No. Owners</mat-label>
+    <mat-select
+      #ownerMultiSelect
+      multiple
+      (selectionChange)="onOwnerSelect($event)"
+    >
+      <mat-option *ngFor="let owner of numberOfOwners" [value]="owner">{{
+        owner
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="subCategory !=undefined">
+    <mat-label>Fuel type</mat-label>
+    <mat-select
+      #fuelMultiSelect
+      multiple
+      (selectionChange)="onFuelSelect($event)"
+    >
+      <mat-option *ngFor="let fuel of fuelTypes" [value]="fuel">{{
+        fuel.label
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="subCategory !=undefined">
+    <mat-label>Transmission type</mat-label>
+    <mat-select
+      #transMultiSelect
+      multiple
+      (selectionChange)="onTransmissionSelect($event)"
+    >
+      <mat-option
+        *ngFor="let transmission of transmissionTypes"
+        [value]="transmission"
+        >{{ transmission.label }}</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+</div>

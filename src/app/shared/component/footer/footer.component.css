@@ -1,0 +1,67 @@
+footer{
+    padding: 15px 0;
+    font-family: "Montserrat", sans-serif;
+}
+
+#button-addon1 {
+    color: #ffc371;
+}
+  
+i {
+    color: #0000cc;
+    font-size: 20px;
+}
+  
+.form-control::placeholder {
+    font-size: 0.95rem;
+    color: #aaa;
+    font-style: italic;
+}
+  
+.form-control.shadow-0:focus {
+    box-shadow: none;
+}
+  
+  
+.bg-light-black{
+    background: #292a2c;
+    padding: 20px 0;
+}
+
+.footer-heading{
+    font-size: 24px;
+    color: #fff;
+    font-weight: 600;
+    margin: 20px 0 10px 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.list-head{
+    font-size: 14px;
+    list-style: none;
+    margin: 0;
+    padding-top: 10px;
+}
+
+.list-item{
+    padding: 5px 0;
+}
+
+.text-muted{
+    color: #c2c2c2;
+    display: inline-block;
+    line-height: 1.5;
+    font-size: 16px;
+}
+
+.bg-dark-color{
+    padding: 30px 0;
+    background-color: #000;
+    margin-bottom: -20px;
+}
+
+.copyright-text{
+    color: #fff;
+    padding-top: 10px;
+}

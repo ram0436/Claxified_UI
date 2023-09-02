@@ -1,0 +1,86 @@
+<!-- <div class="login-page"> -->
+  <!-- <mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="true"><mat-icon>close</mat-icon></button>
+  </mat-dialog-actions> -->
+  <mat-card class="mat-elevation-z12">
+    <mat-card-title style="text-align:center;">Login</mat-card-title>
+    <mat-tab-group mat-stretch-tabs class="example-stretched-tabs">
+      <mat-tab label="By Email">
+          <mat-card-content>
+            <form action="">
+              <mat-form-field>
+                <input
+                  matInput
+                  placeholder="Email"
+                  name="email"
+                  [(ngModel)]="email">
+                  <!-- <mat-error *ngIf="email.invalid">Email is required</mat-error> -->
+                <mat-icon matSuffix>email</mat-icon>
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  matInput
+                  placeholder="Password"
+                  type="password"
+                  name="password"
+                  [(ngModel)]="password">
+                  <!-- <mat-error
+                    *ngIf="password.errors && password.errors.required">
+                    Password is required
+                  </mat-error>
+                  <mat-error
+                    *ngIf="password.errors && password.errors.minlength">
+                    Password must be of length 6
+                  </mat-error> -->
+                <mat-icon matSuffix>lock</mat-icon>
+              </mat-form-field>
+              <button
+                mat-raised-button
+                color="primary"
+                class="login-button" (click)="signIn()">
+                Sign In
+              </button>
+            </form>
+          </mat-card-content>
+      </mat-tab>
+      <mat-tab label="By Mobile">
+        <mat-card-content>
+          <form action="">
+            <mat-form-field>
+              <input
+                matInput
+                placeholder="Phone Number"
+                name="phoneNumber"
+                [(ngModel)]="phoneNumber">
+                <!-- <mat-error *ngIf="email.invalid">Email is required</mat-error> -->
+              <mat-icon matSuffix>phone</mat-icon>
+            </mat-form-field>
+            <mat-form-field>
+              <input
+                matInput
+                placeholder="Password"
+                type="password"
+                name="password"
+                [(ngModel)]="password">
+                <!-- <mat-error
+                  *ngIf="password.errors && password.errors.required">
+                  Password is required
+                </mat-error>
+                <mat-error
+                  *ngIf="password.errors && password.errors.minlength">
+                  Password must be of length 6
+                </mat-error> -->
+              <mat-icon matSuffix>lock</mat-icon>
+            </mat-form-field>
+            <button
+              mat-raised-button
+              color="primary"
+              class="login-button">
+              Sign In
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+<!-- </div> -->

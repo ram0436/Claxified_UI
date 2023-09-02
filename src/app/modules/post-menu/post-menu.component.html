@@ -1,0 +1,35 @@
+<div class="head">
+  <div>
+    <h1 class="heading"><span>Post your add</span></h1>
+    <div class="cat">
+      <h3 class="category"><span>Choose category</span></h3>
+      <div class="opt">
+        <ul class="bord no-pointer-nav">
+          <li
+            class="cat-name auto-pointer-events"
+            *ngFor="let mainCategory of mainCategories"
+            [ngClass]="{
+              active: selectedCategory == mainCategory?.categoryName
+            }"
+            (mouseover)="showSubCategories(mainCategory)"
+          >
+            <span class="name">{{ mainCategory?.categoryName }}</span>
+          </li>
+        </ul>
+        <ul class="bord sub-cat">
+          <li class="cat-name" *ngFor="let subCategory of subCategories">
+            <a
+              class="name"
+              [routerLink]="['/' + selectedCategory, 'add-post']"
+              [queryParams]="{
+                main: selectedCategory,
+                sub: subCategory?.subCategoryName
+              }"
+              >{{ subCategory?.subCategoryName }}</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

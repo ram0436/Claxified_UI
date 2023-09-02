@@ -1,0 +1,121 @@
+
+.example-label-container {
+    /* display: flex; */
+    justify-content: space-between;
+    margin: 20px 10px 0;
+    max-width: 280px;
+  }
+  
+  .example-result-card .example-value-label {
+    font-weight: 600;
+  }
+  
+  .example-margin {
+    margin: 8px;
+    max-width: 284px;
+    min-width: 210px;
+  }
+  
+  .mat-slider-horizontal {
+    height: 48px;
+    min-width: 280px;
+  }
+  
+  .mat-mdc-form-field {
+    width: 220px;
+  }
+  
+  .wt-95 {
+    width: 95px;
+  }
+  
+  .toYear {
+    margin-right: 5px;
+    margin-left: 30px;
+  }
+  
+  .post {
+    margin-top: 10px;
+  }
+  
+  .fl-r {
+    float: right;
+  }
+  
+  .pd-5 {
+    padding: 5px 0;
+  }
+
+  
+  /* Chagnes Made By Hamza */
+
+  /* Chagnes Made By Hamza */
+
+.filters-head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+  margin-right: 5px;
+}
+
+.filter-heading{
+  font-size: 18px;
+  font-weight: 500;
+  color: #0d475c;
+}
+
+.clear-filters{
+  color: #2874F0;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+
+.clear-filters:hover{
+  cursor: pointer;
+}
+
+
+.grid{
+  padding: 0 20px;
+  background-color: #fff;
+  position: sticky;
+  top: 110px;
+  /* height: calc(100vh - 100px); */
+  left: 0;
+  bottom: 0;
+  overflow-y: scroll;
+  scrollbar-width: none; 
+}
+  
+  .sidebar-container::-webkit-scrollbar {
+    display: none;
+    }
+    
+    .example-margin {
+    margin: 8px;
+    margin-left: 12px !important;
+    max-width: 284px;
+    min-width: 210px;
+    }
+    
+    .form-field-w-100{
+    width: 100%;
+    }
+    
+    .price-slider{
+    gap: 8px;
+    }
+    
+    .ml-8{
+    margin-left: 15px;
+    }
+    
+    .selected-states-container {
+    margin-top: 15px; 
+    }
+  
+    .filterSepreator{
+      margin-top: -10px;
+    }

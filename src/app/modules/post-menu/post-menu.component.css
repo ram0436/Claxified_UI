@@ -1,0 +1,116 @@
+.main {
+    z-index: 10;
+    width: 100%;
+    position: fixed;
+    background: #80808012;
+    box-sizing: border-box;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .1);
+    height: 60px;
+    top: 0px;
+}
+
+.heading {
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 80px;
+}
+
+.head {
+    height: 100%;
+}
+
+.cat {
+    width: 60%;
+    margin-left: 270px;
+    overflow: hidden;
+    box-sizing: border-box;
+    border: 1px solid black;
+    border-radius: 4px;
+    /* height: 400px; */
+}
+
+.category {
+    padding: 24px 30px 16px;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: black
+}
+
+.opt {
+    position: relative;
+    border-right: none;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+
+.bord {
+    width: 50%;
+    margin-left: auto;
+    left: auto;
+    right: auto;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    border: 1px solid black;
+    border-left: none;
+    float: left;
+    min-height: 1px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.cat-name {
+    list-style: none;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    line-height: 2;
+    color: black;
+    border: 1px solid;
+}
+
+.name {
+    width: 100%;
+    margin-left: 30px;
+}
+
+.sub-cat {
+    /* position: absolute; */
+    right: 0 !important;
+    border-right: none !important;
+}
+
+.sub-cat li{
+    border-right: none !important;
+}
+
+/* .cat-name:hover,
+.cat-name:active {
+    color: white;
+    background-color: #09ca09f5;
+    border: #09ca09f5;
+} */
+.active{
+    color: #222;
+    background-color: #f1f1f1;
+}
+
+/* Apply styles when hovering on the li element inside the bord div */
+.bord li.cat-name:hover {
+    background-color: #f1f1f1;
+}
+
+.bord li.cat-name:hover span{
+    color: #222 !important;
+}
+  

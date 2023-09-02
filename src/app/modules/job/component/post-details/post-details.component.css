@@ -1,0 +1,181 @@
+.col-7 {
+    width: 63%;
+}
+.col-5 {
+    width:35%;
+}
+.col-6{
+    width: 50%;
+}
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+.border-1 {
+    border: 1px solid #333;
+}
+.gap-2 {
+    column-gap: 10px;
+}
+.p-fixed {
+    position: fixed;
+    right: 10px;
+}
+.ml-2 {
+    margin-left: 10px;
+}
+.pd-3{
+    padding: 20px 50px 50px 50px;
+}
+.pt-3{
+    padding-top: 10px;
+}
+.just-cont-bet {
+    justify-content:space-around;
+}
+
+.mb-2{
+    margin-bottom: 15px;
+}
+
+.col-12 {
+    width: 100%;
+}
+.min-h-2 {
+    min-height: 400px;
+}
+.bg{
+    background-color: #80808012;
+}
+.h200{
+    height: 200px;
+}
+.right_arrow{
+    margin-left: 30px;
+}
+.disable{
+    pointer-events: none;
+}
+.cursor{
+    cursor: pointer;
+    margin-left: 23px
+}
+.mt-10{
+    margin-top: 10px;
+}
+.mt-70{
+    margin-left: 70px;
+}
+.mt-50{
+    margin-left: 50px;
+}
+.spinner__loading {
+    display: flex;
+    justify-content: center;
+    margin-top: 150px;
+}
+.block{
+    display: block;
+}
+.mat-mdc-card-title {
+    display: block;
+    margin: 0;
+    padding: 0 16px;
+}
+.description-content {
+    white-space: pre-wrap;
+}
+.post_img{
+    width: 140px;
+    height: 120px;
+    margin: auto;
+}
+.w-22{
+    width: 23.5%;
+    margin-right: 10px;
+}
+.flexi{
+    display: flex;
+}
+.cursor_prev{
+    width: 25px;
+    height: 25px;
+    margin: auto;
+}
+.cursor_next{
+    width: 25px;
+    height: 25px;
+    margin-top: 117px;
+}
+.w-90{
+    width: 90%;
+}
+
+/* Changes Made By Hamza */
+
+.pg_arrow{
+    padding: 20px 7px;
+    background-color: #222;
+    color: #fff;
+    display: flex;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.img-mat-card{
+    padding: 10px;
+}
+
+.pg-card{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.img_count{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    float: right;
+    margin: 5px 10px 0 0;
+    padding: 8px 10px;
+    background-color: #222;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.postImg{
+    width: 600px;
+    height: 400px;
+}
+
+.bg{
+    background-color: #fafafa;
+}
+
+.back-btn{
+    /* position: fixed;
+    bottom: 0;
+    top: 50px;
+    left: 230px;
+    top: 115px;
+    height: 40px;
+    width: 140px; */
+    background-color: #f1f1f1;
+    color: #3f51b5;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    z-index: 1100;
+    font-weight: 500;
+    font-size: 16px;
+}
