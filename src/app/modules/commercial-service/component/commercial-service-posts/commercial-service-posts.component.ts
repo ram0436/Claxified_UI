@@ -41,6 +41,7 @@ export class CommercialServicePostsComponent {
       else
         this.cards = data;
       this.isLoading = false;
+      this.subCategoryId = 0;
     })
   }
   ngOnDestroy() {

@@ -24,7 +24,8 @@ export class GadgetPostsComponent {
     this.route.queryParams.subscribe(params => {
       this.isLoading = true;
       this.category = params['type'];
-      this.subCategoryId = Number(params['sub']);
+      if (params['sub'] != undefined)
+        this.subCategoryId = Number(params['sub']);
       this.getPosts();
     });
     this.subscription = this.commonService.getData().subscribe((data: any) => {
@@ -34,21 +35,15 @@ export class GadgetPostsComponent {
   }
   getPosts() {
     this.cards = [];
-    if (this.subCategoryId) {
-      // Show posts for a specific sub-category
-      this.gadgetService.getAllGadgetPosts().subscribe((data: any) => {
-        this.actualCards = data;
+    this.gadgetService.getAllGadgetPosts().subscribe((data: any) => {
+      this.actualCards = data;
+      if (this.subCategoryId != 0)
         this.cards = this.actualCards.filter((card: any) => card.subCategoryId == this.subCategoryId);
-        this.isLoading = false;
-      })
-    } else if (this.category === 'Gadget') {
-      // Show all posts within the "Gadgets" category
-      this.gadgetService.getAllGadgetPosts().subscribe((data: any) => {
-        this.actualCards = data;
-        this.cards = this.actualCards;
-        this.isLoading = false;
-      })
-    }
+      else
+        this.cards = data;
+      this.isLoading = false;
+      this.subCategoryId = 0;
+    })
   }
   ngOnDestroy() {
     this.subscription.unsubscribe();

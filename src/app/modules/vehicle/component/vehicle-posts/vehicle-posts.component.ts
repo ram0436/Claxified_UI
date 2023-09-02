@@ -24,6 +24,7 @@ export class VehiclePostsComponent {
     this.route.queryParams.subscribe(params => {
       this.isLoading = true;
       this.category = params['type'];
+      if(params['sub'] !=undefined)
       this.subCategoryId = Number(params['sub']);
       this.getPosts();
     });
@@ -35,10 +36,13 @@ export class VehiclePostsComponent {
   getPosts() {
     this.cards = [];
     this.vehicleService.getAllVehiclePosts().subscribe((data: any) => {
-      // this.cards = data;
       this.actualCards = data;
+      if(this.subCategoryId !=0)
       this.cards = this.actualCards.filter((card: any) => card.subCategoryId == this.subCategoryId);
+      else
+      this.cards = data;
       this.isLoading = false;
+      this.subCategoryId = 0;
     })
   }
   ngOnDestroy() {

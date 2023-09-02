@@ -41,6 +41,7 @@ export class PropertyPostsComponent {
       else
         this.cards = data;
       this.isLoading = false;
+      this.subCategoryId = 0;
     })
   }
   ngOnDestroy() {
