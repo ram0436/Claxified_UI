@@ -335,9 +335,10 @@ nav ul li:hover {
 }
 
 .expand {
-    height: 40px !important;
-    width: 40px !important;
-    font-size: 40px !important;
+    height: 30px !important;
+    width: 30px !important;
+    font-size: 30px !important;
+    margin: 3px 0px 0 5px !important;
 }
 
 ::ng-deep .cdk-overlay-pane {
@@ -354,7 +355,7 @@ nav ul li:hover {
 .stick {
     position: fixed;
     top: 0;
-    z-index: 1;
+    z-index: 1200;
     width: 100%;
 }
 
