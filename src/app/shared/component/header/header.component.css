@@ -343,6 +343,7 @@ nav ul li:hover {
 
 ::ng-deep .cdk-overlay-pane {
     margin-top: 15px;
+    /* z-index: 1300 !important; */
 }
 
 .arrow {
@@ -355,7 +356,7 @@ nav ul li:hover {
 .stick {
     position: fixed;
     top: 0;
-    z-index: 1200;
+    z-index: 1000;
     width: 100%;
 }
 
