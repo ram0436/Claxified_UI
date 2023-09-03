@@ -25,13 +25,13 @@
 
 .mat-mdc-card.mdc-card.example-card.ng-star-inserted {
   height: 320px !important;
-  min-width: 260px !important;
-  max-width: 260px !important;
+  min-width: 250px !important;
+  max-width: 250px !important;
 }
 
 
 .mat-mdc-card-image.mdc-card__media.card-image{
-  width: 260px !important;
+  width: 250px !important;
   height: 220px !important;
 }
 
