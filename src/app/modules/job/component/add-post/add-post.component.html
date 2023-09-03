@@ -1,197 +1,202 @@
 <div class="container-fluid">
-    <div class="header">Post your add</div>
-    <div class="container">
-      <div class="heading">
-        <h4>SELECTED CATEGORY</h4>
-        <div class="selected-cat">
-          <p>{{ mainCategory }}/{{ subCategory }}</p>
-          <a routerLink="/post-menu">Change</a>
-        </div>
-        <nav class="navbar-bottom"></nav>
+  <div class="header">Post your add</div>
+  <div class="container">
+    <div class="heading">
+      <h4>SELECTED CATEGORY</h4>
+      <div class="selected-cat">
+        <p>{{ mainCategory }}/{{ subCategory }}</p>
+        <a routerLink="/post-menu">Change</a>
       </div>
-      <h4>INCLUDE SOME DETAILS</h4>
-      <div class="include-details">
-        <div>
-          <mat-label>Salary period</mat-label>
-          <div class="fueltype">
-            <mat-chip-listbox>
-              <mat-chip-option *ngFor="let salaryPeriod of salaryPeriods" (click)="selectSalaryPeriod(salaryPeriod)">{{ salaryPeriod.label
-                }}</mat-chip-option>
-            </mat-chip-listbox>
-          </div>
-        </div>
-        <div>
-          <mat-label>Position type</mat-label>
-          <div class="fueltype">
-            <mat-chip-listbox>
-              <mat-chip-option *ngFor="let positionType of positionTypes" (click)="selectPositionType(positionType)">{{ positionType.label
-                }}</mat-chip-option>
-            </mat-chip-listbox>
-          </div>
-        </div>
-        <mat-form-field>
-          <mat-label>Salary from</mat-label>
-            <input
-              matInput
-              placeholder="Enter salary from"
-              [(ngModel)]="jobData.salaryFrom"
-            />
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Salary to</mat-label>
-            <input
-              matInput
-              placeholder="Enter salary to"
-              [(ngModel)]="jobData.salaryTo"
-            />
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Title</mat-label>
-          <input
-            matInput
-            placeholder="Enter Title"
-            [(ngModel)]="commonPayload.title"
-          />
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Description</mat-label>
-          <textarea
-            matInput
-            placeholder="Enter Description"
-            name="textareaInput"
-            [(ngModel)]="commonPayload.discription"
-            rows="3"
-          ></textarea>
-        </mat-form-field>
-      </div>
-      <div class="uplod-sectin h-500">
-        <h4>UPLOAD UP TO 10 PHOTOS</h4>
-        <div class="progs" *ngIf="progress">
-          <h5>Upload Progress</h5>
-          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-        </div>
-        <div class="cards">
-          <ul class="upld">
-            <li
-              class="upload-card"
-              *ngFor="let item of cardsCount; let i = index"
+      <nav class="navbar-bottom"></nav>
+    </div>
+    <h4>INCLUDE SOME DETAILS</h4>
+    <div class="include-details">
+      <div>
+        <mat-label>Salary period</mat-label>
+        <div class="fueltype">
+          <mat-chip-listbox>
+            <mat-chip-option
+              *ngFor="let salaryPeriod of salaryPeriods"
+              (click)="selectSalaryPeriod(salaryPeriod)"
+              >{{ salaryPeriod.label }}</mat-chip-option
             >
-              <div
-                class="upload-card-brd"
-                (click)="selectFile()"
-                id="{{ i }}"
-                *ngIf="item == ''"
-              >
-                <input
-                  type="file"
-                  id="fileUpload"
-                  name="fileUpload"
-                  (change)="selectImage($event)"
-                  style="display: none"
-                  multiple
-                />
-                <div>
-                  <button class="camera">
-                    <img src="../../../assets/camera.svg" alt="camera" />
-                  </button>
-                  <span class="add">Add photo</span>
-                </div>
-              </div>
-              <div class="upload-card-brd" *ngIf="item != ''">
-                <div class="preview">
-                  <button
-                    class="delete-button"
-                    (click)="deleteBackgroundImage(i)"
-                  >
-                    <span class="delete-icon">&#10006;</span>
-                  </button>
-                  <div class="first-image" *ngIf="i === 0 && firstImageUploaded">
-                    <div class="cover-tag">Cover Photo</div>
-                  </div>
-                  <img [src]="item" height="100px" width="100px" alt="" />
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="include-details">
-        <h4 class="loc">CONFIRM YOUR LOCATION</h4>
-        <mat-form-field>
-          <mat-label>Pincode</mat-label>
-          <input
-            matInput
-            placeholder="Enter your pincode"
-            (input)="getAddress($event); allowOnlyNumbers($event)"
-            [(ngModel)]="commonPayload.pincode"
-            maxlength="6"
-          />
-        </mat-form-field>
-        <mat-form-field *ngIf="commonPayload.state != ''">
-          <mat-label>State</mat-label>
-          <input
-            matInput
-            placeholder="State"
-            [(ngModel)]="commonPayload.state"
-            readonly
-          />
-        </mat-form-field>
-        <mat-form-field *ngIf="commonPayload.state != ''">
-          <mat-label>City</mat-label>
-          <input
-            matInput
-            placeholder="City"
-            [(ngModel)]="commonPayload.city"
-            readonly
-          />
-        </mat-form-field>
-        <mat-form-field *ngIf="commonPayload.state != ''">
-          <mat-label>Near By</mat-label>
-          <input
-            matInput
-            placeholder="Nearby"
-            [(ngModel)]="commonPayload.nearBy"
-            readonly
-          />
-        </mat-form-field>
-      </div>
-      <div class="details">
-        <h4>REVIEW YOUR DETAILS</h4>
-        <div class="flx">
-          <div class="circle">
-            <img [src]="imageUrl" alt="Uploaded Image" />
-            <input
-              type="file"
-              id="upload"
-              (change)="uploadProfilePicture($event)"
-              style="display: none"
-            />
-          </div>
-          <button class="upload-button" (click)="selectProfilePicture()">
-            +
-          </button>
-          <div class="wd-300">
-            <div class="wd-100">
-              <p class="w-50">Name</p>
-              <p>{{ userData?.firstName }}</p>
-            </div>
-            <div class="wd-100">
-              <p class="w-50">Phone number</p>
-              <p>{{ userData?.mobileNo }}</p>
-            </div>
-          </div>
+          </mat-chip-listbox>
         </div>
       </div>
       <div>
-        <button
-          class="post"
-          mat-raised-button
-          color="primary"
-          (click)="postAdd()"
-        >
-          Publish Now
-        </button>
+        <mat-label>Position type</mat-label>
+        <div class="fueltype">
+          <mat-chip-listbox>
+            <mat-chip-option
+              *ngFor="let positionType of positionTypes"
+              (click)="selectPositionType(positionType)"
+              >{{ positionType.label }}</mat-chip-option
+            >
+          </mat-chip-listbox>
+        </div>
+      </div>
+      <mat-form-field>
+        <mat-label>Salary from</mat-label>
+        <input
+          matInput
+          placeholder="Enter salary from"
+          [(ngModel)]="jobData.salaryFrom"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Salary to</mat-label>
+        <input
+          matInput
+          placeholder="Enter salary to"
+          [(ngModel)]="jobData.salaryTo"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Title</mat-label>
+        <input
+          matInput
+          placeholder="Enter Title"
+          [(ngModel)]="commonPayload.title"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          placeholder="Enter Description"
+          name="textareaInput"
+          [(ngModel)]="commonPayload.discription"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+    </div>
+    <div class="uplod-sectin h-365">
+      <h4>UPLOAD UP TO 10 PHOTOS</h4>
+      <div class="progs" *ngIf="progress">
+        <h5>Upload Progress</h5>
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      </div>
+      <div class="cards">
+        <ul class="upld">
+          <li
+            class="upload-card"
+            *ngFor="let item of cardsCount; let i = index"
+          >
+            <div
+              class="upload-card-brd"
+              (click)="selectFile()"
+              id="{{ i }}"
+              *ngIf="item == ''"
+            >
+              <input
+                type="file"
+                id="fileUpload"
+                name="fileUpload"
+                (change)="selectImage($event)"
+                style="display: none"
+                multiple
+              />
+              <div>
+                <button class="camera">
+                  <img src="../../../assets/camera.svg" alt="camera" />
+                </button>
+                <span class="add">Add photo</span>
+              </div>
+            </div>
+            <div class="upload-card-brd" *ngIf="item != ''">
+              <div class="preview">
+                <button
+                  class="delete-button"
+                  (click)="deleteBackgroundImage(i)"
+                >
+                  <span class="delete-icon">&#10006;</span>
+                </button>
+                <div class="first-image" *ngIf="i === 0 && firstImageUploaded">
+                  <div class="cover-tag">Cover Photo</div>
+                </div>
+                <img [src]="item" height="100px" width="100px" alt="" />
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
+    <div class="include-details">
+      <h4 class="loc">CONFIRM YOUR LOCATION</h4>
+      <mat-form-field>
+        <mat-label>Pincode</mat-label>
+        <input
+          matInput
+          placeholder="Enter your pincode"
+          (input)="getAddress($event); allowOnlyNumbers($event)"
+          [(ngModel)]="commonPayload.pincode"
+          maxlength="6"
+        />
+      </mat-form-field>
+      <mat-form-field *ngIf="commonPayload.state != ''">
+        <mat-label>State</mat-label>
+        <input
+          matInput
+          placeholder="State"
+          [(ngModel)]="commonPayload.state"
+          readonly
+        />
+      </mat-form-field>
+      <mat-form-field *ngIf="commonPayload.state != ''">
+        <mat-label>City</mat-label>
+        <input
+          matInput
+          placeholder="City"
+          [(ngModel)]="commonPayload.city"
+          readonly
+        />
+      </mat-form-field>
+      <mat-form-field *ngIf="commonPayload.state != ''">
+        <mat-label>Near By</mat-label>
+        <input
+          matInput
+          placeholder="Nearby"
+          [(ngModel)]="commonPayload.nearBy"
+          readonly
+        />
+      </mat-form-field>
+    </div>
+    <div class="details">
+      <h4>REVIEW YOUR DETAILS</h4>
+      <div class="flx">
+        <div class="circle">
+          <img [src]="imageUrl" alt="Uploaded Image" />
+          <input
+            type="file"
+            id="upload"
+            (change)="uploadProfilePicture($event)"
+            style="display: none"
+          />
+        </div>
+        <button class="upload-button" (click)="selectProfilePicture()">
+          +
+        </button>
+        <div class="wd-300">
+          <div class="wd-100">
+            <p class="w-50">Name</p>
+            <p>{{ userData?.firstName }}</p>
+          </div>
+          <div class="wd-100">
+            <p class="w-50">Phone number</p>
+            <p>{{ userData?.mobileNo }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button
+        class="post"
+        mat-raised-button
+        color="primary"
+        (click)="postAdd()"
+      >
+        Publish Now
+      </button>
+    </div>
   </div>
-  
+</div>

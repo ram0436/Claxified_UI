@@ -1,5 +1,5 @@
 .mat-app-background {
-    padding: 30px 40px 30px 155px;
+    padding: 30px 40px 30px 105px;
     display: flex;
     height: 100%;
     min-width: 100% !important;
@@ -304,11 +304,27 @@
     padding: 0 16px;
 }
 
-.mdc-card {
+/* .mdc-card {
     height: 350px;
     min-width: 290px;
     max-width: 290px;
-}
+} */
+
+.mat-mdc-card.mdc-card.example-card.ng-star-inserted {
+    height: 320px;
+    min-width: 250px;
+    max-width: 250px;
+  }
+  
+  
+  .mat-mdc-card-image.mdc-card__media.card-image{
+    width: 250px;
+    height: 220px;
+  }
+  
+  .mat-mdc-card-content.description{
+    font-size: 14px;
+  }
 
 .custom-link {
     text-decoration: none;
