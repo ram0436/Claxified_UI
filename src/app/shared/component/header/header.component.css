@@ -624,3 +624,7 @@ header {
 .navbar-right:hover {
     background-color: #0d475c !important;
 }
+
+.hide-second-nav {
+    display: none;
+  }

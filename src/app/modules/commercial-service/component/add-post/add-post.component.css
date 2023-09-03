@@ -261,6 +261,7 @@ button {
 .progs {
     margin-top: 20px;
     margin-left: 30px;
+    width: 62%;
 }
 
 .mat-progress-bar {
@@ -269,7 +270,7 @@ button {
     overflow: hidden;
     position: relative;
     transition: opacity 250ms linear;
-    width: 50%;
+    width: 100%;
     margin-top: 20px;
 }
 

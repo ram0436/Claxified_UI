@@ -23,7 +23,7 @@
 
   /* changes made by hamza */
 
-  /* .mat-mdc-card.mdc-card.example-card.ng-star-inserted {
+  .mat-mdc-card.mdc-card.example-card.ng-star-inserted {
   height: 320px !important;
   min-width: 250px !important;
   max-width: 250px !important;
@@ -37,7 +37,7 @@
 
 .mat-mdc-card-content.description{
   font-size: 14px !important;
-} */
+}
 
 .mr-20 {
   margin-right: 20px;
