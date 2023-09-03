@@ -26,7 +26,7 @@ export class PostCardComponent implements OnInit {
     imageIndex: number = 0;
     imagesList: any = [1];
     
-    displayedCardCount: number = 16;
+    displayedCardCount: number = 20;
 
     isScrolledDown = false;
 
@@ -63,7 +63,7 @@ export class PostCardComponent implements OnInit {
     }
 
     loadMoreCards() {
-        this.displayedCardCount += 16; // Increase the count for the next set of cards
+        this.displayedCardCount += 20; // Increase the count for the next set of cards
         this.paginatedCards = this.cards.slice(0, this.displayedCardCount);
       }
 
