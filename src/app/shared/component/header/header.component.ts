@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/modules/user/service/user.service';
@@ -41,6 +41,16 @@ export class HeaderComponent implements OnInit {
   dialogRef: MatDialogRef<any> | null = null;
   constructor(private dialog: MatDialog, private router: Router, private userService: UserService) {
 
+   }
+
+   hideSecondNav = false;
+
+   // Function to handle the scroll event
+   @HostListener('window:scroll', [])
+   onWindowScroll() {
+     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+     // Adjust the value (e.g., 200) based on when you want the effect to trigger
+     this.hideSecondNav = scrollPosition > 0;
    }
 
    generateGadgetsLink(subCategory?: GadgetType) {
