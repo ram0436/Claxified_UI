@@ -16,6 +16,7 @@ import { BookType } from '../../enum/BookType';
 import { PropertyType } from '../../enum/PropertyType';
 import { JobType } from '../../enum/JobType';
 import { CommercialServiceType } from '../../enum/CommercialServiceType';
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -39,7 +40,7 @@ export class HeaderComponent implements OnInit {
   userData: any;
   imageUrl: string = "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
   dialogRef: MatDialogRef<any> | null = null;
-  constructor(private dialog: MatDialog, private router: Router, private userService: UserService) {
+  constructor(private dialog: MatDialog, private router: Router, private userService: UserService,  private location: Location) {
 
    }
 
@@ -52,6 +53,15 @@ export class HeaderComponent implements OnInit {
      // Adjust the value (e.g., 200) based on when you want the effect to trigger
      this.hideSecondNav = scrollPosition > 0;
    }
+
+   reloadApp() {
+    // Navigate to the root route (you can replace this with your desired route)
+    this.router.navigate(['/']);
+    
+    // Trigger a hard reload of the application
+    this.location.replaceState('/');
+    window.location.reload();
+  }
 
    generateGadgetsLink(subCategory?: GadgetType) {
     if (subCategory) {

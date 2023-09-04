@@ -25,22 +25,18 @@
 
   .mat-mdc-card.mdc-card.example-card.ng-star-inserted {
     height: 320px !important;
-    min-width: 250px !important;
-    max-width: 250px !important;
+    min-width: 240px !important;
+    max-width: 240px !important;
   }
   
   
   .mat-mdc-card-image.mdc-card__media.card-image{
-    width: 250px !important;
+    width: 240px !important;
     height: 220px !important;
   }
   
   .mat-mdc-card-content.description{
     font-size: 14px !important;
-  }
-
-  .mat-app-background{
-    padding-left: 40px !important;
   }
 
 .mr-20 {
@@ -51,9 +47,6 @@
   background-color: #fafafa;
 }
 
-.mat-app-background{
-  padding-left: 40px !important;
-}
 
 .bg-white{
   background-color: #fff;

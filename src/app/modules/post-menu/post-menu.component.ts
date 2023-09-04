@@ -10,29 +10,32 @@ export class PostMenuComponent {
 
   mainCategories: any = [];
   subCategories: any = [];
-  selectedCategory : any ;
+  selectedCategory: any;
   showSubcategories: boolean = false;
-  constructor(private commonService : CommonService) { }
+
+  constructor(private commonService: CommonService) { }
 
   ngOnInit() {
     this.getAllCategory();
   }
-  showSubCategories(mainCategory: any) {
-    this.selectedCategory = mainCategory.categoryName;
-    this.commonService.getSubCategoryByCategoryId(mainCategory.id).subscribe((data: any) => {
-      this.subCategories = data;
-    });
+
+  toggleSubCategories(mainCategory: any) {
+    if (this.selectedCategory === mainCategory.categoryName) {
+      // If the same category is clicked again, hide the subcategories
+      this.showSubcategories = false;
+      this.selectedCategory = null;
+    } else {
+      this.selectedCategory = mainCategory.categoryName;
+      this.commonService.getSubCategoryByCategoryId(mainCategory.id).subscribe((data: any) => {
+        this.subCategories = data;
+        this.showSubcategories = true; // Show the subcategories
+      });
+    }
   }
+
   getAllCategory() {
     this.commonService.getAllCategory().subscribe((data: any) => {
       this.mainCategories = data;
     });
-  }
-
-  hideSubCategories() {
-    // When leaving the main category, hide the subcategories
-    this.subCategories = [];
-    this.showSubcategories = false; // Set to false to hide the subcategories
-    this.selectedCategory = null;
   }
 }

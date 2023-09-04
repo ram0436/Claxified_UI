@@ -11,12 +11,12 @@
             [ngClass]="{
               active: selectedCategory == mainCategory?.categoryName
             }"
-            (mouseover)="showSubCategories(mainCategory)"
+            (click)="toggleSubCategories(mainCategory)"
           >
             <span class="name">{{ mainCategory?.categoryName }}</span>
           </li>
         </ul>
-        <ul class="bord sub-cat">
+        <ul class="bord sub-cat" *ngIf="showSubcategories">
           <li class="cat-name" *ngFor="let subCategory of subCategories">
             <a
               class="name"

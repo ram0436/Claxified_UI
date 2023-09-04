@@ -1,6 +1,7 @@
 .mat-app-background {
-    padding-top: 20px;
+    /* padding-top: 20px; */
     display: flex;
+    padding: 30px 40px 30px 105px !important;
 }
 
 .card-image {

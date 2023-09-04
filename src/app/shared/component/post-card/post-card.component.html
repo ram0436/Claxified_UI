@@ -1,4 +1,4 @@
-<div class="mat-app-background" *ngIf="!isLoading">
+<div id="unique-component" class="mat-app-background" *ngIf="!isLoading">
   <button
     class="back-to-top-btn"
     (click)="scrollToTop()"
@@ -39,8 +39,10 @@
       <mat-card-title class="title" *ngIf="card?.price > 0">{{
         card?.price | currency : "INR"
       }}</mat-card-title>
-      <mat-card-title class="title" *ngIf="card?.salaryPeriodType"> 
-        ₹ {{card?.salaryFrom}} - {{card?.salaryTo}} | {{ getSalaryPeriod(card?.salaryPeriodType)}}</mat-card-title>
+      <mat-card-title class="title" *ngIf="card?.salaryPeriodType">
+        ₹ {{ card?.salaryFrom }} - {{ card?.salaryTo }} |
+        {{ getSalaryPeriod(card?.salaryPeriodType) }}</mat-card-title
+      >
       <mat-card-content class="description">
         <p style="margin: 0">{{ card?.title }}</p>
         <p *ngIf="card?.year">
