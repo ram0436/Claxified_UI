@@ -93,7 +93,7 @@
 }
 
 .sub-cat li{
-    border-left: none !important;
+    border-left: 0.1rem solid #222;
 }
 
 /* .cat-name:hover,
