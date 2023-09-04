@@ -65,6 +65,7 @@ export class PostCardComponent implements OnInit {
     loadMoreCards() {
         this.displayedCardCount += 20; // Increase the count for the next set of cards
         this.paginatedCards = this.cards.slice(0, this.displayedCardCount);
+        this.setMainCategoryName(this.paginatedCards);
       }
 
     formatDate(date: any): any {
