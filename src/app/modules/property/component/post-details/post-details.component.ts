@@ -14,7 +14,7 @@ import { PropertyType } from 'src/app/shared/enum/PropertyType';
 @Component({
   selector: 'app-post-details',
   templateUrl: './post-details.component.html',
-  styleUrls: ['./post-details.component.css']
+  styleUrls: ['./post-details.component.css',  '../../../module.component.css']
 })
 export class PostDetailsComponent {
 
@@ -103,6 +103,7 @@ export class PostDetailsComponent {
   shopsAndOfcRent = ['furnishingStatus', 'listedBy', 'superBuildUpArea', 'carpetArea', 'maintenanceCharge', 'carParking', 'bathrooms', 'projectName'];
   shopsAndOfcSale = ['furnishingStatus', 'constructionStatus', 'listedBy', 'superBuiltupArea', 'carpetArea', 'maintenanceCharge', 'carParking', 'bathrooms', 'projectName'];
   pgAndGuestHouses = ['subType', 'furnishingStatus', 'listedBy', 'carParking', 'mealsIncluded'];
+  isZoomed: boolean = false;
 
   constructor(private propertyService: PropertyService, private route: ActivatedRoute, private router: Router) { }
 
@@ -113,6 +114,25 @@ export class PostDetailsComponent {
     });
     if (tableRefGuid != null) {
       this.getPropertyPost(tableRefGuid);
+    }
+  }
+
+  
+  zoomIn() {
+    this.isZoomed = !this.isZoomed;
+
+    // Toggle a class to style the expanded image
+    const imgElement = document.querySelector('.postImgCont');
+    if (imgElement) {
+      imgElement.classList.toggle('zoomed');
+    }
+  }
+
+  closeZoom() {
+    this.isZoomed = false;
+    const imgElement = document.querySelector('.postImgCont');
+    if (imgElement) {
+      imgElement.classList.remove('zoomed');
     }
   }
 

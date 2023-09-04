@@ -16,6 +16,9 @@ export class FashionPostsComponent {
   cards: any = [];
   subscription: any;
   actualCards: any;
+
+  isZoomed: boolean = false;
+
   constructor(private route: ActivatedRoute, private commonService: CommonService, private cdr: ChangeDetectorRef,
     private fashionService: FashionService) { }
 
@@ -32,6 +35,8 @@ export class FashionPostsComponent {
       setTimeout(() => this.filterPosts(data), 500);
     });
   }
+
+
   getPosts() {
     this.cards = [];
     this.fashionService.getAllFashionPosts().subscribe((data: any) => {

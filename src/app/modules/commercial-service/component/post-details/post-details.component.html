@@ -1,116 +1,154 @@
 <div class="container-center bg">
-    <div class="spinner__loading" *ngIf="isLoading">
-      <div>
-        <mat-spinner></mat-spinner>
-      </div>
-    </div>
-    <div class="pd-3" *ngIf="!isLoading">
-      <button class="back-btn" (click)="goBack()">
-        <span class="material-icons-outlined"> chevron_left </span>Back
-      </button>
-      <div class="flex gap-2 pt-3" *ngIf="!isLoading">
-        <mat-card class="border-1 mb-2 block img-mat-card">
-          <div class="pg-card">
-            <span
-              class="material-icons pg_arrow pg_arrow_left"
-              (click)="showPrevious()"
-              [ngClass]="{ disable: imageIndex <= 0 }"
-            >
-              arrow_back_ios_new
-            </span>
-            <img class="postImg" [src]="imagesList[imageIndex].imageURL" alt="" />
-            <span
-              class="material-icons pg_arrow"
-              (click)="showNext()"
-              [ngClass]="{ disable: imageIndex >= imagesList.length - 1 }"
-            >
-              arrow_forward_ios
-            </span>
-          </div>
-          <div>
-            <p class="img_count">
-              <span class="material-icons"> photo_camera </span>
-              {{ imageIndex + 1 }} of {{ imagesList.length }}
-            </p>
-          </div>
-        </mat-card>
-        <div class="col-5 h200">
-          <mat-card class="border-1">
-            <mat-card-title>{{
-              postDetails?.price | currency : "INR"
-            }}</mat-card-title>
-            <mat-card-content class="description">
-              <p style="margin: 0">{{ postDetails?.title }}</p>
-              <div class="loc-date">
-                <p class="loc">
-                  {{ postDetails?.nearBy }},{{ postDetails?.city }} ,
-                  {{ postDetails?.state }}
-                </p>
-                <p class="date">{{ formatDate(postDetails?.createdOn) }}</p>
-              </div>
-            </mat-card-content>
-          </mat-card>
-          <mat-card class="mt-10 border-1">
-            <mat-card-title>Ankit sharma</mat-card-title>
-            <mat-card-content>
-              <button class="post" mat-raised-button color="primary">
-                Chat with seller
-              </button>
-              <br />
-              <br />
-              <p>888888888</p>
-            </mat-card-content>
-          </mat-card>
-        </div>
-        <mat-card class="col-7 border-1 mb-2">
-          <mat-card-title>Description</mat-card-title>
-          <mat-card-content class="mt-10">
-            <p class="description-content">{{ postDetails?.discription }}</p>
-          </mat-card-content>
-        </mat-card>
-        <mat-card class="col-7 border-1 mb-2">
-          <mat-card-title>Relared Ads</mat-card-title>
-          <mat-card-content class="mt-10 flexi">
-            <img
-              class="cursor_prev"
-              src="../../../assets/left_arrow.svg"
-              alt=""
-              (click)="handlePrev()"
-              [ngClass]="{ disable: currentPage === 0 }"
-            />
-            <div class="flex ml-2 w-90">
-              <mat-card class="w-22" *ngFor="let card of displayedItems">
-                <img class="post_img" [src]="card.imageUrl" alt="" />
-                <mat-card-title class="title">{{
-                  card?.price | currency : "INR"
-                }}</mat-card-title>
-                <mat-card-content class="description">
-                  <p style="margin: 0">{{ card?.title }}</p>
-                  <p *ngIf="card?.year">
-                    {{ card?.year || "" }} -
-                    {{ card?.kmDriven ? card.kmDriven + " kms" : "" }}
-                  </p>
-                  <div class="loc-date">
-                    <p class="loc">
-                      {{ card?.nearBy }},{{ card?.city }} , {{ card?.state }}
-                    </p>
-                    <!-- <p class="date">{{formatDate(card?.createdOn)}}</p> -->
-                  </div>
-                </mat-card-content>
-              </mat-card>
-            </div>
-            <img
-              class="cursor_next"
-              src="../../../assets/right_arrow.svg"
-              alt=""
-              (click)="handleNext()"
-              [ngClass]="{
-                disable: currentPage >= relatedPosts.length / itemsPerPage - 1
-              }"
-            />
-          </mat-card-content>
-        </mat-card>
-      </div>
+  <div class="spinner__loading" *ngIf="isLoading">
+    <div>
+      <mat-spinner></mat-spinner>
     </div>
   </div>
-  
+  <div class="pd-3" *ngIf="!isLoading">
+    <button class="back-btn" (click)="goBack()">
+      <span class="material-icons-outlined"> chevron_left </span>Back
+    </button>
+    <div class="flex gap-2 pt-3" *ngIf="!isLoading">
+      <mat-card class="border-1 mb-2 block img-mat-card">
+        <div class="pg-card">
+          <span
+            class="material-icons pg_arrow pg_arrow_left"
+            (click)="showPrevious()"
+            [ngClass]="{ disable: imageIndex <= 0 }"
+          >
+            arrow_back_ios_new
+          </span>
+          <div class="postImgCont">
+            <img
+              class="postImg"
+              [src]="imagesList[imageIndex].imageURL"
+              alt=""
+            />
+          </div>
+          <span
+            class="material-icons pg_arrow"
+            (click)="showNext()"
+            [ngClass]="{ disable: imageIndex >= imagesList.length - 1 }"
+          >
+            arrow_forward_ios
+          </span>
+        </div>
+        <div class="img-feature">
+          <p class="img_count">
+            <span class="material-icons"> photo_camera </span>
+            {{ imageIndex + 1 }} of {{ imagesList.length }}
+          </p>
+          <p class="zoom-in" (click)="zoomIn()">
+            <span class="material-icons-outlined"> zoom_in </span>
+          </p>
+        </div>
+        <div class="zoom-controls">
+          <span
+            class="material-icons-outlined"
+            *ngIf="isZoomed"
+            (click)="closeZoom()"
+            >close</span
+          >
+        </div>
+        <div class="pg-arrows-after">
+          <span
+            class="material-icons pg_arrow_left_after"
+            (click)="showPrevious()"
+            *ngIf="isZoomed"
+            [ngClass]="{ disable: imageIndex <= 0 }"
+          >
+            arrow_back_ios_new
+          </span>
+          <span
+            class="material-icons pg_arrow_right_after"
+            (click)="showNext()"
+            *ngIf="isZoomed"
+            [ngClass]="{ disable: imageIndex >= imagesList.length - 1 }"
+          >
+            arrow_forward_ios
+          </span>
+        </div>
+        <p class="img_count_after" *ngIf="isZoomed">
+          <span class="material-icons">photo_camera</span>
+          {{ imageIndex + 1 }} of {{ imagesList.length }}
+        </p>
+      </mat-card>
+      <div class="col-5 h200">
+        <mat-card class="border-1">
+          <mat-card-title>{{
+            postDetails?.price | currency : "INR"
+          }}</mat-card-title>
+          <mat-card-content class="description">
+            <p style="margin: 0">{{ postDetails?.title }}</p>
+            <div class="loc-date">
+              <p class="loc">
+                {{ postDetails?.nearBy }},{{ postDetails?.city }} ,
+                {{ postDetails?.state }}
+              </p>
+              <p class="date">{{ formatDate(postDetails?.createdOn) }}</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="mt-10 border-1">
+          <mat-card-title>Ankit sharma</mat-card-title>
+          <mat-card-content>
+            <button class="post" mat-raised-button color="primary">
+              Chat with seller
+            </button>
+            <br />
+            <br />
+            <p>888888888</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <mat-card class="col-7 border-1 mb-2">
+        <mat-card-title>Description</mat-card-title>
+        <mat-card-content class="mt-10">
+          <p class="description-content">{{ postDetails?.discription }}</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="col-7 border-1 mb-2">
+        <mat-card-title>Relared Ads</mat-card-title>
+        <!-- <mat-card-content class="mt-10 flexi">
+          <img
+            class="cursor_prev"
+            src="../../../assets/left_arrow.svg"
+            alt=""
+            (click)="handlePrev()"
+            [ngClass]="{ disable: currentPage === 0 }"
+          />
+          <div class="flex ml-2 w-90">
+            <mat-card class="w-22" *ngFor="let card of displayedItems">
+              <img class="post_img" [src]="card.imageUrl" alt="" />
+              <mat-card-title class="title">{{
+                card?.price | currency : "INR"
+              }}</mat-card-title>
+              <mat-card-content class="description">
+                <p style="margin: 0">{{ card?.title }}</p>
+                <p *ngIf="card?.year">
+                  {{ card?.year || "" }} -
+                  {{ card?.kmDriven ? card.kmDriven + " kms" : "" }}
+                </p>
+                <div class="loc-date">
+                  <p class="loc">
+                    {{ card?.nearBy }},{{ card?.city }} , {{ card?.state }}
+                  </p>
+                  <p class="date">{{formatDate(card?.createdOn)}}</p>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <img
+            class="cursor_next"
+            src="../../../assets/right_arrow.svg"
+            alt=""
+            (click)="handleNext()"
+            [ngClass]="{
+              disable: currentPage >= relatedPosts.length / itemsPerPage - 1
+            }"
+          />
+        </mat-card-content> -->
+      </mat-card>
+    </div>
+  </div>
+</div>

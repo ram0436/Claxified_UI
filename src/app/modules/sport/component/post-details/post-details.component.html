@@ -18,7 +18,13 @@
           >
             arrow_back_ios_new
           </span>
-          <img class="postImg" [src]="imagesList[imageIndex].imageURL" alt="" />
+          <div class="postImgCont">
+            <img
+              class="postImg"
+              [src]="imagesList[imageIndex].imageURL"
+              alt=""
+            />
+          </div>
           <span
             class="material-icons pg_arrow"
             (click)="showNext()"
@@ -27,12 +33,45 @@
             arrow_forward_ios
           </span>
         </div>
-        <div>
+        <div class="img-feature">
           <p class="img_count">
             <span class="material-icons"> photo_camera </span>
             {{ imageIndex + 1 }} of {{ imagesList.length }}
           </p>
+          <p class="zoom-in" (click)="zoomIn()">
+            <span class="material-icons-outlined"> zoom_in </span>
+          </p>
         </div>
+        <div class="zoom-controls">
+          <span
+            class="material-icons-outlined"
+            *ngIf="isZoomed"
+            (click)="closeZoom()"
+            >close</span
+          >
+        </div>
+        <div class="pg-arrows-after">
+          <span
+            class="material-icons pg_arrow_left_after"
+            (click)="showPrevious()"
+            *ngIf="isZoomed"
+            [ngClass]="{ disable: imageIndex <= 0 }"
+          >
+            arrow_back_ios_new
+          </span>
+          <span
+            class="material-icons pg_arrow_right_after"
+            (click)="showNext()"
+            *ngIf="isZoomed"
+            [ngClass]="{ disable: imageIndex >= imagesList.length - 1 }"
+          >
+            arrow_forward_ios
+          </span>
+        </div>
+        <p class="img_count_after" *ngIf="isZoomed">
+          <span class="material-icons">photo_camera</span>
+          {{ imageIndex + 1 }} of {{ imagesList.length }}
+        </p>
       </mat-card>
       <div class="col-5 h200">
         <mat-card class="border-1">
@@ -70,7 +109,7 @@
       </mat-card>
       <mat-card class="col-7 border-1 mb-2">
         <mat-card-title>Relared Ads</mat-card-title>
-        <mat-card-content class="mt-10 flexi">
+        <!-- <mat-card-content class="mt-10 flexi">
           <img
             class="cursor_prev"
             src="../../../assets/left_arrow.svg"
@@ -94,7 +133,7 @@
                   <p class="loc">
                     {{ card?.nearBy }},{{ card?.city }} , {{ card?.state }}
                   </p>
-                  <!-- <p class="date">{{formatDate(card?.createdOn)}}</p> -->
+                  <p class="date">{{formatDate(card?.createdOn)}}</p>
                 </div>
               </mat-card-content>
             </mat-card>
@@ -108,7 +147,7 @@
               disable: currentPage >= relatedPosts.length / itemsPerPage - 1
             }"
           />
-        </mat-card-content>
+        </mat-card-content> -->
       </mat-card>
     </div>
   </div>
