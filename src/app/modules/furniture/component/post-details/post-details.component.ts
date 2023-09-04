@@ -26,6 +26,7 @@ export class PostDetailsComponent {
   ];
   itemsPerPage = 4;
   currentPage = 0;
+  isZoomed: boolean = false;
   constructor(private furnitureService: FurnitureService, private route: ActivatedRoute,  private router: Router) { }
 
   ngOnInit() {
@@ -35,6 +36,24 @@ export class PostDetailsComponent {
     });
     if (tableRefGuid != null) {
       this.getFurniturePost(tableRefGuid);
+    }
+  }
+
+  zoomIn() {
+    this.isZoomed = !this.isZoomed;
+
+    // Toggle a class to style the expanded image
+    const imgElement = document.querySelector('.postImgCont');
+    if (imgElement) {
+      imgElement.classList.toggle('zoomed');
+    }
+  }
+
+  closeZoom() {
+    this.isZoomed = false;
+    const imgElement = document.querySelector('.postImgCont');
+    if (imgElement) {
+      imgElement.classList.remove('zoomed');
     }
   }
 

@@ -26,6 +26,7 @@ export class PostDetailComponent {
   ];
   itemsPerPage = 4;
   currentPage = 0;
+  isZoomed: boolean = false;
   constructor(private gadgetService: GadgetService,private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
@@ -37,6 +38,25 @@ export class PostDetailComponent {
       this.getGadgetPost(tableRefGuid);
     }
   }
+
+  zoomIn() {
+    this.isZoomed = !this.isZoomed;
+
+    // Toggle a class to style the expanded image
+    const imgElement = document.querySelector('.postImgCont');
+    if (imgElement) {
+      imgElement.classList.toggle('zoomed');
+    }
+  }
+
+  closeZoom() {
+    this.isZoomed = false;
+    const imgElement = document.querySelector('.postImgCont');
+    if (imgElement) {
+      imgElement.classList.remove('zoomed');
+    }
+  }
+
 
   goBack() {
     this.router.navigate(['/Gadgets/view-posts'], {

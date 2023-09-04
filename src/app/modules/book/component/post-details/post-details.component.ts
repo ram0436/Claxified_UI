@@ -6,7 +6,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-post-details',
   templateUrl: './post-details.component.html',
-  styleUrls: ['./post-details.component.css']
+  styleUrls: ['./post-details.component.css', '../../../module.component.css']
 })
 export class PostDetailsComponent {
 
@@ -26,6 +26,7 @@ export class PostDetailsComponent {
   ];
   itemsPerPage = 4;
   currentPage = 0;
+  isZoomed: boolean = false;
   constructor(private bookService: BookService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
@@ -35,6 +36,25 @@ export class PostDetailsComponent {
     });
     if (tableRefGuid != null) {
       this.getSportPost(tableRefGuid);
+    }
+  }
+
+
+  zoomIn() {
+    this.isZoomed = !this.isZoomed;
+
+    // Toggle a class to style the expanded image
+    const imgElement = document.querySelector('.postImgCont');
+    if (imgElement) {
+      imgElement.classList.toggle('zoomed');
+    }
+  }
+
+  closeZoom() {
+    this.isZoomed = false;
+    const imgElement = document.querySelector('.postImgCont');
+    if (imgElement) {
+      imgElement.classList.remove('zoomed');
     }
   }
 
