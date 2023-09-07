@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, EventEmitter, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map, startWith } from 'rxjs';
@@ -14,7 +15,7 @@ import { VehicleService } from '../../service/vehicle.service';
 @Component({
   selector: 'app-add-post',
   templateUrl: './add-post.component.html',
-  styleUrls: ['./add-post.component.css']
+  styleUrls: ['./add-post.component.css'],
 })
 export class AddPostComponent {
 
@@ -60,6 +61,7 @@ export class AddPostComponent {
   carModelId: any;
 
   firstImageUploaded: boolean = false; // Changes made by Hamza
+  isDraggingEnabled = true;
 
   constructor(private vehicleService: VehicleService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute,
     @Inject(DOCUMENT) private document: Document, private userService: UserService,private router : Router) { }
@@ -95,6 +97,18 @@ export class AddPostComponent {
       }
     });
   }
+
+
+  drop(event: CdkDragDrop<string[]>) {
+
+    if (event.previousContainer === event.container) {
+      moveItemInArray(this.cardsCount, event.previousIndex, event.currentIndex);
+    } else {
+    }
+    this.isDraggingEnabled = true; 
+    
+  }
+  
 
   filterBrands(value: any): { id: number; brandName: string }[] {
     var filterValue = "";

@@ -12,6 +12,7 @@ import { UserModule } from './modules/user/user.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from './modules/auth/interceptor/JwtInterceptor';
 import { HashLocationStrategy, LocationStrategy  } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { HashLocationStrategy, LocationStrategy  } from '@angular/common';
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
     SharedModule,
+    DragDropModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }, 
     {provide : LocationStrategy , useClass: HashLocationStrategy}],
