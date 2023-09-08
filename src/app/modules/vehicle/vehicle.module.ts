@@ -25,6 +25,7 @@ import { VehicleFilterComponent } from './component/vehicle-filter/vehicle-filte
 import { VehicleRoutingModule } from './vehicle-routing.module';
 import { VehiclePostsComponent } from './component/vehicle-posts/vehicle-posts.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 const routes: Routes = [
   { path: 'post-details', component: PostDetailComponent }
@@ -59,7 +60,8 @@ const routes: Routes = [
     MatButtonModule,
     MatPaginatorModule,
     MatSliderModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    DragDropModule
   ]
 })
 export class VehicleModule { }

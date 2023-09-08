@@ -142,8 +142,9 @@ button {
     height: 100%;
 }
 
-.cards {
+.cards-cont{
     max-width: 60%;
+    background-color: #fff !important;
 }
 
 .main {
