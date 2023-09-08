@@ -103,7 +103,7 @@ nav ul li:hover {
     position: relative;
     background-color: #0d475c;
     /* Changes made by Hamza */
-    width: 88%;
+    width: 75%;
     margin-left: 20px;
 }
 
@@ -322,9 +322,8 @@ nav ul li:hover {
     background-color: #ffff;
     border: 1px solid #ffff;
     border-radius: 21px;
-    margin-top: 5px;
-    padding: 3.5px 0px 2px 6px;
-    margin-right: 20px;
+    margin: 5px 20px 2px 0;
+    padding: 3px 0px 2px 6px;
 }
 
 .img_stl {
