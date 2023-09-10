@@ -1,324 +1,370 @@
 <div class="grid sidebar-container">
-    <div class="filters-head">
-      <div class="filter-heading">Filters</div>
-      <div
-        class="clear-filters"
-        *ngIf="filtersSelected && appliedFilters.length > 0"
-        (click)="clearFilters()"
-      >
-        Reset
-      </div>
-      <iframe id="hiddenFrame" style="display: none"></iframe>
-    </div>
-    <!-- Price Range Filter -->
-    <div>
-      <div class="selected-states-container">
-        <mat-chip-listbox>
-          <mat-chip-option
-            *ngFor="let filter of appliedFilters"
-            (removed)="removeItem(filter)"
-            >{{ filter.value }}
-            <button matChipRemove aria-label="Remove orange">
-              <mat-icon>cancel</mat-icon>
-            </button></mat-chip-option
-          >
-        </mat-chip-listbox>
-      </div>
-    </div>
-    <br />
-    <hr class="filterSepreator" />
-    <!-- Location Filter -->
-    <mat-form-field appearance="fill" class="form-field-w-100">
-      <mat-label>State</mat-label>
-      <input
-        type="text"
-        placeholder="Pick one"
-        aria-label="Number"
-        matInput
-        [formControl]="stateControl"
-        [matAutocomplete]="state"
-      />
-      <mat-autocomplete
-        #stateMatAutocomplete
-        autoActiveFirstOption
-        #state="matAutocomplete"
-        (optionSelected)="onDistrictChange($event)"
-        [displayWith]="displayLocation"
-      >
-        <!-- <mat-option [value]="null">None</mat-option> -->
-        <mat-option
-          *ngFor="let district of filteredStates | async"
-          [value]="district"
-        >
-          {{ district.name }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-  
-    <mat-form-field
-      appearance="fill"
-      class="form-field-w-100"
-      *ngIf="filterObj?.state"
+  <div class="filters-head">
+    <div class="filter-heading">Filters</div>
+    <div
+      class="clear-filters"
+      *ngIf="filtersSelected && appliedFilters.length > 0"
+      (click)="clearFilters()"
     >
-      <mat-label>City</mat-label>
-      <input
-        type="text"
-        placeholder="Pick one"
-        aria-label="Number"
-        matInput
-        [formControl]="cityControl"
-        [matAutocomplete]="city"
-      />
-      <mat-autocomplete
-        #cityMatAutocomplete
-        autoActiveFirstOption
-        #city="matAutocomplete"
-        (optionSelected)="onCityChange($event)"
-        [displayWith]="displayLocation"
-      >
-        <!-- <mat-option [value]="null">None</mat-option> -->
-        <mat-option *ngFor="let city of filteredCities | async" [value]="city">
-          {{ city.name }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-  
-    <mat-form-field
-      appearance="fill"
-      class="form-field-w-100"
-      *ngIf="filterObj?.city"
-    >
-      <mat-label>Near By</mat-label>
-      <input
-        type="text"
-        placeholder="Pick one"
-        aria-label="Number"
-        matInput
-        [formControl]="nearByControl"
-        [matAutocomplete]="nearBy"
-      />
-      <mat-autocomplete
-        #nearByMatAutocomplete
-        autoActiveFirstOption
-        #nearBy="matAutocomplete"
-        (optionSelected)="onNearByChange($event)"
-        [displayWith]="displayLocation"
-      >
-        <!-- <mat-option [value]="null">None</mat-option> -->
-        <mat-option
-          *ngFor="let nearBy of filteredNearBy | async"
-          [value]="nearBy"
-        >
-          {{ nearBy.name }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-    <div class="example-label-container" *ngIf="subCategory !=undefined">
-      <label id="example-name-label" class="example-name-label">Price</label>
-      <div class="pd-5">
-        <label class="example-value-label">{{
-          fromPrice | currency : "INR" : "symbol" : "1.0-0"
-        }}</label>
-        <label class="example-value-label fl-r">{{
-          toPrice | currency : "INR" : "symbol" : "1.0-0"
-        }}</label>
-      </div>
+      Reset
     </div>
-    <div style="display: flex" *ngIf="subCategory !=undefined">
-      <mat-slider
-        class="example-margin"
-        min="0"
-        max="1000000"
-        discrete="false"
-        showTickMarks="false"
-        invert="false"
-      >
-        <input matSliderStartThumb [(ngModel)]="fromPrice" />
-        <input matSliderEndThumb [(ngModel)]="toPrice" />
-      </mat-slider>
-      <button
-        class="post ml-8"
-        mat-raised-button
-        color="primary"
-        (click)="priceChange()"
-      >
-        Apply
-      </button>
-    </div>
-    <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="propertiesToShow.includes('bedrooms')">
-        <mat-label>Bed Rooms</mat-label>
-        <mat-select
-        [(ngModel)]="selectedBedRoomNumber"
-          (selectionChange)="onBedRoomSelect($event)"
-        >
-          <mat-option *ngFor="let bedRoom of numberOfBedRooms" [value]="bedRoom">{{
-            bedRoom
-          }}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="propertiesToShow.includes('bathrooms')">
-        <mat-label>Bath Rooms</mat-label>
-        <mat-select
-        [(ngModel)]="selectedBathRoomNumber"
-          (selectionChange)="onBathRoomSelect($event)"
-        >
-          <mat-option *ngFor="let bedRoom of numberOfBedRooms" [value]="bedRoom">{{
-            bedRoom
-          }}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="propertiesToShow.includes('houseType')">
-        <mat-label>House Type</mat-label>
-        <mat-select
-          #houseTypeMultiSelect
-          [(ngModel)]="selectedHouseType"
-          multiple
-          (selectionChange)="onHouseTypeSelect($event)"
-        >
-          <mat-option *ngFor="let houseType of houseTypes" [value]="houseType">{{
-            houseType.label
-          }}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="propertiesToShow.includes('subType')">
-      <mat-label>Sub type</mat-label>
-      <mat-select
-        #subTypeMultiSelect
-        [(ngModel)]="selectedPgType"
-        multiple
-        (selectionChange)="onPgTypeSelect($event)"
-      >
-        <mat-option *ngFor="let pgType of pgTypes" [value]="pgType">{{
-          pgType.label
-        }}</mat-option>
-      </mat-select>
-  </mat-form-field>
-    <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="propertiesToShow.includes('serviceType')">
-      <mat-label>Service Type</mat-label>
-      <mat-select
-      #serviceTypeMultiSelect
-        [(ngModel)]="selectedServiceType"
-        multiple
-        (selectionChange)="onServiceTypeSelect($event)"
-      >
-        <mat-option *ngFor="let serviceType of serviceTypes" [value]="serviceType">{{
-          serviceType.label
-        }}</mat-option>
-      </mat-select>
-  </mat-form-field>
-    <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="propertiesToShow.includes('furnishing')">
-        <mat-label>Furnishing Type</mat-label>
-        <mat-select
-        #furnishingMultiSelect
-          [(ngModel)]="selectedFurnishing"
-          multiple
-          (selectionChange)="onFurnishingSelect($event)"
-        >
-          <mat-option *ngFor="let furnishing of furnishingStatus" [value]="furnishing">{{
-            furnishing.label
-          }}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="propertiesToShow.includes('constructionStatus')">
-        <mat-label>Construction Status</mat-label>
-        <mat-select
-        #constructionMultiSelect
-          [(ngModel)]="selectedConstructionStatus"
-          multiple
-          (selectionChange)="onConstructionStatusSelect($event)"
-        >
-          <mat-option *ngFor="let construction of constructionStatus" [value]="construction">{{
-            construction.label
-          }}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="propertiesToShow.includes('listedBy')">
-        <mat-label>Listed By</mat-label>
-        <mat-select
-        #listedByMultiSelect
-          [(ngModel)]="selectedListedBy"
-          multiple
-          (selectionChange)="onListedBySelect($event)"
-        >
-          <mat-option *ngFor="let by of listedBy" [value]="by">{{
-            by.label
-          }}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="propertiesToShow.includes('bachelorAllowed')">
-      <mat-label>Bachelors allowed</mat-label>
-      <mat-select
-      [(ngModel)]="selectedBachelorsAllowed"
-        (selectionChange)="onBedBachelorsAllowedSelect($event)"
-      >
-        <mat-option *ngFor="let bachelor of bachelorsAllowed" [value]="bachelor">{{
-          bachelor.label
-        }}</mat-option>
-      </mat-select>
-  </mat-form-field>
-    <div class="example-label-container" *ngIf="propertiesToShow.includes('superBuildUpArea')">
-        <label id="example-name-label" class="example-name-label">SUPER BUILTUP AREA (FT²)</label>
-        <div class="pd-5">
-          <label class="example-value-label">{{
-            fromBuildUpArea
-          }}</label>
-          <label class="example-value-label fl-r">{{
-            toBuildUpArea
-          }}</label>
-        </div>
-      </div>
-      <div style="display: flex" *ngIf="propertiesToShow.includes('superBuildUpArea')">
-        <mat-slider
-          class="example-margin"
-          min="0"
-          max="1000000"
-          discrete="false"
-          showTickMarks="false"
-          invert="false"
-        >
-          <input matSliderStartThumb [(ngModel)]="fromBuildUpArea" />
-          <input matSliderEndThumb [(ngModel)]="toBuildUpArea" />
-        </mat-slider>
-        <button
-          class="post ml-8"
-          mat-raised-button
-          color="primary"
-          (click)="buildUpAreaChange()"
-        >
-          Apply
-        </button>
-      </div>
-      <div class="example-label-container" *ngIf="propertiesToShow.includes('plotArea')">
-        <label id="example-name-label" class="example-name-label">Plot area</label>
-        <div class="pd-5">
-          <label class="example-value-label">{{
-            fromPlotArea
-          }}</label>
-          <label class="example-value-label fl-r">{{
-            toPlotArea
-          }}</label>
-        </div>
-      </div>
-      <div style="display: flex" *ngIf="propertiesToShow.includes('plotArea')">
-        <mat-slider
-          class="example-margin"
-          min="0"
-          max="1000000"
-          discrete="false"
-          showTickMarks="false"
-          invert="false"
-        >
-          <input matSliderStartThumb [(ngModel)]="fromPlotArea" />
-          <input matSliderEndThumb [(ngModel)]="toPlotArea" />
-        </mat-slider>
-        <button
-          class="post ml-8"
-          mat-raised-button
-          color="primary"
-          (click)="plotAreaChange()"
-        >
-          Apply
-        </button>
-      </div>
+    <iframe id="hiddenFrame" style="display: none"></iframe>
   </div>
-  
+  <!-- Price Range Filter -->
+  <div>
+    <div class="selected-states-container">
+      <mat-chip-listbox>
+        <mat-chip-option
+          *ngFor="let filter of appliedFilters"
+          (removed)="removeItem(filter)"
+          >{{ filter.value }}
+          <button matChipRemove aria-label="Remove orange">
+            <mat-icon>cancel</mat-icon>
+          </button></mat-chip-option
+        >
+      </mat-chip-listbox>
+    </div>
+  </div>
+  <br />
+  <hr class="filterSepreator" />
+  <!-- Location Filter -->
+  <mat-form-field appearance="fill" class="form-field-w-100">
+    <mat-label>State</mat-label>
+    <input
+      type="text"
+      placeholder="Pick one"
+      aria-label="Number"
+      matInput
+      [formControl]="stateControl"
+      [matAutocomplete]="state"
+    />
+    <mat-autocomplete
+      #stateMatAutocomplete
+      autoActiveFirstOption
+      #state="matAutocomplete"
+      (optionSelected)="onDistrictChange($event)"
+      [displayWith]="displayLocation"
+    >
+      <!-- <mat-option [value]="null">None</mat-option> -->
+      <mat-option
+        *ngFor="let district of filteredStates | async"
+        [value]="district"
+      >
+        {{ district.name }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="filterObj?.state"
+  >
+    <mat-label>City</mat-label>
+    <input
+      type="text"
+      placeholder="Pick one"
+      aria-label="Number"
+      matInput
+      [formControl]="cityControl"
+      [matAutocomplete]="city"
+    />
+    <mat-autocomplete
+      #cityMatAutocomplete
+      autoActiveFirstOption
+      #city="matAutocomplete"
+      (optionSelected)="onCityChange($event)"
+      [displayWith]="displayLocation"
+    >
+      <!-- <mat-option [value]="null">None</mat-option> -->
+      <mat-option *ngFor="let city of filteredCities | async" [value]="city">
+        {{ city.name }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="filterObj?.city"
+  >
+    <mat-label>Near By</mat-label>
+    <input
+      type="text"
+      placeholder="Pick one"
+      aria-label="Number"
+      matInput
+      [formControl]="nearByControl"
+      [matAutocomplete]="nearBy"
+    />
+    <mat-autocomplete
+      #nearByMatAutocomplete
+      autoActiveFirstOption
+      #nearBy="matAutocomplete"
+      (optionSelected)="onNearByChange($event)"
+      [displayWith]="displayLocation"
+    >
+      <!-- <mat-option [value]="null">None</mat-option> -->
+      <mat-option
+        *ngFor="let nearBy of filteredNearBy | async"
+        [value]="nearBy"
+      >
+        {{ nearBy.name }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  <div class="example-label-container" *ngIf="subCategory != undefined">
+    <label id="example-name-label" class="example-name-label">Price</label>
+    <div class="pd-5">
+      <label class="example-value-label">{{
+        fromPrice | currency : "INR" : "symbol" : "1.0-0"
+      }}</label>
+      <label class="example-value-label fl-r">{{
+        toPrice | currency : "INR" : "symbol" : "1.0-0"
+      }}</label>
+    </div>
+  </div>
+  <div style="display: flex" *ngIf="subCategory != undefined">
+    <mat-slider
+      class="example-margin"
+      min="0"
+      max="1000000"
+      discrete="false"
+      showTickMarks="false"
+      invert="false"
+    >
+      <input matSliderStartThumb [(ngModel)]="fromPrice" />
+      <input matSliderEndThumb [(ngModel)]="toPrice" />
+    </mat-slider>
+    <button
+      class="post ml-8"
+      mat-raised-button
+      color="primary"
+      (click)="priceChange()"
+    >
+      Apply
+    </button>
+  </div>
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="propertiesToShow.includes('bedrooms')"
+  >
+    <mat-label>Bed Rooms</mat-label>
+    <mat-select
+      [(ngModel)]="selectedBedRoomNumber"
+      (selectionChange)="onBedRoomSelect($event)"
+    >
+      <mat-option *ngFor="let bedRoom of numberOfBedRooms" [value]="bedRoom">{{
+        bedRoom
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="propertiesToShow.includes('bathrooms')"
+  >
+    <mat-label>Bath Rooms</mat-label>
+    <mat-select
+      [(ngModel)]="selectedBathRoomNumber"
+      (selectionChange)="onBathRoomSelect($event)"
+    >
+      <mat-option *ngFor="let bedRoom of numberOfBedRooms" [value]="bedRoom">{{
+        bedRoom
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="propertiesToShow.includes('houseType')"
+  >
+    <mat-label>House Type</mat-label>
+    <mat-select
+      #houseTypeMultiSelect
+      [(ngModel)]="selectedHouseType"
+      multiple
+      (selectionChange)="onHouseTypeSelect($event)"
+    >
+      <mat-option *ngFor="let houseType of houseTypes" [value]="houseType">{{
+        houseType.label
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="propertiesToShow.includes('subType')"
+  >
+    <mat-label>Sub type</mat-label>
+    <mat-select
+      #subTypeMultiSelect
+      [(ngModel)]="selectedPgType"
+      multiple
+      (selectionChange)="onPgTypeSelect($event)"
+    >
+      <mat-option *ngFor="let pgType of pgTypes" [value]="pgType">{{
+        pgType.label
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="propertiesToShow.includes('serviceType')"
+  >
+    <mat-label>Service Type</mat-label>
+    <mat-select
+      #serviceTypeMultiSelect
+      [(ngModel)]="selectedServiceType"
+      multiple
+      (selectionChange)="onServiceTypeSelect($event)"
+    >
+      <mat-option
+        *ngFor="let serviceType of serviceTypes"
+        [value]="serviceType"
+        >{{ serviceType.label }}</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="propertiesToShow.includes('furnishing')"
+  >
+    <mat-label>Furnishing Type</mat-label>
+    <mat-select
+      #furnishingMultiSelect
+      [(ngModel)]="selectedFurnishing"
+      multiple
+      (selectionChange)="onFurnishingSelect($event)"
+    >
+      <mat-option
+        *ngFor="let furnishing of furnishingStatus"
+        [value]="furnishing"
+        >{{ furnishing.label }}</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="propertiesToShow.includes('constructionStatus')"
+  >
+    <mat-label>Construction Status</mat-label>
+    <mat-select
+      #constructionMultiSelect
+      [(ngModel)]="selectedConstructionStatus"
+      multiple
+      (selectionChange)="onConstructionStatusSelect($event)"
+    >
+      <mat-option
+        *ngFor="let construction of constructionStatus"
+        [value]="construction"
+        >{{ construction.label }}</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="propertiesToShow.includes('listedBy')"
+  >
+    <mat-label>Listed By</mat-label>
+    <mat-select
+      #listedByMultiSelect
+      [(ngModel)]="selectedListedBy"
+      multiple
+      (selectionChange)="onListedBySelect($event)"
+    >
+      <mat-option *ngFor="let by of listedBy" [value]="by">{{
+        by.label
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="propertiesToShow.includes('bachelorAllowed')"
+  >
+    <mat-label>Bachelors allowed</mat-label>
+    <mat-select
+      [(ngModel)]="selectedBachelorsAllowed"
+      (selectionChange)="onBedBachelorsAllowedSelect($event)"
+    >
+      <mat-option
+        *ngFor="let bachelor of bachelorsAllowed"
+        [value]="bachelor"
+        >{{ bachelor.label }}</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+  <div
+    class="example-label-container"
+    *ngIf="propertiesToShow.includes('superBuildUpArea')"
+  >
+    <label id="example-name-label" class="example-name-label"
+      >SUPER BUILTUP AREA (FT²)</label
+    >
+    <div class="pd-5">
+      <label class="example-value-label">{{ fromBuildUpArea }}</label>
+      <label class="example-value-label fl-r">{{ toBuildUpArea }}</label>
+    </div>
+  </div>
+  <div
+    style="display: flex"
+    *ngIf="propertiesToShow.includes('superBuildUpArea')"
+  >
+    <mat-slider
+      class="example-margin"
+      min="0"
+      max="1000000"
+      discrete="false"
+      showTickMarks="false"
+      invert="false"
+    >
+      <input matSliderStartThumb [(ngModel)]="fromBuildUpArea" />
+      <input matSliderEndThumb [(ngModel)]="toBuildUpArea" />
+    </mat-slider>
+    <button
+      class="post ml-8"
+      mat-raised-button
+      color="primary"
+      (click)="buildUpAreaChange()"
+    >
+      Apply
+    </button>
+  </div>
+  <div
+    class="example-label-container"
+    *ngIf="propertiesToShow.includes('plotArea')"
+  >
+    <label id="example-name-label" class="example-name-label">Plot area</label>
+    <div class="pd-5">
+      <label class="example-value-label">{{ fromPlotArea }}</label>
+      <label class="example-value-label fl-r">{{ toPlotArea }}</label>
+    </div>
+  </div>
+  <div style="display: flex" *ngIf="propertiesToShow.includes('plotArea')">
+    <mat-slider
+      class="example-margin"
+      min="0"
+      max="1000000"
+      discrete="false"
+      showTickMarks="false"
+      invert="false"
+    >
+      <input matSliderStartThumb [(ngModel)]="fromPlotArea" />
+      <input matSliderEndThumb [(ngModel)]="toPlotArea" />
+    </mat-slider>
+    <button
+      class="post ml-8"
+      mat-raised-button
+      color="primary"
+      (click)="plotAreaChange()"
+    >
+      Apply
+    </button>
+  </div>
+</div>
