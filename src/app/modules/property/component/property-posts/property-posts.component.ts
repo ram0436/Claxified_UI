@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener } from '@angular/core';
 import { PropertyService } from '../../service/property.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from 'src/app/shared/service/common.service';
@@ -18,7 +18,7 @@ export class PropertyPostsComponent {
   actualCards: any;
   constructor(private route: ActivatedRoute, private commonService: CommonService, private cdr: ChangeDetectorRef,
     private propertyService: PropertyService) { }
-
+    
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.isLoading = true;

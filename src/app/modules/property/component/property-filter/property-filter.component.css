@@ -78,17 +78,29 @@
     padding: 0 20px;
     background-color: #fff;
     position: sticky;
-    top: 110px;
-    /* height: calc(100vh - 100px); */
+    top: 60px;
+    height: calc(100vh - 100px);
     left: 0;
     bottom: 0;
     overflow-y: scroll;
-    scrollbar-width: none; 
+    scrollbar-width: 2px; 
+    /* width: 24%; */
   }
-  
+
   .sidebar-container::-webkit-scrollbar {
     display: none;
     }
+    
+
+     /* .grid-container {
+      max-height: calc(140vh - 110px);
+      overflow-y: auto;
+    }
+    
+    .grid {
+      padding: 0 20px;
+      background-color: #fff;
+    } */
     
     .example-margin {
     margin: 8px;
