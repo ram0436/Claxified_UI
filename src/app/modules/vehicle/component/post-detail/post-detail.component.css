@@ -7,6 +7,7 @@
 .col-6{
     width: 50%;
 }
+
 .flex {
     display: flex;
     flex-wrap: wrap;
@@ -178,9 +179,10 @@
     cursor: pointer;
 }
 
-.postImg{
-    width: 600px;
+.details-post-img{
+    width: 620px !important;
     height: 400px;
+    /* margin: 0 12px 0 10px; */
 }
 
 .bg{

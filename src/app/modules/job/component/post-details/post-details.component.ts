@@ -30,6 +30,19 @@ export class PostDetailsComponent {
 
   isZoomed: boolean = false;
 
+  reporterClicked = false;
+
+  iconName = 'arrow_drop_down';
+
+  showReportOptions: boolean = false;
+  currentSlideIndex = 0;
+  carouselItems = [
+    "Be wary of buyers asking to use 'Claxified delivery' or 'Payments on Claxified' for anything other than private cars",
+    "Share photos and ask lots of questions about the items you are buying and selling",
+    "If an ad or reply sounds too good to be true, it probably is",
+    "Use the 'Reply to ad' button for your safety and privacy"
+  ];
+
   salaryPeriods = Object.keys(SalaryPeriod).map((key: any) => ({
     label: key,
     id: SalaryPeriod[key],
@@ -45,6 +58,38 @@ export class PostDetailsComponent {
     if (tableRefGuid != null) {
       this.getSportPost(tableRefGuid);
     }
+  }
+
+  prevItem() {
+    this.currentSlideIndex = (this.currentSlideIndex - 1 + this.carouselItems.length) % this.carouselItems.length;
+    this.updateButtonState();
+  }
+
+  nextItem() {
+    this.currentSlideIndex = (this.currentSlideIndex + 1) % this.carouselItems.length;
+    this.updateButtonState();
+  }
+
+  updateButtonState() {
+    const isFirstItem = this.currentSlideIndex === 0;
+    const isLastItem = this.currentSlideIndex === this.carouselItems.length - 1;
+
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
+
+    if (prevButton) {
+      prevButton.classList.toggle('disabled', isFirstItem);
+    }
+
+    if (nextButton) {
+      nextButton.classList.toggle('disabled', isLastItem);
+    }
+  }
+
+  toggleReportOptions() {
+    this.showReportOptions = !this.showReportOptions;
+    this.reporterClicked = !this.reporterClicked;
+    this.iconName = this.showReportOptions ? 'arrow_drop_up' : 'arrow_drop_down';
   }
   
   zoomIn() {
