@@ -77,14 +77,14 @@
   .grid{
     padding: 0 20px;
     background-color: #fff;
-    position: sticky;
+    /* position: sticky;
     top: 60px;
     height: calc(100vh - 95px);
     left: 0;
     bottom: 0;
     overflow-y: scroll;
     scrollbar-width: 2px; 
-    /* width: 24%; */
+    width: 24%; */
   }
 
   .sidebar-container::-webkit-scrollbar {
