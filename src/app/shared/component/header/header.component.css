@@ -621,6 +621,12 @@ header {
     background-color: #fff;
 }
 
+.second-nav .navbar-nav .dropdown:hover .li-item .material-icons,
+.second-nav .navbar-nav .dropdown:hover .li-item .menu-title,
+.second-nav .navbar-nav .dropdown:hover .li-item .material-icons-outlined {
+    color: #007fb0;
+}
+
 .navbar-right:hover {
     background-color: #0d475c !important;
 }

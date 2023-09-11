@@ -62,8 +62,12 @@ export class PostCardComponent implements OnInit {
         this.getMainCategories();
     }
 
-    truncateTitle(title: string, maxLength: number = 25): string {
-        return title;
+    truncateTitle(title: string, maxLength: number = 32): string {
+        if (title.length <= maxLength) {
+          return title;
+        } else {
+          return title.substring(0, maxLength) + '...';
+        }
       }
 
     loadMoreCards() {
