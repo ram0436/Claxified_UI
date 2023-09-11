@@ -36,14 +36,33 @@ export class PropertyPostsComponent {
     this.cards = [];
     this.propertyService.getAllPropertyPosts().subscribe((data: any) => {
       this.actualCards = data;
-      if (this.subCategoryId != 0)
-        this.cards = this.actualCards.filter((card: any) => card.subCategoryId == this.subCategoryId);
-      else
-        this.cards = data;
+      console.log(this.actualCards)
+      if (this.subCategoryId != 0){
+        this.cards = this.actualCards.filter((card: any) => card.subCategoryId == this.subCategoryId).map((card: any) => ({
+          ...card,
+          title: this.truncateTitle(card.title)
+        }));
+      }
+      else{
+        this.cards = this.actualCards.map((card: any) => ({
+          ...card,
+          title: this.truncateTitle(card.title)
+        }));
+      }
+        
       this.isLoading = false;
       this.subCategoryId = 0;
     })
   }
+
+  truncateTitle(title: string, maxLength: number = 25): string {
+    if (title.length <= maxLength) {
+      return title;
+    } else {
+      return title.substring(0, maxLength) + '...';
+    }
+  }
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }

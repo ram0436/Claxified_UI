@@ -49,6 +49,7 @@
 .dropdown-menu li:hover a {
     background-color: #fff;
     text-decoration: underline;
+    color: #007fb0;
 }
 
 nav ul li:hover {

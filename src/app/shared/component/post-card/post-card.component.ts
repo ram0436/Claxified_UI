@@ -62,6 +62,10 @@ export class PostCardComponent implements OnInit {
         this.getMainCategories();
     }
 
+    truncateTitle(title: string, maxLength: number = 25): string {
+        return title;
+      }
+
     loadMoreCards() {
         this.displayedCardCount += 20; // Increase the count for the next set of cards
         this.paginatedCards = this.cards.slice(0, this.displayedCardCount);
