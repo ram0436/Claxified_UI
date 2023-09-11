@@ -44,7 +44,7 @@
         {{ getSalaryPeriod(card?.salaryPeriodType) }}</mat-card-title
       >
       <mat-card-content class="description">
-        <p style="margin: 0">{{ card?.title }}</p>
+        <p style="margin: 0">{{ truncateTitle(card?.title) }}</p>
         <p *ngIf="card?.year">
           {{ card?.year || "" }} -
           {{ card?.kmDriven ? card.kmDriven + " kms" : "" }}
