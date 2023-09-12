@@ -66,11 +66,14 @@ export class PostCardComponent implements OnInit {
         this.getMainCategories();
     }
 
-    formatPrice(price: number): string {
-        const formattedPrice = Math.round(price).toString();
-        
-        return '₹' + formattedPrice;
-      }
+formatPrice(price: number): string {
+  const roundedPrice = Math.round(price);
+
+  const formattedPrice = roundedPrice.toLocaleString('en-IN');
+
+  return '₹' + formattedPrice;
+}
+
     truncateTitle(title: string, maxLength: number = 32): string {
         if (title.length <= maxLength) {
           return title;
