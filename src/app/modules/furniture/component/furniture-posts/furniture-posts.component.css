@@ -31,7 +31,7 @@
   /* changes made by hamza */
 
   .mat-mdc-card.mdc-card.example-card.ng-star-inserted {
-    height: 335px !important;
+    /* height: 335px !important; */
     min-width: 250px !important;
     max-width: 250px !important;
   }
@@ -39,7 +39,7 @@
   
   .mat-mdc-card-image.mdc-card__media.card-image{
     width: 250px !important;
-    height: 220px !important;
+    height: 230px !important;
   }
   
   .mat-mdc-card-content.description{

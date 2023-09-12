@@ -10,6 +10,7 @@
   <mat-card
     class="example-card"
     *ngFor="let card of paginatedCards; let isFirst = first"
+    [style.height.px]="increaseHeight ? 330 + 10 : 330"
   >
     <a
       class="custom-link"
@@ -36,22 +37,26 @@
           {{ imagesList.length }}
         </div>
       </div>
-      <mat-card-title class="title" *ngIf="card?.price > 0">{{
-        card?.price | currency : "INR"
-      }}</mat-card-title>
+      <mat-card-title class="title title-flex" *ngIf="card?.price > 0"
+        >{{ formatPrice(card?.price) }}
+        <span class="date-added">{{ formatDate(card?.createdOn) }}</span>
+      </mat-card-title>
       <mat-card-title class="title" *ngIf="card?.salaryPeriodType">
         ₹ {{ card?.salaryFrom }} - {{ card?.salaryTo }} |
         {{ getSalaryPeriod(card?.salaryPeriodType) }}</mat-card-title
       >
       <mat-card-content class="description">
-        <p style="margin: 0">{{ truncateTitle(card?.title) }}</p>
-        <p *ngIf="card?.year">
+        <p style="margin: 0" class="desc-title">
+          {{ truncateTitle(card?.title) }}
+        </p>
+        <p *ngIf="card?.year" class="mb-0">
           {{ card?.year || "" }} -
           {{ card?.kmDriven ? card.kmDriven + " kms" : "" }}
         </p>
         <div class="loc-date">
+          <p class="map"><img src="../../../../assets/map.png" alt="Loc" /></p>
           <p class="loc">{{ card?.nearBy }}, {{ card?.city }}</p>
-          <p class="date">{{ formatDate(card?.createdOn) }}</p>
+          <!-- <p class="date">{{ formatDate(card?.createdOn) }}</p> -->
         </div>
       </mat-card-content>
     </a>
