@@ -4,5 +4,9 @@
   </div>
 </div>
 <div *ngIf="!isLoading" class="d-card">
-  <app-post-card [isLoading]="isLoading" [cards]="cards"></app-post-card>
+  <app-post-card
+    [isLoading]="isLoading"
+    [cards]="cards"
+    [increaseHeight]="false"
+  ></app-post-card>
 </div>

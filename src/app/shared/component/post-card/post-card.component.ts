@@ -14,7 +14,11 @@ export class PostCardComponent implements OnInit {
 
     @Input() isLoading: Boolean = false;
     @Input() cards: any;
+    @Input() increaseHeight = false;
     currentDate: Date = new Date();
+    math = Math;
+
+    additionalHeightForYear = 10;
 
     // Pagination properties
     // pageSize = 20;
@@ -62,6 +66,11 @@ export class PostCardComponent implements OnInit {
         this.getMainCategories();
     }
 
+    formatPrice(price: number): string {
+        const formattedPrice = Math.round(price).toString();
+        
+        return '₹' + formattedPrice;
+      }
     truncateTitle(title: string, maxLength: number = 32): string {
         if (title.length <= maxLength) {
           return title;
