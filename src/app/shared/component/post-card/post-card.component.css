@@ -260,14 +260,14 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: 0px 1rem;
+    padding: 0px 1.2rem;
     /* margin-left: -3px;
     margin: 3px 0 0 -3px; */
 }
 
 .map{
-    width: 2rem;
-    height: 2rem;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .map img{
