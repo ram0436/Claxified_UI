@@ -344,7 +344,7 @@
 
 .title-sm{
     font-size: 14.3px;
-    padding: 0 0 0 14px !important;
+    /* padding: 0 0 0 14px !important; */
 }
 
 .date-added-sm{
