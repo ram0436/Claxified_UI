@@ -38,11 +38,16 @@
         </div>
       </div>
       <mat-card-title class="title title-flex" *ngIf="card?.price > 0"
-        >{{ truncateContent(formatPrice(card?.price), 20) }}
+        >{{ formatPrice(card?.price) }}
         <span class="date-added"> | {{ formatDate(card?.createdOn) }}</span>
       </mat-card-title>
       <mat-card-title class="title title-sm" *ngIf="card?.salaryPeriodType">
-        ₹{{
+        ₹{{ card?.salaryFrom }}-{{ card?.salaryTo }} |
+        {{ getSalaryPeriod(card?.salaryPeriodType) }}
+        <span class="date-added date-added-sm">
+          | {{ formatDate(card?.createdOn) }}</span
+        >
+        <!-- ₹{{
           truncateContent(
             (card?.salaryFrom || "") +
               "-" +
@@ -54,11 +59,6 @@
         }}
         <span class="date-added date-added-sm">
           | {{ formatDate(card?.createdOn) }}</span
-        >
-        <!-- ₹{{ card?.salaryFrom }}-{{ card?.salaryTo }} |
-        {{ getSalaryPeriod(card?.salaryPeriodType) }} |
-        <span class="date-added date-added-sm">
-          {{ formatDate(card?.createdOn) }}</span
         > -->
       </mat-card-title>
       <mat-card-content class="description">
