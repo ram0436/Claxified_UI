@@ -38,27 +38,47 @@
         </div>
       </div>
       <mat-card-title class="title title-flex" *ngIf="card?.price > 0"
-        >{{ formatPrice(card?.price) }} |
-        <span class="date-added"> {{ formatDate(card?.createdOn) }}</span>
+        >{{ truncateContent(formatPrice(card?.price), 20) }}
+        <span class="date-added"> | {{ formatDate(card?.createdOn) }}</span>
       </mat-card-title>
       <mat-card-title class="title title-sm" *ngIf="card?.salaryPeriodType">
-        ₹ {{ card?.salaryFrom }} - {{ card?.salaryTo }} |
+        ₹{{
+          truncateContent(
+            (card?.salaryFrom || "") +
+              "-" +
+              (card?.salaryTo || "") +
+              " | " +
+              getSalaryPeriod(card?.salaryPeriodType),
+            20
+          )
+        }}
+        <span class="date-added date-added-sm">
+          | {{ formatDate(card?.createdOn) }}</span
+        >
+        <!-- ₹{{ card?.salaryFrom }}-{{ card?.salaryTo }} |
         {{ getSalaryPeriod(card?.salaryPeriodType) }} |
         <span class="date-added date-added-sm">
           {{ formatDate(card?.createdOn) }}</span
-        >
+        > -->
       </mat-card-title>
       <mat-card-content class="description">
         <p style="margin: 0" class="desc-title">
           {{ truncateTitle(card?.title) }}
         </p>
         <p *ngIf="card?.year" class="mb-0">
-          {{ card?.year || "" }} -
-          {{ card?.kmDriven ? card.kmDriven + " kms" : "" }}
+          {{
+            truncateTitle(
+              (card?.year || "") +
+                " - " +
+                (card?.kmDriven ? card.kmDriven + " kms" : "")
+            )
+          }}
         </p>
         <div class="loc-date">
           <p class="map"><img src="../../../../assets/map.png" alt="Loc" /></p>
-          <p class="loc">{{ card?.nearBy }}, {{ card?.city }}</p>
+          <p class="loc">
+            {{ truncateCity((card?.nearBy || "") + ", " + (card?.city || "")) }}
+          </p>
           <!-- <p class="date">{{ formatDate(card?.createdOn) }}</p> -->
         </div>
       </mat-card-content>

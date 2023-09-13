@@ -30,6 +30,8 @@ export class PostCardComponent implements OnInit {
     imageIndex: number = 0;
     imagesList: any = [1];
     
+    combinedContent: string = '';
+
     displayedCardCount: number = 20;
 
     isScrolledDown = false;
@@ -74,11 +76,28 @@ formatPrice(price: number): string {
   return '₹' + formattedPrice;
 }
 
+
     truncateTitle(title: string, maxLength: number = 32): string {
         if (title.length <= maxLength) {
           return title;
         } else {
           return title.substring(0, maxLength) + '...';
+        }
+      }
+
+    truncateContent(content: string, maxLength: number): string {
+        if (content.length <= maxLength) {
+          return content;
+        } else {
+          return content.substring(0, maxLength) + '...';
+        }
+      }
+
+      truncateCity(city: string, maxLength: number = 27): string {
+        if (city.length <= maxLength) {
+          return city;
+        } else {
+          return city.substring(0, maxLength) + '...';
         }
       }
 
@@ -174,4 +193,6 @@ formatPrice(price: number): string {
             return selectedSalaryPeriod[0].label;
         return "";
     }
+
+    
 }
