@@ -77,8 +77,18 @@
         <div class="loc-date">
           <p class="map"><img src="../../../../assets/map.png" alt="Loc" /></p>
           <p class="loc">
-            {{ truncateCity((card?.nearBy || "") + ", " + (card?.city || "")) }}
+            {{
+              truncateCity(
+                (card?.nearBy || "") +
+                  ", " +
+                  (card?.city || "") +
+                  " (" +
+                  stateAbbreviation(card?.state || "") +
+                  ")"
+              )
+            }}
           </p>
+          <!-- + "," + (card?.stateAbr || "") -->
           <!-- <p class="date">{{ formatDate(card?.createdOn) }}</p> -->
         </div>
       </mat-card-content>
