@@ -273,7 +273,7 @@
 
 .details-content{
     display: flex;
-    /* flex-wrap: wrap; */
+    flex-wrap: wrap;
     width: 100%;
     overflow: hidden;
     margin-bottom: 0.8rem;
@@ -284,11 +284,11 @@
     padding-right: 1.6rem;
 }
 
-.details-content>span:nth-child(2){
+.details-content>span:nth-child(1){
     font-weight: 500;
 }
   
-  .details-title{
+.details-title{
     padding: 0 !important;
     margin: 0;
-  }
+}
