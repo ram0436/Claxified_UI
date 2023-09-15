@@ -36,6 +36,8 @@ export class PostCardComponent implements OnInit {
 
     isScrolledDown = false;
 
+    stateAbr: string = "";
+
     salaryPeriods = Object.keys(SalaryPeriod).map((key: any) => ({
         label: key,
         id: SalaryPeriod[key],
@@ -66,6 +68,12 @@ export class PostCardComponent implements OnInit {
     ngOnInit() {
         this.paginatedCards = this.cards.slice(0, this.displayedCardCount);
         this.getMainCategories();
+
+        // if (this.cards.length > 0) {
+        //     this.stateAbbreviation(this.cards[0]); // Call it with the first card as an example
+        //   }
+
+          console.log(this.cards)
     }
 
 formatPrice(price: number): string {
@@ -194,5 +202,199 @@ formatPrice(price: number): string {
         return "";
     }
 
+
+    // stateAbbreviation(stateName: string){
+    //     switch (stateName) {
+    //       case "Andhra Pradesh":
+    //         this.stateAbr = 'AP';
+    //         break;
+    //       case "Arunachal Pradesh":
+    //         this.stateAbr = 'AR';
+    //         break;
+    //       case "Assam":
+    //         this.stateAbr = 'AS';
+    //         break;
+    //       case "Bihar":
+    //         this.stateAbr = 'BR';
+    //         break;
+    //       case "Chhattisgarh":
+    //         this.stateAbr = 'CG';
+    //         break;
+    //       case "Goa":
+    //         this.stateAbr = 'GA';
+    //         break;
+    //       case "Gujarat":
+    //         this.stateAbr = 'GJ';
+    //         break;
+    //       case "Haryana":
+    //         this.stateAbr = 'HR';
+    //         break;
+    //       case "Himachal Pradesh":
+    //         this.stateAbr = 'HP';
+    //         break;
+    //       case "Jammu and Kashmir":
+    //         this.stateAbr = 'JK';
+    //         break;
+    //       case "Jharkhand":
+    //         this.stateAbr = 'JH';
+    //         break;
+    //       case "Karnataka":
+    //         this.stateAbr = 'KA';
+    //         break;
+    //       case "Kerala":
+    //         this.stateAbr = 'KL';
+    //         break;
+    //       case "Madhya Pradesh":
+    //         this.stateAbr = 'MP';
+    //         break;
+    //       case "Maharashtra":
+    //         this.stateAbr = 'MH';
+    //         break;
+    //       case "Manipur":
+    //         this.stateAbr = 'MN';
+    //         break;
+    //       case "Meghalaya":
+    //         this.stateAbr = 'ML';
+    //         break;
+    //       case "Mizoram":
+    //         this.stateAbr = 'MZ';
+    //         break;
+    //       case "Nagaland":
+    //         this.stateAbr = 'NL';
+    //         break;
+    //       case "Orissa":
+    //         this.stateAbr = 'OR';
+    //         break;
+    //       case "Punjab":
+    //         this.stateAbr = 'PB';
+    //         break;
+    //       case "Rajasthan":
+    //         this.stateAbr = 'RJ';
+    //         break;
+    //       case "Sikkim":
+    //         this.stateAbr = 'SK';
+    //         break;
+    //       case "Tamil Nadu":
+    //         this.stateAbr = 'TN';
+    //         break;
+    //       case "Tripura":
+    //         this.stateAbr = 'TR';
+    //         break;
+    //       case "Uttarakhand":
+    //         this.stateAbr = 'UK';
+    //         break;
+    //       case "Uttar Pradesh":
+    //         this.stateAbr = 'UP';
+    //         break;
+    //       case "West Bengal":
+    //         this.stateAbr = 'WB';
+    //         break;
+    //       case "Tamil Nadu":
+    //         this.stateAbr = 'TN';
+    //         break;
+    //       case "Tripura":
+    //         this.stateAbr = 'TR';
+    //         break;
+    //       case "Andaman and Nicobar Islands":
+    //         this.stateAbr = 'AN';
+    //         break;
+    //       case "Chandigarh":
+    //         this.stateAbr = 'CH';
+    //         break;
+    //       case "Dadra and Nagar Haveli":
+    //         this.stateAbr = 'DH';
+    //         break;
+    //       case "Daman and Diu":
+    //         this.stateAbr = 'DD';
+    //         break;
+    //       case "Delhi":
+    //         this.stateAbr = 'DL';
+    //         break;
+    //       case "Lakshadweep":
+    //         this.stateAbr = 'LD';
+    //         break;
+    //       case "Pondicherry":
+    //         this.stateAbr = 'PY';
+    //         break;
+    //     }
+    //   }
+
+    stateAbbreviation(stateName: string): string {
+      switch (stateName) {
+        case "Andhra Pradesh":
+          return 'AP';
+        case "Arunachal Pradesh":
+          return 'AR';
+        case "Assam":
+          return 'AS';
+        case "Bihar":
+          return 'BR';
+        case "Chhattisgarh":
+          return 'CG';
+        case "Goa":
+          return 'GA';
+        case "Gujarat":
+          return 'GJ';
+        case "Haryana":
+          return 'HR';
+        case "Himachal Pradesh":
+          return 'HP';
+        case "Jammu and Kashmir":
+          return 'JK';
+        case "Jharkhand":
+          return 'JH';
+        case "Karnataka":
+          return 'KA';
+        case "Kerala":
+          return 'KL';
+        case "Madhya Pradesh":
+          return 'MP';
+        case "Maharashtra":
+          return 'MH';
+        case "Manipur":
+          return 'MN';
+        case "Meghalaya":
+          return 'ML';
+        case "Mizoram":
+          return 'MZ';
+        case "Nagaland":
+          return 'NL';
+        case "Orissa":
+          return 'OR';
+        case "Punjab":
+          return 'PB';
+        case "Rajasthan":
+          return 'RJ';
+        case "Sikkim":
+          return 'SK';
+        case "Tamil Nadu":
+          return 'TN';
+        case "Tripura":
+          return 'TR';
+        case "Uttarakhand":
+          return 'UK';
+        case "Uttar Pradesh":
+          return 'UP';
+        case "West Bengal":
+          return 'WB';
+        case "Andaman and Nicobar Islands":
+          return 'AN';
+        case "Chandigarh":
+          return 'CH';
+        case "Dadra and Nagar Haveli":
+          return 'DH';
+        case "Daman and Diu":
+          return 'DD';
+        case "Delhi":
+          return 'DL';
+        case "Lakshadweep":
+          return 'LD';
+        case "Pondicherry":
+          return 'PY';
+        default:
+          return stateName;
+      }
+    }
+    
     
 }
