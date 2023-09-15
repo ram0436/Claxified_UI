@@ -236,11 +236,18 @@
       <mat-card class="col-7 border-1 mb-2">
         <mat-card-content>
           <div class="data-row">
-            <div
-              *ngFor="let prop of getProperties(postDetails)"
-              class="grid-item"
-            >
-              {{ prop.label }}: {{ prop.value }}
+            <mat-card-title class="details-title">Details</mat-card-title>
+            <div class="details-card">
+              <div
+                *ngFor="let prop of getProperties(postDetails)"
+                class="details-card-item"
+              >
+                <div class="details-content">
+                  <span>{{ capitalizeFirstWord(prop.label) }}</span>
+                  <span>{{ prop.value }}</span>
+                </div>
+                <!-- {{ prop.label }}: {{ prop.value }} -->
+              </div>
             </div>
           </div>
         </mat-card-content>

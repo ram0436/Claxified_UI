@@ -260,4 +260,35 @@
     cursor: pointer;
   }
 
+
+.details-card{
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.details-card-item{
+    flex-basis: 50%;
+}
+
+.details-content{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+}
+
+.details-content>span{
+    flex-basis: 50%;
+    padding-right: 1.6rem;
+}
+
+.details-content>span:nth-child(1){
+    font-weight: 500;
+}
   
+.details-title{
+    padding: 0 !important;
+    margin: 0;
+}
