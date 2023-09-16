@@ -76,9 +76,11 @@
       <div class="col-5 h200">
         <mat-card class="border-1 mb-2 ml pt-10">
           <mat-card-title class="title">
-            {{ formatPrice(postDetails?.salaryFrom) }}-{{
-              formatPrice(postDetails?.salaryTo)
-            }}
+            ₹<span class="text-blue"
+              >{{ formatPrice(postDetails?.salaryFrom) }}-{{
+                formatPrice(postDetails?.salaryTo)
+              }}</span
+            >
             |
             {{ getSalaryPeriod(postDetails?.salaryPeriodType) }} |
             <span class="date-added">

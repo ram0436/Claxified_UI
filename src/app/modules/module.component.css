@@ -592,3 +592,7 @@ input[type="radio" i] {
 .pt-16{
     padding: 16px 0;
 }
+
+.text-blue{
+    color: #007fb0;
+}

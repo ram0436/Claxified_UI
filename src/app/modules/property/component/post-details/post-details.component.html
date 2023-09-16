@@ -76,7 +76,10 @@
       <div class="col-5 h200">
         <mat-card class="border-1 ml mb-2 pt-10">
           <mat-card-title
-            >{{ formatPrice(postDetails?.price) }} |
+            >₹<span class="text-blue">{{
+              formatPrice(postDetails?.price)
+            }}</span>
+            |
             <span class="date-added">
               {{ formatDate(postDetails?.createdOn) }}</span
             ></mat-card-title
