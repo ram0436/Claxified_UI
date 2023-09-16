@@ -81,7 +81,7 @@ export class PostDetailComponent {
   
     const formattedPrice = roundedPrice.toLocaleString('en-IN');
   
-    return '₹' + formattedPrice;
+    return formattedPrice;
   }
 
   prevItem() {
