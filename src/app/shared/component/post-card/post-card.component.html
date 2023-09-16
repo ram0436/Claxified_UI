@@ -38,8 +38,8 @@
         </div>
       </div>
       <mat-card-title class="title title-flex" *ngIf="card?.price > 0"
-        >{{ formatPrice(card?.price) }}
-        <span class="date-added"> | {{ formatDate(card?.createdOn) }}</span>
+        >₹<span class="text-blue">{{ formatPrice(card?.price) }}</span> |
+        <span class="date-added">{{ formatDate(card?.createdOn) }}</span>
       </mat-card-title>
       <mat-card-title class="title title-sm" *ngIf="card?.salaryPeriodType">
         ₹{{ card?.salaryFrom }}-{{ card?.salaryTo }} |

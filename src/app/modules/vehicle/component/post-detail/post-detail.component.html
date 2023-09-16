@@ -74,11 +74,11 @@
         </p>
       </mat-card>
       <div class="col-5 h200">
-        <mat-card class="border-1 ml mb-2">
+        <mat-card class="border-1 ml mb-2 pt-10">
           <mat-card-title>
-            {{ formatPrice(postDetails?.price) }}
+            {{ formatPrice(postDetails?.price) }} |
             <span class="date-added">
-              | {{ formatDate(postDetails?.createdOn) }}</span
+              {{ formatDate(postDetails?.createdOn) }}</span
             >
           </mat-card-title>
           <mat-card-content class="description">
@@ -96,7 +96,7 @@
             </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class="mt-10 border-1 actions-mat-card mb-2 ml h800">
+        <mat-card class="mt-10 border-1 actions-mat-card mb-2 ml h800 pt-10">
           <mat-card-title>{{ postDetails?.name }}</mat-card-title>
           <mat-card-content>
             <div class="seller-phone">
@@ -277,7 +277,7 @@
           </div>
         </mat-card>
       </div>
-      <mat-card class="col-7 border-1 mb-2">
+      <mat-card class="col-7 border-1 mb-2 pt-16">
         <mat-card-title>Overview</mat-card-title>
         <mat-card-content class="flex mt-10">
           <div class="col-4 flex">
@@ -296,7 +296,7 @@
           </div>
         </mat-card-content>
       </mat-card>
-      <mat-card class="col-7 border-1 mb-2">
+      <mat-card class="col-7 border-1 mb-2 pt-16">
         <mat-card-title>Description</mat-card-title>
         <mat-card-content class="mt-10">
           <p class="description-content">{{ postDetails?.discription }}</p>

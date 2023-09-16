@@ -134,6 +134,7 @@
     align-items: center;
     flex-direction: row;
     gap: 10px;
+    margin-top: 40px;
 }
 
 .img_count{
@@ -577,4 +578,17 @@ input[type="radio" i] {
 
 .w-100{
     width: 100%;
+}
+
+/* .mat-mdc-card-content{
+    padding: 16px 0;
+} */
+
+
+.pt-10{
+    padding: 10px 0;
+}
+
+.pt-16{
+    padding: 16px 0;
 }
