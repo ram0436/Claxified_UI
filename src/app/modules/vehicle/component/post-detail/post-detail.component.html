@@ -75,9 +75,12 @@
       </mat-card>
       <div class="col-5 h200">
         <mat-card class="border-1 ml mb-2">
-          <mat-card-title>{{
-            postDetails?.price | currency : "INR"
-          }}</mat-card-title>
+          <mat-card-title>
+            {{ formatPrice(postDetails?.price) }}
+            <span class="date-added">
+              | {{ formatDate(postDetails?.createdOn) }}</span
+            >
+          </mat-card-title>
           <mat-card-content class="description">
             <p style="margin: 0">{{ postDetails?.title }}</p>
             <p>
@@ -89,19 +92,42 @@
                 {{ postDetails?.nearBy }},{{ postDetails?.city }} ,
                 {{ postDetails?.state }}
               </p>
-              <p class="date">{{ formatDate(postDetails?.createdOn) }}</p>
+              <!-- <p class="date">{{ formatDate(postDetails?.createdOn) }}</p> -->
             </div>
           </mat-card-content>
         </mat-card>
         <mat-card class="mt-10 border-1 actions-mat-card mb-2 ml h800">
-          <mat-card-title>Ankit sharma</mat-card-title>
+          <mat-card-title>{{ postDetails?.name }}</mat-card-title>
           <mat-card-content>
-            <button class="post" mat-raised-button color="primary">
+            <div class="seller-phone">
+              <div class="seller-phone-reveal">
+                <div class="seller-phone-number">
+                  <span class="material-icons phone-icon"> call </span>
+                  <h2 class="seller-phone-number-title">
+                    {{
+                      isPhoneNumberHidden
+                        ? postDetails?.mobile.slice(0, -4) + "XXXX"
+                        : postDetails?.mobile
+                    }}
+                  </h2>
+                </div>
+                <a class="seller-phone-a"
+                  ><button
+                    class="button button--secondary reveal-button"
+                    (click)="revealPhoneNumber()"
+                    [disabled]="!isPhoneNumberHidden"
+                    [ngClass]="{ 'disabled-button': !isPhoneNumberHidden }"
+                  >
+                    Reveal
+                  </button></a
+                >
+              </div>
+            </div>
+            <button class="post w-100" mat-raised-button color="primary">
               Chat with seller
             </button>
             <br />
             <br />
-            <p>888888888</p>
             <div>
               <div class="action-btns">
                 <button class="button button--secondary favourite">
