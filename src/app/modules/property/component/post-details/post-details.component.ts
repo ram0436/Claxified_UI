@@ -136,6 +136,14 @@ export class PostDetailsComponent {
     }
   }
 
+  formatPrice(price: number): string {
+    const roundedPrice = Math.round(price);
+  
+    const formattedPrice = roundedPrice.toLocaleString('en-IN');
+  
+    return '₹' + formattedPrice;
+  }
+
   
   prevItem() {
     this.currentSlideIndex = (this.currentSlideIndex - 1 + this.carouselItems.length) % this.carouselItems.length;

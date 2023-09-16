@@ -3,6 +3,9 @@ import { JobService } from '../../service/job.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { SalaryPeriod } from 'src/app/shared/enum/SalaryPeriod';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { LoginComponent } from '../../../user/component/login/login.component';
+import { SignupComponent } from '../../../user/component/signup/signup.component'
 
 @Component({
   selector: 'app-post-details',
@@ -12,6 +15,9 @@ import { SalaryPeriod } from 'src/app/shared/enum/SalaryPeriod';
 export class PostDetailsComponent {
 
   postDetails: any;
+  isPhoneNumberHidden = true;
+  isUserLogedIn: boolean = false;
+  dialogRef: MatDialogRef<any> | null = null;
   post: any;
   imagesList: any = [];
   isLoading: boolean = true;
@@ -48,7 +54,7 @@ export class PostDetailsComponent {
     id: SalaryPeriod[key],
   }));
   
-  constructor(private jobService: JobService, private route: ActivatedRoute, private router: Router,) { }
+  constructor(private jobService: JobService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog) { }
 
   ngOnInit() {
     var tableRefGuid;
@@ -58,6 +64,14 @@ export class PostDetailsComponent {
     if (tableRefGuid != null) {
       this.getSportPost(tableRefGuid);
     }
+  }
+
+  formatPrice(price: number): string {
+    const roundedPrice = Math.round(price);
+  
+    const formattedPrice = roundedPrice.toLocaleString('en-IN');
+  
+    return '₹' + formattedPrice;
   }
 
   prevItem() {
@@ -168,5 +182,26 @@ export class PostDetailsComponent {
     if (selectedSalaryPeriod.length > 0)
         return selectedSalaryPeriod[0].label;
     return "";
+}
+
+openLoginModal() {
+
+  if (this.dialogRef) {
+    this.dialogRef.close();
+  }
+
+  this.dialogRef = this.dialog.open(LoginComponent, { width: '500px' });
+
+  this.dialogRef.afterClosed().subscribe(result => {
+    if (localStorage.getItem("authToken") != null)
+      this.isUserLogedIn = true;
+  });
+}
+
+revealPhoneNumber() {
+  if (localStorage.getItem('id') != null)
+    this.isPhoneNumberHidden = !this.isPhoneNumberHidden;
+  else
+    this.openLoginModal();
 }
 }

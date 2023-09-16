@@ -5,6 +5,9 @@ import { FuelType } from 'src/app/shared/enum/FuelType';
 import { TransmissionType } from 'src/app/shared/enum/TransmissionType';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { LoginComponent } from '../../../user/component/login/login.component';
+import { SignupComponent } from '../../../user/component/signup/signup.component'
 
 @Component({
   selector: 'app-post-detail',
@@ -14,6 +17,9 @@ import { Location } from '@angular/common';
 export class PostDetailComponent {
 
   postDetails: any;
+  isPhoneNumberHidden = true;
+  isUserLogedIn: boolean = false;
+  dialogRef: MatDialogRef<any> | null = null;
   post: any;
   imagesList: any = [];
   isLoading: boolean = true;
@@ -53,7 +59,7 @@ export class PostDetailComponent {
     "Use the 'Reply to ad' button for your safety and privacy"
   ];
 
-  constructor(private vehicleService: VehicleService, private route: ActivatedRoute, private location: Location, private router: Router, ) { 
+  constructor(private vehicleService: VehicleService, private route: ActivatedRoute, private location: Location, private router: Router,  private dialog: MatDialog) { 
   }
 
 
@@ -68,6 +74,14 @@ export class PostDetailComponent {
     if (tableRefGuid != null) {
       this.getVehiclePost(tableRefGuid);
     }
+  }
+
+  formatPrice(price: number): string {
+    const roundedPrice = Math.round(price);
+  
+    const formattedPrice = roundedPrice.toLocaleString('en-IN');
+  
+    return '₹' + formattedPrice;
   }
 
   prevItem() {
@@ -159,5 +173,26 @@ export class PostDetailComponent {
   }
   showNext() {
     this.imageIndex = this.imageIndex + 1;
+  }
+
+  openLoginModal() {
+
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+
+    this.dialogRef = this.dialog.open(LoginComponent, { width: '500px' });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      if (localStorage.getItem("authToken") != null)
+        this.isUserLogedIn = true;
+    });
+  }
+
+  revealPhoneNumber() {
+    if (localStorage.getItem('id') != null)
+      this.isPhoneNumberHidden = !this.isPhoneNumberHidden;
+    else
+      this.openLoginModal();
   }
 }
