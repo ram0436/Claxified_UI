@@ -292,3 +292,79 @@
     padding: 0 !important;
     margin: 0;
 }
+
+.seller-phone{
+    padding: 4px 0 12px 0;
+}
+
+.seller-phone-reveal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.seller-phone-number {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.phone-icon {
+    display: inline-block;
+    font-size: 18px;
+    line-height: 1;
+    vertical-align: middle;
+    min-width: 18px;
+}
+
+.seller-phone-number-title {
+    padding-left: 8px;
+    margin: 0;
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: .01em;
+    font-weight: 500;
+}
+
+.seller-phonoe-a{
+    text-decoration: none;
+    color: inherit;
+}
+
+.button--secondary {
+    color: #3c3241;
+    background-color: #fff;
+    border-color: #635b67;
+}
+
+.reveal-button {
+    display: inline-flex;
+    box-sizing: border-box;
+    cursor: pointer;
+    align-items: center;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    color: #3c3241;
+    font-size: 15px;
+    font-weight: 400;
+    height: 44px;
+    line-height: 20px;
+    padding: 10px 12px;
+}
+
+.reveal-button:hover{
+    background-color: #3c3241 !important;
+    color: #fff !important;
+}
+
+.reveal-button:disabled {
+    color: #b1adb3 !important;
+    background-color: #f1f1f1 !important;
+    border-color: #dbdadb !important;
+    cursor: default;
+}
+
+.w-100{
+    width: 100%;
+}

@@ -350,3 +350,16 @@ button {
         align-items: center;
         justify-content: center;
     }
+
+    .mat-mdc-option {
+        display: flex;
+        position: relative;
+        align-items: center;
+        justify-content: flex-start;
+        overflow: hidden;
+        padding: 0;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        cursor: pointer;
+        min-height: 48px;
+    }
