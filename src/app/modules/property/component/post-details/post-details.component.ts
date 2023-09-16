@@ -10,6 +10,9 @@ import { ListedBy } from 'src/app/shared/enum/ListBy';
 import { PGType } from 'src/app/shared/enum/PGType';
 import { ServiceType } from 'src/app/shared/enum/ServiceType';
 import { PropertyType } from 'src/app/shared/enum/PropertyType';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { LoginComponent } from '../../../user/component/login/login.component';
+import { SignupComponent } from '../../../user/component/signup/signup.component'
 
 @Component({
   selector: 'app-post-details',
@@ -19,6 +22,9 @@ import { PropertyType } from 'src/app/shared/enum/PropertyType';
 export class PostDetailsComponent {
 
   postDetails: any;
+  isPhoneNumberHidden = true;
+  isUserLogedIn: boolean = false;
+  dialogRef: MatDialogRef<any> | null = null;
   post: any;
   imagesList: any = [];
   isLoading: boolean = true;
@@ -118,7 +124,7 @@ export class PostDetailsComponent {
     "Use the 'Reply to ad' button for your safety and privacy"
   ];
 
-  constructor(private propertyService: PropertyService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private propertyService: PropertyService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog) { }
 
   ngOnInit() {
     var tableRefGuid;
@@ -216,6 +222,7 @@ export class PostDetailsComponent {
       this.construction_status = this.constructionStatus.filter(status => status.id == this.postDetails.constructionStatus);
       if (this.construction_status.length > 0)
         this.postDetails.constructionStatus = this.construction_status[0].label;
+      console.log(this.postDetails)
     });
   }
   formatDate(date: any): any {
@@ -300,5 +307,26 @@ export class PostDetailsComponent {
       words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
     }
     return words.join(' ');
+  }
+
+  openLoginModal() {
+
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+
+    this.dialogRef = this.dialog.open(LoginComponent, { width: '500px' });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      if (localStorage.getItem("authToken") != null)
+        this.isUserLogedIn = true;
+    });
+  }
+
+  revealPhoneNumber() {
+    if (localStorage.getItem('id') != null)
+      this.isPhoneNumberHidden = !this.isPhoneNumberHidden;
+    else
+      this.openLoginModal();
   }
 }
