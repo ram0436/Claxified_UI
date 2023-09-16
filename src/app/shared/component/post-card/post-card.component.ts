@@ -81,7 +81,7 @@ formatPrice(price: number): string {
 
   const formattedPrice = roundedPrice.toLocaleString('en-IN');
 
-  return '₹' + formattedPrice;
+  return formattedPrice;
 }
 
 
