@@ -6,7 +6,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-property-posts',
   templateUrl: './property-posts.component.html',
-  styleUrls: ['./property-posts.component.css']
+  styleUrls: ['./property-posts.component.css', '../../../moduleposts.component.css']
 })
 export class PropertyPostsComponent {
 

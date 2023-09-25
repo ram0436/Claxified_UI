@@ -1,4 +1,4 @@
-/* * {
+* {
     padding: 0;
     margin: 0;
 }
@@ -138,6 +138,7 @@ button {
     cursor: pointer;
     background-size: cover;
     background-repeat: no-repeat;
+    /* background-position: center; */
     height: 100%;
 }
 
@@ -218,7 +219,9 @@ button {
 
 button.selected {
     background-color: #004bffa1;
+    /* Change to your desired background color */
     color: #ffffff;
+    /* Change to your desired text color */
 }
 
 button {
@@ -226,6 +229,9 @@ button {
     width: 90px;
 }
 
+/* button:first-child{
+    margin-left: 0;
+} */
 .delete {
     width: 35px;
     height: 50px;
@@ -333,35 +339,35 @@ button {
     width: 50%;
   }
 
-  .first-image {
-    position: relative;
-}
-  
-.cover-tag {
-    position: absolute;
-    top: 75px;
-    width: 100%;
-    background-color: #007bff;
-    color: white;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 5px 6px;
-    border-radius: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+      /* Changes made by hamza */
+      .first-image {
+        position: relative;
+    }
+      
+    .cover-tag {
+        position: absolute;
+        top: 75px;
+        width: 100%;
+        background-color: #007bff;
+        color: white;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 5px 6px;
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-
-.mat-mdc-option {
-    display: flex;
-    position: relative;
-    align-items: center;
-    justify-content: flex-start;
-    overflow: hidden;
-    padding: 0;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-    cursor: pointer;
-    min-height: 48px;
-} */
+    .mat-mdc-option {
+        display: flex;
+        position: relative;
+        align-items: center;
+        justify-content: flex-start;
+        overflow: hidden;
+        padding: 0;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        cursor: pointer;
+        min-height: 48px;
+    }

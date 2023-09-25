@@ -1,4 +1,4 @@
-/* .flex {
+.flex {
     display: flex;
   }
   
@@ -23,22 +23,23 @@
     width: 30%;
   }
 
+  /* changes made by hamza */
 
   .mat-mdc-card.mdc-card.example-card.ng-star-inserted {
-    min-width: 250px !important;
-    max-width: 250px !important;
-  }
-  
-  
-  .mat-mdc-card-image.mdc-card__media.card-image{
-    width: 250px !important;
-    height: 230px !important;
-  }
-  
-  .mat-mdc-card-content.description{
-    font-size: 14px !important;
-  }
+  /* height: 335px !important; */
+  min-width: 250px !important;
+  max-width: 250px !important;
+}
 
+
+.mat-mdc-card-image.mdc-card__media.card-image{
+  width: 250px !important;
+  height: 230px !important;
+}
+
+.mat-mdc-card-content.description{
+  font-size: 14px !important;
+}
 
 .mr-20 {
   margin-right: 20px;
@@ -48,8 +49,7 @@
   background-color: #fafafa;
 }
 
-
 .bg-white{
   background-color: #fff;
   z-index: 10;
-} */
+}

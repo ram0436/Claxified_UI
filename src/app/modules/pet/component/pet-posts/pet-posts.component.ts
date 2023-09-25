@@ -6,7 +6,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-pet-posts',
   templateUrl: './pet-posts.component.html',
-  styleUrls: ['./pet-posts.component.css'],
+  styleUrls: ['./pet-posts.component.css', '../../../moduleposts.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class PetPostsComponent {

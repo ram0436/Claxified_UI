@@ -19,7 +19,7 @@ import { PGType } from 'src/app/shared/enum/PGType';
 @Component({
   selector: 'app-add-post',
   templateUrl: './add-post.component.html',
-  styleUrls: ['./add-post.component.css']
+  styleUrls: ['./add-post.component.css', '../../../moduleaddpost.component.css']
 })
 export class AddPostComponent {
 

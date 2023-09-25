@@ -15,7 +15,7 @@ import { VehicleService } from '../../service/vehicle.service';
 @Component({
   selector: 'app-add-post',
   templateUrl: './add-post.component.html',
-  styleUrls: ['./add-post.component.css'],
+  styleUrls: ['./add-post.component.css', '../../../moduleaddpost.component.css'],
 })
 export class AddPostComponent {
 

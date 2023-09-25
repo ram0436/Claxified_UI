@@ -10,7 +10,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-commercial-service-filter',
   templateUrl: './commercial-service-filter.component.html',
-  styleUrls: ['./commercial-service-filter.component.css']
+  styleUrls: ['./commercial-service-filter.component.css', '../../../modulefilter.component.css']
 })
 export class CommercialServiceFilterComponent {
 
