@@ -1,4 +1,4 @@
-.col-7 {
+/* .col-7 {
     width: 63%;
 }
 .col-5 {
@@ -107,11 +107,11 @@
     width: 25px;
     height: 25px;
     margin-top: 117px;
-}
+} */
 
 /* Changes Made By Hamza */
 
-.pg_arrow{
+/* .pg_arrow{
     padding: 20px 7px;
     background-color: #222;
     color: #fff;
@@ -172,13 +172,7 @@
 }
 
 .back-btn{
-    /* position: fixed;
-    bottom: 0;
-    top: 50px;
-    left: 230px;
-    top: 115px;
-    height: 40px;
-    width: 140px; */
+
     background-color: #f1f1f1;
     color: #3f51b5;
     border: none;
@@ -258,10 +252,10 @@
     gap: 4px;
     font-size: 30px;
     cursor: pointer;
-  }
+  } */
 
 
-.details-card{
+/* .details-card{
     margin-top: 1rem;
     display: flex;
     flex-wrap: wrap;
@@ -291,8 +285,8 @@
 .details-title{
     padding: 0 !important;
     margin: 0;
-}
-
+} */
+/* 
 .seller-phone{
     padding: 4px 0 12px 0;
 }
@@ -367,4 +361,4 @@
 
 .w-100{
     width: 100%;
-}
+} */

@@ -1,7 +1,6 @@
-
+/* 
   
   .example-label-container {
-    /* display: flex; */
     justify-content: space-between;
     margin: 20px 10px 0;
     max-width: 280px;
@@ -42,7 +41,6 @@
     padding: 5px 0;
   }
 
-  /* Chagnes Made By Hamza */
 
   .filters-head{
     display: flex;
@@ -74,7 +72,6 @@
     background-color: #fff;
     position: sticky;
     top: 110px;
-    /* height: calc(100vh - 100px); */
     left: 0;
     bottom: 0;
     overflow-y: scroll;
@@ -110,4 +107,4 @@
 
   .filterSepreator{
     margin-top: -10px;
-  }
+  } */

@@ -6,7 +6,7 @@ import { ApplianceService } from '../../service/appliance.service';
 @Component({
   selector: 'app-appliance-posts',
   templateUrl: './appliance-posts.component.html',
-  styleUrls: ['./appliance-posts.component.css'],
+  styleUrls: ['./appliance-posts.component.css', '../../../moduleposts.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class AppliancePostsComponent {

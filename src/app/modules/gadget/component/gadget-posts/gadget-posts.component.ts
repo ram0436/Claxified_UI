@@ -6,7 +6,7 @@ import { GadgetService } from '../../service/gadget.service';
 @Component({
   selector: 'app-gadget-posts',
   templateUrl: './gadget-posts.component.html',
-  styleUrls: ['./gadget-posts.component.css'],
+  styleUrls: ['./gadget-posts.component.css', '../../../moduleposts.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class GadgetPostsComponent {

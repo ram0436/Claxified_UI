@@ -11,7 +11,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-appliance-filter',
   templateUrl: './appliance-filter.component.html',
-  styleUrls: ['./appliance-filter.component.css']
+  styleUrls: ['./appliance-filter.component.css', '../../../modulefilter.component.css']
 })
 export class ApplianceFilterComponent {
 

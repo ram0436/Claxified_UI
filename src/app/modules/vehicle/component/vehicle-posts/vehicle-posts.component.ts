@@ -6,7 +6,7 @@ import { VehicleService } from '../../service/vehicle.service';
 @Component({
   selector: 'app-vehicle-posts',
   templateUrl: './vehicle-posts.component.html',
-  styleUrls: ['./vehicle-posts.component.css'],
+  styleUrls: ['./vehicle-posts.component.css', '../../../moduleposts.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class VehiclePostsComponent {

@@ -1,4 +1,4 @@
-.flex {
+/* .flex {
     display: flex;
   }
   
@@ -28,10 +28,8 @@
     z-index: 10;
   }
 
-  /* changes made by hamza */
 
   .mat-mdc-card.mdc-card.example-card.ng-star-inserted {
-    /* height: 335px !important; */
     min-width: 250px !important;
     max-width: 250px !important;
   }
@@ -52,4 +50,4 @@
 
 .bg{
   background-color: #fafafa;
-}
+} */

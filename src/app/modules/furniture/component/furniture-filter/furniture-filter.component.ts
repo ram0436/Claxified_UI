@@ -10,7 +10,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-furniture-filter',
   templateUrl: './furniture-filter.component.html',
-  styleUrls: ['./furniture-filter.component.css']
+  styleUrls: ['./furniture-filter.component.css', '../../../modulefilter.component.css']
 })
 export class FurnitureFilterComponent {
 

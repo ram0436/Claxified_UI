@@ -634,3 +634,21 @@ header {
 .hide-second-nav {
     display: none;
   }
+
+/* .li-item-p-0{
+    padding: 15px 13.6px 15px 0;
+} */
+
+.menu-container-scrollable {
+    overflow-x: auto;
+    white-space: nowrap;
+    max-width: 100%;
+    background-color: #f1f1f1;
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+    /* padding: 0px 13.6px; */
+  }
+  
+  .menu-container-scrollable::-webkit-scrollbar {
+    width: 0; 
+  }

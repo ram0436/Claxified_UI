@@ -8,7 +8,7 @@
 }
 
 #unique-component.mat-app-background {
-    padding: 30px 40px 30px 120px;
+    padding: 30px 0px 30px 115px;
   }
 
 .card-image {
@@ -502,3 +502,9 @@
 .text-blue{
     color: #007fb0;
 }
+
+/* @media (max-width: 1440px){
+    #unique-component.mat-app-background {
+        padding: 30px 20px 30px 60px;
+      }
+} */

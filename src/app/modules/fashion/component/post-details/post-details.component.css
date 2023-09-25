@@ -1,4 +1,4 @@
-.col-7 {
+/* .col-7 {
     width: 63%;
 }
 .col-5 {
@@ -107,11 +107,11 @@
     width: 25px;
     height: 25px;
     margin-top: 117px;
-}
+} */
 
 /* Changes Made By Hamza */
 
-.pg_arrow{
+/* .pg_arrow{
     padding: 20px 7px;
     background-color: #222;
     color: #fff;
@@ -131,7 +131,7 @@
     align-items: center;
     flex-direction: row;
     gap: 10px;
-}
+} */
 
 .img-feature{
     display: flex;

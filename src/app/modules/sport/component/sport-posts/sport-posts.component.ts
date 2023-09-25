@@ -6,7 +6,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-sport-posts',
   templateUrl: './sport-posts.component.html',
-  styleUrls: ['./sport-posts.component.css'],
+  styleUrls: ['./sport-posts.component.css', '../../../moduleposts.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class SportPostsComponent {

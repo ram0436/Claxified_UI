@@ -1,4 +1,4 @@
-.col-7 {
+/* .col-7 {
     width: 63%;
 }
 .col-5 {
@@ -49,9 +49,6 @@
     margin-left: 5px;
 }
 
-/* .mt{
-    margin-top: -65px;
-} */
 
 .col-12 {
     width: 100%;
@@ -123,11 +120,11 @@
     width: 25px;
     height: 25px;
     margin-top: 117px;
-}
+} */
 
 /* Changes Made By Hamza */
 
-.pg_arrow{
+/* .pg_arrow{
     padding: 20px 7px;
     background-color: #222;
     color: #fff;
@@ -177,12 +174,11 @@
     color: #fff;
     border-radius: 5px;
     cursor: pointer;
-}
-
+} */
+/* 
 .details-post-img{
     width: 620px !important;
     height: 400px;
-    /* margin: 0 12px 0 10px; */
 }
 
 .bg{
@@ -190,13 +186,7 @@
 }
 
 .back-btn{
-    /* position: fixed;
-    bottom: 0;
-    top: 50px;
-    left: 230px;
-    top: 115px;
-    height: 40px;
-    width: 140px; */
+
     background-color: #f1f1f1;
     color: #3f51b5;
     border: none;
@@ -331,7 +321,6 @@
     text-align: left;
     width: 100%;
     display: flex;
-    /* text-align: center; */
     padding: 0;
     transition: transform .4s ease;
 }
@@ -419,9 +408,6 @@ textarea {
     outline: none;
 }
 
-/* .actions-mat-card{
-    margin: 20px 0;
-} */
 
 .action-btns{
     display: flex;
@@ -506,18 +492,6 @@ textarea {
     padding: 4px 0;
 }
 
-/* .hide-visually {
-    border: 0;
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
-    white-space: nowrap;
-} */
 
 .radio-switch+label {
     margin-bottom: 12px;
@@ -541,22 +515,6 @@ label {
     letter-spacing: .01em;
 }
 
-/* .radio-switch+label:before {
-    background: #fff;
-    border-radius: 40px;
-    border: 1px solid #b1adb3;
-    box-sizing: initial;
-    content: "";
-    cursor: pointer;
-    display: table-cell;
-    height: 24px;
-    left: 0;
-    margin-top: -12px;
-    position: absolute;
-    top: 50%;
-    vertical-align: middle;
-    width: 24px;
-} */
 
 .radio-switch+label a {
     color: #007fb0;
@@ -577,4 +535,4 @@ input[type="radio" i] {
 
 .bg-height-150 {
     min-height: 150vh;
-  }
+  } */
