@@ -1,4 +1,4 @@
-.col-7 {
+/* .col-7 {
     width: 63%;
 }
 .col-5 {
@@ -107,14 +107,11 @@
     width: 25px;
     height: 25px;
     margin-top: 117px;
-}
-.w-90{
-    width: 90%;
-}
+} */
 
 /* Changes Made By Hamza */
 
-.pg_arrow{
+/* .pg_arrow{
     padding: 20px 7px;
     background-color: #222;
     color: #fff;
@@ -123,29 +120,46 @@
     justify-content: center !important;
     cursor: pointer;
     border-radius: 5px;
-}
+} */
 
-.img-mat-card{
+/* .img-mat-card{
     padding: 10px;
-}
+} */
 
-.pg-card{
+/* .pg-card{
     display: flex;
     align-items: center;
     flex-direction: row;
     gap: 10px;
+} */
+
+.img-feature{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .img_count{
     display: flex;
     align-items: center;
     gap: 5px;
-    float: right;
     margin: 5px 10px 0 0;
     padding: 8px 10px;
     background-color: #222;
     color: #fff;
     border-radius: 5px;
+}
+
+.zoom-in{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 5px 0 0 0;
+    padding: 8px 10px;
+    background-color: #222;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .postImg{
@@ -179,3 +193,69 @@
     font-weight: 500;
     font-size: 16px;
 }
+
+.zoomed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: 1000;
+    background-color: #000;
+    object-fit: contain;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .zoomed img {
+    margin: 0 auto;
+    display: block;
+    height: 95vh;
+    width: 50vw;
+  }
+
+  .zoom-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+  }
+  
+  .zoom-controls .material-icons-outlined {
+    cursor: pointer;
+    font-size: 30px;
+    color: white;
+  }
+
+  .img_count_after{
+    position: fixed;
+    top: 30px;
+    left: 20px;
+    z-index: 1001;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .pg_arrow_left_after{
+    position: fixed;
+    top: 320px;
+    left: 320px;
+    z-index: 1001;
+    color: white;
+    gap: 4px;
+    font-size: 30px;
+    cursor: pointer;
+  }
+
+  .pg_arrow_right_after{
+    position: fixed;
+    top: 320px;
+    right: 320px;
+    z-index: 1001;
+    color: white;
+    gap: 4px;
+    font-size: 30px;
+    cursor: pointer;
+  }

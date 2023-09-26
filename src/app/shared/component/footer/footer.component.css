@@ -1,6 +1,25 @@
 footer{
     padding: 15px 0;
     font-family: "Montserrat", sans-serif;
+    /* text-align: center; */
+}
+
+.container{
+    display: flex;
+    justify-content: center !important;
+    /* flex-wrap: wrap; */
+    /* max-width: 1400px; */
+    width: 100%;
+    padding: 20px 30px;
+    margin: 0 auto !important;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    /* gap: 10px; */
+    /* margin-right: -15px;
+    margin-left: -15px; */
 }
 
 #button-addon1 {
@@ -25,7 +44,7 @@ i {
   
 .bg-light-black{
     background: #292a2c;
-    padding: 20px 0;
+    /* padding: 20px 0; */
 }
 
 .footer-heading{
@@ -55,6 +74,14 @@ i {
     font-size: 16px;
 }
 
+.text-muted:hover{
+    color: #fff;
+}
+
+.hover-none:hover{
+    color: #c2c2c2;
+}
+
 .bg-dark-color{
     padding: 30px 0;
     background-color: #000;
@@ -64,4 +91,67 @@ i {
 .copyright-text{
     color: #fff;
     padding-top: 10px;
+}
+
+/* .col-md-6{
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+} */
+
+
+@media (max-width: 1200px)
+{
+    .container{
+        max-width: 1140px;
+    }
+
+    .col-md-6 {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+}
+
+@media (max-width: 912px)
+{
+    .container{
+        max-width: 960px;
+    }
+}
+
+@media (max-width: 768px)
+{
+    .container{
+        max-width: 720px;
+    }
+
+    .col-md-6 {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+    }
+}
+
+
+@media (max-width: 576px)
+{
+    footer{
+        text-align: center;
+    }
+
+    .container{
+        max-width: 540px;
+    }
+
+    .col-md-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 992px){
+.col-md-6 {
+    flex: 0 0 25%;
+    max-width: 25%;
+}
 }

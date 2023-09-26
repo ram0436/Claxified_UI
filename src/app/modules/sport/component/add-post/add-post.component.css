@@ -1,4 +1,4 @@
-* {
+/* * {
     padding: 0;
     margin: 0;
 }
@@ -138,12 +138,12 @@ button {
     cursor: pointer;
     background-size: cover;
     background-repeat: no-repeat;
-    /* background-position: center; */
     height: 100%;
 }
 
-.cards {
+.cards-cont{
     max-width: 60%;
+    background-color: #fff !important;
 }
 
 .main {
@@ -218,9 +218,7 @@ button {
 
 button.selected {
     background-color: #004bffa1;
-    /* Change to your desired background color */
     color: #ffffff;
-    /* Change to your desired text color */
 }
 
 button {
@@ -228,9 +226,6 @@ button {
     width: 90px;
 }
 
-/* button:first-child{
-    margin-left: 0;
-} */
 .delete {
     width: 35px;
     height: 50px;
@@ -338,7 +333,6 @@ button {
     width: 50%;
   }
 
-      /* Changes made by hamza */
       .first-image {
         position: relative;
     }
@@ -357,3 +351,16 @@ button {
         align-items: center;
         justify-content: center;
     }
+
+    .mat-mdc-option {
+        display: flex;
+        position: relative;
+        align-items: center;
+        justify-content: flex-start;
+        overflow: hidden;
+        padding: 0;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        cursor: pointer;
+        min-height: 48px;
+    } */

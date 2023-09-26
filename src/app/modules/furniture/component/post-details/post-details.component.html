@@ -1,4 +1,4 @@
-<div class="container-center bg">
+<div class="container-center bg" [class.bg-height-150]="reporterClicked">
   <div class="spinner__loading" *ngIf="isLoading">
     <div>
       <mat-spinner></mat-spinner>
@@ -18,7 +18,13 @@
           >
             arrow_back_ios_new
           </span>
-          <img class="postImg" [src]="imagesList[imageIndex].imageURL" alt="" />
+          <div class="postImgCont">
+            <img
+              class="details-post-img"
+              [src]="imagesList[imageIndex].imageURL"
+              alt=""
+            />
+          </div>
           <span
             class="material-icons pg_arrow"
             (click)="showNext()"
@@ -27,18 +33,57 @@
             arrow_forward_ios
           </span>
         </div>
-        <div>
+        <div class="img-feature">
           <p class="img_count">
             <span class="material-icons"> photo_camera </span>
             {{ imageIndex + 1 }} of {{ imagesList.length }}
           </p>
+          <p class="zoom-in" (click)="zoomIn()">
+            <span class="material-icons-outlined"> zoom_in </span>
+          </p>
         </div>
+        <div class="zoom-controls">
+          <span
+            class="material-icons-outlined"
+            *ngIf="isZoomed"
+            (click)="closeZoom()"
+            >close</span
+          >
+        </div>
+        <div class="pg-arrows-after">
+          <span
+            class="material-icons pg_arrow_left_after"
+            (click)="showPrevious()"
+            *ngIf="isZoomed"
+            [ngClass]="{ disable: imageIndex <= 0 }"
+          >
+            arrow_back_ios_new
+          </span>
+          <span
+            class="material-icons pg_arrow_right_after"
+            (click)="showNext()"
+            *ngIf="isZoomed"
+            [ngClass]="{ disable: imageIndex >= imagesList.length - 1 }"
+          >
+            arrow_forward_ios
+          </span>
+        </div>
+        <p class="img_count_after" *ngIf="isZoomed">
+          <span class="material-icons">photo_camera</span>
+          {{ imageIndex + 1 }} of {{ imagesList.length }}
+        </p>
       </mat-card>
       <div class="col-5 h200">
-        <mat-card class="border-1">
-          <mat-card-title>{{
-            postDetails?.price | currency : "INR"
-          }}</mat-card-title>
+        <mat-card class="border-1 ml mb-2 pt-10">
+          <mat-card-title>
+            ₹<span class="text-blue">{{
+              formatPrice(postDetails?.price)
+            }}</span>
+            |
+            <span class="date-added">
+              {{ formatDate(postDetails?.createdOn) }}</span
+            >
+          </mat-card-title>
           <mat-card-content class="description">
             <p style="margin: 0">{{ postDetails?.title }}</p>
             <div class="loc-date">
@@ -46,29 +91,184 @@
                 {{ postDetails?.nearBy }},{{ postDetails?.city }} ,
                 {{ postDetails?.state }}
               </p>
-              <p class="date">{{ formatDate(postDetails?.createdOn) }}</p>
+              <!-- <p class="date">{{ formatDate(postDetails?.createdOn) }}</p> -->
             </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class="mt-10 border-1">
-          <mat-card-title>Ankit sharma</mat-card-title>
+        <mat-card class="mt-10 border-1 ml mb-2 pt-10">
+          <mat-card-title>{{ postDetails?.name }}</mat-card-title>
           <mat-card-content>
-            <button class="post" mat-raised-button color="primary">
+            <div class="seller-phone">
+              <div class="seller-phone-reveal">
+                <div class="seller-phone-number">
+                  <span class="material-icons phone-icon"> call </span>
+                  <h2 class="seller-phone-number-title">
+                    {{
+                      isPhoneNumberHidden
+                        ? postDetails?.mobile.slice(0, -4) + "XXXX"
+                        : postDetails?.mobile
+                    }}
+                  </h2>
+                </div>
+                <a class="seller-phone-a"
+                  ><button
+                    class="button button--secondary reveal-button"
+                    (click)="revealPhoneNumber()"
+                    [disabled]="!isPhoneNumberHidden"
+                    [ngClass]="{ 'disabled-button': !isPhoneNumberHidden }"
+                  >
+                    Reveal
+                  </button></a
+                >
+              </div>
+            </div>
+            <button class="post w-100" mat-raised-button color="primary">
               Chat with seller
             </button>
             <br />
             <br />
-            <p>888888888</p>
+            <div>
+              <div class="action-btns">
+                <button class="button button--secondary favourite">
+                  <span class="material-icons fvrt-icon"> favorite </span>
+                  Favourite
+                </button>
+                <button
+                  class="button button--secondary reporter"
+                  (click)="toggleReportOptions()"
+                >
+                  <span class="material-icons-outlined rpt-icon-lg">
+                    report
+                  </span>
+                  Report
+                  <span class="material-icons-outlined rpt-icon">
+                    {{ iconName }}
+                  </span>
+                </button>
+              </div>
+              <div class="report-options" *ngIf="showReportOptions">
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="radio-two"
+                    value="2"
+                  />
+                  <label for="radio-two">This is illegal/fraudulent</label>
+                </div>
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="radio-six"
+                    value="6"
+                  />
+                  <label for="radio-six">This ad is spam</label>
+                </div>
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="radio-three"
+                    value="3"
+                  />
+                  <label for="radio-three">This ad is a duplicate</label>
+                </div>
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="radio-four"
+                    value="4"
+                  />
+                  <label for="radio-four"
+                    >This ad is in the wrong category</label
+                  >
+                </div>
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="radio-one"
+                    value="1"
+                  />
+                  <label for="radio-one"
+                    >The ad goes against <a>posting rules</a>
+                  </label>
+                </div>
+                <textarea
+                  placeholder="Please provide more information"
+                  class="more-info"
+                ></textarea>
+                <div class="action-btns">
+                  <button
+                    class="button button--secondary close-reporter"
+                    (click)="toggleReportOptions()"
+                  >
+                    Cancel
+                  </button>
+                  <button class="button button--secondary send-report">
+                    Send Report
+                  </button>
+                </div>
+              </div>
+            </div>
           </mat-card-content>
         </mat-card>
+        <mat-card class="mt-10 border-1 safe-ad-carousel ml mb-2">
+          <div class="text-carousel carousel">
+            <div class="text-carousel-title-container">
+              <div class="text-carousel-title">Stay Safe</div>
+              <div class="text-carousel-logo logo-image">
+                <span>Claxified</span>
+              </div>
+            </div>
+            <div class="loaded carousel-container">
+              <ul class="carousel-inner remove-outline-onfocus">
+                <li class="carousel-item np">
+                  <p>{{ carouselItems[currentSlideIndex] }}</p>
+                  <div class="slide-overlay"></div>
+                </li>
+              </ul>
+              <div class="carousel-controls-container">
+                <button
+                  class="slide-panel prev"
+                  [disabled]="currentSlideIndex === 0"
+                  (click)="prevItem()"
+                >
+                  <span class="material-icons-outlined pgns-icon">
+                    chevron_left
+                  </span>
+                </button>
+                <button
+                  class="slide-panel next"
+                  (click)="nextItem()"
+                  [disabled]="currentSlideIndex === carouselItems.length - 1"
+                >
+                  <span class="material-icons-outlined pgns-icon">
+                    chevron_right
+                  </span>
+                </button>
+              </div>
+              <div class="carousel-counter-container">
+                <div class="carousel-counter">
+                  {{ currentSlideIndex + 1 }} of {{ carouselItems.length }}
+                </div>
+              </div>
+            </div>
+            <div class="link carousel-link text-carousel-link">
+              Read All Safety Tips
+            </div>
+          </div>
+        </mat-card>
       </div>
-      <mat-card class="col-7 border-1 mb-2">
+      <mat-card class="col-7 border-1 mb-2 pt-16">
         <mat-card-title>Description</mat-card-title>
         <mat-card-content class="mt-10">
           <p class="description-content">{{ postDetails?.discription }}</p>
         </mat-card-content>
       </mat-card>
-      <mat-card class="col-7 border-1 mb-2">
+      <!-- <mat-card class="col-7 border-1 mb-2">
         <mat-card-title>Relared Ads</mat-card-title>
         <mat-card-content class="mt-10 flexi">
           <img
@@ -94,7 +294,7 @@
                   <p class="loc">
                     {{ card?.nearBy }},{{ card?.city }} , {{ card?.state }}
                   </p>
-                  <!-- <p class="date">{{formatDate(card?.createdOn)}}</p> -->
+                  <p class="date">{{ formatDate(card?.createdOn) }}</p>
                 </div>
               </mat-card-content>
             </mat-card>
@@ -109,7 +309,7 @@
             }"
           />
         </mat-card-content>
-      </mat-card>
+      </mat-card> -->
     </div>
   </div>
 </div>

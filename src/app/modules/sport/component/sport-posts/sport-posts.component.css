@@ -1,9 +1,11 @@
-.flex {
+/* .flex {
     display: flex;
   }
   
   .cards {
     width: 100%;
+    margin-left: -75px;
+    background-color: #fafafa;
   }
   
   .spinner__loading {
@@ -21,10 +23,8 @@
     width: 30%;
   }
 
-  /* changes made by hamza */
 
   .mat-mdc-card.mdc-card.example-card.ng-star-inserted {
-    height: 320px !important;
     min-width: 250px !important;
     max-width: 250px !important;
   }
@@ -32,7 +32,7 @@
   
   .mat-mdc-card-image.mdc-card__media.card-image{
     width: 250px !important;
-    height: 220px !important;
+    height: 230px !important;
   }
   
   .mat-mdc-card-content.description{
@@ -47,10 +47,8 @@
   background-color: #fafafa;
 }
 
-.mat-app-background{
-  padding-left: 40px !important;
-}
 
 .bg-white{
   background-color: #fff;
-}
+  z-index: 10;
+} */

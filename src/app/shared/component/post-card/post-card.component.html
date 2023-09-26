@@ -1,4 +1,4 @@
-<div class="mat-app-background" *ngIf="!isLoading">
+<div id="unique-component" class="mat-app-background" *ngIf="!isLoading">
   <button
     class="back-to-top-btn"
     (click)="scrollToTop()"
@@ -10,6 +10,7 @@
   <mat-card
     class="example-card"
     *ngFor="let card of paginatedCards; let isFirst = first"
+    [style.height.px]="increaseHeight ? 330 + 10 : 330"
   >
     <a
       class="custom-link"
@@ -36,20 +37,61 @@
           {{ imagesList.length }}
         </div>
       </div>
-      <mat-card-title class="title" *ngIf="card?.price > 0">{{
-        card?.price | currency : "INR"
-      }}</mat-card-title>
-      <mat-card-title class="title" *ngIf="card?.salaryPeriodType"> 
-        ₹ {{card?.salaryFrom}} - {{card?.salaryTo}} | {{ getSalaryPeriod(card?.salaryPeriodType)}}</mat-card-title>
+      <mat-card-title class="title title-flex" *ngIf="card?.price > 0"
+        >₹<span class="text-blue">{{ formatPrice(card?.price) }}</span> |
+        <span class="date-added">{{ formatDate(card?.createdOn) }}</span>
+      </mat-card-title>
+      <mat-card-title class="title title-sm" *ngIf="card?.salaryPeriodType">
+        ₹<span class="text-blue"
+          >{{ card?.salaryFrom }}-{{ card?.salaryTo }}</span
+        >
+        | {{ getSalaryPeriod(card?.salaryPeriodType) }} |
+        <span class="date-added date-added-sm">
+          {{ formatDate(card?.createdOn) }}</span
+        >
+        <!-- ₹{{
+          truncateContent(
+            (card?.salaryFrom || "") +
+              "-" +
+              (card?.salaryTo || "") +
+              " | " +
+              getSalaryPeriod(card?.salaryPeriodType),
+            20
+          )
+        }}
+        <span class="date-added date-added-sm">
+          | {{ formatDate(card?.createdOn) }}</span
+        > -->
+      </mat-card-title>
       <mat-card-content class="description">
-        <p style="margin: 0">{{ card?.title }}</p>
-        <p *ngIf="card?.year">
-          {{ card?.year || "" }} -
-          {{ card?.kmDriven ? card.kmDriven + " kms" : "" }}
+        <p style="margin: 0" class="desc-title">
+          {{ truncateTitle(card?.title) }}
+        </p>
+        <p *ngIf="card?.year" class="mb-0">
+          {{
+            truncateTitle(
+              (card?.year || "") +
+                " - " +
+                (card?.kmDriven ? card.kmDriven + " kms" : "")
+            )
+          }}
         </p>
         <div class="loc-date">
-          <p class="loc">{{ card?.nearBy }}, {{ card?.city }}</p>
-          <p class="date">{{ formatDate(card?.createdOn) }}</p>
+          <p class="map"><img src="../../../../assets/map.png" alt="Loc" /></p>
+          <p class="loc">
+            {{
+              truncateCity(
+                (card?.nearBy || "") +
+                  ", " +
+                  (card?.city || "") +
+                  " (" +
+                  stateAbbreviation(card?.state || "") +
+                  ")"
+              )
+            }}
+          </p>
+          <!-- + "," + (card?.stateAbr || "") -->
+          <!-- <p class="date">{{ formatDate(card?.createdOn) }}</p> -->
         </div>
       </mat-card-content>
     </a>

@@ -153,11 +153,13 @@
         <h5>Upload Progress</h5>
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>
       </div>
-      <div class="cards">
-        <ul class="upld">
+      <div class="cards-cont">
+        <ul class="upld" cdkDropList (cdkDropListDropped)="drop($event)">
           <li
+            cdkDrag
             class="upload-card"
             *ngFor="let item of cardsCount; let i = index"
+            [cdkDragDisabled]="!isDraggingEnabled"
           >
             <div
               class="upload-card-brd"

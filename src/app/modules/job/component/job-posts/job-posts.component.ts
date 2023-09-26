@@ -6,7 +6,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-job-posts',
   templateUrl: './job-posts.component.html',
-  styleUrls: ['./job-posts.component.css']
+  styleUrls: ['./job-posts.component.css', '../../../moduleposts.component.css']
 })
 export class JobPostsComponent {
 

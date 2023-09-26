@@ -10,7 +10,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-sport-filter',
   templateUrl: './sport-filter.component.html',
-  styleUrls: ['./sport-filter.component.css']
+  styleUrls: ['./sport-filter.component.css', '../../../modulefilter.component.css']
 })
 export class SportFilterComponent {
 

@@ -6,7 +6,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-fashion-posts',
   templateUrl: './fashion-posts.component.html',
-  styleUrls: ['./fashion-posts.component.css']
+  styleUrls: ['./fashion-posts.component.css', '../../../moduleposts.component.css']
 })
 export class FashionPostsComponent {
 
@@ -16,6 +16,9 @@ export class FashionPostsComponent {
   cards: any = [];
   subscription: any;
   actualCards: any;
+
+  isZoomed: boolean = false;
+
   constructor(private route: ActivatedRoute, private commonService: CommonService, private cdr: ChangeDetectorRef,
     private fashionService: FashionService) { }
 
@@ -32,6 +35,8 @@ export class FashionPostsComponent {
       setTimeout(() => this.filterPosts(data), 500);
     });
   }
+
+
   getPosts() {
     this.cards = [];
     this.fashionService.getAllFashionPosts().subscribe((data: any) => {

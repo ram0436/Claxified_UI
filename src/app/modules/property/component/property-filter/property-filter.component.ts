@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer2, HostListener } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatSelectionList } from '@angular/material/list';
@@ -107,7 +107,8 @@ export class PropertyFilterComponent {
   pgAndGuestHouses = ['subType', 'furnishing', 'listedBy'];
   propertiesToShow: any = [];
   bachelorsAllowed = [{ label: 'No', value: false }, { label: 'Yes', value: true }];
-  constructor(private commonService: CommonService, private route: ActivatedRoute) { }
+  constructor(private commonService: CommonService, private route: ActivatedRoute, private renderer: Renderer2) { }
+
 
   ngOnInit() {
     this.houseTypes = this.houseTypes.slice(this.houseTypes.length / 2);

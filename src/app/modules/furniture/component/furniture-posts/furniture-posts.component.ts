@@ -6,7 +6,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-furniture-posts',
   templateUrl: './furniture-posts.component.html',
-  styleUrls: ['./furniture-posts.component.css'],
+  styleUrls: ['./furniture-posts.component.css', '../../../moduleposts.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class FurniturePostsComponent {

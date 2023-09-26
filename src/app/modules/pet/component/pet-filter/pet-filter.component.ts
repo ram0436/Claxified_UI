@@ -10,7 +10,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-pet-filter',
   templateUrl: './pet-filter.component.html',
-  styleUrls: ['./pet-filter.component.css']
+  styleUrls: ['./pet-filter.component.css', '../../../modulefilter.component.css']
 })
 export class PetFilterComponent {
 

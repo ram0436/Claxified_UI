@@ -5,6 +5,9 @@ import { FuelType } from 'src/app/shared/enum/FuelType';
 import { TransmissionType } from 'src/app/shared/enum/TransmissionType';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { LoginComponent } from '../../../user/component/login/login.component';
+import { SignupComponent } from '../../../user/component/signup/signup.component'
 
 @Component({
   selector: 'app-post-detail',
@@ -14,6 +17,9 @@ import { Location } from '@angular/common';
 export class PostDetailComponent {
 
   postDetails: any;
+  isPhoneNumberHidden = true;
+  isUserLogedIn: boolean = false;
+  dialogRef: MatDialogRef<any> | null = null;
   post: any;
   imagesList: any = [];
   isLoading: boolean = true;
@@ -40,7 +46,22 @@ export class PostDetailComponent {
 
   isZoomed: boolean = false;
 
-  constructor(private vehicleService: VehicleService, private route: ActivatedRoute, private location: Location, private router: Router, ) { }
+  reporterClicked = false;
+
+  iconName = 'arrow_drop_down';
+
+  showReportOptions: boolean = false;
+  currentSlideIndex = 0;
+  carouselItems = [
+    "Be wary of buyers asking to use 'Claxified delivery' or 'Payments on Claxified' for anything other than private cars",
+    "Share photos and ask lots of questions about the items you are buying and selling",
+    "If an ad or reply sounds too good to be true, it probably is",
+    "Use the 'Reply to ad' button for your safety and privacy"
+  ];
+
+  constructor(private vehicleService: VehicleService, private route: ActivatedRoute, private location: Location, private router: Router,  private dialog: MatDialog) { 
+  }
+
 
   ngOnInit() {
     this.fuelTypes = this.fuelTypes.slice(this.fuelTypes.length / 2);
@@ -53,6 +74,46 @@ export class PostDetailComponent {
     if (tableRefGuid != null) {
       this.getVehiclePost(tableRefGuid);
     }
+  }
+
+  formatPrice(price: number): string {
+    const roundedPrice = Math.round(price);
+  
+    const formattedPrice = roundedPrice.toLocaleString('en-IN');
+  
+    return formattedPrice;
+  }
+
+  prevItem() {
+    this.currentSlideIndex = (this.currentSlideIndex - 1 + this.carouselItems.length) % this.carouselItems.length;
+    this.updateButtonState();
+  }
+
+  nextItem() {
+    this.currentSlideIndex = (this.currentSlideIndex + 1) % this.carouselItems.length;
+    this.updateButtonState();
+  }
+
+  updateButtonState() {
+    const isFirstItem = this.currentSlideIndex === 0;
+    const isLastItem = this.currentSlideIndex === this.carouselItems.length - 1;
+
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
+
+    if (prevButton) {
+      prevButton.classList.toggle('disabled', isFirstItem);
+    }
+
+    if (nextButton) {
+      nextButton.classList.toggle('disabled', isLastItem);
+    }
+  }
+
+  toggleReportOptions() {
+    this.showReportOptions = !this.showReportOptions;
+    this.reporterClicked = !this.reporterClicked;
+    this.iconName = this.showReportOptions ? 'arrow_drop_up' : 'arrow_drop_down';
   }
 
   zoomIn() {
@@ -112,5 +173,26 @@ export class PostDetailComponent {
   }
   showNext() {
     this.imageIndex = this.imageIndex + 1;
+  }
+
+  openLoginModal() {
+
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+
+    this.dialogRef = this.dialog.open(LoginComponent, { width: '500px' });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      if (localStorage.getItem("authToken") != null)
+        this.isUserLogedIn = true;
+    });
+  }
+
+  revealPhoneNumber() {
+    if (localStorage.getItem('id') != null)
+      this.isPhoneNumberHidden = !this.isPhoneNumberHidden;
+    else
+      this.openLoginModal();
   }
 }

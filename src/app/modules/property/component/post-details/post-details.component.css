@@ -1,4 +1,4 @@
-.col-7 {
+/* .col-7 {
     width: 63%;
 }
 .col-5 {
@@ -107,14 +107,11 @@
     width: 25px;
     height: 25px;
     margin-top: 117px;
-}
-.w-90{
-    width: 90%;
-}
+} */
 
 /* Changes Made By Hamza */
 
-.pg_arrow{
+/* .pg_arrow{
     padding: 20px 7px;
     background-color: #222;
     color: #fff;
@@ -136,16 +133,33 @@
     gap: 10px;
 }
 
+.img-feature{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .img_count{
     display: flex;
     align-items: center;
     gap: 5px;
-    float: right;
     margin: 5px 10px 0 0;
     padding: 8px 10px;
     background-color: #222;
     color: #fff;
     border-radius: 5px;
+}
+
+.zoom-in{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 5px 0 0 0;
+    padding: 8px 10px;
+    background-color: #222;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .postImg{
@@ -158,13 +172,7 @@
 }
 
 .back-btn{
-    /* position: fixed;
-    bottom: 0;
-    top: 50px;
-    left: 230px;
-    top: 115px;
-    height: 40px;
-    width: 140px; */
+
     background-color: #f1f1f1;
     color: #3f51b5;
     border: none;
@@ -179,16 +187,178 @@
     font-weight: 500;
     font-size: 16px;
 }
-.w-33{
-    width: 33%;
-}
-.data-row {
+
+.zoomed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: 1000;
+    background-color: #000;
+    object-fit: contain;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .zoomed img {
+    margin: 0 auto;
+    display: block;
+    height: 95vh;
+    width: 50vw;
+  }
+
+  .zoom-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+  }
+  
+  .zoom-controls .material-icons-outlined {
+    cursor: pointer;
+    font-size: 30px;
+    color: white;
+  }
+
+  .img_count_after{
+    position: fixed;
+    top: 30px;
+    left: 20px;
+    z-index: 1001;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .pg_arrow_left_after{
+    position: fixed;
+    top: 320px;
+    left: 320px;
+    z-index: 1001;
+    color: white;
+    gap: 4px;
+    font-size: 30px;
+    cursor: pointer;
+  }
+
+  .pg_arrow_right_after{
+    position: fixed;
+    top: 320px;
+    right: 320px;
+    z-index: 1001;
+    color: white;
+    gap: 4px;
+    font-size: 30px;
+    cursor: pointer;
+  } */
+
+
+/* .details-card{
+    margin-top: 1rem;
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: 10px;
 }
-.grid-item {
-    width: calc(33.33% - 10px);
-    margin: 5px;
+
+.details-card-item{
+    flex-basis: 50%;
+}
+
+.details-content{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+}
+
+.details-content>span{
+    flex-basis: 50%;
+    padding-right: 1.6rem;
+}
+
+.details-content>span:nth-child(1){
+    font-weight: 500;
 }
   
+.details-title{
+    padding: 0 !important;
+    margin: 0;
+} */
+/* 
+.seller-phone{
+    padding: 4px 0 12px 0;
+}
+
+.seller-phone-reveal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.seller-phone-number {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.phone-icon {
+    display: inline-block;
+    font-size: 18px;
+    line-height: 1;
+    vertical-align: middle;
+    min-width: 18px;
+}
+
+.seller-phone-number-title {
+    padding-left: 8px;
+    margin: 0;
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: .01em;
+    font-weight: 500;
+}
+
+.seller-phone-a{
+    text-decoration: none;
+    color: inherit;
+}
+
+.button--secondary {
+    color: #3c3241;
+    background-color: #fff;
+    border-color: #635b67;
+}
+
+.reveal-button {
+    display: inline-flex;
+    box-sizing: border-box;
+    cursor: pointer;
+    align-items: center;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    color: #3c3241;
+    font-size: 15px;
+    font-weight: 400;
+    height: 44px;
+    line-height: 20px;
+    padding: 10px 12px;
+}
+
+.reveal-button:hover{
+    background-color: #3c3241 !important;
+    color: #fff !important;
+}
+
+.reveal-button:disabled {
+    color: #b1adb3 !important;
+    background-color: #f1f1f1 !important;
+    border-color: #dbdadb !important;
+    cursor: default;
+}
+
+.w-100{
+    width: 100%;
+} */

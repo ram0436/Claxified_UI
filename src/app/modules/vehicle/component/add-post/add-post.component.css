@@ -1,4 +1,4 @@
-* {
+/* * {
     padding: 0;
     margin: 0;
 }
@@ -109,6 +109,7 @@ button {
     display: inline-block;
     height: 104px;
     vertical-align: top;
+    cursor: move;
     margin: 0 6px 6px 0;
     width: 104px;
 }
@@ -138,12 +139,12 @@ button {
     cursor: pointer;
     background-size: cover;
     background-repeat: no-repeat;
-    /* background-position: center; */
     height: 100%;
 }
 
-.cards {
+.cards-cont{
     max-width: 60%;
+    background-color: #fff !important;
 }
 
 .main {
@@ -218,9 +219,7 @@ button {
 
 button.selected {
     background-color: #004bffa1;
-    /* Change to your desired background color */
     color: #ffffff;
-    /* Change to your desired text color */
 }
 
 button {
@@ -228,9 +227,6 @@ button {
     width: 90px;
 }
 
-/* button:first-child{
-    margin-left: 0;
-} */
 .delete {
     width: 35px;
     height: 50px;
@@ -329,24 +325,18 @@ button {
   }
   .w-50{
     width: 50%;
-  }
+  } */
 
     /* Changes made by hamza */
-    .first-image {
-        position: relative;
+
+    .cdk-drag-preview {
+        box-sizing: border-box;
+        border-radius: 4px;
+        box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                    0 3px 14px 2px rgba(0, 0, 0, 0.12);
       }
       
-      .cover-tag {
-        position: absolute;
-        top: 75px;
-        width: 100%;
-        background-color: #007bff;
-        color: white;
-        font-size: 12px;
-        font-weight: 500;
-        padding: 5px 6px;
-        border-radius: 2px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+      .cdk-drag-animating {
+        transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+      }

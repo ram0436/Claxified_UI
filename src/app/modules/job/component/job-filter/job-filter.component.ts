@@ -13,7 +13,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-job-filter',
   templateUrl: './job-filter.component.html',
-  styleUrls: ['./job-filter.component.css']
+  styleUrls: ['./job-filter.component.css', '../../../modulefilter.component.css']
 })
 export class JobFilterComponent {
 

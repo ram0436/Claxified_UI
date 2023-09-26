@@ -1,5 +1,6 @@
-/* 
+  
   .example-label-container {
+    /* display: flex; */
     justify-content: space-between;
     margin: 20px 10px 0;
     max-width: 280px;
@@ -45,43 +46,44 @@
     padding: 5px 0;
   }
 
+  
+  /* Chagnes Made By Hamza */
 
-.filters-head{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 15px;
-  margin-right: 5px;
-}
+  .filters-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+    margin-right: 5px;
+  }
+  
+  .filter-heading{
+    font-size: 18px;
+    font-weight: 500;
+    color: #0d475c;
+  }
+  
+  .clear-filters{
+    color: #2874F0;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  
+  
+  .clear-filters:hover{
+    cursor: pointer;
+  }
 
-.filter-heading{
-  font-size: 18px;
-  font-weight: 500;
-  color: #0d475c;
-}
-
-.clear-filters{
-  color: #2874F0;
-  font-size: 15px;
-  font-weight: 500;
-}
-
-
-.clear-filters:hover{
-  cursor: pointer;
-}
-
-
-.grid{
-  padding: 0 20px;
-  background-color: #fff;
-  position: sticky;
-  top: 110px;
-  left: 0;
-  bottom: 0;
-  overflow-y: scroll;
-  scrollbar-width: none; 
-}
+  .grid{
+    padding: 0 20px;
+    background-color: #fff;
+    position: sticky;
+    top: 110px;
+    left: 0;
+    bottom: 0;
+    overflow-y: scroll;
+    scrollbar-width: none; 
+  }
   
   .sidebar-container::-webkit-scrollbar {
     display: none;
@@ -112,4 +114,4 @@
   
     .filterSepreator{
       margin-top: -10px;
-    } */
+    }

@@ -10,7 +10,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 @Component({
   selector: 'app-book-filter',
   templateUrl: './book-filter.component.html',
-  styleUrls: ['./book-filter.component.css']
+  styleUrls: ['./book-filter.component.css', '../../../modulefilter.component.css']
 })
 export class BookFilterComponent {
 

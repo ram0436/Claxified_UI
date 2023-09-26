@@ -336,6 +336,7 @@ export class VehicleFilterComponent {
   }
 
   clearFilters() {
+    window.location.reload();
     this.resetFilters();
     this.filtersSelected = false;
     this.stateControl.patchValue("");
@@ -353,7 +354,6 @@ export class VehicleFilterComponent {
     this.ownerMultiSelect.writeValue([]);
     this.fuelMultiSelect.writeValue([]);
     this.transMultiSelect.writeValue([]);
-    window.location.reload();
   }
 
 
@@ -365,6 +365,7 @@ export class VehicleFilterComponent {
     this.filterObj.state = null;
     this.filterObj.city = null;
     this.filterObj.nearBy = null;
+    // window.location.reload();
   }
 
   resetCityAndNearby() {

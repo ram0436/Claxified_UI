@@ -8,6 +8,10 @@
     </div>
   </div>
   <div class="cards" *ngIf="!isLoading">
-    <app-post-card [cards]="cards" [isLoading]="isLoading"></app-post-card>
+    <app-post-card
+      [cards]="cards"
+      [isLoading]="isLoading"
+      [increaseHeight]="false"
+    ></app-post-card>
   </div>
 </div>

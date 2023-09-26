@@ -39,7 +39,8 @@
     margin: 0;
     text-transform: uppercase;
     font-weight: 700;
-    color: black
+    color: black;
+    border-bottom: 1px solid black;
 }
 
 .opt {
@@ -58,7 +59,7 @@
     margin: 0;
     padding: 0;
     position: relative;
-    border: 1px solid black;
+    border-right: 1px solid black;
     border-left: none;
     float: left;
     min-height: 1px;
@@ -88,10 +89,11 @@
     /* position: absolute; */
     right: 0 !important;
     border-right: none !important;
+    border-bottom: 1px solid black;
 }
 
 .sub-cat li{
-    border-right: none !important;
+    border-left: 0.1rem solid #222;
 }
 
 /* .cat-name:hover,
