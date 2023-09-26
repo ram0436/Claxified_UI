@@ -25,7 +25,7 @@
           alt="{{ card?.title }}"
           class="card-image"
         />
-        <span class="ribbon-featured" *ngIf="isFirst && card?.isFeatured">
+        <span class="ribbon-featured" *ngIf="card?.isPremium">
           <strong class="ribbon">
             <span class="hide-visually">This ad is</span>
             Premium
