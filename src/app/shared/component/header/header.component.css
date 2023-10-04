@@ -57,7 +57,7 @@ nav ul li:hover {
 }
 
 .dropdown .li-item:hover a {
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 
