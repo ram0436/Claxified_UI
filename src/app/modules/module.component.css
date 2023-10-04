@@ -200,7 +200,7 @@
     align-items: center;
     justify-content: center;
     gap: 2px;
-    z-index: 1100;
+    z-index: 100;
     font-weight: 500;
     font-size: 16px;
 }
@@ -738,4 +738,14 @@ input[type="radio" i] {
 
 .text-blue{
     color: #007fb0;
+}
+
+.btn-text{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+.btn-text h4{
+    margin-top: 15px;
 }
