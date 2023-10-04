@@ -33,7 +33,6 @@ export class AccountComponent {
           if (userData.length > 0) {
             userData[0].userImageList.push({ "id": 0, "imageId": "st", "imageURL": data[0], "usersId": Number(localStorage.getItem("id")) });
             this.userService.updateUser(userData[0]).subscribe(res => {
-              console.log(res);
             })
           }
         })

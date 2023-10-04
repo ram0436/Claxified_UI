@@ -73,7 +73,6 @@ export class PostCardComponent implements OnInit {
         //     this.stateAbbreviation(this.cards[0]); // Call it with the first card as an example
         //   }
 
-          console.log(this.cards)
     }
 
 formatPrice(price: number): string {
@@ -157,27 +156,39 @@ formatPrice(price: number): string {
         }
     }
     getCardImageURL(card: any): string {
+        this.imagesList = [];
         if (card.gadgetImageList && card.gadgetImageList[0]?.imageURL) {
+            this.imagesList = card.gadgetImageList;
             return card.gadgetImageList[0]?.imageURL;
         } else if (card.vehicleImageList && card.vehicleImageList[0]?.imageURL) {
+            this.imagesList = card.vehicleImageList;
             return card.vehicleImageList[0]?.imageURL;
         } else if (card.electronicApplianceImageList && card.electronicApplianceImageList[0]?.imageURL) {
+            this.imagesList = card.electronicApplianceImageList;
             return card.electronicApplianceImageList[0]?.imageURL;
         } else if (card.furnitureImageList && card.furnitureImageList[0]?.imageURL) {
+            this.imagesList = card.furnitureImageList;
             return card.furnitureImageList[0]?.imageURL;
         }else if (card.sportImageList && card.sportImageList[0]?.imageURL) {
+            this.imagesList = card.sportImageList;
             return card.sportImageList[0]?.imageURL;
         }else if (card.petImageList && card.petImageList[0]?.imageURL) {
+            this.imagesList = card.petImageList;
             return card.petImageList[0]?.imageURL;
         }else if (card.fashionImageList && card.fashionImageList[0]?.imageURL) {
+            this.imagesList = card.fashionImageList;
             return card.fashionImageList[0]?.imageURL;
         }else if (card.bookImageList && card.bookImageList[0]?.imageURL) {
+            this.imagesList = card.bookImageList;
             return card.bookImageList[0]?.imageURL;
         }else if (card.propertyImageList && card.propertyImageList[0]?.imageURL) {
+            this.imagesList = card.propertyImageList;
             return card.propertyImageList[0]?.imageURL;
         }else if (card.jobImageList && card.jobImageList[0]?.imageURL) {
+            this.imagesList = card.jobImageList;
             return card.jobImageList[0]?.imageURL;
         }else if (card.commercialServiceImagesList && card.commercialServiceImagesList[0]?.imageURL) {
+            this.imagesList = card.commercialServiceImagesList;
             return card.commercialServiceImagesList[0]?.imageURL;
         }
         else {

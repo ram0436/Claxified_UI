@@ -98,7 +98,6 @@ export class AddPostComponent {
     this.commonPayload.name = this.userData.firstName;
     this.commonPayload.mobile = this.userData.mobileNo;
     var payload = this.addSpecificPayload(this.commonPayload);
-    console.log(payload);
     this.saveFurniturePost(payload);
   }
   getAddress(event: any) {
@@ -146,7 +145,6 @@ export class AddPostComponent {
     if(this.validatePostForm(payload))
     this.furnitureService.saveFurniturePost(payload).subscribe(data => {
       this.showNotification("Post added succesfully");
-      console.log(data);
       this.router.navigateByUrl('/post-menu');
     });
   }
@@ -184,7 +182,6 @@ export class AddPostComponent {
           if (userData.length > 0) {
             userData[0].userImageList.push({ "id": 0, "imageId": "st", "imageURL": data[0], "usersId": Number(localStorage.getItem("id")) });
             this.userService.updateUser(userData[0]).subscribe(res => {
-              console.log(res);
             })
           }
         })

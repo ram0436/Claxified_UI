@@ -8,6 +8,10 @@
     <button class="back-btn" (click)="goBack()">
       <span class="material-icons-outlined"> chevron_left </span>Back
     </button>
+    <h4 *ngIf="!isLoading && mainCategories.length > 0 && subCategories.length > 0"><a routerLink="/Books/view-posts">{{ getMainCategoryName(postDetails?.categoryId) }}</a>
+      /<a [routerLink]="'/Books/view-posts'"
+      [queryParams]="{ type: 'Books', sub: postDetails?.subCategoryId }">{{ getSubCategoryName(postDetails?.subCategoryId) }}</a>
+      </h4>
     <div class="flex gap-2 pt-3" *ngIf="!isLoading">
       <mat-card class="border-1 mb-2 block img-mat-card">
         <div class="pg-card">

@@ -235,7 +235,6 @@ export class PropertyFilterComponent {
     }
     if (!matchFound)
       this.appliedFilters.push({ name: filterName, value: value })
-    console.log(this.appliedFilters);
   }
   displayLocation(brand: any): string {
     return brand?.name || "";
@@ -304,7 +303,6 @@ export class PropertyFilterComponent {
         this.resetBachelorAllowed();
         break;
     }
-    console.log(this.filterObj);
     this.commonService.setData(this.filterObj);
   }
 
