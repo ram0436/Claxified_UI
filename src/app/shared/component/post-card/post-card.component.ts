@@ -73,7 +73,6 @@ export class PostCardComponent implements OnInit {
         //     this.stateAbbreviation(this.cards[0]); // Call it with the first card as an example
         //   }
 
-          console.log(this.cards)
     }
 
 formatPrice(price: number): string {

@@ -287,7 +287,6 @@ export class AddPostComponent {
     if (this.validatePostForm(payload))
       this.vehicleService.saveVehiclePost(payload).subscribe(data => {
         this.showNotification("Post added succesfully");
-        console.log(data);
         this.router.navigateByUrl('/post-menu');
       });
   }
@@ -320,7 +319,6 @@ export class AddPostComponent {
           if (userData.length > 0) {
             userData[0].userImageList.push({ "id": 0, "imageId": "st", "imageURL": data[0], "usersId": Number(localStorage.getItem("id")) });
             this.userService.updateUser(userData[0]).subscribe(res => {
-              console.log(res);
             })
           }
         })
@@ -328,7 +326,6 @@ export class AddPostComponent {
     })
   }
   validatePostForm(payload: any): boolean {
-    console.log(payload);
     let flag = false;
     if (payload.title == "")
       this.showNotification("Title is required");

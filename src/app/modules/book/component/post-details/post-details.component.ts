@@ -5,6 +5,8 @@ import * as moment from 'moment';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LoginComponent } from '../../../user/component/login/login.component';
 import { SignupComponent } from '../../../user/component/signup/signup.component'
+import { CommonService } from 'src/app/shared/service/common.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-post-details',
@@ -46,11 +48,15 @@ export class PostDetailsComponent {
     "If an ad or reply sounds too good to be true, it probably is",
     "Use the 'Reply to ad' button for your safety and privacy"
   ];
+  mainCategories : any = [];
+  subCategories : any = [];
 
-
-  constructor(private bookService: BookService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog) { }
+  constructor(private bookService: BookService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
+    private commonService : CommonService,private location :Location) { }
 
   ngOnInit() {
+    this.getMainCategories();
+    setTimeout(()=> this.getSubCategory(this.postDetails.categoryId),1000);
     var tableRefGuid;
     this.route.paramMap.subscribe((params) => {
       tableRefGuid = params.get('id');
@@ -119,12 +125,13 @@ export class PostDetailsComponent {
   }
 
   goBack() {
-    this.router.navigate(['/Books/view-posts'], {
-      queryParams: {
-        type: 'Book',
-        sub: 48
-      }
-    });
+    // this.router.navigate(['/Books/view-posts'], {
+    //   queryParams: {
+    //     type: 'Book',
+    //     sub: 48
+    //   }
+    // });
+    this.location.back();
   }
   getSportPost(guid: any) {
     this.bookService.getBookPostByGuid(guid).subscribe((data: any) => {
@@ -191,5 +198,23 @@ export class PostDetailsComponent {
       this.isPhoneNumberHidden = !this.isPhoneNumberHidden;
     else
       this.openLoginModal();
+  }
+  getMainCategoryName(id:number){
+    let mainCategory = this.mainCategories.find((cat:any)=>cat.id==id);
+    return mainCategory !=null ? mainCategory.categoryName: "";
+  }
+  getSubCategoryName(id:number){
+    let subCategory = this.subCategories.find((cat:any)=>cat.id==id);
+    return subCategory !=null ? subCategory.subCategoryName: "";
+  }
+  getMainCategories(){
+    this.commonService.getAllCategory().subscribe(res=>{
+      this.mainCategories = res;
+    })
+  }
+  getSubCategory(id:number){
+    this.commonService.getSubCategoryByCategoryId(id).subscribe(res=>{
+      this.subCategories = res;
+    })
   }
 }

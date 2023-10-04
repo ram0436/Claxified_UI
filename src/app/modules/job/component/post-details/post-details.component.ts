@@ -6,6 +6,8 @@ import { SalaryPeriod } from 'src/app/shared/enum/SalaryPeriod';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LoginComponent } from '../../../user/component/login/login.component';
 import { SignupComponent } from '../../../user/component/signup/signup.component'
+import { CommonService } from 'src/app/shared/service/common.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-post-details',
@@ -53,10 +55,14 @@ export class PostDetailsComponent {
     label: key,
     id: SalaryPeriod[key],
   }));
-  
-  constructor(private jobService: JobService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog) { }
+  mainCategories : any = [];
+  subCategories : any = [];
+  constructor(private jobService: JobService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
+    private commonService : CommonService,private location : Location) { }
 
   ngOnInit() {
+    this.getMainCategories();
+    setTimeout(()=> this.getSubCategory(this.postDetails.categoryId),1000);
     var tableRefGuid;
     this.route.paramMap.subscribe((params) => {
       tableRefGuid = params.get('id');
@@ -125,12 +131,13 @@ export class PostDetailsComponent {
   }
 
   goBack() {
-    this.router.navigate(['/Jobs/view-posts'], {
-      queryParams: {
-        type: 'job',
-        sub: 18
-      }
-    });
+    // this.router.navigate(['/Jobs/view-posts'], {
+    //   queryParams: {
+    //     type: 'job',
+    //     sub: 18
+    //   }
+    // });
+    this.location.back();
   }
   getSportPost(guid: any) {
     this.jobService.getJobPostByGuid(guid).subscribe((data: any) => {
@@ -203,5 +210,23 @@ revealPhoneNumber() {
     this.isPhoneNumberHidden = !this.isPhoneNumberHidden;
   else
     this.openLoginModal();
+}
+getMainCategoryName(id:number){
+  let mainCategory = this.mainCategories.find((cat:any)=>cat.id==id);
+  return mainCategory !=null ? mainCategory.categoryName: "";
+}
+getSubCategoryName(id:number){
+  let subCategory = this.subCategories.find((cat:any)=>cat.id==id);
+  return subCategory !=null ? subCategory.subCategoryName: "";
+}
+getMainCategories(){
+  this.commonService.getAllCategory().subscribe(res=>{
+    this.mainCategories = res;
+  })
+}
+getSubCategory(id:number){
+  this.commonService.getSubCategoryByCategoryId(id).subscribe(res=>{
+    this.subCategories = res;
+  })
 }
 }

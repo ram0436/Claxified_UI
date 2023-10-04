@@ -179,7 +179,6 @@ export class BookFilterComponent {
         this.resetPrice();
         break;
     }
-    console.log(this.filterObj);
     this.commonService.setData(this.filterObj);
   }
 

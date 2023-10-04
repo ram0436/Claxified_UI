@@ -17,7 +17,6 @@ export class LoginComponent {
   signIn() {
     let payload = { userId: this.email, password: this.password };
     this.userService.login(payload).subscribe((data: any) => {
-      console.log(data);
       localStorage.setItem("role", data.role);
       localStorage.setItem("authToken", data.authToken);
       localStorage.setItem("id", data.id);

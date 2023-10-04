@@ -311,7 +311,6 @@ export class VehicleFilterComponent {
         this.resetYear();
         break;
     }
-    console.log(this.filterObj);
     this.commonService.setData(this.filterObj);
   }
 

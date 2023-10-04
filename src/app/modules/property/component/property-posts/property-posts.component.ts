@@ -59,7 +59,6 @@ export class PropertyPostsComponent {
     this.cards = [];
     this.propertyService.getAllPropertyPosts().subscribe((data: any) => {
       this.actualCards = data;
-      console.log(this.actualCards)
       if (this.subCategoryId != 0){
         this.cards = this.actualCards.filter((card: any) => card.subCategoryId == this.subCategoryId);
         // this.truncateTitle(this.cards.title);

@@ -200,7 +200,6 @@ export class JobFilterComponent {
         this.removeOptionFromArray(this.positionTypeMultiSelect, (this.filterObj.positionType || []), "label", filter.value);
         break;
     }
-    console.log(this.filterObj);
     this.commonService.setData(this.filterObj);
   }
 

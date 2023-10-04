@@ -23,6 +23,7 @@ export class AppliancePostsComponent {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.isLoading = true;
+      if(params['type'] !=undefined)
       this.category = params['type'].replaceAll("%20", " ");
       if (params['sub'] != undefined)
         this.subCategoryId = Number(params['sub'].replaceAll("%20", " "));
