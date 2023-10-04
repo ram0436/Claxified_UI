@@ -8,12 +8,22 @@
     <button class="back-btn" (click)="goBack()">
       <span class="material-icons-outlined"> chevron_left </span>Back
     </button>
-    <h4 *ngIf="!isLoading && mainCategories.length > 0 && subCategories.length > 0"><a routerLink="/Sports & Hobbies/view-posts">{{ getMainCategoryName(postDetails?.categoryId) }}</a>
-      /<a [routerLink]="'/Sports & Hobbies/view-posts'"
-      [queryParams]="{ type: 'sport', sub: postDetails?.subCategoryId }">{{ getSubCategoryName(postDetails?.subCategoryId) }}</a>
-      </h4>
+    <h4
+      *ngIf="
+        !isLoading && mainCategories.length > 0 && subCategories.length > 0
+      "
+    >
+      <a routerLink="/Sports & Hobbies/view-posts">{{
+        getMainCategoryName(postDetails?.categoryId)
+      }}</a>
+      /<a
+        [routerLink]="'/Sports & Hobbies/view-posts'"
+        [queryParams]="{ type: 'sport', sub: postDetails?.subCategoryId }"
+        >{{ getSubCategoryName(postDetails?.subCategoryId) }}</a
+      >
+    </h4>
     <div class="flex gap-2 pt-3" *ngIf="!isLoading">
-      <mat-card class="border-1 mb-2 block img-mat-card">
+      <mat-card class="border-1 mb-2 block img-mat-card bg-gray-card">
         <div class="pg-card">
           <span
             class="material-icons pg_arrow pg_arrow_left"
@@ -78,7 +88,7 @@
         </p>
       </mat-card>
       <div class="col-5 h200">
-        <mat-card class="border-1 ml mb-2 pt-10">
+        <mat-card class="border-1 ml mb-2 pt-10 bg-gray-card">
           <mat-card-title>
             ₹<span class="text-blue">{{
               formatPrice(postDetails?.price)
@@ -99,7 +109,7 @@
             </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class="mt-10 border-1 ml mb-2 pt-10">
+        <mat-card class="mt-10 border-1 ml mb-2 pt-10 bg-gray-card">
           <mat-card-title>{{ postDetails?.name }}</mat-card-title>
           <mat-card-content>
             <div class="seller-phone">
@@ -219,7 +229,7 @@
             </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class="mt-10 border-1 safe-ad-carousel ml">
+        <mat-card class="mt-10 border-1 safe-ad-carousel ml bg-gray-card">
           <div class="text-carousel carousel">
             <div class="text-carousel-title-container">
               <div class="text-carousel-title">Stay Safe</div>
@@ -266,7 +276,7 @@
           </div>
         </mat-card>
       </div>
-      <mat-card class="col-7 border-1 mb-2 pt-16">
+      <mat-card class="col-7 border-1 mb-2 pt-16 bg-gray-card">
         <mat-card-title>Description</mat-card-title>
         <mat-card-content class="mt-10">
           <p class="description-content">{{ postDetails?.discription }}</p>
