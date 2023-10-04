@@ -48,7 +48,7 @@
 
 .dropdown-menu li:hover a {
     background-color: #fff;
-    text-decoration: underline;
+    text-decoration: none;
     color: #007fb0;
 }
 
@@ -62,7 +62,7 @@ nav ul li:hover {
 
 
 .link-item:hover>a {
-    text-decoration: underline !important;
+    /* text-decoration: underline !important; */
 }
 
 .navbar-nav:hover {
@@ -92,6 +92,7 @@ nav ul li:hover {
     height: 60px;
     align-items: center;
     width: 10%;
+    text-decoration: none;
 }
 
 .css-1pr0bng {
@@ -626,6 +627,7 @@ header {
 .second-nav .navbar-nav .dropdown:hover .li-item .menu-title,
 .second-nav .navbar-nav .dropdown:hover .li-item .material-icons-outlined {
     color: #007fb0;
+    /* text-decoration: none !important; */
 }
 
 .navbar-right:hover {
@@ -653,3 +655,8 @@ header {
   .menu-container-scrollable::-webkit-scrollbar {
     width: 0; 
   }
+
+/* .dropdown-menu li a:hover{
+    text-decoration: none !important;
+} */
+
