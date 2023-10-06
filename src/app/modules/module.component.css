@@ -139,6 +139,7 @@
 .img-mat-card{
     padding: 10px;
     width: 740px;
+    position: relative;
 }
 
 .pg-card{
@@ -749,4 +750,40 @@ input[type="radio" i] {
 .btn-text h4{
     margin-top: 15px;
     font-size: 17px;
+}
+
+.set-fav-card{
+    background: #0d475c;
+    color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    /* height: 48px;
+    line-height: 48px; */
+    position: absolute;
+    right: 7px;
+    top: 10px;
+    /* width: 48px; */
+    padding: 15px 12px 12px 14px;
+    z-index: 10;
+    /* display: flex; */
+    align-items: center;
+    justify-content: center;
+}
+
+.set-fav-card:hover{
+    color: #72ef36;
+}
+
+.set-fav-card.fill{
+    background-color: #0d475c;
+    color: #72ef36;
+}
+
+.set-fav-card.active {
+    display: block;
+  }
+
+.img-mat-card:hover .set-fav-card{
+    display: inline-block;
 }

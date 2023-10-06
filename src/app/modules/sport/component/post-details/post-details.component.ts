@@ -40,6 +40,8 @@ export class PostDetailsComponent {
 
   iconName = 'arrow_drop_down';
 
+  isFavorite: boolean = false;
+
   showReportOptions: boolean = false;
   currentSlideIndex = 0;
   carouselItems = [
@@ -64,6 +66,13 @@ export class PostDetailsComponent {
       this.getSportPost(tableRefGuid);
     }
   }
+
+  toggleFavorite(event: Event) {
+    event.preventDefault(); 
+    event.stopPropagation();
+    this.isFavorite = !this.isFavorite;
+  }
+
 
   formatPrice(price: number): string {
     const roundedPrice = Math.round(price);
