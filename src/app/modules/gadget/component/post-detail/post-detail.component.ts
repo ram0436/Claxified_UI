@@ -38,6 +38,8 @@ export class PostDetailComponent {
 
   reporterClicked = false;
 
+  isFavorite: boolean = false;
+
   iconName = 'arrow_drop_down';
 
   showReportOptions: boolean = false;
@@ -63,6 +65,12 @@ export class PostDetailComponent {
     if (tableRefGuid != null) {
       this.getGadgetPost(tableRefGuid);
     }
+  }
+
+  toggleFavorite(event: Event) {
+    event.preventDefault(); 
+    event.stopPropagation();
+    this.isFavorite = !this.isFavorite;
   }
 
   formatPrice(price: number): string {
