@@ -27,4 +27,9 @@ export class LoginComponent {
       else this.router.navigate(['/user/account']);
     })
   }
+
+  closeDialog(){
+    this.dialogRef.close();
+  }
+
 }

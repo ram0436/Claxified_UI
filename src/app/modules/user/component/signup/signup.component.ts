@@ -48,4 +48,9 @@ export class SignupComponent {
   handleConfirmPassword(event : any){
     this.confirmPassword = event.target.value;
   }
+
+  closeDialog(){
+    this.dialogRef.close();
+  }
+
 }
