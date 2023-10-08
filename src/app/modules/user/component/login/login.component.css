@@ -53,3 +53,11 @@
 .mat-mdc-card-title {
   margin-top: 15px;
 }
+
+.cancel-icon{
+  cursor: pointer;
+  font-size: 25px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
