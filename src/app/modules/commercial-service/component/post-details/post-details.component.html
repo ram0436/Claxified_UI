@@ -5,15 +5,37 @@
     </div>
   </div>
   <div class="pd-3" *ngIf="!isLoading">
-    <button class="back-btn" (click)="goBack()">
-      <span class="material-icons-outlined"> chevron_left </span>Back
-    </button>
-    <h4 *ngIf="!isLoading && mainCategories.length > 0 && subCategories.length > 0"><a routerLink="/Commercial Services/view-posts">{{ getMainCategoryName(postDetails?.categoryId) }}</a>
-      /<a [routerLink]="'/Commercial Services/view-posts'"
-      [queryParams]="{ type: 'service', sub: postDetails?.subCategoryId }">{{ getSubCategoryName(postDetails?.subCategoryId) }}</a>
+    <div class="btn-text">
+      <button class="back-btn" (click)="goBack()">
+        <span class="material-icons-outlined"> chevron_left </span>Back
+      </button>
+      <h4
+        *ngIf="
+          !isLoading && mainCategories.length > 0 && subCategories.length > 0
+        "
+      >
+        <a routerLink="/Commercial Services/view-posts">{{
+          getMainCategoryName(postDetails?.categoryId)
+        }}</a>
+        /<a
+          [routerLink]="'/Commercial Services/view-posts'"
+          [queryParams]="{ type: 'service', sub: postDetails?.subCategoryId }"
+          >{{ getSubCategoryName(postDetails?.subCategoryId) }}</a
+        >
       </h4>
+    </div>
     <div class="flex gap-2 pt-3" *ngIf="!isLoading">
       <mat-card class="border-1 mb-2 block img-mat-card">
+        <span
+          class="material-icons set-fav-card"
+          [class.material-icons-outlined]="!isFavorite"
+          [class.fill]="isFavorite"
+          [class.active]="isFavorite"
+          (click)="toggleFavorite($event)"
+          title="Add in Wishlist"
+        >
+          {{ isFavorite ? "favorite" : "favorite_border" }}
+        </span>
         <div class="pg-card">
           <span
             class="material-icons pg_arrow pg_arrow_left"
@@ -126,17 +148,17 @@
                 >
               </div>
             </div>
-            <button class="post w-100" mat-raised-button color="primary">
+            <!-- <button class="post w-100" mat-raised-button color="primary">
               Chat with seller
             </button>
             <br />
-            <br />
+            <br /> -->
             <div>
               <div class="action-btns">
-                <button class="button button--secondary favourite">
+                <!-- <button class="button button--secondary favourite">
                   <span class="material-icons fvrt-icon"> favorite </span>
                   Favourite
-                </button>
+                </button> -->
                 <button
                   class="button button--secondary reporter"
                   (click)="toggleReportOptions()"

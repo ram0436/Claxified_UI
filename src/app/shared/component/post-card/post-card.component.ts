@@ -38,6 +38,8 @@ export class PostCardComponent implements OnInit {
 
     stateAbr: string = "";
 
+    isFavorite: boolean = false;
+
     salaryPeriods = Object.keys(SalaryPeriod).map((key: any) => ({
         label: key,
         id: SalaryPeriod[key],
@@ -81,6 +83,12 @@ formatPrice(price: number): string {
   const formattedPrice = roundedPrice.toLocaleString('en-IN');
 
   return formattedPrice;
+}
+
+toggleFavorite(event: Event) {
+  event.preventDefault(); 
+  event.stopPropagation();
+  this.isFavorite = !this.isFavorite;
 }
 
 

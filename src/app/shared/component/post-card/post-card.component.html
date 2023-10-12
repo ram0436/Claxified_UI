@@ -26,6 +26,16 @@
           alt="{{ card?.title }}"
           class="card-image"
         />
+        <span
+          class="material-icons set-fav-card"
+          [class.material-icons-outlined]="!isFavorite"
+          [class.fill]="isFavorite"
+          [class.active]="isFavorite"
+          (click)="toggleFavorite($event)"
+          title="Add in Wishlist"
+        >
+          {{ isFavorite ? "favorite" : "favorite_border" }}
+        </span>
         <span class="ribbon-featured" *ngIf="card?.isPremium">
           <strong class="ribbon">
             <span class="hide-visually">This ad is</span>
