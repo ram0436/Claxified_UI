@@ -35,7 +35,7 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <mat-form-field *ngIf="subCategory == 'Cars' && brandId">
+      <mat-form-field *ngIf="(subCategory == 'Cars' || subCategory == 'Bikes') && brandId">
         <mat-label>Model</mat-label>
         <input
           type="text"
@@ -66,6 +66,7 @@
           placeholder="Enter Year"
           (change)="onYearChangeEvent($event)"
           (input)="allowOnlyNumbers($event)"
+          [(ngModel)]="vehicleData.year"
         />
       </mat-form-field>
       <mat-form-field *ngIf="subCategory != 'Spare Parts'">
@@ -75,15 +76,17 @@
           placeholder="Enter KMs "
           (change)="onKmsChangeEvent($event)"
           (input)="allowOnlyNumbers($event)"
+          [(ngModel)]="vehicleData.kmDriven"
         />
       </mat-form-field>
       <div *ngIf="subCategory != 'Spare Parts'">
         <mat-label>Fuel Type</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="vehicleData.fuelType">
             <mat-chip-option
               *ngFor="let fuel of fuelTypes"
               (click)="selectFuelType(fuel)"
+              [value]="fuel.id"
               >{{ fuel.label }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -92,11 +95,12 @@
       <div *ngIf="subCategory != 'Spare Parts'">
         <mat-label>Transmission</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="vehicleData.transmissionType">
             <mat-chip-option
-              *ngFor="let transmission of transmissionTypes"
-              (click)="selectTransmission(transmission)"
-              >{{ transmission.label }}</mat-chip-option
+              *ngFor="let transmissionType of transmissionTypes"
+              (click)="selectTransmission(transmissionType)"
+              [value]="transmissionType.id"
+              >{{ transmissionType.label }}</mat-chip-option
             >
           </mat-chip-listbox>
         </div>
@@ -104,10 +108,11 @@
       <div *ngIf="subCategory != 'Spare Parts'">
         <mat-label>No of owners</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="vehicleData.noOfOwner">
             <mat-chip-option
               *ngFor="let owner of numberOfOwners"
               (click)="selectOwnerNumber(owner)"
+              [value]="owner"
               >{{ owner }}</mat-chip-option
             >
           </mat-chip-listbox>

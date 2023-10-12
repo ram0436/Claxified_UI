@@ -41,4 +41,10 @@ export class VehicleService {
   getCarModels(brandId : Number){
     return this.httpClient.get(`${this.BaseURL}Vehicle/GetCarModel?carBrandId=` + brandId);
   }
+  updateVehiclePost(payLoad: any) {
+    return this.httpClient.put(`${this.BaseURL}Vehicle/`+payLoad.id, payLoad);
+  }
+  getBikeModels(brandId : Number){
+    return this.httpClient.get(`${this.BaseURL}Vehicle/GetBikeModel?bikeBrandId=` + brandId);
+  }
 }

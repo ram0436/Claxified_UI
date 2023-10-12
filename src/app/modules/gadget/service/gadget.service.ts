@@ -28,4 +28,7 @@ export class GadgetService {
   getGadgetPostByGuid(guid: any) {
     return this.httpClient.get(`${this.BaseURL}Gadget/GetGadgetByGuid?tabRefGuid=` + guid)
   }
+  updateGadgetPost(payLoad: any) {
+    return this.httpClient.put(`${this.BaseURL}Gadget/`+payLoad.id, payLoad);
+  }
 }
