@@ -192,7 +192,7 @@ formatPrice(price: number): string {
             return card.commercialServiceImagesList[0]?.imageURL;
         }
         else {
-            return '../../../assets/image_not_available.png';
+            return '../../../assets/image_not_available.jpg';
         }
     }
     setMainCategoryName(cards: any) {

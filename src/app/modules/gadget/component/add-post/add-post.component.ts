@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { GadgetService } from '../../service/gadget.service';
 })
 export class AddPostComponent {
 
-  myControl = new FormControl("");
+  myControl = new FormControl({});
   filteredBrands!: Observable<{ id: number; brandName: string; }[]>;
   cardsCount: any[] = new Array(10);
   currentImageIndex: any = 0;
@@ -35,7 +35,7 @@ export class AddPostComponent {
   firstImageUploaded: boolean = false; // Changes made by Hamza
 
   constructor(private gadgetService: GadgetService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute,
-    @Inject(DOCUMENT) private document: Document, private userService: UserService,private router : Router) { }
+    @Inject(DOCUMENT) private document: Document, private userService: UserService,private router : Router,private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.getUserData();
@@ -55,6 +55,22 @@ export class AddPostComponent {
           this.getTabletBrands();
           break;
         }
+      }
+      let mode = params['mode'];
+      if(mode !=undefined){
+        let guid = localStorage.getItem('guid');
+        this.gadgetService.getGadgetPostByGuid(guid).subscribe((res:any)=>{
+          this.commonPayload = res[0];
+          this.brandId = res[0].mobileBrandId;
+          res[0].gadgetImageList.forEach((image:any,index:any)=>{
+            this.cardsCount[index] = image.imageURL;
+          })
+          if(this.brands.length > 0){
+            let actualBrand = this.brands.find((brand:any)=>brand.id == res[0].mobileBrandId);
+            this.myControl.patchValue(actualBrand);
+          }
+          this.cdr.detectChanges();
+        })
       }
     });
   }
@@ -126,7 +142,10 @@ export class AddPostComponent {
     this.commonPayload.name = this.userData.firstName;
     this.commonPayload.mobile = this.userData.mobileNo;
     var payload = this.addSpecificPayload(this.commonPayload);
-    this.saveGadgetPost(payload);
+    if(payload.id)
+      this.updateGadgetPost(payload);
+    else
+      this.saveGadgetPost(payload);
   }
   getAddress(event: any) {
     let pincode = event.target.value;
@@ -270,5 +289,12 @@ export class AddPostComponent {
         uploadElement.click();
       }
     }
+  }
+  updateGadgetPost(payload: any) {
+    if (this.validatePostForm(payload))
+      this.gadgetService.updateGadgetPost(payload).subscribe(data => {
+        this.showNotification("Post updated succesfully");
+        this.router.navigateByUrl('/post-menu');
+      });
   }
 }

@@ -51,4 +51,7 @@ export class CommonService {
   getPostDetails(){
     return this.postDetailsSubject.asObservable();
   }
+  getAllAdsByUserId(userId:number){
+    return this.httpClient.get(`${this.BaseURL}User/GetAllAdsByUserId?userId=`+userId);
+  }
 }

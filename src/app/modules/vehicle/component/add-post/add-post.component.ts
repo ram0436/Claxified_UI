@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, EventEmitter, Output } from '@angular/core';
+import { Component, Inject, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -19,8 +19,8 @@ import { VehicleService } from '../../service/vehicle.service';
 })
 export class AddPostComponent {
 
-  brandControl = new FormControl("");
-  modelControl = new FormControl("");
+  brandControl = new FormControl({});
+  modelControl = new FormControl({});
   filteredBrands!: Observable<{ id: number; brandName: string; }[]>;
   filteredModels!: Observable<{ id: number; model: string; }[]>;
   cardsCount: any[] = new Array(10);
@@ -49,11 +49,11 @@ export class AddPostComponent {
   brandId: any;
   progress: boolean = false;
   vehicleData: any = {
-    fuelType: 0,
-    transmissionType: 0,
-    noOfOwner: 0,
-    kmDriven: 0,
-    year: 0
+    fuelType: null,
+    transmissionType: null,
+    noOfOwner: null,
+    kmDriven: null,
+    year: null
   }
   userData: any;
   imageUrl: string = '../../../../../assets/img_not_available.png';
@@ -64,7 +64,7 @@ export class AddPostComponent {
   isDraggingEnabled = true;
 
   constructor(private vehicleService: VehicleService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute,
-    @Inject(DOCUMENT) private document: Document, private userService: UserService,private router : Router) { }
+    @Inject(DOCUMENT) private document: Document, private userService: UserService,private router : Router,private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.getUserData();
@@ -94,6 +94,31 @@ export class AddPostComponent {
           this.getBicycleBrands();
           break;
         }
+      }
+      let mode = params['mode'];
+      if(mode !=undefined){
+        let guid = localStorage.getItem('guid');
+        this.vehicleService.getVehiclePostById(guid).subscribe((res:any)=>{
+          this.commonPayload = res[0];
+          Object.keys(this.vehicleData).forEach(key=>{
+            this.vehicleData[key] = res[0][key];
+          })
+          this.brandId = res[0].vehicelBrandId;
+          res[0].vehicleImageList.forEach((image:any,index:any)=>{
+            this.cardsCount[index] = image.imageURL;
+          })
+          if(this.brands.length > 0){
+            let actualBrand = this.brands.find((brand:any)=>brand.id == res[0].vehicelBrandId);
+            this.brandControl.patchValue(actualBrand);
+          }
+          this.vehicleService.getCarModels(this.brandId).subscribe((resp:any) => {
+            this.carModels = resp;
+            this.getFilteredModels();
+            let actualModel =  resp.find((model:any)=>model.id == res[0].modelId);
+            this.modelControl.patchValue(actualModel);
+          });
+          this.cdr.detectChanges();
+        })
       }
     });
   }
@@ -179,7 +204,10 @@ export class AddPostComponent {
     this.commonPayload.name = this.userData.firstName;
     this.commonPayload.mobile = this.userData.mobileNo;
     var payload = this.addSpecificPayload(this.commonPayload);
-    this.saveVehiclePost(payload);
+    if(payload.id)
+      this.updateVehiclePost(payload);
+    else
+      this.saveVehiclePost(payload);
   }
   getAddress(event: any) {
     let pincode = event.target.value;
@@ -262,11 +290,17 @@ export class AddPostComponent {
       vehicleImageList: imageList,
       vehicelBrandId: this.brandId,
     });
+    if(this.subCategory == 'Cars' || this.subCategory == 'Bikes')
+      payload.modelId = this.carModelId;
     return payload;
   }
   handleBrand(data: any) {
     this.brandId = data.id;
-    this.getCarModels(data.id);
+    this.modelControl.patchValue({});
+    if(this.subCategory == 'Cars')
+      this.getCarModels(data.id);
+    else
+      this.getBikeModels(data.id);
   }
   displayBrand(brand: any): string {
     return brand.brandName || "";
@@ -382,5 +416,18 @@ export class AddPostComponent {
         uploadElement.click();
       }
     }
+  }
+  updateVehiclePost(payload: any) {
+    if (this.validatePostForm(payload))
+      this.vehicleService.updateVehiclePost(payload).subscribe(data => {
+        this.showNotification("Post updated succesfully");
+        this.router.navigateByUrl('/post-menu');
+      });
+  }
+  getBikeModels(brandId: Number) {
+    this.vehicleService.getBikeModels(brandId).subscribe(res => {
+      this.carModels = res;
+      this.getFilteredModels();
+    });
   }
 }
