@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import * as moment from 'moment';
 import { VehicleService } from '../../service/vehicle.service';
 import { FuelType } from 'src/app/shared/enum/FuelType';
+import { AdsReportType } from 'src/app/shared/enum/AdsReportType';
 import { TransmissionType } from 'src/app/shared/enum/TransmissionType';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -9,6 +10,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LoginComponent } from '../../../user/component/login/login.component';
 import { SignupComponent } from '../../../user/component/signup/signup.component'
 import { CommonService } from 'src/app/shared/service/common.service';
+import { UserService } from '../../../user/service/user.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -63,8 +65,20 @@ export class PostDetailComponent {
   ];
   mainCategories : any = [];
   subCategories : any = [];
+
+  reportDetail: string = '';
+  adsReportType: AdsReportType = AdsReportType.Others;
+  adTabRefGuid: string = '';
+  showSuccessMessage: boolean = false;
+  selectedRadioValue: number | null = null;
+  showOptionWarning: boolean = false;
+  // showDetailWarning: boolean = false;
+
   constructor(private vehicleService: VehicleService, private route: ActivatedRoute, private location: Location, private router: Router,  private dialog: MatDialog,
-    private commonService : CommonService) { 
+    private commonService : CommonService, private UserService : UserService) { 
+      this.route.paramMap.subscribe(params => {
+        this.adTabRefGuid = params.get('id') || '';
+      });
   }
 
 
@@ -82,6 +96,67 @@ export class PostDetailComponent {
       this.getVehiclePost(tableRefGuid);
     }
   }
+
+  setAdsReportType(value: number) {
+    this.adsReportType = value;
+    this.handleRadioSelection(value);
+  }
+
+  handleRadioSelection(value: number) {
+    if (this.selectedRadioValue === value) {
+      this.selectedRadioValue = null;
+    } else {
+      this.selectedRadioValue = value;
+    }
+  }
+
+  sendReport() {
+
+  const isRadioButtonSelected = this.selectedRadioValue !== null;
+  // const isReportDetailProvided = this.reportDetail && this.reportDetail.trim().length > 0;
+
+  this.showOptionWarning = false;
+  // this.showDetailWarning = false;
+
+  if (!isRadioButtonSelected) {
+    this.showOptionWarning = true;
+    return; 
+  }
+
+    const userId = localStorage.getItem('id');
+
+    const reportPayload = {
+      id: 0,
+      adTabRefGuid: this.adTabRefGuid,
+      adsReportType: this.adsReportType,
+      reportDetail: this.reportDetail,
+      createdBy: localStorage.getItem('id'),
+      createdOn: new Date().toISOString(),
+    };
+
+    console.log('Request Payload:', reportPayload);
+
+    this.UserService.AdReportByUser(reportPayload).subscribe(
+      (response: any) => {
+        // console.log('Report sent successfully:', response);
+        // console.log('API Response:', response);
+        this.reportDetail = '';
+        this.selectedRadioValue = null;
+        this.toggleReportOptions();
+
+        this.showSuccessMessage = true;
+        setTimeout(() => {
+          this.showSuccessMessage = false;
+        }, 3000);
+      },
+      (error: any) => {
+        // Handle error response, if needed
+        console.error('Error sending report:', error);
+      }
+    );
+  }
+
+  
 
   toggleFavorite(event: Event) {
     event.preventDefault(); 
@@ -124,9 +199,19 @@ export class PostDetailComponent {
   }
 
   toggleReportOptions() {
-    this.showReportOptions = !this.showReportOptions;
-    this.reporterClicked = !this.reporterClicked;
-    this.iconName = this.showReportOptions ? 'arrow_drop_up' : 'arrow_drop_down';
+    if (localStorage.getItem('id') != null)
+    {
+      this.showReportOptions = !this.showReportOptions;
+      this.reporterClicked = !this.reporterClicked;
+      this.iconName = this.showReportOptions ? 'arrow_drop_up' : 'arrow_drop_down';
+      this.showOptionWarning = false;
+      // this.showDetailWarning = false;
+      this.selectedRadioValue = null;
+      this.reportDetail = '';
+    }
+    else{
+      this.openLoginModal();
+    }
   }
 
   zoomIn() {

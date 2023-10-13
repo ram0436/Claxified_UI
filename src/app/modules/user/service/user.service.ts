@@ -17,6 +17,9 @@ export class UserService {
   register(payload: any) {
     return this.httpClient.post("https://cfd.azurewebsites.net/api/User", payload);
   }
+  AdReportByUser(payload: any) {
+    return this.httpClient.post("https://cfd.azurewebsites.net//api/User/AdReportByUser", payload);
+  }
   uploadProfilePicture(formData: any) {
     return this.httpClient.post("https://cfd.azurewebsites.net/api/User/UploadImages", formData);
   }
