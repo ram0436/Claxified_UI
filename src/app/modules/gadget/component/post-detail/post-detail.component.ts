@@ -7,6 +7,7 @@ import { LoginComponent } from '../../../user/component/login/login.component';
 import { SignupComponent } from '../../../user/component/signup/signup.component'
 import { CommonService } from 'src/app/shared/service/common.service';
 import { Location } from '@angular/common';
+import { UserService } from 'src/app/modules/user/service/user.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -52,8 +53,13 @@ export class PostDetailComponent {
   ];
   mainCategories : any = [];
   subCategories : any = [];
+
+  productId: string = '';
+  categoryId: string = '';
+  favoriteStatus: { [key: string]: boolean } = {};
+
   constructor(private gadgetService: GadgetService,private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
-    private commonService : CommonService,private location : Location) { }
+    private commonService : CommonService,private location : Location, private UserService : UserService) { }
 
   ngOnInit() {
     this.getMainCategories();
@@ -67,11 +73,56 @@ export class PostDetailComponent {
     }
   }
 
-  toggleFavorite(event: Event) {
-    event.preventDefault(); 
+  toggleFavorite(event: Event, productId: string, categoryId: string) {
+    event.preventDefault();
     event.stopPropagation();
-    this.isFavorite = !this.isFavorite;
+  
+  
+    if (localStorage.getItem('id') != null) {
+      // Check if the card has a favorite status, if not, set it to false
+      this.favoriteStatus[productId] = this.favoriteStatus[productId] || false;
+  
+      // Toggle the favorite status for the specific card
+      this.favoriteStatus[productId] = !this.favoriteStatus[productId];
+  
+      if (this.favoriteStatus[productId]) {
+        this.addToWishlist(productId, categoryId);
+      } else {
+        // Remove from wishlist API call (if applicable)
+        // Implement this method if you have a remove from wishlist functionality
+      }
+    } else {
+      this.openLoginModal();
+    }
   }
+  
+  addToWishlist(productId: string, categoryId: string) {
+    const wishlistItem = {
+      id: 0,
+      productId: productId,
+      categoryId: categoryId,
+      createdBy: localStorage.getItem('id'),
+      createdOn: new Date().toISOString()
+    };
+  
+    // console.log('Request Payload:', wishlistItem);
+  
+    this.UserService.AddWishList(wishlistItem).subscribe(
+      (response: any) => {
+        // Handle success response, if needed
+        console.log('API Response:', response);
+      },
+      (error: any) => {
+        console.error('Error adding to Wishlist:', error);
+      }
+    );
+  }
+
+  // toggleFavorite(event: Event) {
+  //   event.preventDefault(); 
+  //   event.stopPropagation();
+  //   this.isFavorite = !this.isFavorite;
+  // }
 
   formatPrice(price: number): string {
     const roundedPrice = Math.round(price);

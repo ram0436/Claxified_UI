@@ -17,6 +17,9 @@ export class CommonService {
   getAllItems(){
     return this.httpClient.get(`${this.BaseURL}Dashboard/GetAll?pageIndex=1&pageSize=30`);
   }
+  getDashboardItemByGuid(categoryId: number, tabRefGuid: string) {
+    return this.httpClient.get(`${this.BaseURL}Dashboard/GetDashboardItemByGuid?categoryId=${categoryId}&tabRefGuid=${tabRefGuid}`);
+  }
   getAddress(pinCode:any){
     return this.httpClient.get('https://api.postalpincode.in/pincode/'+pinCode);
   }

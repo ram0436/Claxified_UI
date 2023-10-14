@@ -15,6 +15,7 @@ import { PersonalComponent } from './component/personal/personal.component';
 import { MyAddsComponent } from './component/my-adds/my-adds.component';
 import { UserRoutingModule } from './user-routing.module';
 import { SecurityComponent } from './component/security/security.component';
+import { SavedComponent } from './component/saved/saved.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { SecurityComponent } from './component/security/security.component';
     AccountComponent,
     PersonalComponent,
     MyAddsComponent,
-    SecurityComponent
+    SecurityComponent,
+    SavedComponent
   ],
   imports: [
     CommonModule,

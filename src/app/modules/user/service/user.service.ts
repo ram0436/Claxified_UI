@@ -20,6 +20,13 @@ export class UserService {
   AdReportByUser(payload: any) {
     return this.httpClient.post("https://cfd.azurewebsites.net//api/User/AdReportByUser", payload);
   }
+  AddWishList(payload: any) {
+    return this.httpClient.post("https://cfd.azurewebsites.net/api/User/AddWishList", payload);
+  }
+  GetWishlistByUserId(userId: number) {
+    const url = `https://cfd.azurewebsites.net/api/User/GetWishlistByUserId?userId=${userId}`;
+    return this.httpClient.get(url);
+  }
   uploadProfilePicture(formData: any) {
     return this.httpClient.post("https://cfd.azurewebsites.net/api/User/UploadImages", formData);
   }
