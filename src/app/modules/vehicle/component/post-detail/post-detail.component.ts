@@ -72,6 +72,9 @@ export class PostDetailComponent {
   showSuccessMessage: boolean = false;
   selectedRadioValue: number | null = null;
   showOptionWarning: boolean = false;
+  productId: string = '';
+  categoryId: string = '';
+  favoriteStatus: { [key: string]: boolean } = {};
   // showDetailWarning: boolean = false;
 
   constructor(private vehicleService: VehicleService, private route: ActivatedRoute, private location: Location, private router: Router,  private dialog: MatDialog,
@@ -108,6 +111,51 @@ export class PostDetailComponent {
     } else {
       this.selectedRadioValue = value;
     }
+  }
+
+  toggleFavorite(event: Event, productId: string, categoryId: string) {
+    event.preventDefault();
+    event.stopPropagation();
+  
+  
+    if (localStorage.getItem('id') != null) {
+      // Check if the card has a favorite status, if not, set it to false
+      this.favoriteStatus[productId] = this.favoriteStatus[productId] || false;
+  
+      // Toggle the favorite status for the specific card
+      this.favoriteStatus[productId] = !this.favoriteStatus[productId];
+  
+      if (this.favoriteStatus[productId]) {
+        this.addToWishlist(productId, categoryId);
+      } else {
+        // Remove from wishlist API call (if applicable)
+        // Implement this method if you have a remove from wishlist functionality
+      }
+    } else {
+      this.openLoginModal();
+    }
+  }
+  
+  addToWishlist(productId: string, categoryId: string) {
+    const wishlistItem = {
+      id: 0,
+      productId: productId,
+      categoryId: categoryId,
+      createdBy: localStorage.getItem('id'),
+      createdOn: new Date().toISOString()
+    };
+  
+    // console.log('Request Payload:', wishlistItem);
+  
+    this.UserService.AddWishList(wishlistItem).subscribe(
+      (response: any) => {
+        // Handle success response, if needed
+        console.log('API Response:', response);
+      },
+      (error: any) => {
+        console.error('Error adding to Wishlist:', error);
+      }
+    );
   }
 
   sendReport() {
@@ -158,11 +206,11 @@ export class PostDetailComponent {
 
   
 
-  toggleFavorite(event: Event) {
-    event.preventDefault(); 
-    event.stopPropagation();
-    this.isFavorite = !this.isFavorite;
-  }
+  // toggleFavorite(event: Event) {
+  //   event.preventDefault(); 
+  //   event.stopPropagation();
+  //   this.isFavorite = !this.isFavorite;
+  // }
 
   formatPrice(price: number): string {
     const roundedPrice = Math.round(price);
@@ -249,6 +297,7 @@ export class PostDetailComponent {
       this.fuelType = this.fuelTypes.filter(fuel => fuel.id == this.postDetails.fuelType);
       this.transmissionType = this.transmissionTypes.filter(transmission => transmission.id == this.postDetails.transmissionType);
       this.isLoading = false;
+      // console.log(this.postDetails)
     });
   }
   formatDate(date: any): any {

@@ -28,13 +28,15 @@
         />
         <span
           class="material-icons set-fav-card"
-          [class.material-icons-outlined]="!isFavorite"
-          [class.fill]="isFavorite"
-          [class.active]="isFavorite"
-          (click)="toggleFavorite($event)"
+          [class.material-icons-outlined]="!favoriteStatus[card?.tableRefGuid]"
+          [class.fill]="favoriteStatus[card?.tableRefGuid]"
+          [class.active]="favoriteStatus[card?.tableRefGuid]"
+          (click)="toggleFavorite($event, card?.tableRefGuid, card?.categoryId)"
           title="Add in Wishlist"
         >
-          {{ isFavorite ? "favorite" : "favorite_border" }}
+          {{
+            favoriteStatus[card.tableRefGuid] ? "favorite" : "favorite_border"
+          }}
         </span>
         <span class="ribbon-featured" *ngIf="card?.isPremium">
           <strong class="ribbon">
@@ -47,6 +49,7 @@
           {{ imagesList.length }}
         </div>
       </div>
+      <!-- <span>{{ card?.tableRefGuid }}</span> -->
       <mat-card-title class="title title-flex" *ngIf="card?.price > 0"
         >₹<span class="text-blue">{{ formatPrice(card?.price) }}</span> |
         <span class="date-added">{{ formatDate(card?.createdOn) }}</span>

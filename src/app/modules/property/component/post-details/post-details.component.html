@@ -31,13 +31,25 @@
       <mat-card class="border-1 mb-2 block img-mat-card">
         <span
           class="material-icons set-fav-card"
-          [class.material-icons-outlined]="!isFavorite"
-          [class.fill]="isFavorite"
-          [class.active]="isFavorite"
-          (click)="toggleFavorite($event)"
+          [class.material-icons-outlined]="
+            !favoriteStatus[postDetails?.tableRefGuid]
+          "
+          [class.fill]="favoriteStatus[postDetails?.tableRefGuid]"
+          [class.active]="favoriteStatus[postDetails?.tableRefGuid]"
+          (click)="
+            toggleFavorite(
+              $event,
+              postDetails?.tableRefGuid,
+              postDetails?.categoryId
+            )
+          "
           title="Add in Wishlist"
         >
-          {{ isFavorite ? "favorite" : "favorite_border" }}
+          {{
+            favoriteStatus[postDetails?.tableRefGuid]
+              ? "favorite"
+              : "favorite_border"
+          }}
         </span>
         <div class="pg-card">
           <span

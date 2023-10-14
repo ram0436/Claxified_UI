@@ -1,0 +1,148 @@
+<div class="adds-conrainer">
+  <h2>Saved</h2>
+  <div>
+    <mat-tab-group animationDuration="0ms">
+      <mat-tab label="Saved">
+        <!-- <h3>Saved cards</h3> -->
+        <div
+          id="unique-component"
+          class="mat-app-background bg-white-back mat-pl-35"
+          *ngIf="!isLoading"
+        >
+          <button
+            class="back-to-top-btn"
+            (click)="scrollToTop()"
+            *ngIf="isScrolledDown"
+          >
+            <span class="material-icons-outlined">
+              keyboard_double_arrow_up
+            </span>
+            Back to Top
+          </button>
+          <mat-card class="example-card" *ngFor="let card of savedCards">
+            <a
+              class="custom-link"
+              [routerLink]="
+                '/' + card.mainCategory + '/post-details/' + card.tableRefGuid
+              "
+              target="_self"
+            >
+              <div class="post-image">
+                <img
+                  mat-card-image
+                  [src]="getCardImageURL(card)"
+                  alt="{{ card?.title }}"
+                  class="card-image"
+                />
+                <!-- <span
+                  class="material-icons set-fav-card"
+                  [class.material-icons-outlined]="!favoriteStatus[card?.tableRefGuid]"
+                  [class.fill]="favoriteStatus[card?.tableRefGuid]"
+                  [class.active]="favoriteStatus[card?.tableRefGuid]"
+                  (click)="toggleFavorite($event, card?.tableRefGuid, card?.categoryId)"
+                  title="Add in Wishlist"
+                >
+                  {{
+                    favoriteStatus[card.tableRefGuid] ? "favorite" : "favorite_border"
+                  }}
+                </span> -->
+                <span class="ribbon-featured" *ngIf="card?.isPremium">
+                  <strong class="ribbon">
+                    <span class="hide-visually">This ad is</span>
+                    Premium
+                  </strong>
+                </span>
+                <div class="image-count">
+                  <span class="material-icons"> photo_camera </span>
+                  {{ imagesList.length }}
+                </div>
+              </div>
+              <!-- <span>{{ card?.tableRefGuid }}</span> -->
+              <mat-card-title class="title title-flex" *ngIf="card?.price > 0"
+                >₹<span class="text-blue">{{ formatPrice(card?.price) }}</span>
+                |
+                <span class="date-added">{{
+                  formatDate(card?.createdOn)
+                }}</span>
+              </mat-card-title>
+              <mat-card-title
+                class="title title-sm"
+                *ngIf="card?.salaryPeriodType"
+              >
+                ₹<span class="text-blue"
+                  >{{ card?.salaryFrom }}-{{ card?.salaryTo }}</span
+                >
+                | {{ getSalaryPeriod(card?.salaryPeriodType) }} |
+                <span class="date-added date-added-sm">
+                  {{ formatDate(card?.createdOn) }}</span
+                >
+                <!-- ₹{{
+                  truncateContent(
+                    (card?.salaryFrom || "") +
+                      "-" +
+                      (card?.salaryTo || "") +
+                      " | " +
+                      getSalaryPeriod(card?.salaryPeriodType),
+                    20
+                  )
+                }}
+                <span class="date-added date-added-sm">
+                  | {{ formatDate(card?.createdOn) }}</span
+                > -->
+              </mat-card-title>
+              <mat-card-content class="description">
+                <p style="margin: 0" class="desc-title">
+                  {{ truncateTitle(card?.title) }}
+                </p>
+                <p *ngIf="card?.year" class="mb-0">
+                  {{
+                    truncateTitle(
+                      (card?.year || "") +
+                        " - " +
+                        (card?.kmDriven ? card.kmDriven + " kms" : "")
+                    )
+                  }}
+                </p>
+                <div class="loc-date">
+                  <p class="map">
+                    <img src="../../../../../assets/map.png" alt="Loc" />
+                  </p>
+                  <p class="loc">
+                    {{
+                      truncateCity(
+                        (card?.nearBy || "") +
+                          ", " +
+                          (card?.city || "") +
+                          " (" +
+                          stateAbbreviation(card?.state || "") +
+                          ")"
+                      )
+                    }}
+                  </p>
+                  <!-- + "," + (card?.stateAbr || "") -->
+                  <!-- <p class="date">{{ formatDate(card?.createdOn) }}</p> -->
+                </div>
+              </mat-card-content>
+            </a>
+          </mat-card>
+          <div *ngIf="savedCards.length == 0">
+            <p>{{ savedCards | json }}</p>
+            <p class="noposts">No Posts found</p>
+          </div>
+
+          <!-- <div class="load-more-container" *ngIf="displayedCardCount < cards.length">
+            <button class="load-more-btn" (click)="loadMoreCards()">
+              <span class="material-icons-outlined"> keyboard_double_arrow_down </span>
+              Load More
+            </button>
+          </div> -->
+        </div>
+
+        <!-- <div>
+          <mat-paginator [length]="cards.length" [pageSize]="pageSize" [pageIndex]="currentPage"
+            (page)="onPageChange($event)"></mat-paginator>
+        </div> -->
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
