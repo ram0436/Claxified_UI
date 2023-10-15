@@ -11,6 +11,7 @@ import { LoginComponent } from '../../../user/component/login/login.component';
 import { SignupComponent } from '../../../user/component/signup/signup.component'
 import { CommonService } from 'src/app/shared/service/common.service';
 import { UserService } from '../../../user/service/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-post-detail',
@@ -78,7 +79,7 @@ export class PostDetailComponent {
   // showDetailWarning: boolean = false;
 
   constructor(private vehicleService: VehicleService, private route: ActivatedRoute, private location: Location, private router: Router,  private dialog: MatDialog,
-    private commonService : CommonService, private UserService : UserService) { 
+    private commonService : CommonService, private UserService : UserService, private snackBar: MatSnackBar,) { 
       this.route.paramMap.subscribe(params => {
         this.adTabRefGuid = params.get('id') || '';
       });
@@ -186,19 +187,26 @@ export class PostDetailComponent {
         this.selectedRadioValue = null;
         this.toggleReportOptions();
 
-        this.showSuccessMessage = true;
-        setTimeout(() => {
-          this.showSuccessMessage = false;
-        }, 3000);
+        // this.showSuccessMessage = true;
+        // setTimeout(() => {
+        //   this.showSuccessMessage = false;
+        // }, 3000);
+        this.showNotification("Your report has been successfully submitted.")
       },
       (error: any) => {
         // Handle error response, if needed
-        console.error('Error sending report:', error);
+        // console.error('Error sending report:', error);
       }
     );
   }
 
-  
+  showNotification(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top'
+    });
+  }
 
   // toggleFavorite(event: Event) {
   //   event.preventDefault(); 

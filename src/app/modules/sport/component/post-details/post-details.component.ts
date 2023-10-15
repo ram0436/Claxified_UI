@@ -8,6 +8,8 @@ import { SignupComponent } from '../../../user/component/signup/signup.component
 import { CommonService } from 'src/app/shared/service/common.service';
 import { Location } from '@angular/common';
 import { UserService } from 'src/app/modules/user/service/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AdsReportType } from 'src/app/shared/enum/AdsReportType';
 
 @Component({
   selector: 'app-post-details',
@@ -54,12 +56,19 @@ export class PostDetailsComponent {
   mainCategories : any = [];
   subCategories : any = [];
 
+  reportDetail: string = '';
+  adsReportType: AdsReportType = AdsReportType.Others;
+  adTabRefGuid: string = '';
+  showSuccessMessage: boolean = false;
+  selectedRadioValue: number | null = null;
+  showOptionWarning: boolean = false;
+
   productId: string = '';
   categoryId: string = '';
   favoriteStatus: { [key: string]: boolean } = {};
 
   constructor(private sportService: SportService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
-    private commonService : CommonService,private location : Location, private UserService: UserService) { }
+    private commonService : CommonService,private location : Location, private UserService: UserService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.getMainCategories();
@@ -72,6 +81,86 @@ export class PostDetailsComponent {
       this.getSportPost(tableRefGuid);
     }
   }
+
+  setAdsReportType(value: number) {
+    this.adsReportType = value;
+    this.handleRadioSelection(value);
+  }
+
+  handleRadioSelection(value: number) {
+    if (this.selectedRadioValue === value) {
+      this.selectedRadioValue = null;
+    } else {
+      this.selectedRadioValue = value;
+    }
+  }
+
+  sendReport() {
+
+    const isRadioButtonSelected = this.selectedRadioValue !== null;
+    // const isReportDetailProvided = this.reportDetail && this.reportDetail.trim().length > 0;
+  
+    this.showOptionWarning = false;
+    // this.showDetailWarning = false;
+  
+    if (!isRadioButtonSelected) {
+      this.showOptionWarning = true;
+      return; 
+    }
+  
+      const userId = localStorage.getItem('id');
+  
+      const reportPayload = {
+        id: 0,
+        adTabRefGuid: this.adTabRefGuid,
+        adsReportType: this.adsReportType,
+        reportDetail: this.reportDetail,
+        createdBy: localStorage.getItem('id'),
+        createdOn: new Date().toISOString(),
+      };
+  
+      this.UserService.AdReportByUser(reportPayload).subscribe(
+        (response: any) => {
+          this.reportDetail = '';
+          this.selectedRadioValue = null;
+          this.toggleReportOptions();
+  
+          // this.showSuccessMessage = true;
+          // setTimeout(() => {
+          //   this.showSuccessMessage = false;
+          // }, 3000);
+          this.showNotification("Your report has been successfully submitted.")
+        },
+        (error: any) => {
+          // Handle error response, if needed
+          // console.error('Error sending report:', error);
+        }
+      );
+    }
+  
+    showNotification(message: string): void {
+      this.snackBar.open(message, 'Close', {
+        duration: 5000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top'
+      });
+    }
+
+    toggleReportOptions() {
+      if (localStorage.getItem('id') != null)
+      {
+        this.showReportOptions = !this.showReportOptions;
+        this.reporterClicked = !this.reporterClicked;
+        this.iconName = this.showReportOptions ? 'arrow_drop_up' : 'arrow_drop_down';
+        this.showOptionWarning = false;
+        // this.showDetailWarning = false;
+        this.selectedRadioValue = null;
+        this.reportDetail = '';
+      }
+      else{
+        this.openLoginModal();
+      }
+    }
 
   toggleFavorite(event: Event, productId: string, categoryId: string) {
     event.preventDefault();
@@ -157,11 +246,11 @@ export class PostDetailsComponent {
     }
   }
 
-  toggleReportOptions() {
-    this.showReportOptions = !this.showReportOptions;
-    this.reporterClicked = !this.reporterClicked;
-    this.iconName = this.showReportOptions ? 'arrow_drop_up' : 'arrow_drop_down';
-  }
+  // toggleReportOptions() {
+  //   this.showReportOptions = !this.showReportOptions;
+  //   this.reporterClicked = !this.reporterClicked;
+  //   this.iconName = this.showReportOptions ? 'arrow_drop_up' : 'arrow_drop_down';
+  // }
 
   zoomIn() {
     this.isZoomed = !this.isZoomed;
