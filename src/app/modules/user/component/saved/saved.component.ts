@@ -68,12 +68,12 @@ export class SavedComponent {
           // Push each item from the API response to the savedCards array
           this.savedCards.push(...dashboardResponse);
           this.isLoading = false;
-          // console.log('Saved Cards:', this.savedCards);
+          console.log('Saved Cards:', this.savedCards);
         } else if (typeof dashboardResponse === 'object' && dashboardResponse !== null) {
           // If the response is an object, push it to the savedCards array
           this.savedCards.push(dashboardResponse);
           this.isLoading = false;
-          // console.log('Saved Card:', this.savedCards);
+          console.log('Saved Card:', this.savedCards);
         } else {
           // console.error('Invalid API response:', dashboardResponse);
         }
@@ -85,6 +85,35 @@ export class SavedComponent {
       }
     );
   }
+
+  getMainCategory(currentCategoryId: number): string {
+    if (currentCategoryId === 1) {
+      return 'Gadgets';
+    } else if (currentCategoryId === 2) {
+      return 'Vehicles';
+    }else if (currentCategoryId === 3) {
+      return 'Properties';
+    }else if (currentCategoryId === 4) {
+      return 'Jobs';
+    }else if (currentCategoryId === 5) {
+      return 'Electronics%20&%20Appliances';
+    }else if (currentCategoryId === 6) {
+      return 'Furniture';
+    }else if (currentCategoryId === 7) {
+      return 'Books';
+    }else if (currentCategoryId === 8) {
+      return 'Sports%20&%20Hobbies';
+    }else if (currentCategoryId === 9) {
+      return 'Pets';
+    } else if (currentCategoryId === 10) {
+      return 'Fashion';
+    }  else if (currentCategoryId === 11) {
+      return 'Commercial%20&%20Services';
+    }  else {
+      return '';
+    }
+  }
+
   formatPrice(price: number): string {
     const roundedPrice = Math.round(price);
   

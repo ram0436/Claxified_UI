@@ -23,7 +23,10 @@
             <a
               class="custom-link"
               [routerLink]="
-                '/' + card.mainCategory + '/post-details/' + card.tableRefGuid
+                '/' +
+                getMainCategory(card.categoryId) +
+                '/post-details/' +
+                card.tableRefGuid
               "
               target="_self"
             >
