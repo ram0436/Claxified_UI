@@ -83,7 +83,7 @@ export class PostCardComponent implements OnInit {
 
     ngOnInit() {
         this.paginatedCards = this.cards.slice(0, this.displayedCardCount);
-        // console.log(this.paginatedCards);
+        console.log(this.paginatedCards);
         this.getMainCategories();
 
         // if (this.cards.length > 0) {
