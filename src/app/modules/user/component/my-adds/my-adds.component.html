@@ -1,9 +1,11 @@
 <div class="adds-conrainer">
-    <h2>Manage My adds</h2>
+    <h2>Manage Ads</h2>
     <div>
         <mat-tab-group animationDuration="0ms" (selectedTabChange)="onTabChanged($event);">
             <mat-tab label="Active">
-                <h3>Active cards</h3>
+                <br>
+                <h4>Active Ads</h4>
+                <br>
                 <div class="card" *ngFor="let ad of activeAds">
                     <div class="rel row d-flex m-auto">
                         <div class="date col-xs-12 col-sm-1">
@@ -29,7 +31,7 @@
                                     <p class="p-price">₹ {{ad?.price}}</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <button class="btn-primary status">POSTED</button>
+                                    <button class="btn-primary status">Published</button>
                                 </div>
                                 <div class="col-sm-4">
                                     <p>This ad is live now</p>
@@ -54,8 +56,10 @@
                     </div>
                 </div>
             </mat-tab>
-            <mat-tab label="Inactive">
-                <h3>Inactive cards</h3>
+            <mat-tab label="InActive">
+                <br>
+                <h4>InActive Ads</h4>
+                <br>
                 <div class="card" *ngFor="let ad of inActiveAds">
                     <div class="rel row d-flex m-auto">
                         <div class="date col-xs-12 col-sm-1">
@@ -84,7 +88,7 @@
                                     <button class="btn btn-secondary status">InActive</button>
                                 </div>
                                 <div class="col-sm-4">
-                                    <p>This add is in inactive</p>
+                                    <p>This add is in inActive</p>
                                 </div>
                                 <div class="col-sm-1">
                                     <span class="material-icons" (click)="toggleMenu(ad?.id)">more_horiz</span>
@@ -107,7 +111,9 @@
                 </div>
             </mat-tab>
             <mat-tab label="Pending">
-                <h3>Pending cards</h3>
+                <br>
+                <h4>Pending Ads</h4>
+                <br>
                 <div class="card" *ngFor="let ad of pendingAds">
                     <div class="rel row d-flex m-auto">
                         <div class="date col-xs-12 col-sm-1">
