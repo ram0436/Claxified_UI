@@ -146,6 +146,10 @@
     cursor: pointer;
 }
 
+.wishlist-title{
+    padding-left: 40px;
+}
+
 .mat-app-background {
     display: flex;
     height: 100%;
@@ -161,6 +165,10 @@
 
 .bg-white-back{
     background-color: #fff;
+}
+
+.bg-whitegray-back{
+    background-color: #fafafa;
 }
 
 #unique-component.mat-app-background {

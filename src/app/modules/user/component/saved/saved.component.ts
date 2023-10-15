@@ -93,19 +93,19 @@ export class SavedComponent {
     }else if (currentCategoryId === 4) {
       return 'Jobs';
     }else if (currentCategoryId === 5) {
-      return 'Electronics%20&%20Appliances';
+      return 'Electronics & Appliances';
     }else if (currentCategoryId === 6) {
       return 'Furniture';
     }else if (currentCategoryId === 7) {
       return 'Books';
     }else if (currentCategoryId === 8) {
-      return 'Sports%20&%20Hobbies';
+      return 'Sports & Hobbies';
     }else if (currentCategoryId === 9) {
       return 'Pets';
     } else if (currentCategoryId === 10) {
       return 'Fashion';
     }  else if (currentCategoryId === 11) {
-      return 'Commercial%20&%20Services';
+      return 'Commercial Services';
     }  else {
       return '';
     }
@@ -281,9 +281,9 @@ switch (stateName) {
     }else if (card.jobImageList && card.jobImageList[0]?.imageURL) {
         this.imagesList = card.jobImageList;
         return card.jobImageList[0]?.imageURL;
-    }else if (card.commercialServiceImagesList && card.commercialServiceImagesList[0]?.imageURL) {
-        this.imagesList = card.commercialServiceImagesList;
-        return card.commercialServiceImagesList[0]?.imageURL;
+    }else if (card.commercialServiceImageList && card.commercialServiceImageList[0]?.imageURL) {
+        this.imagesList = card.commercialServiceImageList;
+        return card.commercialServiceImageList[0]?.imageURL;
     }
     else {
         return '../../../assets/image_not_available.jpg';
