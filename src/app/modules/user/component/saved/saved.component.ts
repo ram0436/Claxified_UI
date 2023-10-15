@@ -63,17 +63,14 @@ export class SavedComponent {
   handleDashboardData(categoryId: number, tabRefGuid: string) {
     this.CommonService.getDashboardItemByGuid(categoryId, tabRefGuid).subscribe(
       (dashboardResponse: any) => {
-        // console.log('API Response:', dashboardResponse);
         if (Array.isArray(dashboardResponse)) {
           // Push each item from the API response to the savedCards array
           this.savedCards.push(...dashboardResponse);
           this.isLoading = false;
-          console.log('Saved Cards:', this.savedCards);
         } else if (typeof dashboardResponse === 'object' && dashboardResponse !== null) {
           // If the response is an object, push it to the savedCards array
           this.savedCards.push(dashboardResponse);
           this.isLoading = false;
-          console.log('Saved Card:', this.savedCards);
         } else {
           // console.error('Invalid API response:', dashboardResponse);
         }

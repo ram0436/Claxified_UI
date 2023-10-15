@@ -105,12 +105,9 @@ export class PostDetailsComponent {
       createdOn: new Date().toISOString()
     };
   
-    // console.log('Request Payload:', wishlistItem);
-  
     this.UserService.AddWishList(wishlistItem).subscribe(
       (response: any) => {
         // Handle success response, if needed
-        console.log('API Response:', response);
       },
       (error: any) => {
         console.error('Error adding to Wishlist:', error);

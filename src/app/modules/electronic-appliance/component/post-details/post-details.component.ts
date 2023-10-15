@@ -51,19 +51,19 @@ export class PostDetailsComponent {
     "If an ad or reply sounds too good to be true, it probably is",
     "Use the 'Reply to ad' button for your safety and privacy"
   ];
-  mainCategories : any = [];
-  subCategories : any = [];
+  mainCategories: any = [];
+  subCategories: any = [];
 
   productId: string = '';
   categoryId: string = '';
   favoriteStatus: { [key: string]: boolean } = {};
 
-  constructor(private electronicApplianceService: ApplianceService,private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
-    private commonService : CommonService,private location : Location, private UserService: UserService) { }
+  constructor(private electronicApplianceService: ApplianceService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
+    private commonService: CommonService, private location: Location, private UserService: UserService) { }
 
   ngOnInit() {
     this.getMainCategories();
-    setTimeout(()=> this.getSubCategory(this.postDetails.categoryId),1000);
+    setTimeout(() => this.getSubCategory(this.postDetails.categoryId), 1000);
     var tableRefGuid;
     this.route.paramMap.subscribe((params) => {
       tableRefGuid = params.get('id');
@@ -74,18 +74,18 @@ export class PostDetailsComponent {
   }
 
 
-    toggleFavorite(event: Event, productId: string, categoryId: string) {
+  toggleFavorite(event: Event, productId: string, categoryId: string) {
     event.preventDefault();
     event.stopPropagation();
-  
-  
+
+
     if (localStorage.getItem('id') != null) {
       // Check if the card has a favorite status, if not, set it to false
       this.favoriteStatus[productId] = this.favoriteStatus[productId] || false;
-  
+
       // Toggle the favorite status for the specific card
       this.favoriteStatus[productId] = !this.favoriteStatus[productId];
-  
+
       if (this.favoriteStatus[productId]) {
         this.addToWishlist(productId, categoryId);
       } else {
@@ -96,7 +96,7 @@ export class PostDetailsComponent {
       this.openLoginModal();
     }
   }
-  
+
   addToWishlist(productId: string, categoryId: string) {
     const wishlistItem = {
       id: 0,
@@ -105,13 +105,10 @@ export class PostDetailsComponent {
       createdBy: localStorage.getItem('id'),
       createdOn: new Date().toISOString()
     };
-  
-    // console.log('Request Payload:', wishlistItem);
-  
+
     this.UserService.AddWishList(wishlistItem).subscribe(
       (response: any) => {
         // Handle success response, if needed
-        console.log('API Response:', response);
       },
       (error: any) => {
         console.error('Error adding to Wishlist:', error);
@@ -127,9 +124,9 @@ export class PostDetailsComponent {
 
   formatPrice(price: number): string {
     const roundedPrice = Math.round(price);
-  
+
     const formattedPrice = roundedPrice.toLocaleString('en-IN');
-  
+
     return formattedPrice;
   }
 
@@ -183,7 +180,7 @@ export class PostDetailsComponent {
     }
   }
 
-    goBack() {
+  goBack() {
     // this.router.navigate(['/Electronics & Appliances/view-posts'], {
     //   queryParams: {
     //     type: 'Appliances',
@@ -259,21 +256,21 @@ export class PostDetailsComponent {
     else
       this.openLoginModal();
   }
-  getMainCategoryName(id:number){
-    let mainCategory = this.mainCategories.find((cat:any)=>cat.id==id);
-    return mainCategory !=null ? mainCategory.categoryName: "";
+  getMainCategoryName(id: number) {
+    let mainCategory = this.mainCategories.find((cat: any) => cat.id == id);
+    return mainCategory != null ? mainCategory.categoryName : "";
   }
-  getSubCategoryName(id:number){
-    let subCategory = this.subCategories.find((cat:any)=>cat.id==id);
-    return subCategory !=null ? subCategory.subCategoryName: "";
+  getSubCategoryName(id: number) {
+    let subCategory = this.subCategories.find((cat: any) => cat.id == id);
+    return subCategory != null ? subCategory.subCategoryName : "";
   }
-  getMainCategories(){
-    this.commonService.getAllCategory().subscribe(res=>{
+  getMainCategories() {
+    this.commonService.getAllCategory().subscribe(res => {
       this.mainCategories = res;
     })
   }
-  getSubCategory(id:number){
-    this.commonService.getSubCategoryByCategoryId(id).subscribe(res=>{
+  getSubCategory(id: number) {
+    this.commonService.getSubCategoryByCategoryId(id).subscribe(res => {
       this.subCategories = res;
     })
   }

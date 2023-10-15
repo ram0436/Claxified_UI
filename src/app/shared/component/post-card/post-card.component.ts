@@ -83,7 +83,6 @@ export class PostCardComponent implements OnInit {
 
     ngOnInit() {
         this.paginatedCards = this.cards.slice(0, this.displayedCardCount);
-        console.log(this.paginatedCards);
         this.getMainCategories();
 
         // if (this.cards.length > 0) {
@@ -147,12 +146,10 @@ addToWishlist(productId: string, categoryId: string) {
     createdOn: new Date().toISOString()
   };
 
-  // console.log('Request Payload:', wishlistItem);
 
   this.UserService.AddWishList(wishlistItem).subscribe(
     (response: any) => {
       // Handle success response, if needed
-      console.log('API Response:', response);
     },
     (error: any) => {
       console.error('Error adding to Wishlist:', error);
@@ -396,13 +393,9 @@ openLoginModal() {
 //     createdOn: new Date().toISOString(),
 //   };
 
-//   console.log('Request Payload:', reportPayload);
 
 //   this.UserService.AdReportByUser(reportPayload).subscribe(
 //     (response: any) => {
-//       // console.log('Report sent successfully:', response);
-//       console.log('API Response:', response);
-
 //     },
 //     (error: any) => {
 //       // Handle error response, if needed

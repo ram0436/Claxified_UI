@@ -145,12 +145,10 @@ export class PostDetailComponent {
       createdOn: new Date().toISOString()
     };
   
-    // console.log('Request Payload:', wishlistItem);
   
     this.UserService.AddWishList(wishlistItem).subscribe(
       (response: any) => {
         // Handle success response, if needed
-        console.log('API Response:', response);
       },
       (error: any) => {
         console.error('Error adding to Wishlist:', error);
@@ -182,12 +180,8 @@ export class PostDetailComponent {
       createdOn: new Date().toISOString(),
     };
 
-    console.log('Request Payload:', reportPayload);
-
     this.UserService.AdReportByUser(reportPayload).subscribe(
       (response: any) => {
-        // console.log('Report sent successfully:', response);
-        // console.log('API Response:', response);
         this.reportDetail = '';
         this.selectedRadioValue = null;
         this.toggleReportOptions();
@@ -297,7 +291,6 @@ export class PostDetailComponent {
       this.fuelType = this.fuelTypes.filter(fuel => fuel.id == this.postDetails.fuelType);
       this.transmissionType = this.transmissionTypes.filter(transmission => transmission.id == this.postDetails.transmissionType);
       this.isLoading = false;
-      // console.log(this.postDetails)
     });
   }
   formatDate(date: any): any {
