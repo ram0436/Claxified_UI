@@ -68,7 +68,11 @@ export class PostDetailsComponent {
   favoriteStatus: { [key: string]: boolean } = {};
 
   constructor(private sportService: SportService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
-    private commonService : CommonService,private location : Location, private UserService: UserService, private snackBar: MatSnackBar) { }
+    private commonService : CommonService,private location : Location, private UserService: UserService, private snackBar: MatSnackBar) { 
+      this.route.paramMap.subscribe(params => {
+        this.adTabRefGuid = params.get('id') || '';
+      });
+     }
 
   ngOnInit() {
     this.getMainCategories();
