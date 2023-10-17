@@ -31,13 +31,25 @@
       <mat-card class="border-1 mb-2 block img-mat-card">
         <span
           class="material-icons set-fav-card"
-          [class.material-icons-outlined]="!isFavorite"
-          [class.fill]="isFavorite"
-          [class.active]="isFavorite"
-          (click)="toggleFavorite($event)"
+          [class.material-icons-outlined]="
+            !favoriteStatus[postDetails?.tableRefGuid]
+          "
+          [class.fill]="favoriteStatus[postDetails?.tableRefGuid]"
+          [class.active]="favoriteStatus[postDetails?.tableRefGuid]"
+          (click)="
+            toggleFavorite(
+              $event,
+              postDetails?.tableRefGuid,
+              postDetails?.categoryId
+            )
+          "
           title="Add in Wishlist"
         >
-          {{ isFavorite ? "favorite" : "favorite_border" }}
+          {{
+            favoriteStatus[postDetails?.tableRefGuid]
+              ? "favorite"
+              : "favorite_border"
+          }}
         </span>
         <div class="pg-card">
           <span
@@ -175,13 +187,18 @@
                   </span>
                 </button>
               </div>
+              <p class="report-success-title" *ngIf="showSuccessMessage">
+                Your report has been successfully submited.
+              </p>
               <div class="report-options" *ngIf="showReportOptions">
                 <div class="form-element form-element--input claxified-radio">
                   <input
                     type="radio"
                     class="radio-switch hide-visually"
                     id="radio-two"
-                    value="2"
+                    value="1"
+                    [checked]="selectedRadioValue === 1"
+                    (click)="setAdsReportType(1)"
                   />
                   <label for="radio-two">This is illegal/fraudulent</label>
                 </div>
@@ -190,7 +207,9 @@
                     type="radio"
                     class="radio-switch hide-visually"
                     id="radio-six"
-                    value="6"
+                    value="2"
+                    [checked]="selectedRadioValue === 2"
+                    (click)="setAdsReportType(2)"
                   />
                   <label for="radio-six">This ad is spam</label>
                 </div>
@@ -200,6 +219,8 @@
                     class="radio-switch hide-visually"
                     id="radio-three"
                     value="3"
+                    [checked]="selectedRadioValue === 3"
+                    (click)="setAdsReportType(3)"
                   />
                   <label for="radio-three">This ad is a duplicate</label>
                 </div>
@@ -209,6 +230,8 @@
                     class="radio-switch hide-visually"
                     id="radio-four"
                     value="4"
+                    [checked]="selectedRadioValue === 4"
+                    (click)="setAdsReportType(4)"
                   />
                   <label for="radio-four"
                     >This ad is in the wrong category</label
@@ -219,16 +242,33 @@
                     type="radio"
                     class="radio-switch hide-visually"
                     id="radio-one"
-                    value="1"
+                    value="5"
+                    [checked]="selectedRadioValue === 5"
+                    (click)="setAdsReportType(5)"
                   />
                   <label for="radio-one"
                     >The ad goes against <a>posting rules</a>
                   </label>
                 </div>
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="radio-four"
+                    value="6"
+                    [checked]="selectedRadioValue === 6"
+                    (click)="setAdsReportType(6)"
+                  />
+                  <label for="radio-one">Others </label>
+                </div>
                 <textarea
                   placeholder="Please provide more information"
                   class="more-info"
+                  [(ngModel)]="reportDetail"
                 ></textarea>
+                <div class="display-warning" *ngIf="showOptionWarning">
+                  Please select one option.
+                </div>
                 <div class="action-btns">
                   <button
                     class="button button--secondary close-reporter"
@@ -236,7 +276,10 @@
                   >
                     Cancel
                   </button>
-                  <button class="button button--secondary send-report">
+                  <button
+                    class="button button--secondary send-report"
+                    (click)="sendReport()"
+                  >
                     Send Report
                   </button>
                 </div>

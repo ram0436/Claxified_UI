@@ -1,163 +1,212 @@
 <div class="adds-conrainer">
-    <h2>Manage My adds</h2>
-    <div>
-        <mat-tab-group animationDuration="0ms" (selectedTabChange)="onTabChanged($event);">
-            <mat-tab label="Active">
-                <h3>Active cards</h3>
-                <div class="card active-bg" *ngFor="let ad of activeAds">
-                    <div class="rel row d-flex m-auto">
-                        <div class="date col-xs-12 col-sm-1">
-                            <span class="colr"></span>
-                            <div class="dt">
-                                <div class="dt-txt">
-                                    <span><strong>{{formatDate(ad?.createdOn)}}</strong></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-10 border-left">
-                            <div class="row product-details-cell border-bottom ">
-                                <div class="col-sm-4 d-flex">
-                                    <div class="product-img">
-                                        <img [src]="getCardImageURL(ad)">
-                                    </div>
-                                    <div class="product-info cursor"  (click)="navigateToDetails(ad)">
-                                        <h4>{{ad?.title}}</h4>
-                                        <p *ngIf="ad?.year">{{ ad?.year}} - {{ad?.kmDriven}}</p>
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <p class="p-price">₹ {{ad?.price}}</p>
-                                </div>
-                                <div class="col-sm-2">
-                                    <button class="btn-primary status">POSTED</button>
-                                </div>
-                                <div class="col-sm-4">
-                                    <p>This ad is live now</p>
-                                </div>
-                                <div class="col-sm-1">
-                                    <a class="cursor"><span class="material-icons" (click)="toggleMenu(ad?.id)">more_horiz</span></a>
-                                    <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
-                                        <ul class="menu-name">
-                                            <li class="menu-item cursor" (click)="editAd(ad)">Edit</li>
-                                            <li class="menu-item cursor">Delete</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-foot-sec">
-                                <span class="material-icons">visibility</span><strong>View</strong>
-                                <span class="fav">
-                                    <span class="material-icons">favorite</span><strong>Likes</strong></span>
-                                <button class="float-right">POST NOW</button>
-                            </div>
-                        </div>
-                    </div>
+  <h3>Manage Ads</h3>
+  <div>
+    <mat-tab-group
+      animationDuration="0ms"
+      (selectedTabChange)="onTabChanged($event)"
+    >
+      <mat-tab label="Active">
+        <br />
+        <h4>Active Ads</h4>
+        <br />
+        <div class="card border-left-blue" *ngFor="let ad of activeAds">
+          <div class="rel row d-flex m-auto">
+            <div class="date col-xs-12 col-sm-1">
+              <span class="colr"></span>
+              <div class="dt">
+                <div class="dt-txt">
+                  <span
+                    ><strong>{{ formatDate(ad?.createdOn) }}</strong></span
+                  >
                 </div>
-            </mat-tab>
-            <mat-tab label="Inactive">
-                <h3>Inactive cards</h3>
-                <div class="card inactive-bg" *ngFor="let ad of inActiveAds">
-                    <div class="rel row d-flex m-auto">
-                        <div class="date col-xs-12 col-sm-1">
-                            <span class="colr"></span>
-                            <div class="dt">
-                                <div class="dt-txt">
-                                    <span><strong>{{formatDate(ad?.createdOn)}}</strong></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-10 border-left">
-                            <div class="row product-details-cell border-bottom ">
-                                <div class="col-sm-4 d-flex">
-                                    <div class="product-img">
-                                        <img [src]="getCardImageURL(ad)">
-                                    </div>
-                                    <div class="product-info cursor" (click)="navigateToDetails(ad)">
-                                        <h4>{{ad?.title}}</h4>
-                                        <p *ngIf="ad?.year">{{ ad?.year}} - {{ad?.kmDriven}}</p>
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <p class="p-price">₹ {{ad?.price}}</p>
-                                </div>
-                                <div class="col-sm-2">
-                                    <button class="btn btn-secondary status">InActive</button>
-                                </div>
-                                <div class="col-sm-4">
-                                    <p>This add is in inactive</p>
-                                </div>
-                                <div class="col-sm-1">
-                                    <a class="cursor"><span class="material-icons" (click)="toggleMenu(ad?.id)">more_horiz</span></a>
-                                    <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
-                                        <ul class="menu-name">
-                                            <li class="menu-item cursor" (click)="editAd(ad)">Edit</li>
-                                            <li class="menu-item cursor">Delete</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-foot-sec">
-                                <span class="material-icons">visibility</span><strong>View</strong>
-                                <span class="fav">
-                                    <span class="material-icons">favorite</span><strong>Likes</strong></span>
-                                <button class="float-right">POST NOW</button>
-                            </div>
-                        </div>
-                    </div>
+              </div>
+            </div>
+            <div class="col-sm-10 border-left">
+              <div class="row product-details-cell border-bottom">
+                <div class="col-sm-4 d-flex">
+                  <div class="product-img">
+                    <img [src]="getCardImageURL(ad)" />
+                  </div>
+                  <div
+                    class="product-info cursor"
+                    (click)="navigateToDetails(ad)"
+                  >
+                    <h4>{{ ad?.title }}</h4>
+                    <p *ngIf="ad?.year">{{ ad?.year }} - {{ ad?.kmDriven }}</p>
+                  </div>
                 </div>
-            </mat-tab>
-            <mat-tab label="Pending">
-                <h3>Pending cards</h3>
-                <div class="card pending-bg" *ngFor="let ad of pendingAds">
-                    <div class="rel row d-flex m-auto">
-                        <div class="date col-xs-12 col-sm-1">
-                            <span class="colr"></span>
-                            <div class="dt">
-                                <div class="dt-txt">
-                                    <span><strong>{{formatDate(ad?.createdOn)}}</strong></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-10 border-left">
-                            <div class="row product-details-cell border-bottom ">
-                                <div class="col-sm-4 d-flex">
-                                    <div class="product-img">
-                                        <img [src]="getCardImageURL(ad)">
-                                    </div>
-                                    <div class="product-info cursor" (click)="navigateToDetails(ad)">
-                                        <h4>{{ad?.title}}</h4>
-                                        <p *ngIf="ad?.year">{{ ad?.year}} - {{ad?.kmDriven}}</p>
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <p class="p-price">₹ {{ad?.price}}</p>
-                                </div>
-                                <div class="col-sm-2">
-                                    <button class="btn btn-warning status">Pending</button>
-                                </div>
-                                <div class="col-sm-4">
-                                    <p>Wait 120 days to post for free or pay to post now</p>
-                                </div>
-                                <div class="col-sm-1">
-                                    <a class="cursor"><span class="material-icons" (click)="toggleMenu(ad?.id)">more_horiz</span></a>
-                                    <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
-                                        <ul class="menu-name">
-                                            <li class="menu-item cursor" (click)="editAd(ad)">Edit</li>
-                                            <li class="menu-item cursor">Delete</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-foot-sec">
-                                <span class="material-icons">visibility</span><strong>View</strong>
-                                <span class="fav">
-                                    <span class="material-icons">favorite</span><strong>Likes</strong></span>
-                                <button class="float-right">POST NOW</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-sm-2">
+                  <p class="p-price">₹ {{ ad?.price }}</p>
                 </div>
-            </mat-tab>
-        </mat-tab-group>
-    </div>
+                <div class="col-sm-2">
+                  <button class="btn-primary status">Published</button>
+                </div>
+                <div class="col-sm-4">
+                  <p>This ad is live now</p>
+                </div>
+                <div class="col-sm-1">
+                  <a class="cursor"
+                    ><span class="material-icons" (click)="toggleMenu(ad?.id)"
+                      >more_horiz</span
+                    ></a>
+                  <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
+                    <ul class="menu-name">
+                      <li class="menu-item cursor" (click)="editAd(ad)">
+                        Edit
+                      </li>
+                      <li class="menu-item cursor">Delete</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card-foot-sec">
+                <span class="material-icons">visibility</span
+                ><strong>View</strong>
+                <span class="fav">
+                  <span class="material-icons">favorite</span
+                  ><strong>Likes</strong></span
+                >
+                <button class="float-right">POST NOW</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="InActive">
+        <br />
+        <h4>InActive Ads</h4>
+        <br />
+        <div class="card border-left-gray" *ngFor="let ad of inActiveAds">
+          <div class="rel row d-flex m-auto">
+            <div class="date col-xs-12 col-sm-1">
+              <span class="colr"></span>
+              <div class="dt">
+                <div class="dt-txt">
+                  <span
+                    ><strong>{{ formatDate(ad?.createdOn) }}</strong></span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-10 border-left">
+              <div class="row product-details-cell border-bottom">
+                <div class="col-sm-4 d-flex">
+                  <div class="product-img">
+                    <img [src]="getCardImageURL(ad)" />
+                  </div>
+                  <div
+                    class="product-info cursor"
+                    (click)="navigateToDetails(ad)"
+                  >
+                    <h4>{{ ad?.title }}</h4>
+                    <p *ngIf="ad?.year">{{ ad?.year }} - {{ ad?.kmDriven }}</p>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <p class="p-price">₹ {{ ad?.price }}</p>
+                </div>
+                <div class="col-sm-2">
+                  <button class="btn btn-secondary status">InActive</button>
+                </div>
+                <div class="col-sm-4">
+                  <p>This add is in inActive</p>
+                </div>
+                <div class="col-sm-1">
+                  <a class="cursor"
+                  ><span class="material-icons" (click)="toggleMenu(ad?.id)"
+                    >more_horiz</span
+                  ></a>
+                  <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
+                    <ul class="menu-name">
+                      <li class="menu-item cursor" (click)="editAd(ad)">
+                        Edit
+                      </li>
+                      <li class="menu-item cursor">Delete</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card-foot-sec">
+                <span class="material-icons">visibility</span
+                ><strong>View</strong>
+                <span class="fav">
+                  <span class="material-icons">favorite</span
+                  ><strong>Likes</strong></span
+                >
+                <button class="float-right">POST NOW</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Pending">
+        <br />
+        <h4>Pending Ads</h4>
+        <br />
+        <div class="card border-left-orange" *ngFor="let ad of pendingAds">
+          <div class="rel row d-flex m-auto">
+            <div class="date col-xs-12 col-sm-1">
+              <span class="colr"></span>
+              <div class="dt">
+                <div class="dt-txt">
+                  <span
+                    ><strong>{{ formatDate(ad?.createdOn) }}</strong></span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-10 border-left">
+              <div class="row product-details-cell border-bottom">
+                <div class="col-sm-4 d-flex">
+                  <div class="product-img">
+                    <img [src]="getCardImageURL(ad)" />
+                  </div>
+                  <div
+                    class="product-info cursor"
+                    (click)="navigateToDetails(ad)"
+                  >
+                    <h4>{{ ad?.title }}</h4>
+                    <p *ngIf="ad?.year">{{ ad?.year }} - {{ ad?.kmDriven }}</p>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <p class="p-price">₹ {{ ad?.price }}</p>
+                </div>
+                <div class="col-sm-2">
+                  <button class="btn btn-warning status">Pending</button>
+                </div>
+                <div class="col-sm-4">
+                  <p>Wait 120 days to post for free or pay to post now</p>
+                </div>
+                <div class="col-sm-1">
+                  <a class="cursor"
+                    ><span class="material-icons" (click)="toggleMenu(ad?.id)"
+                      >more_horiz</span
+                    ></a
+                  >
+                  <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
+                    <ul class="menu-name">
+                      <li class="menu-item cursor" (click)="editAd(ad)">
+                        Edit
+                      </li>
+                      <li class="menu-item cursor">Delete</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card-foot-sec">
+                <span class="material-icons">visibility</span
+                ><strong>View</strong>
+                <span class="fav">
+                  <span class="material-icons">favorite</span
+                  ><strong>Likes</strong></span
+                >
+                <button class="float-right">POST NOW</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
 </div>

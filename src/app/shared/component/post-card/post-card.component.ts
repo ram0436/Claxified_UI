@@ -1,9 +1,13 @@
 import { Component, Input, OnInit, HostListener } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { CommonService } from '../../service/common.service';
 import { SalaryPeriod } from '../../enum/SalaryPeriod';
+import { LoginComponent } from '../../../modules/user/component/login/login.component';
+import { SignupComponent } from '../../../modules/user/component/signup/signup.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { UserService } from 'src/app/modules/user/service/user.service';
 
 @Component({
     selector: 'app-post-card',
@@ -17,6 +21,9 @@ export class PostCardComponent implements OnInit {
     @Input() increaseHeight = false;
     currentDate: Date = new Date();
     math = Math;
+
+    isUserLogedIn: boolean = false;
+    dialogRef: MatDialogRef<any> | null = null;
 
     additionalHeightForYear = 10;
 
@@ -39,6 +46,10 @@ export class PostCardComponent implements OnInit {
     stateAbr: string = "";
 
     isFavorite: boolean = false;
+
+    productId: string = '';
+    categoryId: string = '';
+    favoriteStatus: { [key: string]: boolean } = {};
 
     salaryPeriods = Object.keys(SalaryPeriod).map((key: any) => ({
         label: key,
@@ -65,7 +76,10 @@ export class PostCardComponent implements OnInit {
       this.isScrolledDown = scrollY > 0;
     }
   
-    constructor(private router: Router, private commonService: CommonService) { }
+    constructor(private router: Router, private commonService: CommonService, private route: ActivatedRoute, private dialog: MatDialog,private UserService : UserService) { 
+      this.route.paramMap.subscribe(params => {
+        this.productId = params.get('id') || '';
+      }); } 
 
     ngOnInit() {
         this.paginatedCards = this.cards.slice(0, this.displayedCardCount);
@@ -85,11 +99,79 @@ formatPrice(price: number): string {
   return formattedPrice;
 }
 
-toggleFavorite(event: Event) {
-  event.preventDefault(); 
+// toggleFavorite(event: Event) {
+
+//   if (localStorage.getItem('id') != null)
+//   {
+//     event.preventDefault(); 
+//     event.stopPropagation();
+//     this.isFavorite = !this.isFavorite;
+//   }
+//   else{
+//     event.preventDefault(); 
+//     event.stopPropagation();
+//     this.openLoginModal();
+//   }
+// }
+
+toggleFavorite(event: Event, productId: string, categoryId: string) {
+  event.preventDefault();
   event.stopPropagation();
-  this.isFavorite = !this.isFavorite;
+
+
+  if (localStorage.getItem('id') != null) {
+    // Check if the card has a favorite status, if not, set it to false
+    this.favoriteStatus[productId] = this.favoriteStatus[productId] || false;
+
+    // Toggle the favorite status for the specific card
+    this.favoriteStatus[productId] = !this.favoriteStatus[productId];
+
+    if (this.favoriteStatus[productId]) {
+      this.addToWishlist(productId, categoryId);
+    } else {
+      // Remove from wishlist API call (if applicable)
+      // Implement this method if you have a remove from wishlist functionality
+    }
+  } else {
+    this.openLoginModal();
+  }
 }
+
+addToWishlist(productId: string, categoryId: string) {
+  const wishlistItem = {
+    id: 0,
+    productId: productId,
+    categoryId: categoryId,
+    createdBy: localStorage.getItem('id'),
+    createdOn: new Date().toISOString()
+  };
+
+
+  this.UserService.AddWishList(wishlistItem).subscribe(
+    (response: any) => {
+      // Handle success response, if needed
+    },
+    (error: any) => {
+      console.error('Error adding to Wishlist:', error);
+    }
+  );
+}
+
+
+openLoginModal() {
+
+  if (this.dialogRef) {
+    this.dialogRef.close();
+  }
+
+  this.dialogRef = this.dialog.open(LoginComponent, { width: '500px' });
+
+  this.dialogRef.afterClosed().subscribe(result => {
+    if (localStorage.getItem("authToken") != null)
+      this.isUserLogedIn = true;
+  });
+}
+
 
 
     truncateTitle(title: string, maxLength: number = 32): string {
@@ -221,123 +303,6 @@ toggleFavorite(event: Event) {
         return "";
     }
 
-
-    // stateAbbreviation(stateName: string){
-    //     switch (stateName) {
-    //       case "Andhra Pradesh":
-    //         this.stateAbr = 'AP';
-    //         break;
-    //       case "Arunachal Pradesh":
-    //         this.stateAbr = 'AR';
-    //         break;
-    //       case "Assam":
-    //         this.stateAbr = 'AS';
-    //         break;
-    //       case "Bihar":
-    //         this.stateAbr = 'BR';
-    //         break;
-    //       case "Chhattisgarh":
-    //         this.stateAbr = 'CG';
-    //         break;
-    //       case "Goa":
-    //         this.stateAbr = 'GA';
-    //         break;
-    //       case "Gujarat":
-    //         this.stateAbr = 'GJ';
-    //         break;
-    //       case "Haryana":
-    //         this.stateAbr = 'HR';
-    //         break;
-    //       case "Himachal Pradesh":
-    //         this.stateAbr = 'HP';
-    //         break;
-    //       case "Jammu and Kashmir":
-    //         this.stateAbr = 'JK';
-    //         break;
-    //       case "Jharkhand":
-    //         this.stateAbr = 'JH';
-    //         break;
-    //       case "Karnataka":
-    //         this.stateAbr = 'KA';
-    //         break;
-    //       case "Kerala":
-    //         this.stateAbr = 'KL';
-    //         break;
-    //       case "Madhya Pradesh":
-    //         this.stateAbr = 'MP';
-    //         break;
-    //       case "Maharashtra":
-    //         this.stateAbr = 'MH';
-    //         break;
-    //       case "Manipur":
-    //         this.stateAbr = 'MN';
-    //         break;
-    //       case "Meghalaya":
-    //         this.stateAbr = 'ML';
-    //         break;
-    //       case "Mizoram":
-    //         this.stateAbr = 'MZ';
-    //         break;
-    //       case "Nagaland":
-    //         this.stateAbr = 'NL';
-    //         break;
-    //       case "Orissa":
-    //         this.stateAbr = 'OR';
-    //         break;
-    //       case "Punjab":
-    //         this.stateAbr = 'PB';
-    //         break;
-    //       case "Rajasthan":
-    //         this.stateAbr = 'RJ';
-    //         break;
-    //       case "Sikkim":
-    //         this.stateAbr = 'SK';
-    //         break;
-    //       case "Tamil Nadu":
-    //         this.stateAbr = 'TN';
-    //         break;
-    //       case "Tripura":
-    //         this.stateAbr = 'TR';
-    //         break;
-    //       case "Uttarakhand":
-    //         this.stateAbr = 'UK';
-    //         break;
-    //       case "Uttar Pradesh":
-    //         this.stateAbr = 'UP';
-    //         break;
-    //       case "West Bengal":
-    //         this.stateAbr = 'WB';
-    //         break;
-    //       case "Tamil Nadu":
-    //         this.stateAbr = 'TN';
-    //         break;
-    //       case "Tripura":
-    //         this.stateAbr = 'TR';
-    //         break;
-    //       case "Andaman and Nicobar Islands":
-    //         this.stateAbr = 'AN';
-    //         break;
-    //       case "Chandigarh":
-    //         this.stateAbr = 'CH';
-    //         break;
-    //       case "Dadra and Nagar Haveli":
-    //         this.stateAbr = 'DH';
-    //         break;
-    //       case "Daman and Diu":
-    //         this.stateAbr = 'DD';
-    //         break;
-    //       case "Delhi":
-    //         this.stateAbr = 'DL';
-    //         break;
-    //       case "Lakshadweep":
-    //         this.stateAbr = 'LD';
-    //         break;
-    //       case "Pondicherry":
-    //         this.stateAbr = 'PY';
-    //         break;
-    //     }
-    //   }
-
     stateAbbreviation(stateName: string): string {
       switch (stateName) {
         case "Andhra Pradesh":
@@ -417,3 +382,24 @@ toggleFavorite(event: Event) {
     
     
 }
+
+// AddFavorite() {
+
+//   const reportPayload = {
+//     id: 0,
+//     productId: this.productId,
+//     categoryId: this.categoryId,
+//     createdBy: localStorage.getItem('id'),
+//     createdOn: new Date().toISOString(),
+//   };
+
+
+//   this.UserService.AdReportByUser(reportPayload).subscribe(
+//     (response: any) => {
+//     },
+//     (error: any) => {
+//       // Handle error response, if needed
+//       console.error('Error sending report:', error);
+//     }
+//   );
+// }

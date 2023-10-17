@@ -76,7 +76,6 @@ export class HeaderComponent implements OnInit {
       type: 'Gadget',
       sub: [this.gadgetsTypes.Mobiles, this.gadgetsTypes.Tablets, this.gadgetsTypes.Accessories]
     };
-    console.log([this.gadgetsTypes.Mobiles, this.gadgetsTypes.Tablets, this.gadgetsTypes.Accessories])
 
     return queryParams;
   }
@@ -94,7 +93,6 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(VehicleType.Car);
     if (localStorage.getItem("authToken") != null) {
       this.isUserLogedIn = true;
       this.getUserData();

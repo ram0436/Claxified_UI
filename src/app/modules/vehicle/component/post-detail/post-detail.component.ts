@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import * as moment from 'moment';
 import { VehicleService } from '../../service/vehicle.service';
 import { FuelType } from 'src/app/shared/enum/FuelType';
+import { AdsReportType } from 'src/app/shared/enum/AdsReportType';
 import { TransmissionType } from 'src/app/shared/enum/TransmissionType';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -9,6 +10,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LoginComponent } from '../../../user/component/login/login.component';
 import { SignupComponent } from '../../../user/component/signup/signup.component'
 import { CommonService } from 'src/app/shared/service/common.service';
+import { UserService } from '../../../user/service/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-post-detail',
@@ -63,8 +66,23 @@ export class PostDetailComponent {
   ];
   mainCategories : any = [];
   subCategories : any = [];
+
+  reportDetail: string = '';
+  adsReportType: AdsReportType = AdsReportType.Others;
+  adTabRefGuid: string = '';
+  showSuccessMessage: boolean = false;
+  selectedRadioValue: number | null = null;
+  showOptionWarning: boolean = false;
+  productId: string = '';
+  categoryId: string = '';
+  favoriteStatus: { [key: string]: boolean } = {};
+  // showDetailWarning: boolean = false;
+
   constructor(private vehicleService: VehicleService, private route: ActivatedRoute, private location: Location, private router: Router,  private dialog: MatDialog,
-    private commonService : CommonService) { 
+    private commonService : CommonService, private UserService : UserService, private snackBar: MatSnackBar,) { 
+      this.route.paramMap.subscribe(params => {
+        this.adTabRefGuid = params.get('id') || '';
+      });
   }
 
 
@@ -83,11 +101,118 @@ export class PostDetailComponent {
     }
   }
 
-  toggleFavorite(event: Event) {
-    event.preventDefault(); 
-    event.stopPropagation();
-    this.isFavorite = !this.isFavorite;
+  setAdsReportType(value: number) {
+    this.adsReportType = value;
+    this.handleRadioSelection(value);
   }
+
+  handleRadioSelection(value: number) {
+    if (this.selectedRadioValue === value) {
+      this.selectedRadioValue = null;
+    } else {
+      this.selectedRadioValue = value;
+    }
+  }
+
+  toggleFavorite(event: Event, productId: string, categoryId: string) {
+    event.preventDefault();
+    event.stopPropagation();
+  
+  
+    if (localStorage.getItem('id') != null) {
+      // Check if the card has a favorite status, if not, set it to false
+      this.favoriteStatus[productId] = this.favoriteStatus[productId] || false;
+  
+      // Toggle the favorite status for the specific card
+      this.favoriteStatus[productId] = !this.favoriteStatus[productId];
+  
+      if (this.favoriteStatus[productId]) {
+        this.addToWishlist(productId, categoryId);
+      } else {
+        // Remove from wishlist API call (if applicable)
+        // Implement this method if you have a remove from wishlist functionality
+      }
+    } else {
+      this.openLoginModal();
+    }
+  }
+  
+  addToWishlist(productId: string, categoryId: string) {
+    const wishlistItem = {
+      id: 0,
+      productId: productId,
+      categoryId: categoryId,
+      createdBy: localStorage.getItem('id'),
+      createdOn: new Date().toISOString()
+    };
+  
+  
+    this.UserService.AddWishList(wishlistItem).subscribe(
+      (response: any) => {
+        // Handle success response, if needed
+      },
+      (error: any) => {
+        console.error('Error adding to Wishlist:', error);
+      }
+    );
+  }
+
+  sendReport() {
+
+  const isRadioButtonSelected = this.selectedRadioValue !== null;
+  // const isReportDetailProvided = this.reportDetail && this.reportDetail.trim().length > 0;
+
+  this.showOptionWarning = false;
+  // this.showDetailWarning = false;
+
+  if (!isRadioButtonSelected) {
+    this.showOptionWarning = true;
+    return; 
+  }
+
+    const userId = localStorage.getItem('id');
+
+    const reportPayload = {
+      id: 0,
+      adTabRefGuid: this.adTabRefGuid,
+      adsReportType: this.adsReportType,
+      reportDetail: this.reportDetail,
+      createdBy: localStorage.getItem('id'),
+      createdOn: new Date().toISOString(),
+    };
+
+    this.UserService.AdReportByUser(reportPayload).subscribe(
+      (response: any) => {
+        this.reportDetail = '';
+        this.selectedRadioValue = null;
+        this.toggleReportOptions();
+
+        // this.showSuccessMessage = true;
+        // setTimeout(() => {
+        //   this.showSuccessMessage = false;
+        // }, 3000);
+        this.showNotification("Your report has been successfully submitted.")
+      },
+      (error: any) => {
+        // Handle error response, if needed
+        // console.error('Error sending report:', error);
+      }
+    );
+  }
+
+  showNotification(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top'
+    });
+  }
+
+  // toggleFavorite(event: Event) {
+  //   event.preventDefault(); 
+  //   event.stopPropagation();
+  //   this.isFavorite = !this.isFavorite;
+  // }
 
   formatPrice(price: number): string {
     const roundedPrice = Math.round(price);
@@ -124,9 +249,19 @@ export class PostDetailComponent {
   }
 
   toggleReportOptions() {
-    this.showReportOptions = !this.showReportOptions;
-    this.reporterClicked = !this.reporterClicked;
-    this.iconName = this.showReportOptions ? 'arrow_drop_up' : 'arrow_drop_down';
+    if (localStorage.getItem('id') != null)
+    {
+      this.showReportOptions = !this.showReportOptions;
+      this.reporterClicked = !this.reporterClicked;
+      this.iconName = this.showReportOptions ? 'arrow_drop_up' : 'arrow_drop_down';
+      this.showOptionWarning = false;
+      // this.showDetailWarning = false;
+      this.selectedRadioValue = null;
+      this.reportDetail = '';
+    }
+    else{
+      this.openLoginModal();
+    }
   }
 
   zoomIn() {

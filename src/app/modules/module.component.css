@@ -474,6 +474,7 @@ textarea {
     padding-top: 12px;
     border-top: 1px solid #d8d6d9;
     gap: 10px;
+    margin-bottom: 8px;
 }
 
 .action-btns >button {
@@ -522,6 +523,16 @@ textarea {
 .send-report{
     color: #fff !important;
     background-color: #498124 !important;
+    border: none;
+}
+
+.report-success-title{
+    /* margin-top: 10px; */
+    color: #498124;
+    font-size: 16px;
+    font-weight: 500;
+    position: absolute;
+    bottom: 0;
 }
 
 .report-options{
@@ -530,6 +541,12 @@ textarea {
     padding: 12px;
     border-radius: 2px;
     margin-top: 12px;
+    margin-bottom: 8px;
+}
+
+.display-warning{
+    color: red;
+    margin: 4px 0;
 }
 
 .report-options.active {

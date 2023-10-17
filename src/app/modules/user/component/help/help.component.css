@@ -8,17 +8,8 @@
     line-height: 1.5;
     display: block;
     margin: 5px 5px 15px 5px;
-    /* border-left: 5px solid #ffce32; */
+    border-left: 5px solid #ffce32;
 }
-
-.border-left-blue{
-    border-left: 5px solid #337ab7;
-}
-
-.border-left-gray{
-    border-left: 5px solid #fafafa;
-}
-
 .rel{
     position: relative;
     width: 109%;
@@ -154,12 +145,22 @@
 .cursor{
     cursor: pointer;
 }
-.active-bg{
-    border-left: 5px solid #337ab7;
+
+.content-container p{
+    font-size: 16px;
+    color: gray;
 }
-.inactive-bg{
-    border-left: 5px solid #9999;
+
+.content-container h2{
+    font-size: 24px;
 }
-.pending-bg{
-    border-left: 5px solid #ffce32;
+
+ul{
+    /* padding: 0; */
+    margin: 0;
+}
+
+ul li{
+    text-decoration:  none;
+    color: rgb(75, 75, 75);
 }

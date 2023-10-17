@@ -2,7 +2,11 @@
   <nav class="nav-bar">
     <div class="container">
       <div class="icon-text">
-        <a href="#" title="Claxified" class="icon-text1">
+        <a
+          href="#"
+          title="Free Classified in India | Search Engine for Ads | Claxified.in"
+          class="icon-text1"
+        >
           <div class="logo-img">
             <img src="../../../../assets/logo.gif" alt="Logo" />
             <div class="logo-text">
@@ -86,7 +90,7 @@
             <img [src]="imageUrl" alt="" class="img_stl" />
             <div class="mt-10">
               <p class="mt-0">{{ userData?.firstName || "" }}</p>
-              <a routerLink="/user/account/personal">Go to profile</a>
+              <a routerLink="/user/account/personal">Go to Profile</a>
             </div>
           </button>
           <hr class="profile-hr" />
@@ -96,25 +100,33 @@
             class="button-item"
           >
             <span class="material-icons"> upload_file </span>
-            <span>My ads</span>
+            <span>Manage Ads</span>
           </button>
-          <button mat-menu-item class="button-item">
-            <span class="material-icons"> bookmark_border </span>
-            <span>Saved</span>
+          <button
+            mat-menu-item
+            class="button-item"
+            routerLink="/user/account/saved"
+          >
+            <span class="material-icons-outlined"> favorite_border </span>
+            <span>My Wishlist</span>
           </button>
-          <button mat-menu-item class="button-item">
-            <span class="material-icons"> chat_bubble_outline </span>
-            <span>Chats</span>
+          <button
+            mat-menu-item
+            class="button-item"
+            routerLink="/user/account/help"
+          >
+            <span class="material-icons-outlined"> help_outline </span>
+            <span>Help Manual</span>
           </button>
           <hr class="profile-hr" />
           <button mat-menu-item routerLink="/user/account" class="button-item">
             <span class="material-icons">settings</span>
-            <span>Account</span>
+            <span>Account & Settings</span>
           </button>
           <hr class="profile-hr" />
           <button mat-menu-item (click)="logout()" class="button-item">
             <span class="material-icons">logout</span>
-            <span>Log Out</span>
+            <span>Logout</span>
           </button>
         </mat-menu>
         <div class="pull-right header-actions">
