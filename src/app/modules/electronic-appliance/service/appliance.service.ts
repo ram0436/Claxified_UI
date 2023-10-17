@@ -22,4 +22,7 @@ export class ApplianceService {
   getElectronicAppliancePostByGuid(guid: any) {
     return this.httpClient.get(`${this.BaseURL}ElectricAppliance/GetByTabRefGuid?tabRefGuid=` + guid)
   }
+  updateElectronicAppliancePost(payLoad: any) {
+    return this.httpClient.put(`${this.BaseURL}ElectricAppliance/`+payLoad.id, payLoad);
+  }
 }

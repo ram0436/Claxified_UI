@@ -4,7 +4,7 @@
         <mat-tab-group animationDuration="0ms" (selectedTabChange)="onTabChanged($event);">
             <mat-tab label="Active">
                 <h3>Active cards</h3>
-                <div class="card" *ngFor="let ad of activeAds">
+                <div class="card active-bg" *ngFor="let ad of activeAds">
                     <div class="rel row d-flex m-auto">
                         <div class="date col-xs-12 col-sm-1">
                             <span class="colr"></span>
@@ -35,7 +35,7 @@
                                     <p>This ad is live now</p>
                                 </div>
                                 <div class="col-sm-1">
-                                    <span class="material-icons" (click)="toggleMenu(ad?.id)">more_horiz</span>
+                                    <a class="cursor"><span class="material-icons" (click)="toggleMenu(ad?.id)">more_horiz</span></a>
                                     <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                                         <ul class="menu-name">
                                             <li class="menu-item cursor" (click)="editAd(ad)">Edit</li>
@@ -56,7 +56,7 @@
             </mat-tab>
             <mat-tab label="Inactive">
                 <h3>Inactive cards</h3>
-                <div class="card" *ngFor="let ad of inActiveAds">
+                <div class="card inactive-bg" *ngFor="let ad of inActiveAds">
                     <div class="rel row d-flex m-auto">
                         <div class="date col-xs-12 col-sm-1">
                             <span class="colr"></span>
@@ -87,7 +87,7 @@
                                     <p>This add is in inactive</p>
                                 </div>
                                 <div class="col-sm-1">
-                                    <span class="material-icons" (click)="toggleMenu(ad?.id)">more_horiz</span>
+                                    <a class="cursor"><span class="material-icons" (click)="toggleMenu(ad?.id)">more_horiz</span></a>
                                     <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                                         <ul class="menu-name">
                                             <li class="menu-item cursor" (click)="editAd(ad)">Edit</li>
@@ -108,7 +108,7 @@
             </mat-tab>
             <mat-tab label="Pending">
                 <h3>Pending cards</h3>
-                <div class="card" *ngFor="let ad of pendingAds">
+                <div class="card pending-bg" *ngFor="let ad of pendingAds">
                     <div class="rel row d-flex m-auto">
                         <div class="date col-xs-12 col-sm-1">
                             <span class="colr"></span>

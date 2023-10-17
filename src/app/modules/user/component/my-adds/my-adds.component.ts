@@ -82,6 +82,42 @@ export class MyAddsComponent {
                     this.router.navigateByUrl('/Vehicles/add-post?main=Vehicles&sub=Cars&mode=edit');
                     break;
                 }
+                case "Books" : {
+                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    break;
+                }
+                case "Commercial Services" : {
+                    this.router.navigateByUrl('/Commercial Services/add-post?main=Commercial Services&sub=Finance & Management&mode=edit');
+                    break;
+                }
+                case "Properties" : {
+                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    break;
+                }
+                case "Jobs" : {
+                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    break;
+                }
+                case "Electronics & Appliances" : {
+                    this.router.navigateByUrl('/Electronics & Appliances/add-post?main=Electronics & Appliances&sub=TV&mode=edit');
+                    break;
+                }
+                case "Furniture" : {
+                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    break;
+                }
+                case "Sports & Hobbies" : {
+                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    break;
+                }
+                case "Pets" : {
+                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    break;
+                }
+                case "Fashion" : {
+                    this.router.navigateByUrl('/Fashion/add-post?main=Fashion&sub=Men&mode=edit');
+                    break;
+                }
             }
         // this.commonService.getSubCategoryByCategoryId(data.categoryId).subscribe((res:any)=>{
         //     let subCategory = res.find((subCategory:any)=>subCategory.id == data.subCategoryId);

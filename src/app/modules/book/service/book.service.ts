@@ -22,4 +22,7 @@ export class BookService {
   getBookPostByGuid(guid: any) {
     return this.httpClient.get(`${this.BaseURL}Book/GetByTabRefGuid?tabRefGuid=` + guid)
   }
+  updateBookPost(payLoad: any) {
+    return this.httpClient.put(`${this.BaseURL}Book/`+payLoad.id, payLoad);
+  }
 }
