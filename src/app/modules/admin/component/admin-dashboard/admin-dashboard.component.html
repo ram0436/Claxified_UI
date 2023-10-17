@@ -1,0 +1,66 @@
+<div class="admin-dashboard">
+  <h3 class="dashboard-title">Admin Dashboard</h3>
+
+  <div class="category-select">
+    <mat-form-field class="category-select-field">
+      <mat-label>Select Category</mat-label>
+      <mat-select
+        matNativeControl
+        required
+        [(ngModel)]="selectedCategoryId"
+        (ngModelChange)="getAdsByCategory(selectedCategoryId)"
+      >
+        <mat-option *ngFor="let category of mainCategory" [value]="category.id">
+          {{ category.categoryName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div id="unique-component" class="mat-app-background bg-white-back mat-pl-35">
+    <div class="card border-left-blue" *ngFor="let card of allCards">
+      <div class="admin-rel row d-flex m-auto">
+        <div class="date col-xs-12 col-sm-1">
+          <span class="colr"></span>
+          <div class="dt">
+            <div class="dt-txt">
+              <span
+                ><strong>{{ formatDate(card?.createdOn) }}</strong></span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-10 border-left">
+          <div class="row product-details-cell border-bottom">
+            <div class="col-sm-4 d-flex">
+              <div class="product-img">
+                <img [src]="getCardImageURL(card)" class="admin-card-img" />
+              </div>
+              <div
+                class="product-info cursor"
+                (click)="navigateToDetails(card)"
+              >
+                <h4>{{ card?.title }}</h4>
+                <p *ngIf="card?.year">
+                  {{ card?.year }} - {{ card?.kmDriven }}
+                </p>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <p class="p-price">₹ {{ card?.price }}</p>
+            </div>
+            <div class="col-sm-2">
+              <button class="btn-primary status">Published</button>
+            </div>
+            <div class="col-sm-4">
+              <p>This ad is live now</p>
+            </div>
+            <div class="admin-card-foot-sec">
+              <button class="float-right">Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
