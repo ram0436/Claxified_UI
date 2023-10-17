@@ -22,4 +22,7 @@ export class FashionService {
   getFashionPostByGuid(guid: any) {
     return this.httpClient.get(`${this.BaseURL}Fashion/GetByTabRefGuid?tabRefGuid=` + guid)
   }
+  updateFashionPost(payLoad: any) {
+    return this.httpClient.put(`${this.BaseURL}Fashion/`+payLoad.id, payLoad);
+  }
 }

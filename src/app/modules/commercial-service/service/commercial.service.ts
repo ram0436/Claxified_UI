@@ -22,4 +22,7 @@ export class CommercialService {
   getCommercialServicePostByGuid(guid: any) {
     return this.httpClient.get(`${this.BaseURL}CommercialService/GetByTabRefGuid?tabRefGuid=` + guid)
   }
+  updateCommercialServicePost(payLoad: any) {
+    return this.httpClient.put(`${this.BaseURL}CommercialService/`+payLoad.id, payLoad);
+  }
 }

@@ -41,6 +41,16 @@ export class AddPostComponent {
       this.subCategory = params['sub'].replaceAll("%20", " ");
       this.mainCategory = params['main'].replaceAll("%20", " ");
       this.setCategoryId();
+      let mode = params['mode'];
+      if(mode !=undefined){
+        let guid = localStorage.getItem('guid');
+        this.bookService.getBookPostByGuid(guid).subscribe((res:any)=>{
+          this.commonPayload = res[0];
+          res[0].bookImageList.forEach((image:any,index:any)=>{
+            this.cardsCount[index] = image.imageURL;
+          });
+        })
+      }
     });
   }
   allowOnlyNumbers(event: Event): void {
@@ -101,7 +111,10 @@ export class AddPostComponent {
     this.commonPayload.name = this.userData.firstName;
     this.commonPayload.mobile = this.userData.mobileNo;
     var payload = this.addSpecificPayload(this.commonPayload);
-    this.saveBookPost(payload);
+    if(payload.id)
+      this.updateBookPost(payload);
+    else
+      this.saveBookPost(payload);
   }
   getAddress(event: any) {
     let pincode = event.target.value;
@@ -220,5 +233,12 @@ export class AddPostComponent {
         uploadElement.click();
       }
     }
+  }
+  updateBookPost(payload: any) {
+    if (this.validatePostForm(payload))
+      this.bookService.updateBookPost(payload).subscribe(data => {
+        this.showNotification("Post updated succesfully");
+        this.router.navigateByUrl('/post-menu');
+      });
   }
 }

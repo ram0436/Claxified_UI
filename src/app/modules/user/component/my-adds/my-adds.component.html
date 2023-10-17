@@ -45,9 +45,10 @@
                   <p>This ad is live now</p>
                 </div>
                 <div class="col-sm-1">
-                  <span class="material-icons" (click)="toggleMenu(ad?.id)"
-                    >more_horiz</span
-                  >
+                  <a class="cursor"
+                    ><span class="material-icons" (click)="toggleMenu(ad?.id)"
+                      >more_horiz</span
+                    ></a>
                   <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                     <ul class="menu-name">
                       <li class="menu-item cursor" (click)="editAd(ad)">
@@ -111,9 +112,10 @@
                   <p>This add is in inActive</p>
                 </div>
                 <div class="col-sm-1">
-                  <span class="material-icons" (click)="toggleMenu(ad?.id)"
+                  <a class="cursor"
+                  ><span class="material-icons" (click)="toggleMenu(ad?.id)"
                     >more_horiz</span
-                  >
+                  ></a>
                   <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                     <ul class="menu-name">
                       <li class="menu-item cursor" (click)="editAd(ad)">
@@ -141,7 +143,7 @@
         <br />
         <h4>Pending Ads</h4>
         <br />
-        <div class="card" *ngFor="let ad of pendingAds">
+        <div class="card border-left-orange" *ngFor="let ad of pendingAds">
           <div class="rel row d-flex m-auto">
             <div class="date col-xs-12 col-sm-1">
               <span class="colr"></span>
