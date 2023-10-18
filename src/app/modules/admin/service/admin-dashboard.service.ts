@@ -18,6 +18,10 @@ export class AdminDashboardService {
   getAdsByCategory(categoryId : number){
     return this.httpClient.get(`${this.BaseURL}Dashboard/GetAdsByCategory?categoryId=${categoryId}`);
   }
+
+  verifyAd(categoryId: number, tableRefGuid: string) {
+    return this.httpClient.post(`${this.BaseURL}Dashboard/verifyAd?categoryId=${categoryId}&tabRefGuid=${tableRefGuid}`, null);
+  }
   
   
 

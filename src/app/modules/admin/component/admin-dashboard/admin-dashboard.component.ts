@@ -11,7 +11,7 @@ import * as moment from 'moment';
 })
 export class AdminDashboardComponent implements OnInit {
   
-  mainCategory: any[] = [];
+  // mainCategory: any[] = [];
   selectedCategoryId! : number;
   allCards: any[] = [];
   mainCategories : any = [];
@@ -24,15 +24,13 @@ export class AdminDashboardComponent implements OnInit {
 
   getMainCategories() {
     this.commonService.getAllCategory().subscribe((data: any) => {
-      this.mainCategory = data; 
+      this.mainCategories = data; 
     });
   }
 
   getAdsByCategory(categoryId: number) {
-    console.log(categoryId)
     this.AdminDashboardService.getAdsByCategory(categoryId).subscribe((data: any) => {
       this.allCards = data;
-      console.log(this.allCards)
     });
   }
 
@@ -77,4 +75,63 @@ navigateToDetails(data:any){
   }
 }
 
+generateNavigationUrl(mainCategory: string, subCategory: string, mode: string, categoryId: number, tableRefGuid: string): string {
+    return `/${mainCategory}/add-post?main=${mainCategory}&sub=${subCategory}&mode=${mode}&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`;
+  }
+
+editCard(data: any) {
+  localStorage.setItem('guid',data.tableRefGuid);
+  let tableRefGuid = data.tableRefGuid;
+  let categoryId = data.categoryId;
+  let mainCategory = this.mainCategories.find((mainCategory:any)=>mainCategory.id == data.categoryId);
+  if(mainCategory != null){
+    let navigationUrl = '';
+      switch(mainCategory.categoryName){
+          case "Gadgets" : {
+              this.router.navigateByUrl(`/Gadgets/add-post?main=Gadgets&sub=Mobiles&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`);
+              break;
+          }
+          case "Vehicles" : {
+              this.router.navigateByUrl(`/Vehicles/add-post?main=Vehicles&sub=Cars&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`);
+              break;
+          }
+          case "Books" : {
+              this.router.navigateByUrl(`/Books/add-post?main=Books&sub=Science & Technology&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`);
+              break;
+          }
+          case "Commercial Services" : {
+              this.router.navigateByUrl(`/Commercial Services/add-post?main=Commercial Services&sub=Finance & Management&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`);
+              break;
+          }
+          case "Properties" : {
+              this.router.navigateByUrl(`/Properties/add-post?main=Properties&sub=For Sale: Houses%20%26%20Apartments&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`);
+              break;
+          }
+          case "Jobs" : {
+              this.router.navigateByUrl(`/Books/add-post?main=Books&sub=Science & Technology&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`);
+              break;
+          }
+          case "Electronics & Appliances" : {
+              this.router.navigateByUrl(`/Electronics & Appliances/add-post?main=Electronics & Appliances&sub=TV&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`);
+              break;
+          }
+          case "Furniture" : {
+              this.router.navigateByUrl(`/Books/add-post?main=Books&sub=Science & Technology&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`);
+              break;
+          }
+          case "Sports & Hobbies" : {
+              this.router.navigateByUrl(`/Sports & Hobbies/add-post?main=Sports%20%26%20Hobbies&sub=Gym%20%26%20Fitness&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`);
+              break;
+          }
+          case "Pets" : {
+              this.router.navigateByUrl(`/Books/add-post?main=Books&sub=Science & Technology&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`);
+              break;
+          }
+          case "Fashion" : {
+              this.router.navigateByUrl(`/Fashion/add-post?main=Fashion&sub=Men&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`);
+              break;
+          }
+      }
+    }
+  }
 }

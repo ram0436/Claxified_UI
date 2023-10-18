@@ -10,7 +10,10 @@
         [(ngModel)]="selectedCategoryId"
         (ngModelChange)="getAdsByCategory(selectedCategoryId)"
       >
-        <mat-option *ngFor="let category of mainCategory" [value]="category.id">
+        <mat-option
+          *ngFor="let category of mainCategories"
+          [value]="category.id"
+        >
           {{ category.categoryName }}
         </mat-option>
       </mat-select>
@@ -56,7 +59,9 @@
               <p>This ad is live now</p>
             </div>
             <div class="admin-card-foot-sec">
-              <button class="float-right">Details</button>
+              <button class="float-right" (click)="editCard(card)">
+                Details
+              </button>
             </div>
           </div>
         </div>

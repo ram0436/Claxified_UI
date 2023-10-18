@@ -15,6 +15,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 import { PropertyService } from '../../service/property.service';
 import { ServiceType } from 'src/app/shared/enum/ServiceType';
 import { PGType } from 'src/app/shared/enum/PGType';
+import { AdminDashboardService } from './../../../admin/service/admin-dashboard.service';
 
 @Component({
   selector: 'app-add-post',
@@ -105,6 +106,7 @@ export class AddPostComponent {
   carModelId: any;
 
   firstImageUploaded: boolean = false; // Changes made by Hamza
+  isFromAdmin: boolean = false;
   houseApartmentsSale = ['HouseType', 'Bedrooms', 'Bathrooms', 'Furnishing', 'Construction Status', 'Listed by', 'Super Builtup area', 'Carpet Area', 'Maintenance', 'Total Floors', 'Floor No', 'Car Parking', 'Facing', 'Project Name'];
   houseApartmentsRent = ['HouseType', 'Bedrooms', 'Bathrooms', 'Furnishing', 'Construction Status', 'Listed by', 'Super Builtup area', 'Carpet Area', 'Bachelors Allowed', 'Maintenance', 'Total Floors', 'Floor No', 'Car Parking', 'Facing', 'Project Name'];
   landsAndPlots = ['ServiceType', 'Listed by', 'Plot Area', 'Length', 'Breadth', 'Facing', 'Project Name'];
@@ -113,10 +115,13 @@ export class AddPostComponent {
   pgAndGuestHouses = ['SubType', 'Furnishing', 'Listed by', 'Car Parking', 'Meals Included'];
   fieldsToShow: any = [];
 
-  constructor(private propertyService: PropertyService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute,
+  constructor(private propertyService: PropertyService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document, private userService: UserService,private router : Router) { }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.isFromAdmin = params['fromAdmin'] === 'true';
+    });
     this.getUserData();
     this.houseTypes = this.houseTypes.slice(this.houseTypes.length / 2);
     this.furnishingStatus = this.furnishingStatus.slice(this.furnishingStatus.length / 2);
@@ -221,6 +226,45 @@ export class AddPostComponent {
     var payload = this.addSpecificPayload(this.commonPayload);
     this.savePropertyPost(payload);
   }
+
+  verifyAdd(){
+    // this.commonPayload.isPremium = true;
+    // this.commonPayload.isActive = true;
+    // this.commonPayload.createdBy = this.userData.id;
+    // this.commonPayload.createdOn = new Date().toISOString().slice(0, 23);
+    // this.commonPayload.modifiedBy = this.userData.id;
+    // this.commonPayload.modifiedOn = new Date().toISOString().slice(0, 23);
+    // this.commonPayload.price = Number(this.commonPayload.price);
+    // this.commonPayload.name = this.userData.firstName;
+    // this.commonPayload.mobile = this.userData.mobileNo;
+    // var payload = this.addSpecificPayload(this.commonPayload);
+    if (this.isFromAdmin) {
+        this.route.queryParams.subscribe(params => {
+          const categoryId = params['categoryId']; 
+          const tableRefGuid = params['tableRefGuid']
+  
+          this.AdminDashboardService.verifyAd(categoryId, tableRefGuid).subscribe(
+            (response: any) => {
+              // console.log('API Response:', response);
+              this.adVerifiedNotification('Ad verified successfully');
+            },
+            (error: any) => {
+              // console.error('API Error:', error);
+            }
+          );
+        });
+      }
+  }
+
+  adVerifiedNotification(message: string): void{
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top'
+    });
+    this.router.navigateByUrl('/Admin/admin-dashboard');
+  }
+
   getAddress(event: any) {
     let pincode = event.target.value;
     if (pincode.length == 6) {
