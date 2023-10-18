@@ -11,6 +11,7 @@ import { TransmissionType } from 'src/app/shared/enum/TransmissionType';
 import { Common } from 'src/app/shared/model/CommonPayload';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { VehicleService } from '../../service/vehicle.service';
+import { AdminDashboardService } from './../../../admin/service/admin-dashboard.service';
 
 @Component({
   selector: 'app-add-post',
@@ -62,11 +63,15 @@ export class AddPostComponent {
 
   firstImageUploaded: boolean = false; // Changes made by Hamza
   isDraggingEnabled = true;
+  isFromAdmin: boolean = false;
 
-  constructor(private vehicleService: VehicleService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute,
+  constructor(private vehicleService: VehicleService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document, private userService: UserService,private router : Router,private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.isFromAdmin = params['fromAdmin'] === 'true';
+    });
     this.getUserData();
     this.fuelTypes = this.fuelTypes.slice(this.fuelTypes.length / 2);
     this.transmissionTypes = this.transmissionTypes.slice(this.transmissionTypes.length / 2);
@@ -193,6 +198,7 @@ export class AddPostComponent {
     }
     this.cardsCount[this.cardsCount.length - 1] = '';
   }
+
   postAdd() {
     this.commonPayload.isPremium = true;
     this.commonPayload.isActive = true;
@@ -209,6 +215,45 @@ export class AddPostComponent {
     else
       this.saveVehiclePost(payload);
   }
+
+  verifyAdd(){
+    // this.commonPayload.isPremium = true;
+    // this.commonPayload.isActive = true;
+    // this.commonPayload.createdBy = this.userData.id;
+    // this.commonPayload.createdOn = new Date().toISOString().slice(0, 23);
+    // this.commonPayload.modifiedBy = this.userData.id;
+    // this.commonPayload.modifiedOn = new Date().toISOString().slice(0, 23);
+    // this.commonPayload.price = Number(this.commonPayload.price);
+    // this.commonPayload.name = this.userData.firstName;
+    // this.commonPayload.mobile = this.userData.mobileNo;
+    // var payload = this.addSpecificPayload(this.commonPayload);
+    if (this.isFromAdmin) {
+        this.route.queryParams.subscribe(params => {
+          const categoryId = params['categoryId']; 
+          const tableRefGuid = params['tableRefGuid']
+  
+          this.AdminDashboardService.verifyAd(categoryId, tableRefGuid).subscribe(
+            (response: any) => {
+              // console.log('API Response:', response);
+              this.adVerifiedNotification('Ad verified successfully');
+            },
+            (error: any) => {
+              // console.error('API Error:', error);
+            }
+          );
+        });
+      }
+  }
+
+  adVerifiedNotification(message: string): void{
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top'
+    });
+    this.router.navigateByUrl('/Admin/admin-dashboard');
+  }
+
   getAddress(event: any) {
     let pincode = event.target.value;
     if (pincode.length == 6) {

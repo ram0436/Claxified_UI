@@ -169,8 +169,18 @@
         mat-raised-button
         color="primary"
         (click)="postAdd()"
+        *ngIf="!isFromAdmin"
       >
         Publish Now
+      </button>
+      <button
+        class="post"
+        mat-raised-button
+        color="primary"
+        (click)="verifyAdd()"
+        *ngIf="isFromAdmin"
+      >
+        Approve Now
       </button>
     </div>
   </div>
