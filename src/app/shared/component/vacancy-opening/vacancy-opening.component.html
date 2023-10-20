@@ -74,7 +74,7 @@
     </div>
 
     <div class="uplod-sectin">
-      <h4>UPLOAD Your Resume</h4>
+      <h4>Upload Resume</h4>
       <div class="progs" *ngIf="progress">
         <h5>Upload Progress</h5>
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>
@@ -99,7 +99,7 @@
               />
             </button>
             <span class="add">{{
-              resumeFileName ? resumeFileName : "Add Resume"
+              resumeFileName ? resumeFileName : "Select File"
             }}</span>
           </div>
         </div>
@@ -112,7 +112,7 @@
         color="primary"
         (click)="applyForVacancy()"
       >
-        Apply for vacancy
+       Submit
       </button>
     </div>
   </div>
