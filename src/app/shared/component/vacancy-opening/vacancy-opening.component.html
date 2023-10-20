@@ -11,16 +11,6 @@
         <mat-label>Mobile</mat-label>
         <input id="mobile" matInput placeholder="Enter your mobile number" />
       </mat-form-field>
-      <mat-form-field>
-        <mat-label>About Me</mat-label>
-        <textarea
-          matInput
-          placeholder="Enter About Yourself"
-          name="textareaInput"
-          id="aboutMe"
-          rows="3"
-        ></textarea>
-      </mat-form-field>
       <mat-form-field class="category-select-field">
         <mat-label>Position Type</mat-label>
         <mat-select matNativeControl required>
@@ -70,6 +60,16 @@
           <mat-option [value]="4">MTech</mat-option>
           <mat-option [value]="5">Others</mat-option>
         </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>About Me</mat-label>
+        <textarea
+          matInput
+          placeholder="Enter About Yourself"
+          name="textareaInput"
+          id="aboutMe"
+          rows="3"
+        ></textarea>
       </mat-form-field>
     </div>
 
