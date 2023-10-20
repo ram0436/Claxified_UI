@@ -8,6 +8,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatOption, MatOptionModule } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -16,13 +19,15 @@ import { PostCardComponent } from './component/post-card/post-card.component';
 import { RouterModule } from '@angular/router';
 import { FooterComponent } from './component/footer/footer.component';
 import { LocationsComponent } from './component/locations/locations.component';
+import { VacancyOpeningComponent } from './component/vacancy-opening/vacancy-opening.component';
 
 @NgModule({
   declarations: [
     HeaderComponent,
     PostCardComponent,
     FooterComponent,
-    LocationsComponent
+    LocationsComponent,
+    VacancyOpeningComponent
   ],
   imports: [
     CommonModule,
@@ -37,13 +42,16 @@ import { LocationsComponent } from './component/locations/locations.component';
     HttpClientModule,
     MatMenuModule,
     MatSnackBarModule,
-    RouterModule
+    RouterModule,
+    MatProgressBarModule,
+    MatOptionModule,
+    MatSelectModule
   ],
   exports : [
     PostCardComponent,
     HeaderComponent,
     FooterComponent,
-    LocationsComponent
+    LocationsComponent,
   ]
 })
 export class SharedModule { }

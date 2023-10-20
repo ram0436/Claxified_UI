@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { PostMenuComponent } from './modules/post-menu/post-menu.component';
 import { AuthGuard } from './modules/auth/authguard/authguard';
+import { VacancyOpeningComponent } from './shared/component/vacancy-opening/vacancy-opening.component';
 
 const routes: Routes = [
   { path: 'Gadgets', loadChildren: () => import('./modules/gadget/gadget.module').then(m => m.GadgetModule) },
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path : '', component : DashboardComponent},
   { path : 'post-menu', component : PostMenuComponent,canActivate: [AuthGuard]},
   { path: 'Admin', loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule) },
+  { path: 'vacancy-opening', component: VacancyOpeningComponent },
 
 ];
 

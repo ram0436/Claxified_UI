@@ -1,0 +1,119 @@
+<div class="container-fluid">
+  <div class="header">Apply Now</div>
+  <div class="container">
+    <h4>INCLUDE SOME DETAILS</h4>
+    <div class="include-details">
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input id="name" matInput placeholder="Enter your name" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Mobile</mat-label>
+        <input id="mobile" matInput placeholder="Enter your mobile number" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>About Me</mat-label>
+        <textarea
+          matInput
+          placeholder="Enter About Yourself"
+          name="textareaInput"
+          id="aboutMe"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+      <mat-form-field class="category-select-field">
+        <mat-label>Position Type</mat-label>
+        <mat-select matNativeControl required>
+          <mat-option [value]="1" (click)="setPositionType(1)"
+            >Internship</mat-option
+          >
+          <mat-option [value]="2" (click)="setPositionType(2)"
+            >Part Time</mat-option
+          >
+          <mat-option [value]="3" (click)="setPositionType(3)"
+            >Full Time</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="category-select-field">
+        <mat-label>Technical Skill</mat-label>
+        <mat-select matNativeControl required>
+          <mat-option [value]="1" (click)="setTechnicalSkillsType(1)"
+            >DotNet</mat-option
+          >
+          <mat-option [value]="2" (click)="setTechnicalSkillsType(2)"
+            >Angular</mat-option
+          >
+          <mat-option [value]="3" (click)="setTechnicalSkillsType(3)"
+            >Azure</mat-option
+          >
+          <mat-option [value]="4" (click)="setTechnicalSkillsType(4)"
+            >Data Science</mat-option
+          >
+          <mat-option [value]="5" (click)="setTechnicalSkillsType(5)"
+            >Machine Learning</mat-option
+          >
+          <mat-option [value]="6" (click)="setTechnicalSkillsType(6)"
+            >Web Design</mat-option
+          >
+          <mat-option [value]="7" (click)="setTechnicalSkillsType(7)"
+            >Others</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="category-select-field">
+        <mat-label>Qualification</mat-label>
+        <mat-select matNativeControl required>
+          <mat-option [value]="1">BTech</mat-option>
+          <mat-option [value]="2">BCA</mat-option>
+          <mat-option [value]="3">MCA</mat-option>
+          <mat-option [value]="4">MTech</mat-option>
+          <mat-option [value]="5">Others</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="uplod-sectin">
+      <h4>UPLOAD Your Resume</h4>
+      <div class="progs" *ngIf="progress">
+        <h5>Upload Progress</h5>
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      </div>
+      <div class="resume-card">
+        <div class="resume-upload-card" (click)="selectFile()">
+          <input
+            type="file"
+            #fileInput
+            id="fileUpload"
+            name="fileUpload"
+            (change)="uploadResume($event)"
+            accept=".docx, .pdf"
+            style="display: none"
+          />
+          <div>
+            <button class="camera">
+              <img
+                src="../../../assets/Resume.PNG"
+                alt="Resume"
+                class="resume-img"
+              />
+            </button>
+            <span class="add">{{
+              resumeFileName ? resumeFileName : "Add Resume"
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button
+        class="post"
+        mat-raised-button
+        color="primary"
+        (click)="applyForVacancy()"
+      >
+        Apply for vacancy
+      </button>
+    </div>
+  </div>
+</div>
