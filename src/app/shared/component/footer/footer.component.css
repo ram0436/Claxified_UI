@@ -49,7 +49,6 @@ i {
   
 .bg-light-black{
     background: #292a2c;
-    padding-bottom: 40px;
     /* padding: 20px 0; */
 }
 
@@ -110,6 +109,10 @@ i {
 .footer-logo{
     width: 10rem;
     height: 8rem;
+}
+
+.footer-top{
+    padding-bottom: 20px;
 }
 
 /* .col-md-6{

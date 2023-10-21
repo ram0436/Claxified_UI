@@ -1,119 +1,194 @@
-<div class="container-fluid">
-  <div class="header">Apply Now</div>
-  <div class="container">
-    <h4>INCLUDE SOME DETAILS</h4>
-    <div class="include-details">
-      <mat-form-field>
-        <mat-label>Name</mat-label>
-        <input id="name" matInput placeholder="Enter your name" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Mobile</mat-label>
-        <input id="mobile" matInput placeholder="Enter your mobile number" />
-      </mat-form-field>
-      <mat-form-field class="category-select-field">
-        <mat-label>Position Type</mat-label>
-        <mat-select matNativeControl required>
-          <mat-option [value]="1" (click)="setPositionType(1)"
-            >Internship</mat-option
-          >
-          <mat-option [value]="2" (click)="setPositionType(2)"
-            >Part Time</mat-option
-          >
-          <mat-option [value]="3" (click)="setPositionType(3)"
-            >Full Time</mat-option
-          >
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field class="category-select-field">
-        <mat-label>Technical Skill</mat-label>
-        <mat-select matNativeControl required>
-          <mat-option [value]="1" (click)="setTechnicalSkillsType(1)"
-            >DotNet</mat-option
-          >
-          <mat-option [value]="2" (click)="setTechnicalSkillsType(2)"
-            >Angular</mat-option
-          >
-          <mat-option [value]="3" (click)="setTechnicalSkillsType(3)"
-            >Azure</mat-option
-          >
-          <mat-option [value]="4" (click)="setTechnicalSkillsType(4)"
-            >Data Science</mat-option
-          >
-          <mat-option [value]="5" (click)="setTechnicalSkillsType(5)"
-            >Machine Learning</mat-option
-          >
-          <mat-option [value]="6" (click)="setTechnicalSkillsType(6)"
-            >Web Design</mat-option
-          >
-          <mat-option [value]="7" (click)="setTechnicalSkillsType(7)"
-            >Others</mat-option
-          >
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field class="category-select-field">
-        <mat-label>Qualification</mat-label>
-        <mat-select matNativeControl required>
-          <mat-option [value]="1">BTech</mat-option>
-          <mat-option [value]="2">BCA</mat-option>
-          <mat-option [value]="3">MCA</mat-option>
-          <mat-option [value]="4">MTech</mat-option>
-          <mat-option [value]="5">Others</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>About Me</mat-label>
-        <textarea
-          matInput
-          placeholder="Enter About Yourself"
-          name="textareaInput"
-          id="aboutMe"
-          rows="3"
-        ></textarea>
-      </mat-form-field>
-    </div>
+<div class="adds-conrainer margintop-120">
+  <h3>Vacancy</h3>
+  <div>
+    <mat-tab-group animationDuration="0ms">
+      <mat-tab label="Career" href="#about">
+        <div class="content-container career-container">
+          <br />
+          <p>
+            Claxified is product company and comes under platform as a service
+            (PAAS) category. And this is one of the leading classified platform
+            in India. We are growing in India and now we are ready to explore
+            our platform services in abroad also.
+          </p>
+          <br />
+          <h4>Build a career while making an impact</h4>
+          <p>
+            The right people got us here, and we are on the lookout for those
+            who will bring us closer to our vision, and make a difference.
+          </p>
+          <p>
+            If you know someone at Claxified, reach out to them and share why
+            you would be a great fit.
+          </p>
+          <br />
+          <h4>How we Hire?</h4>
+          <p>
+            At Claxified, we are always looking for people who can bring new
+            perspectives and life experiences to our teams. If you are looking
+            for a place that values your curiosity, passion, and desire to
+            learn, if you’re seeking colleagues who are big thinkers and eager
+            to take on fresh challenges as a team, then this is a place for you.
+          </p>
+          <br />
+          <h4>How we nurture you in your career.?</h4>
+          <p>1. Learning and development</p>
+          <p>
+            We are building a learning organization and offer extensive
+            opportunities for your development. Through coaching, knowledge
+            sharing forums, and self-paced learning programs, we’ll support you
+            in doing what you love.
+          </p>
+          <br />
+          <p>2. Mental and emotional well being</p>
+          <p>
+            We care for your well-being and offer you access to psychiatrists
+            and counsellors. They offer practical guidance and support on
+            health, as well as matters related to family and work
+          </p>
+          <br />
+          <p>3. Quality time off</p>
+          <p>
+            We believe to do our best work, we all need to spend time with
+            family and friends, travel, take care of personal commitments or
+            just take a break. For this, we provide paid time off.
+          </p>
+          <br />
+          <p>
+            Here we do have multiple open position time to time in Claxified, if
+            you are willing to work with us then please apply with updated
+            resume in Job section.
+          </p>
+        </div>
+      </mat-tab>
+      <mat-tab label="Vacancy Opening">
+        <div class="container-fluid">
+          <div class="header">Apply Now</div>
+          <div class="container">
+            <h4>INCLUDE SOME DETAILS</h4>
+            <div class="include-details">
+              <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input id="name" matInput placeholder="Enter your name" />
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Mobile</mat-label>
+                <input
+                  id="mobile"
+                  matInput
+                  placeholder="Enter your mobile number"
+                  [value]="mobileNumber"
+                  (input)="handleInput($event)"
+                />
+              </mat-form-field>
 
-    <div class="uplod-sectin">
-      <h4>Upload Resume</h4>
-      <div class="progs" *ngIf="progress">
-        <h5>Upload Progress</h5>
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      </div>
-      <div class="resume-card">
-        <div class="resume-upload-card" (click)="selectFile()">
-          <input
-            type="file"
-            #fileInput
-            id="fileUpload"
-            name="fileUpload"
-            (change)="uploadResume($event)"
-            accept=".docx, .pdf"
-            style="display: none"
-          />
-          <div>
-            <button class="camera">
-              <img
-                src="../../../assets/Resume.PNG"
-                alt="Resume"
-                class="resume-img"
-              />
-            </button>
-            <span class="add">{{
-              resumeFileName ? resumeFileName : "Select File"
-            }}</span>
+              <mat-form-field class="category-select-field">
+                <mat-label>Position Type</mat-label>
+                <mat-select matNativeControl required>
+                  <mat-option [value]="1" (click)="setPositionType(1)"
+                    >Internship</mat-option
+                  >
+                  <mat-option [value]="2" (click)="setPositionType(2)"
+                    >Part Time</mat-option
+                  >
+                  <mat-option [value]="3" (click)="setPositionType(3)"
+                    >Full Time</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="category-select-field">
+                <mat-label>Technical Skill</mat-label>
+                <mat-select matNativeControl required>
+                  <mat-option [value]="1" (click)="setTechnicalSkillsType(1)"
+                    >DotNet</mat-option
+                  >
+                  <mat-option [value]="2" (click)="setTechnicalSkillsType(2)"
+                    >Angular</mat-option
+                  >
+                  <mat-option [value]="3" (click)="setTechnicalSkillsType(3)"
+                    >Azure</mat-option
+                  >
+                  <mat-option [value]="4" (click)="setTechnicalSkillsType(4)"
+                    >Data Science</mat-option
+                  >
+                  <mat-option [value]="5" (click)="setTechnicalSkillsType(5)"
+                    >Machine Learning</mat-option
+                  >
+                  <mat-option [value]="6" (click)="setTechnicalSkillsType(6)"
+                    >Web Design</mat-option
+                  >
+                  <mat-option [value]="7" (click)="setTechnicalSkillsType(7)"
+                    >Others</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="category-select-field">
+                <mat-label>Qualification</mat-label>
+                <mat-select matNativeControl required>
+                  <mat-option [value]="1">BTech</mat-option>
+                  <mat-option [value]="2">BCA</mat-option>
+                  <mat-option [value]="3">MCA</mat-option>
+                  <mat-option [value]="4">MTech</mat-option>
+                  <mat-option [value]="5">Others</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>About Me</mat-label>
+                <textarea
+                  matInput
+                  placeholder="Enter About Yourself"
+                  name="textareaInput"
+                  id="aboutMe"
+                  rows="3"
+                ></textarea>
+              </mat-form-field>
+            </div>
+
+            <div class="uplod-sectin">
+              <h4>Upload Resume</h4>
+              <div class="progs" *ngIf="progress">
+                <h5>Upload Progress</h5>
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+              </div>
+              <div class="resume-card">
+                <div class="resume-upload-card" (click)="selectFile()">
+                  <input
+                    type="file"
+                    #fileInput
+                    id="fileUpload"
+                    name="fileUpload"
+                    (change)="uploadResume($event)"
+                    accept=".docx, .pdf"
+                    style="display: none"
+                  />
+                  <div>
+                    <button class="camera">
+                      <img
+                        src="../../../assets/Resume.PNG"
+                        alt="Resume"
+                        class="resume-img"
+                      />
+                    </button>
+                    <span class="add">{{
+                      resumeFileName ? resumeFileName : "Select File"
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button
+                class="vacancy-submit"
+                mat-raised-button
+                color="primary"
+                (click)="applyForVacancy()"
+              >
+                Submit
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div>
-      <button
-        class="post"
-        mat-raised-button
-        color="primary"
-        (click)="applyForVacancy()"
-      >
-       Submit
-      </button>
-    </div>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </div>

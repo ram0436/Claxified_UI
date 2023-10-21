@@ -2,6 +2,7 @@ import { Component, Renderer2, ViewChild, ElementRef } from '@angular/core';
 import { UserService } from 'src/app/modules/user/service/user.service';
 import { VacancyPositionType, Qualification, TechnicalSkillType } from '../../enum/JobVacancy';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,6 +18,7 @@ export class VacancyOpeningComponent {
   resumeUrl: string = '';
   progress: boolean = false;
   resumeFileName: string = '';
+  mobileNumber: string = '+91';
 
   selectedPositionType: VacancyPositionType | null = null;
   selectedTechnicalSkill: TechnicalSkillType | null = null;
@@ -26,7 +28,7 @@ export class VacancyOpeningComponent {
   qualificationType: Qualification = Qualification.MTech;
   technicalSkillType: TechnicalSkillType = TechnicalSkillType.Others;
 
-  constructor(private userService: UserService, private renderer: Renderer2, private snackBar: MatSnackBar) { }
+  constructor(private userService: UserService, private renderer: Renderer2, private snackBar: MatSnackBar, private router: Router) { }
 
   selectFile() {
     this.fileInput.nativeElement.click();
@@ -42,6 +44,24 @@ export class VacancyOpeningComponent {
   setTechnicalSkillsType(value: number) {
     this.technicalSkillType = value;
   }
+
+  handleBackspace(event: KeyboardEvent) {
+    const inputElement = event.target as HTMLInputElement;
+    if (inputElement.selectionStart! <= 4) {
+      event.preventDefault();
+    }
+  }
+
+  handleInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const inputValue = inputElement.value;
+
+    if (!inputValue.startsWith('+91')) {
+      inputElement.value = '+91';
+    }
+
+  }
+
 
   uploadResume(event: any){
     var files = event.target.files;
@@ -62,10 +82,11 @@ export class VacancyOpeningComponent {
   applyForVacancy(){
 
     const name = (document.getElementById('name') as HTMLInputElement).value;
-  const mobile = (document.getElementById('mobile') as HTMLInputElement).value;
-  const aboutMe = (document.getElementById('aboutMe') as HTMLTextAreaElement).value;
+    const mobile = (document.getElementById('mobile') as HTMLInputElement).value;
+    const aboutMe = (document.getElementById('aboutMe') as HTMLTextAreaElement).value;
 
     if (this.resumeUrl && name && mobile && aboutMe && this.qualificationType && this.positionType && this.technicalSkillType) {
+      if (mobile.length === 13) {
           const vacancyData = {
             name: name,
             qualification: this.qualificationType,
@@ -79,9 +100,14 @@ export class VacancyOpeningComponent {
 
           this.userService.applyForVacancy(vacancyData).subscribe(response => {
             this.showNotification('Your application has been successfully submitted.');
+            this.router.navigate(['/']);
           }, error => {
             this.showNotification('An error occur while submitting your application.');
           });
+        }
+        else{
+          this.showNotification('Please enter a valid 10-digit mobile number.');
+        }
     } else {
       this.showNotification('Please fill in all the details and select a resume file.');
     }
@@ -93,6 +119,11 @@ export class VacancyOpeningComponent {
       horizontalPosition: 'end',
       verticalPosition: 'top'
     });
+  }
+
+  navigateToTab(tab: string) {
+    const url = `/vacancy-opening#${tab}`;
+    this.router.navigateByUrl(url);
   }
 
 }
