@@ -22,4 +22,7 @@ export class SportService {
   getSportPostByGuid(guid: any) {
     return this.httpClient.get(`${this.BaseURL}Sport/GetByTabRefGuid?tabRefGuid=` + guid)
   }
+  updateSportPost(payLoad: any) {
+    return this.httpClient.put(`${this.BaseURL}Sport/`+payLoad.id, payLoad);
+  }
 }

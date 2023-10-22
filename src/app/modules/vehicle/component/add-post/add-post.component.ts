@@ -107,11 +107,11 @@ export class AddPostComponent {
           this.commonPayload = res[0];
           Object.keys(this.vehicleData).forEach(key=>{
             this.vehicleData[key] = res[0][key];
-          })
+          });
           this.brandId = res[0].vehicelBrandId;
           res[0].vehicleImageList.forEach((image:any,index:any)=>{
             this.cardsCount[index] = image.imageURL;
-          })
+          });
           if(this.brands.length > 0){
             let actualBrand = this.brands.find((brand:any)=>brand.id == res[0].vehicelBrandId);
             this.brandControl.patchValue(actualBrand);

@@ -14,10 +14,11 @@
       <div>
         <mat-label>Salary period</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="jobData.salaryPeriodType">
             <mat-chip-option
               *ngFor="let salaryPeriod of salaryPeriods"
               (click)="selectSalaryPeriod(salaryPeriod)"
+              [value]="salaryPeriod.id"
               >{{ salaryPeriod.label }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -26,10 +27,11 @@
       <div>
         <mat-label>Position type</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="jobData.positionType">
             <mat-chip-option
               *ngFor="let positionType of positionTypes"
               (click)="selectPositionType(positionType)"
+              [value]="positionType.id"
               >{{ positionType.label }}</mat-chip-option
             >
           </mat-chip-listbox>

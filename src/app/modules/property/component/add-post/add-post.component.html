@@ -14,10 +14,11 @@
       <div *ngIf="fieldsToShow.includes('HouseType')">
         <mat-label>Type</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="propertyData.houseType">
             <mat-chip-option
               *ngFor="let house of houseTypes"
               (click)="selectHouseType(house)"
+              [value]="house.id"
               >{{ house.label }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -26,10 +27,11 @@
       <div *ngIf="fieldsToShow.includes('ServiceType')">
         <mat-label>Service Type</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="propertyData.serviceType">
             <mat-chip-option
               *ngFor="let serviceType of serviceTypes"
               (click)="selectServiceType(serviceType)"
+              [value]="serviceType.id"
               >{{ serviceType.label }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -38,10 +40,11 @@
       <div *ngIf="fieldsToShow.includes('SubType')">
         <mat-label>SubType</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="propertyData.pgType">
             <mat-chip-option
               *ngFor="let pgType of pgTypes"
               (click)="selectPgType(pgType)"
+              [value]="pgType.id"
               >{{ pgType.label }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -50,10 +53,11 @@
       <div *ngIf="fieldsToShow.includes('Furnishing')">
         <mat-label>Furnishing</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="propertyData.furnishingStatus">
             <mat-chip-option
               *ngFor="let furnishing of furnishingStatus"
               (click)="selectFurnishing(furnishing)"
+              [value]="furnishing.id"
               >{{ furnishing.label }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -62,10 +66,11 @@
       <div *ngIf="fieldsToShow.includes('Bedrooms')">
         <mat-label>Bedrooms</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="propertyData.bedrooms">
             <mat-chip-option
               *ngFor="let bedRoom of numberOfBedRooms"
               (click)="selectBedRoomNumber(bedRoom)"
+              [value]="bedRoom"
               >{{ bedRoom }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -74,10 +79,11 @@
       <div *ngIf="fieldsToShow.includes('Bathrooms')">
         <mat-label>Bathrooms</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="propertyData.bathrooms">
             <mat-chip-option
               *ngFor="let bathRoom of numberOfBathRooms"
               (click)="selectBathRoomNumber(bathRoom)"
+              [value]="bathRoom"
               >{{ bathRoom }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -86,10 +92,11 @@
       <div *ngIf="fieldsToShow.includes('Construction Status')">
         <mat-label>Construction status</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="propertyData.constructionStatus">
             <mat-chip-option
               *ngFor="let construction of constructionStatus"
               (click)="selectConstructionStatus(construction)"
+              [value]="construction.id"
               >{{ construction.label }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -98,10 +105,11 @@
       <div *ngIf="fieldsToShow.includes('Listed by')">
         <mat-label>Listed By</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="propertyData.listedBy">
             <mat-chip-option
               *ngFor="let listBy of listedBy"
               (click)="selectListBy(listBy)"
+              [value]="listBy.id"
               >{{ listBy.label }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -113,6 +121,7 @@
           matInput
           placeholder=""
           (input)="allowOnlyNumbersInInput($event, 'superBuildUpArea')"
+          [(ngModel)]="propertyData.superBuildUpArea"
         />
       </mat-form-field>
       <mat-form-field *ngIf="fieldsToShow.includes('Carpet Area')">
@@ -121,6 +130,7 @@
           matInput
           placeholder=""
           (input)="allowOnlyNumbersInInput($event, 'carpetArea')"
+          [(ngModel)]="propertyData.carpetArea"
         />
       </mat-form-field>
       <mat-form-field *ngIf="fieldsToShow.includes('Plot Area')">
@@ -129,6 +139,7 @@
           matInput
           placeholder=""
           (input)="allowOnlyNumbersInInput($event, 'plotArea')"
+          [(ngModel)]="propertyData.plotArea"
         />
       </mat-form-field>
       <mat-form-field *ngIf="fieldsToShow.includes('Length')">
@@ -137,6 +148,7 @@
           matInput
           placeholder=""
           (input)="allowOnlyNumbersInInput($event, 'lenght')"
+          [(ngModel)]="propertyData.lenght"
         />
       </mat-form-field>
       <mat-form-field *ngIf="fieldsToShow.includes('Breadth')">
@@ -145,15 +157,17 @@
           matInput
           placeholder=""
           (input)="allowOnlyNumbersInInput($event, 'breadth')"
+          [(ngModel)]="propertyData.breadth"
         />
       </mat-form-field>
       <div *ngIf="fieldsToShow.includes('Bachelors Allowed')">
         <mat-label>Bachelors Allowed</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="propertyData.bachelorAllowed">
             <mat-chip-option
               *ngFor="let bachelor of bachelorsAllowed"
               (click)="selectBachelor(bachelor)"
+              [value]="bachelor.value"
               >{{ bachelor.label }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -162,10 +176,11 @@
       <div *ngIf="fieldsToShow.includes('Meals Included')">
         <mat-label>Meals Included</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="propertyData.isMealIncluded">
             <mat-chip-option
               *ngFor="let meal of mealsIncluded"
               (click)="selectMeal(meal)"
+              [value]="meal.value"
               >{{ meal.label }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -177,6 +192,7 @@
           matInput
           placeholder=""
           (input)="allowOnlyNumbersInInput($event, 'maintenanceCharge')"
+          [(ngModel)]="propertyData.maintenanceCharge"
         />
       </mat-form-field>
       <mat-form-field *ngIf="fieldsToShow.includes('Total Floors')">
@@ -185,6 +201,7 @@
           matInput
           placeholder=""
           (input)="allowOnlyNumbersInInput($event, 'totalFloors')"
+          [(ngModel)]="propertyData.totalFloors"
         />
       </mat-form-field>
       <mat-form-field *ngIf="fieldsToShow.includes('Floor No')">
@@ -193,15 +210,17 @@
           matInput
           placeholder=""
           (input)="allowOnlyNumbersInInput($event, 'floorNumber')"
+          [(ngModel)]="propertyData.floorNumber"
         />
       </mat-form-field>
       <div *ngIf="fieldsToShow.includes('Car Parking')">
         <mat-label>Car Parking</mat-label>
         <div class="fueltype">
-          <mat-chip-listbox>
+          <mat-chip-listbox [(ngModel)]="propertyData.carParking">
             <mat-chip-option
               *ngFor="let parking of carParking"
               (click)="selectCarParking(parking)"
+              [value]="parking"
               >{{ parking }}</mat-chip-option
             >
           </mat-chip-listbox>
@@ -213,10 +232,10 @@
         *ngIf="fieldsToShow.includes('Facing')"
       >
         <mat-label>Facing</mat-label>
-        <mat-select (selectionChange)="handleFacingType($event)">
+        <mat-select (selectionChange)="handleFacingType($event)" [(ngModel)]="propertyData.facingType">
           <mat-option
             *ngFor="let facingType of facingTypes"
-            [value]="facingType"
+            [value]="facingType.id"
             >{{ facingType.label }}</mat-option
           >
         </mat-select>

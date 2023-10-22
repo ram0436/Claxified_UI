@@ -46,6 +46,16 @@ export class AddPostComponent {
       this.subCategory = params['sub'].replaceAll("%20", " ");
       this.mainCategory = params['main'].replaceAll("%20", " ");
       this.setCategoryId();
+      let mode = params['mode'];
+      if(mode !=undefined){
+        let guid = localStorage.getItem('guid');
+        this.sportService.getSportPostByGuid(guid).subscribe((res:any)=>{
+          this.commonPayload = res[0];
+          res[0].sportImageList.forEach((image:any,index:any)=>{
+            this.cardsCount[index] = image.imageURL;
+          });
+        })
+      }
     });
   }
   allowOnlyNumbers(event: Event): void {
@@ -106,7 +116,10 @@ export class AddPostComponent {
     this.commonPayload.name = this.userData.firstName;
     this.commonPayload.mobile = this.userData.mobileNo;
     var payload = this.addSpecificPayload(this.commonPayload);
-    this.saveSportPost(payload);
+    if(payload.id)
+      this.updateSportPost(payload);
+    else
+      this.saveSportPost(payload);
   }
 
   verifyAdd(){
@@ -264,5 +277,12 @@ export class AddPostComponent {
         uploadElement.click();
       }
     }
+  }
+  updateSportPost(payload: any) {
+    if (this.validatePostForm(payload))
+      this.sportService.updateSportPost(payload).subscribe(data => {
+        this.showNotification("Post updated succesfully");
+        this.router.navigateByUrl('/post-menu');
+      });
   }
 }
