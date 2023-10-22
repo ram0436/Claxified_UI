@@ -75,47 +75,47 @@ export class MyAddsComponent {
         if(mainCategory != null){
             switch(mainCategory.categoryName){
                 case "Gadgets" : {
-                    this.router.navigateByUrl('/Gadgets/add-post?main=Gadgets&sub=Mobiles&mode=edit');
+                    this.router.navigateByUrl('/Gadgets/add-post?main=Gadgets&mode=edit&sub=Mobiles');
                     break;
                 }
                 case "Vehicles" : {
-                    this.router.navigateByUrl('/Vehicles/add-post?main=Vehicles&sub=Cars&mode=edit');
+                    this.router.navigateByUrl('/Vehicles/add-post?main=Vehicles&mode=edit&sub=Cars');
                     break;
                 }
                 case "Books" : {
-                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    this.router.navigateByUrl('/Books/add-post?main=Books&mode=edit&sub=Science %26 Technology');
                     break;
                 }
                 case "Commercial Services" : {
-                    this.router.navigateByUrl('/Commercial Services/add-post?main=Commercial Services&sub=Finance & Management&mode=edit');
+                    this.router.navigateByUrl('/Commercial Services/add-post?main=Commercial Services&mode=edit&sub=Finance %26 Management');
                     break;
                 }
                 case "Properties" : {
-                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    this.router.navigateByUrl('/Properties/add-post?main=Properties&mode=edit&sub=For Sale: Houses %26 Apartments');
                     break;
                 }
                 case "Jobs" : {
-                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    this.router.navigateByUrl('/Jobs/add-post?main=Jobs&mode=edit&sub=Data Entry %26 Back Office');
                     break;
                 }
                 case "Electronics & Appliances" : {
-                    this.router.navigateByUrl('/Electronics & Appliances/add-post?main=Electronics & Appliances&sub=TV&mode=edit');
+                    this.router.navigateByUrl('/Electronics %26 Appliances/add-post?main=Electronics %26 Appliances&mode=edit&sub=TV');
                     break;
                 }
                 case "Furniture" : {
-                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    this.router.navigateByUrl('/Furniture/add-post?main=Furniture&mode=edit&sub=Sofa %26 Dining');
                     break;
                 }
                 case "Sports & Hobbies" : {
-                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    this.router.navigateByUrl('/Sports %26 Hobbies/add-post?main=Sports %26 Hobbies&mode=edit&sub=Gym %26 Fitness');
                     break;
                 }
                 case "Pets" : {
-                    this.router.navigateByUrl('/Books/add-post?main=Books&sub=Science & Technology&mode=edit');
+                    this.router.navigateByUrl('/Pets/add-post?main=Pets&mode=edit&sub=Fishes %26 Aquarium');
                     break;
                 }
                 case "Fashion" : {
-                    this.router.navigateByUrl('/Fashion/add-post?main=Fashion&sub=Men&mode=edit');
+                    this.router.navigateByUrl('/Fashion/add-post?main=Fashion&mode=edit&sub=Men');
                     break;
                 }
             }

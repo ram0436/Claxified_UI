@@ -22,4 +22,7 @@ export class JobService {
   getJobPostByGuid(guid: any) {
     return this.httpClient.get(`${this.BaseURL}Job/GetByTabRefGuid?tabRefGuid=` + guid)
   }
+  updateJobPost(payLoad: any) {
+    return this.httpClient.put(`${this.BaseURL}Job/`+payLoad.id, payLoad);
+  }
 }

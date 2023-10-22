@@ -158,6 +158,19 @@ export class AddPostComponent {
       }
       this.mainCategory = params['main'];
       this.setCategoryId();
+      let mode = params['mode'];
+      if(mode !=undefined){
+        let guid = localStorage.getItem('guid');
+        this.propertyService.getPropertyPostById(guid).subscribe((res:any)=>{
+          this.commonPayload = res[0];
+          Object.keys(this.propertyData).forEach(key=>{
+            this.propertyData[key] = res[0][key];
+          });
+          res[0].propertyImageList.forEach((image:any,index:any)=>{
+            this.cardsCount[index] = image.imageURL;
+          });
+        })
+      }
     });
   }
   allowOnlyNumbers(event: Event): void {
@@ -219,7 +232,10 @@ export class AddPostComponent {
     this.commonPayload.name = this.userData.firstName;
     this.commonPayload.mobile = this.userData.mobileNo;
     var payload = this.addSpecificPayload(this.commonPayload);
-    this.savePropertyPost(payload);
+    if(payload.id)
+      this.updatePropertyPost(payload);
+    else
+      this.savePropertyPost(payload);
   }
   getAddress(event: any) {
     let pincode = event.target.value;
@@ -263,7 +279,7 @@ export class AddPostComponent {
     this.propertyData.carParking = carParking;
   }
   handleFacingType(facingType: any) {
-    this.propertyData.facingType = facingType.value.id;
+    this.propertyData.facingType = facingType.value;
   }
   selectBachelor(bachelorAllowed: any) {
     this.propertyData.bachelorAllowed = bachelorAllowed.value;
@@ -385,5 +401,12 @@ export class AddPostComponent {
     const numericInput = inputValue.replace(/[^0-9.-]/g, '');
     inputElement.value = numericInput;
     this.propertyData[input] = Number(numericInput);
+  }
+  updatePropertyPost(payload: any) {
+    if (this.validatePostForm(payload))
+      this.propertyService.updatePropertyPost(payload).subscribe(data => {
+        this.showNotification("Post updated succesfully");
+        this.router.navigateByUrl('/post-menu');
+      });
   }
 }

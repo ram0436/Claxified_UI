@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/modules/user/service/user.service';
@@ -40,13 +40,13 @@ export class AddPostComponent {
   }));
   firstImageUploaded: boolean = false; // Changes made by Hamza
   jobData: any = {
-    salaryPeriodType: 0,
-    positionType: 0,
-    salaryFrom: 0,
-    salaryTo: 0
+    salaryPeriodType: null,
+    positionType: null,
+    salaryFrom: null,
+    salaryTo: null
   }
   constructor(private jobService: JobService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute,
-    @Inject(DOCUMENT) private document: Document, private userService: UserService, private router: Router) { }
+    @Inject(DOCUMENT) private document: Document, private userService: UserService, private router: Router,private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.salaryPeriods = this.salaryPeriods.slice(this.salaryPeriods.length / 2);
@@ -59,6 +59,20 @@ export class AddPostComponent {
       this.subCategory = params['sub'].replaceAll("%20", " ");
       this.mainCategory = params['main'].replaceAll("%20", " ");
       this.setCategoryId();
+      let mode = params['mode'];
+      if(mode !=undefined){
+        let guid = localStorage.getItem('guid');
+        this.jobService.getJobPostByGuid(guid).subscribe((res:any)=>{
+          this.commonPayload = res[0];
+          Object.keys(this.jobData).forEach(key=>{
+            this.jobData[key] = res[0][key];
+          });
+          res[0].jobImageList.forEach((image:any,index:any)=>{
+            this.cardsCount[index] = image.imageURL;
+          });
+          this.cdr.detectChanges();
+        })
+      }
     });
   }
   allowOnlyNumbers(event: Event): void {
@@ -119,7 +133,10 @@ export class AddPostComponent {
     this.commonPayload.name = this.userData.firstName;
     this.commonPayload.mobile = this.userData.mobileNo;
     var payload = this.addSpecificPayload(this.commonPayload);
-    this.saveJobPost(payload);
+    if(payload.id)
+      this.updateJobPost(payload);
+    else
+      this.saveJobPost(payload);
   }
   getAddress(event: any) {
     let pincode = event.target.value;
@@ -179,8 +196,8 @@ export class AddPostComponent {
       jobImageList: imageList,
       salaryPeriodType: this.jobData.salaryPeriodType,
       positionType: this.jobData.positionType,
-      salaryFrom: this.jobData.salaryFrom ==0 ? 0 : Number(this.jobData.salaryFrom),
-      salaryTo: this.jobData.salaryTo ==0 ? 0 : Number(this.jobData.salaryTo)
+      salaryFrom: this.jobData.salaryFrom == null ? 0 : Number(this.jobData.salaryFrom),
+      salaryTo: this.jobData.salaryTo == null ? 0 : Number(this.jobData.salaryTo)
     });
     return payload;
   }
@@ -256,5 +273,12 @@ export class AddPostComponent {
       this.jobData.positionType = positionType.id;
     else
       this.jobData.positionType = 0
+  }
+  updateJobPost(payload: any) {
+    if (this.validatePostForm(payload))
+      this.jobService.updateJobPost(payload).subscribe(data => {
+        this.showNotification("Post updated succesfully");
+        this.router.navigateByUrl('/post-menu');
+      });
   }
 }

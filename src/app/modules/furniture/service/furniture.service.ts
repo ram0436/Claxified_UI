@@ -22,4 +22,7 @@ export class FurnitureService {
   getFurniturePostByGuid(guid: any) {
     return this.httpClient.get(`${this.BaseURL}Furniture/GetByTabRefGuid?tabletabRefGuid=` + guid)
   }
+  updateFurniturePost(payLoad: any) {
+    return this.httpClient.put(`${this.BaseURL}Furniture/`+payLoad.id, payLoad);
+  }
 }

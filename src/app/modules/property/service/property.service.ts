@@ -22,4 +22,7 @@ export class PropertyService {
   uploadPropertyImages(formData: any) {
     return this.httpClient.post(`${this.BaseURL}Property/UploadImages`, formData);
   }
+  updatePropertyPost(payLoad: any) {
+    return this.httpClient.put(`${this.BaseURL}Property/`+payLoad.id, payLoad);
+  }
 }

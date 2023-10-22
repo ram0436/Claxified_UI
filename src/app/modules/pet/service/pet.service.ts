@@ -22,4 +22,7 @@ export class PetService {
   getPetPostByGuid(guid: any) {
     return this.httpClient.get(`${this.BaseURL}Pet/GetByTabRefGuid?tabRefGuid=` + guid)
   }
+  updatePetPost(payLoad: any) {
+    return this.httpClient.put(`${this.BaseURL}Pet/`+payLoad.id, payLoad);
+  }
 }
