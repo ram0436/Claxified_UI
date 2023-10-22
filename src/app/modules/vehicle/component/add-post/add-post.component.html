@@ -35,7 +35,9 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <mat-form-field *ngIf="(subCategory == 'Cars' || subCategory == 'Bikes') && brandId">
+      <mat-form-field
+        *ngIf="(subCategory == 'Cars' || subCategory == 'Bikes') && brandId"
+      >
         <mat-label>Model</mat-label>
         <input
           type="text"
@@ -278,8 +280,18 @@
         mat-raised-button
         color="primary"
         (click)="postAdd()"
+        *ngIf="!isFromAdmin"
       >
         Publish Now
+      </button>
+      <button
+        class="post"
+        mat-raised-button
+        color="primary"
+        (click)="verifyAdd()"
+        *ngIf="isFromAdmin"
+      >
+        Approve Now
       </button>
     </div>
   </div>

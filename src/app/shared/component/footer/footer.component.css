@@ -17,9 +17,14 @@ footer{
 .row {
     display: flex;
     flex-wrap: wrap;
+    width: 85%;
     /* gap: 10px; */
     /* margin-right: -15px;
     margin-left: -15px; */
+}
+
+.row div{
+    flex: 1;
 }
 
 #button-addon1 {
@@ -48,7 +53,7 @@ i {
 }
 
 .footer-heading{
-    font-size: 24px;
+    font-size: 20px;
     color: #fff;
     font-weight: 600;
     margin: 20px 0 10px 0;
@@ -104,6 +109,10 @@ i {
 .footer-logo{
     width: 10rem;
     height: 8rem;
+}
+
+.footer-top{
+    padding-bottom: 20px;
 }
 
 /* .col-md-6{

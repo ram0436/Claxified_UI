@@ -372,6 +372,11 @@
     font-weight: 500;
 }
 
+.carousel-link a{
+    text-decoration: none;
+    color: #007fb0;
+}
+
 .text-carousel .carousel-inner {
     text-align: left;
     width: 100%;

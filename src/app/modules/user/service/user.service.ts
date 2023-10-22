@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -39,8 +40,17 @@ export class UserService {
   setData(data: any) {
     this.dataSubject.next(data);
   }
-
   getData() {
     return this.dataSubject.asObservable();
   }
+
+  applyForVacancy(vacancyData: any): Observable<any> {
+    return this.httpClient.post<any>(`https://cfd.azurewebsites.net/api/User/ApplyForVacancy`, vacancyData);
+  }
+
+  uploadResume(formData: any){
+
+    return this.httpClient.post(`https://cfd.azurewebsites.net/api/User/uploadResume`, formData);
+  }
+
 }

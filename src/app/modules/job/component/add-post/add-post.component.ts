@@ -8,6 +8,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 import { JobService } from '../../service/job.service';
 import { SalaryPeriod } from 'src/app/shared/enum/SalaryPeriod';
 import { PositionType } from 'src/app/shared/enum/PositionType';
+import { AdminDashboardService } from './../../../admin/service/admin-dashboard.service';
 
 @Component({
   selector: 'app-add-post',
@@ -39,16 +40,20 @@ export class AddPostComponent {
     selected : false
   }));
   firstImageUploaded: boolean = false; // Changes made by Hamza
+  isFromAdmin: boolean = false;
   jobData: any = {
     salaryPeriodType: null,
     positionType: null,
     salaryFrom: null,
     salaryTo: null
   }
-  constructor(private jobService: JobService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute,
-    @Inject(DOCUMENT) private document: Document, private userService: UserService, private router: Router,private cdr: ChangeDetectorRef) { }
+  constructor(private jobService: JobService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
+    @Inject(DOCUMENT) private document: Document, private userService: UserService, private router: Router) { }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.isFromAdmin = params['fromAdmin'] === 'true';
+    });
     this.salaryPeriods = this.salaryPeriods.slice(this.salaryPeriods.length / 2);
     this.positionTypes = this.positionTypes.slice(this.positionTypes.length / 2);
     this.getUserData();
@@ -70,7 +75,6 @@ export class AddPostComponent {
           res[0].jobImageList.forEach((image:any,index:any)=>{
             this.cardsCount[index] = image.imageURL;
           });
-          this.cdr.detectChanges();
         })
       }
     });
@@ -138,6 +142,46 @@ export class AddPostComponent {
     else
       this.saveJobPost(payload);
   }
+
+  verifyAdd(){
+    // this.commonPayload.isPremium = true;
+    // this.commonPayload.isActive = true;
+    // this.commonPayload.createdBy = this.userData.id;
+    // this.commonPayload.createdOn = new Date().toISOString().slice(0, 23);
+    // this.commonPayload.modifiedBy = this.userData.id;
+    // this.commonPayload.modifiedOn = new Date().toISOString().slice(0, 23);
+    // this.commonPayload.price = Number(this.commonPayload.price);
+    // this.commonPayload.name = this.userData.firstName;
+    // this.commonPayload.mobile = this.userData.mobileNo;
+    // var payload = this.addSpecificPayload(this.commonPayload);
+    if (this.isFromAdmin) {
+        this.route.queryParams.subscribe(params => {
+          const categoryId = params['categoryId']; 
+          const tableRefGuid = params['tableRefGuid']
+  
+          this.AdminDashboardService.verifyAd(categoryId, tableRefGuid).subscribe(
+            (response: any) => {
+              // console.log('API Response:', response);
+              this.adVerifiedNotification('Ad verified successfully');
+            },
+            (error: any) => {
+              // console.error('API Error:', error);
+            }
+          );
+        });
+      }
+  }
+
+  adVerifiedNotification(message: string): void{
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top'
+    });
+    this.router.navigateByUrl('/Admin/admin-dashboard');
+  }
+
+
   getAddress(event: any) {
     let pincode = event.target.value;
     if (pincode.length == 6) {

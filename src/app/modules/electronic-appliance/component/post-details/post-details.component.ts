@@ -48,10 +48,11 @@ export class PostDetailsComponent {
   showReportOptions: boolean = false;
   currentSlideIndex = 0;
   carouselItems = [
-    "Be wary of buyers asking to use 'Claxified delivery' or 'Payments on Claxified' for anything other than private cars",
+    "Beware of buyers asking to use 'Claxified delivery' or 'Payments on Claxified' for anything",
+    "Access Claxified portal from claxified.com and do not follow links sent by other users",
     "Share photos and ask lots of questions about the items you are buying and selling",
-    "If an ad or reply sounds too good to be true, it probably is",
-    "Use the 'Reply to ad' button for your safety and privacy"
+    "Don't reply to email addresses hidden in text and pictures",
+    "Use the 'Report ad' button if something found illegal/unethical"
   ];
   mainCategories: any = [];
   subCategories: any = [];
