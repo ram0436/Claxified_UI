@@ -16,7 +16,6 @@
     border: 1px solid #000;
     width: 70%;
     margin: auto;
-
 }
 
 nav {
@@ -97,6 +96,10 @@ button {
     display: flex;
     margin-left: 30px;
     margin-bottom: 10px;
+}
+
+.selected-cat>a{
+    margin-right: 20px;
 }
 
 .selected-cat>p {
@@ -329,10 +332,14 @@ button {
   .wd-300{
     margin-left: 10%;
     width: 300px;
+    /* display: flex;
+    align-items: center;
+    flex-direction: column; */
   }
   .wd-100{
     width: 100%;
     display: flex;
+    /* gap: 50px; */
     margin-top: 10px;
   }
   .w-50{
@@ -371,3 +378,135 @@ button {
         cursor: pointer;
         min-height: 48px;
     }
+
+
+@media (max-width: 1384px){
+
+    .cards-cont{
+        max-width: 90%;
+    }
+
+    .progs{
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 924px){
+
+    .cards-cont{
+        max-width: 100%;
+    }
+
+    .progs{
+        width: 100%;
+    }
+
+    .post{
+        width: 96%;
+    }
+
+    .upload-button{
+        left: 24%;
+    }
+
+
+}
+
+@media (max-width: 830px){
+
+    .h-365{
+        height: 480px;
+    }
+}
+
+@media (max-width: 768px){
+    .include-details{
+        width: 60%;
+    }
+
+    .upload-button{
+        left: 26%;
+    }
+}
+
+@media (max-width: 674px){
+
+    .h-365{
+        height: 590px;
+    }
+}
+
+@media (max-width: 600px){
+    .include-details{
+        width: 70%;
+    }
+}
+
+@media (max-width: 560px){
+    .post{
+        width: 94%;
+    }
+
+    .circle{
+        width: 110px;
+    }
+}
+
+@media (max-width: 519px){
+
+    .h-365{
+        height: 700px;
+    }
+
+    .include-details{
+        width: 85%;
+    }
+
+}
+
+@media (max-width: 480px){
+    .circle{
+        width: 100px;
+    }
+
+    .circle img{
+        height: 100%;
+    }
+
+    .upload-button{
+        left: 32%;
+    }
+
+    .wd-300{
+        width: 100%;
+        margin-top: 10px;
+        margin-left: 10%;
+        margin-right: 5%;
+    }
+
+
+    .flx{
+        flex-direction: column;
+    }
+
+}
+
+@media (max-width: 450px){
+    .include-details{
+        width: 75%;
+    }
+}
+
+@media (max-width: 420px){
+    .upload-button{
+        left: 35%;
+    }
+}
+
+@media (max-width: 300px){
+
+    .h-365{
+        height: 1300px;
+    }
+}

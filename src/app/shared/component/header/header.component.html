@@ -1,8 +1,12 @@
 <header class="stick stick-header">
   <nav class="nav-bar">
-    <div class="container">
+    <div class="container px-md-5">
       <div class="icon-text">
-        <a href="#" title="CLAXIFIED.COM | Sell & Buy anything | Free classified in India" class="icon-text1">
+        <a
+          href="#"
+          title="CLAXIFIED.COM | Sell & Buy anything | Free classified in India"
+          class="icon-text1"
+        >
           <div class="logo-img">
             <img src="../../../../assets/logo.gif" alt="Logo" />
             <div class="logo-text">
@@ -12,7 +16,7 @@
         </a>
       </div>
       <div class="css-1pr0bng em7g81m0">
-        <div class="search-bar-container">
+        <div class="search-bar-container md-db-none">
           <form action="/search">
             <div class="search-bar">
               <div class="inputs-wrapper">
@@ -20,28 +24,60 @@
                   <div class="keyword-search-field">
                     <div class="form-element form-element--input type-ahead">
                       <div class="form-element form-element--input">
-                        <input aria-label="Type search query"
-                          placeholder="eg. BMW 3 series, 3 seater sofa, lawnmower, dining table" maxlength="50"
-                          autocomplete="off" class="input input-text" type="text" id="q" name="q" value=""
-                          [(ngModel)]="searchQuery" />
-                        <span class="material-icons cross-icon" (click)="clearSearchText()">clear</span>
+                        <input
+                          aria-label="Type search query"
+                          placeholder="eg. BMW 3 series, 3 seater sofa, lawnmower, dining table"
+                          maxlength="50"
+                          autocomplete="off"
+                          class="input input-text"
+                          type="text"
+                          id="q"
+                          name="q"
+                          value=""
+                          [(ngModel)]="searchQuery"
+                        />
+                        <span
+                          class="material-icons cross-icon"
+                          (click)="clearSearchText()"
+                          >clear</span
+                        >
                       </div>
                     </div>
                   </div>
                 </div>
-                <label class="search-location-label" for="header-search-location">
+                <label
+                  class="search-location-label"
+                  for="header-search-location"
+                >
                   <div class="dividing-line"></div>
                 </label>
                 <div class="location-container">
                   <div class="form-element form-element--input type-ahead">
                     <div class="form-element form-element--input">
-                      <input aria-label="Location" maxlength="50" placeholder="Add your postcode or location"
-                        autocomplete="off" class="input input-text" type="text" id="header-search-location"
-                        name="search_location" value="" [(ngModel)]="locationSearchQuery" />
-                      <span class="material-icons cross-icon" (click)="clearLocationSearchText()">clear</span>
+                      <input
+                        aria-label="Location"
+                        maxlength="50"
+                        placeholder="Add your postcode or location"
+                        autocomplete="off"
+                        class="input input-text"
+                        type="text"
+                        id="header-search-location"
+                        name="search_location"
+                        value=""
+                        [(ngModel)]="locationSearchQuery"
+                      />
+                      <span
+                        class="material-icons cross-icon"
+                        (click)="clearLocationSearchText()"
+                        >clear</span
+                      >
                     </div>
                   </div>
-                  <button class="button button--primary search-button" rel="noopener noreferrer" type="submit">
+                  <button
+                    class="button button--primary search-button"
+                    rel="noopener noreferrer"
+                    type="submit"
+                  >
                     <span class="material-icons">search</span>
                   </button>
                 </div>
@@ -58,19 +94,35 @@
             </div>
           </button>
           <hr class="profile-hr" />
-          <button mat-menu-item routerLink="/Admin/admin-dashboard" class="button-item">
+          <button
+            mat-menu-item
+            routerLink="/Admin/admin-dashboard"
+            class="button-item"
+          >
             <span class="material-icons-outlined"> admin_panel_settings </span>
             <span>Admin Dashboard</span>
           </button>
-          <button mat-menu-item routerLink="/user/account/myadds" class="button-item">
+          <button
+            mat-menu-item
+            routerLink="/user/account/myadds"
+            class="button-item"
+          >
             <span class="material-icons"> upload_file </span>
             <span>Manage Ads</span>
           </button>
-          <button mat-menu-item class="button-item" routerLink="/user/account/saved">
+          <button
+            mat-menu-item
+            class="button-item"
+            routerLink="/user/account/saved"
+          >
             <span class="material-icons-outlined"> favorite_border </span>
             <span>My Wishlist</span>
           </button>
-          <button mat-menu-item class="button-item" routerLink="/user/account/help">
+          <button
+            mat-menu-item
+            class="button-item"
+            routerLink="/user/account/help"
+          >
             <span class="material-icons-outlined"> help_outline </span>
             <span>Help Manual</span>
           </button>
@@ -89,9 +141,21 @@
           <ul class="nav navbar-nav navbar-right">
             <li class="login profile_i" *ngIf="isUserLogedIn">
               <img [src]="imageUrl" alt="" class="img_stl" />
-              <button class="arrow" mat-button [matMenuTriggerFor]="beforeMenu" (click)="toggleExpandIcons()">
-                <mat-icon class="expand" *ngIf="!expandIconVisible">expand_less</mat-icon>
-                <mat-icon class="expand" *ngIf="expandIconVisible" class="expand">expand_more</mat-icon>
+              <button
+                class="arrow"
+                mat-button
+                [matMenuTriggerFor]="beforeMenu"
+                (click)="toggleExpandIcons()"
+              >
+                <mat-icon class="expand" *ngIf="!expandIconVisible"
+                  >expand_less</mat-icon
+                >
+                <mat-icon
+                  class="expand"
+                  *ngIf="expandIconVisible"
+                  class="expand"
+                  >expand_more</mat-icon
+                >
               </button>
             </li>
             <li class="login register" *ngIf="!isUserLogedIn">
@@ -113,6 +177,72 @@
         </div>
       </div>
     </div>
+    <div class="search-bar-container md-db-block">
+      <form action="/search">
+        <div class="search-bar">
+          <div class="inputs-wrapper">
+            <div class="keyword-search-container">
+              <div class="keyword-search-field">
+                <div class="form-element form-element--input type-ahead">
+                  <div class="form-element form-element--input">
+                    <input
+                      aria-label="Type search query"
+                      placeholder="eg. BMW 3 series, 3 seater sofa, lawnmower, dining table"
+                      maxlength="50"
+                      autocomplete="off"
+                      class="input input-text"
+                      type="text"
+                      id="q"
+                      name="q"
+                      value=""
+                      [(ngModel)]="searchQuery"
+                    />
+                    <span
+                      class="material-icons cross-icon"
+                      (click)="clearSearchText()"
+                      >clear</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <label class="search-location-label" for="header-search-location">
+              <div class="dividing-line"></div>
+            </label>
+            <div class="location-container">
+              <div class="form-element form-element--input type-ahead">
+                <div class="form-element form-element--input">
+                  <input
+                    aria-label="Location"
+                    maxlength="50"
+                    placeholder="Add your postcode or location"
+                    autocomplete="off"
+                    class="input input-text"
+                    type="text"
+                    id="header-search-location"
+                    name="search_location"
+                    value=""
+                    [(ngModel)]="locationSearchQuery"
+                  />
+                  <span
+                    class="material-icons cross-icon"
+                    (click)="clearLocationSearchText()"
+                    >clear</span
+                  >
+                </div>
+              </div>
+              <button
+                class="button button--primary search-button"
+                rel="noopener noreferrer"
+                type="submit"
+              >
+                <span class="material-icons">search</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   </nav>
   <nav class="navbar navbar-inverse" [class.hide-second-nav]="hideSecondNav">
     <div class="second-nav">
@@ -121,22 +251,37 @@
           <li class="dropdown auto-pointer-events">
             <div class="li-item link-item li-item-p-0">
               <span class="material-icons"> devices_other </span>
-              <a [routerLink]="'/Gadgets/view-posts'" [queryParams]="{ type: 'Gadget' }" class="menu-title">Gadgets</a>
+              <a
+                [routerLink]="'/Gadgets/view-posts'"
+                [queryParams]="{ type: 'Gadget' }"
+                class="menu-title"
+                >Gadgets</a
+              >
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a [routerLink]="'/Gadgets/view-posts'"
-                  [queryParams]="{ type: 'Gadget', sub: gadgetsTypes.Mobiles }">Mobiles</a>
+                <a
+                  [routerLink]="'/Gadgets/view-posts'"
+                  [queryParams]="{ type: 'Gadget', sub: gadgetsTypes.Mobiles }"
+                  >Mobiles</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Gadgets/view-posts'"
-                  [queryParams]="{ type: 'Gadget', sub: gadgetsTypes.Tablets }">Tablets</a>
+                <a
+                  [routerLink]="'/Gadgets/view-posts'"
+                  [queryParams]="{ type: 'Gadget', sub: gadgetsTypes.Tablets }"
+                  >Tablets</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Gadgets/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Gadgets/view-posts'"
+                  [queryParams]="{
                     type: 'Gadget',
                     sub: gadgetsTypes.Accessories
-                  }">Accessories</a>
+                  }"
+                  >Accessories</a
+                >
               </li>
             </ul>
           </li>
@@ -145,406 +290,665 @@
               <span class="material-icons-outlined">
                 directions_car_filled
               </span>
-              <a [routerLink]="'/Vehicles/view-posts'" [queryParams]="{ type: 'Vehicle' }"
-                class="menu-title">Vehicles</a>
+              <a
+                [routerLink]="'/Vehicles/view-posts'"
+                [queryParams]="{ type: 'Vehicle' }"
+                class="menu-title"
+                >Vehicles</a
+              >
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a [routerLink]="'/Vehicles/view-posts'"
-                  [queryParams]="{ type: 'Vehicle', sub: vehicleTypes.Car }">Cars</a>
+                <a
+                  [routerLink]="'/Vehicles/view-posts'"
+                  [queryParams]="{ type: 'Vehicle', sub: vehicleTypes.Car }"
+                  >Cars</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Vehicles/view-posts'"
-                  [queryParams]="{ type: 'Vehicle', sub: vehicleTypes.Bike }">Bikes</a>
+                <a
+                  [routerLink]="'/Vehicles/view-posts'"
+                  [queryParams]="{ type: 'Vehicle', sub: vehicleTypes.Bike }"
+                  >Bikes</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Vehicles/view-posts'"
-                  [queryParams]="{ type: 'Vehicle', sub: vehicleTypes.Scooty }">Scooty</a>
+                <a
+                  [routerLink]="'/Vehicles/view-posts'"
+                  [queryParams]="{ type: 'Vehicle', sub: vehicleTypes.Scooty }"
+                  >Scooty</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Vehicles/view-posts'"
-                  [queryParams]="{ type: 'Vehicle', sub: vehicleTypes.Bicycle }">Bicycle</a>
+                <a
+                  [routerLink]="'/Vehicles/view-posts'"
+                  [queryParams]="{ type: 'Vehicle', sub: vehicleTypes.Bicycle }"
+                  >Bicycle</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Vehicles/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Vehicles/view-posts'"
+                  [queryParams]="{
                     type: 'Vehicle',
                     sub: vehicleTypes.SpareParts
-                  }">Spare parts</a>
+                  }"
+                  >Spare parts</a
+                >
               </li>
             </ul>
           </li>
           <li class="dropdown auto-pointer-events">
             <div class="li-item link-item">
               <span class="material-icons-outlined"> maps_home_work </span>
-              <a [routerLink]="'/Properties/view-posts'" [queryParams]="{ type: 'property' }"
-                class="menu-title">Properties</a>
+              <a
+                [routerLink]="'/Properties/view-posts'"
+                [queryParams]="{ type: 'property' }"
+                class="menu-title"
+                >Properties</a
+              >
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a [routerLink]="'/Properties/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Properties/view-posts'"
+                  [queryParams]="{
                     type: 'property',
                     sub: propertyTypes.ForSaleHousesApartments
-                  }">For Sale: Houses & Apartments</a>
+                  }"
+                  >For Sale: Houses & Apartments</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Properties/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Properties/view-posts'"
+                  [queryParams]="{
                     type: 'property',
                     sub: propertyTypes.ForRentHousesApartments
-                  }">For Rent: Houses & Apartments</a>
+                  }"
+                  >For Rent: Houses & Apartments</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Properties/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Properties/view-posts'"
+                  [queryParams]="{
                     type: 'property',
                     sub: propertyTypes.LandsAndPlot
-                  }">Lands & Plot</a>
+                  }"
+                  >Lands & Plot</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Properties/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Properties/view-posts'"
+                  [queryParams]="{
                     type: 'property',
                     sub: propertyTypes.ForRentShopOffices
-                  }">For Rent: Shop & Offices</a>
+                  }"
+                  >For Rent: Shop & Offices</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Properties/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Properties/view-posts'"
+                  [queryParams]="{
                     type: 'property',
                     sub: propertyTypes.ForSaleShopsOffices
-                  }">For Sale: Shops & Offices</a>
+                  }"
+                  >For Sale: Shops & Offices</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Properties/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Properties/view-posts'"
+                  [queryParams]="{
                     type: 'property',
                     sub: propertyTypes.PGAndGuestHouses
-                  }">PG & Guest Houses</a>
+                  }"
+                  >PG & Guest Houses</a
+                >
               </li>
             </ul>
           </li>
           <li class="dropdown auto-pointer-events">
             <div class="li-item link-item">
               <span class="material-icons"> work_outline </span>
-              <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{ type: 'job' }" class="menu-title">Jobs</a>
+              <a
+                [routerLink]="'/Jobs/view-posts'"
+                [queryParams]="{ type: 'job' }"
+                class="menu-title"
+                >Jobs</a
+              >
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.DataEntryAndBackOffice
-                  }">Data Entry & Back Office</a>
+                  }"
+                  >Data Entry & Back Office</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.MediaEntertainment
-                  }">Media & Entertainment</a>
+                  }"
+                  >Media & Entertainment</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.SalesAndMarketting
-                  }">Sales & Marketting</a>
+                  }"
+                  >Sales & Marketting</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.BPOAndTelecaller
-                  }">BPO & Telecaller</a>
+                  }"
+                  >BPO & Telecaller</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.OfficeAssistant
-                  }">Office Assistant</a>
+                  }"
+                  >Office Assistant</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.OfficeAssistant
-                  }">Office Assistant</a>
+                  }"
+                  >Office Assistant</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.DeliveryAndCollection
-                  }">Delivery & Collection</a>
+                  }"
+                  >Delivery & Collection</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.TeacherAndTrainer
-                  }">Teacher</a>
+                  }"
+                  >Teacher</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.CookAndDriverAndSecurity
-                  }">Cook,driver & security</a>
+                  }"
+                  >Cook,driver & security</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.ReceptionistAndFrontOffice
-                  }">Receptionist & Front Office</a>
+                  }"
+                  >Receptionist & Front Office</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.OperatorAndTechnician
-                  }">Operator & Technician</a>
+                  }"
+                  >Operator & Technician</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.ITAndSoftware
-                  }">IT & Software</a>
+                  }"
+                  >IT & Software</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.HotelAndTravel
-                  }">Hotel & Travel</a>
+                  }"
+                  >Hotel & Travel</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.FinanceAndAccounting
-                  }">Accountant</a>
+                  }"
+                  >Accountant</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Jobs/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Jobs/view-posts'"
+                  [queryParams]="{
                     type: 'job',
                     sub: jobTypes.Others
-                  }">Other Jobs</a>
+                  }"
+                  >Other Jobs</a
+                >
               </li>
             </ul>
           </li>
           <li class="dropdown auto-pointer-events">
             <div class="li-item link-item">
               <span class="material-icons"> tv</span>
-              <a [routerLink]="'/Electronics & Appliances/view-posts'" [queryParams]="{ type: 'Appliances' }"
-                class="menu-title">Electronics</a>
+              <a
+                [routerLink]="'/Electronics & Appliances/view-posts'"
+                [queryParams]="{ type: 'Appliances' }"
+                class="menu-title"
+                >Electronics</a
+              >
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a [routerLink]="'/Electronics & Appliances/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Electronics & Appliances/view-posts'"
+                  [queryParams]="{
                     type: 'Appliances',
                     sub: ElectronicAppliancesTypes.TV
-                  }">TV</a>
+                  }"
+                  >TV</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Electronics & Appliances/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Electronics & Appliances/view-posts'"
+                  [queryParams]="{
                     type: 'Appliances',
                     sub: ElectronicAppliancesTypes.Kitchen
-                  }">Kitchen</a>
+                  }"
+                  >Kitchen</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Electronics & Appliances/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Electronics & Appliances/view-posts'"
+                  [queryParams]="{
                     type: 'Appliances',
                     sub: ElectronicAppliancesTypes.Computer
-                  }">Computer & Laptop</a>
+                  }"
+                  >Computer & Laptop</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Electronics & Appliances/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Electronics & Appliances/view-posts'"
+                  [queryParams]="{
                     type: 'Appliances',
                     sub: ElectronicAppliancesTypes.Camera
-                  }">Camera & Lenses</a>
+                  }"
+                  >Camera & Lenses</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Electronics & Appliances/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Electronics & Appliances/view-posts'"
+                  [queryParams]="{
                     type: 'Appliances',
                     sub: ElectronicAppliancesTypes.GamesEntertainment
-                  }">Games & Entertainment</a>
+                  }"
+                  >Games & Entertainment</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Electronics & Appliances/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Electronics & Appliances/view-posts'"
+                  [queryParams]="{
                     type: 'Appliances',
                     sub: ElectronicAppliancesTypes.Refrigrator
-                  }">Refrigrator</a>
+                  }"
+                  >Refrigrator</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Electronics & Appliances/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Electronics & Appliances/view-posts'"
+                  [queryParams]="{
                     type: 'Appliances',
                     sub: ElectronicAppliancesTypes.ComputerAccessories
-                  }">Computer Accessories</a>
+                  }"
+                  >Computer Accessories</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Electronics & Appliances/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Electronics & Appliances/view-posts'"
+                  [queryParams]="{
                     type: 'Appliances',
                     sub: ElectronicAppliancesTypes.AC
-                  }">AC</a>
+                  }"
+                  >AC</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Electronics & Appliances/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Electronics & Appliances/view-posts'"
+                  [queryParams]="{
                     type: 'Appliances',
                     sub: ElectronicAppliancesTypes.WashingMachine
-                  }">Washing Machine</a>
+                  }"
+                  >Washing Machine</a
+                >
               </li>
             </ul>
           </li>
           <li class="dropdown dropdown auto-pointer-events">
             <div class="li-item link-item">
               <span class="material-icons"> bed </span>
-              <a [routerLink]="'/Furniture/view-posts'" [queryParams]="{ type: 'Furniture' }"
-                class="menu-title">Furniture & Household</a>
+              <a
+                [routerLink]="'/Furniture/view-posts'"
+                [queryParams]="{ type: 'Furniture' }"
+                class="menu-title"
+                >Furniture & Household</a
+              >
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a [routerLink]="'/Furniture/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Furniture/view-posts'"
+                  [queryParams]="{
                     type: 'Furniture',
                     sub: furnitureTypes.SofaAndDining
-                  }">Sofa & Dining</a>
+                  }"
+                  >Sofa & Dining</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Furniture/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Furniture/view-posts'"
+                  [queryParams]="{
                     type: 'Furniture',
                     sub: furnitureTypes.Beds
-                  }">Beds</a>
+                  }"
+                  >Beds</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Furniture/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Furniture/view-posts'"
+                  [queryParams]="{
                     type: 'Furniture',
                     sub: furnitureTypes.KidsFurniture
-                  }">Kids Furniture</a>
+                  }"
+                  >Kids Furniture</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Furniture/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Furniture/view-posts'"
+                  [queryParams]="{
                     type: 'Furniture',
                     sub: furnitureTypes.OtherHouseholdItems
-                  }">Other Household items</a>
+                  }"
+                  >Other Household items</a
+                >
               </li>
             </ul>
           </li>
           <li class="dropdown auto-pointer-events">
             <div class="li-item link-item">
               <span class="material-icons-outlined"> auto_stories </span>
-              <a [routerLink]="'/Books/view-posts'" [queryParams]="{ type: 'Book' }" class="menu-title">Books</a>
+              <a
+                [routerLink]="'/Books/view-posts'"
+                [queryParams]="{ type: 'Book' }"
+                class="menu-title"
+                >Books</a
+              >
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a [routerLink]="'/Books/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Books/view-posts'"
+                  [queryParams]="{
                     type: 'Book',
                     sub: bookTypes.ScienceAndTechnology
-                  }">Science & Technology</a>
+                  }"
+                  >Science & Technology</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Books/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Books/view-posts'"
+                  [queryParams]="{
                     type: 'Book',
                     sub: bookTypes.BusinessAndManagement
-                  }">Business & Management</a>
+                  }"
+                  >Business & Management</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Books/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Books/view-posts'"
+                  [queryParams]="{
                     type: 'Book',
                     sub: bookTypes.SchoolAndCollege
-                  }">School & College</a>
+                  }"
+                  >School & College</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Books/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Books/view-posts'"
+                  [queryParams]="{
                     type: 'Book',
                     sub: bookTypes.Competative
-                  }">Competative</a>
+                  }"
+                  >Competative</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Books/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Books/view-posts'"
+                  [queryParams]="{
                     type: 'Book',
                     sub: bookTypes.Art
-                  }">Art</a>
+                  }"
+                  >Art</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Books/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Books/view-posts'"
+                  [queryParams]="{
                     type: 'Book',
                     sub: bookTypes.Others
-                  }">Others</a>
+                  }"
+                  >Others</a
+                >
               </li>
             </ul>
           </li>
           <li class="dropdown auto-pointer-events">
             <div class="li-item link-item">
               <span class="material-icons"> sports_soccer </span>
-              <a [routerLink]="'/Sports & Hobbies/view-posts'" [queryParams]="{ type: 'Sport' }"
-                class="menu-title">Sports & Hobbies
+              <a
+                [routerLink]="'/Sports & Hobbies/view-posts'"
+                [queryParams]="{ type: 'Sport' }"
+                class="menu-title"
+                >Sports & Hobbies
               </a>
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a [routerLink]="'/Sports & Hobbies/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Sports & Hobbies/view-posts'"
+                  [queryParams]="{
                     type: 'Sport',
                     sub: sportTypes.GymAndFitness
-                  }">Gym & Fitness</a>
+                  }"
+                  >Gym & Fitness</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Sports & Hobbies/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Sports & Hobbies/view-posts'"
+                  [queryParams]="{
                     type: 'Sport',
                     sub: sportTypes.MusicalInstruments
-                  }">Musical Instruments</a>
+                  }"
+                  >Musical Instruments</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Sports & Hobbies/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Sports & Hobbies/view-posts'"
+                  [queryParams]="{
                     type: 'Sport',
                     sub: sportTypes.SportsEquipment
-                  }">Sports Equipment</a>
+                  }"
+                  >Sports Equipment</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Sports & Hobbies/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Sports & Hobbies/view-posts'"
+                  [queryParams]="{
                     type: 'Sport',
                     sub: sportTypes.OtherHobbies
-                  }">Other Hobbies</a>
+                  }"
+                  >Other Hobbies</a
+                >
               </li>
             </ul>
           </li>
           <li class="dropdown auto-pointer-events">
             <div class="li-item link-item">
               <span class="material-icons-outlined"> cruelty_free</span>
-              <a [routerLink]="'/Pets/view-posts'" [queryParams]="{ type: 'Pet' }" class="menu-title">Pets</a>
+              <a
+                [routerLink]="'/Pets/view-posts'"
+                [queryParams]="{ type: 'Pet' }"
+                class="menu-title"
+                >Pets</a
+              >
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a [routerLink]="'/Pets/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Pets/view-posts'"
+                  [queryParams]="{
                     type: 'Pet',
                     sub: petTypes.FishesAndAquarium
-                  }">Fishes & Aquarium</a>
+                  }"
+                  >Fishes & Aquarium</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Pets/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Pets/view-posts'"
+                  [queryParams]="{
                     type: 'Pet',
                     sub: petTypes.PetFoodAndAccessories
-                  }">Pet Food & Accessories</a>
+                  }"
+                  >Pet Food & Accessories</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Pets/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Pets/view-posts'"
+                  [queryParams]="{
                     type: 'Pet',
                     sub: petTypes.Dogs
-                  }">Dogs</a>
+                  }"
+                  >Dogs</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Pets/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Pets/view-posts'"
+                  [queryParams]="{
                     type: 'Pet',
                     sub: petTypes.OtherPets
-                  }">Other Pets</a>
+                  }"
+                  >Other Pets</a
+                >
               </li>
             </ul>
           </li>
           <li class="dropdown auto-pointer-events">
             <div class="li-item link-item">
               <span class="material-icons-outlined"> watch </span>
-              <a [routerLink]="'/Fashion/view-posts'" [queryParams]="{ type: 'Fashion' }" class="menu-title">Fashion</a>
+              <a
+                [routerLink]="'/Fashion/view-posts'"
+                [queryParams]="{ type: 'Fashion' }"
+                class="menu-title"
+                >Fashion</a
+              >
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a [routerLink]="'/Fashion/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Fashion/view-posts'"
+                  [queryParams]="{
                     type: 'Fashion',
                     sub: fashionTypes.Men
-                  }">Men</a>
+                  }"
+                  >Men</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Fashion/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Fashion/view-posts'"
+                  [queryParams]="{
                     type: 'Fashion',
                     sub: fashionTypes.Women
-                  }">Women</a>
+                  }"
+                  >Women</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Fashion/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Fashion/view-posts'"
+                  [queryParams]="{
                     type: 'Fashion',
                     sub: fashionTypes.Kids
-                  }">Kids</a>
+                  }"
+                  >Kids</a
+                >
               </li>
             </ul>
           </li>
@@ -577,57 +981,93 @@
           <li class="dropdown auto-pointer-events">
             <div class="li-item link-item">
               <span class="material-icons"> electrical_services </span>
-              <a [routerLink]="'/Commercial Services/view-posts'" [queryParams]="{ type: 'service' }"
-                class="menu-title">Commercial Services</a>
+              <a
+                [routerLink]="'/Commercial Services/view-posts'"
+                [queryParams]="{ type: 'service' }"
+                class="menu-title"
+                >Commercial Services</a
+              >
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a [routerLink]="'/Commercial Services/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Commercial Services/view-posts'"
+                  [queryParams]="{
                     type: 'service',
                     sub: commercialServicTypes.FinanceAndManagement
-                  }">Finance & Management</a>
+                  }"
+                  >Finance & Management</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Commercial Services/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Commercial Services/view-posts'"
+                  [queryParams]="{
                     type: 'service',
                     sub: commercialServicTypes.EducationAndClassess
-                  }">Education & Classess</a>
+                  }"
+                  >Education & Classess</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Commercial Services/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Commercial Services/view-posts'"
+                  [queryParams]="{
                     type: 'service',
                     sub: commercialServicTypes.ITAndSoftware
-                  }">IT & Software</a>
+                  }"
+                  >IT & Software</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Commercial Services/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Commercial Services/view-posts'"
+                  [queryParams]="{
                     type: 'service',
                     sub: commercialServicTypes.TourAndTravel
-                  }">Tour & Travel</a>
+                  }"
+                  >Tour & Travel</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Commercial Services/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Commercial Services/view-posts'"
+                  [queryParams]="{
                     type: 'service',
                     sub: commercialServicTypes.SalesAndMarketting
-                  }">Sales & Marketting</a>
+                  }"
+                  >Sales & Marketting</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Commercial Services/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Commercial Services/view-posts'"
+                  [queryParams]="{
                     type: 'service',
                     sub: commercialServicTypes.ElectronicsRepairAndServices
-                  }">Electronics Repair & Services</a>
+                  }"
+                  >Electronics Repair & Services</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Commercial Services/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Commercial Services/view-posts'"
+                  [queryParams]="{
                     type: 'service',
                     sub: commercialServicTypes.SecurityAndCleaning
-                  }">Security & Cleaning</a>
+                  }"
+                  >Security & Cleaning</a
+                >
               </li>
               <li>
-                <a [routerLink]="'/Commercial Services/view-posts'" [queryParams]="{
+                <a
+                  [routerLink]="'/Commercial Services/view-posts'"
+                  [queryParams]="{
                     type: 'service',
                     sub: commercialServicTypes.HealthAndBeauty
-                  }">Health & Beauty</a>
+                  }"
+                  >Health & Beauty</a
+                >
               </li>
             </ul>
           </li>

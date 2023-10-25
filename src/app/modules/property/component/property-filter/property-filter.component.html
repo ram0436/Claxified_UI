@@ -8,6 +8,12 @@
     >
       Reset
     </div>
+    <span
+      class="material-icons-outlined cancel-icon md-db-icon"
+      (click)="closeFilters()"
+    >
+      cancel
+    </span>
     <iframe id="hiddenFrame" style="display: none"></iframe>
   </div>
   <!-- Price Range Filter -->
@@ -363,6 +369,16 @@
       mat-raised-button
       color="primary"
       (click)="plotAreaChange()"
+    >
+      Apply
+    </button>
+  </div>
+  <div class="example-label-container md-pb-10">
+    <button
+      class="md-apply-btn"
+      mat-raised-button
+      color="primary"
+      (click)="closeFilters()"
     >
       Apply
     </button>

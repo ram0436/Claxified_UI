@@ -109,3 +109,75 @@
     .filterSepreator{
       margin-top: -10px;
     }
+
+    
+    @media (max-width: 1430px) {
+      .filters-head{
+        margin-top: 30px;
+      }
+    }
+    @media (max-width: 1200px){
+      .example-margin {
+        min-width: 186px !important;
+        }
+    }
+
+    @media (max-width: 1105px) {
+      .filters-head{
+        margin-top: 50px;
+      }
+    }
+
+
+    @media (max-width: 1050px){
+      .example-margin {
+        min-width: 150px !important;
+        }
+    }
+
+    @media (max-width: 930px){
+      .example-margin {
+        min-width: 100px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+      .filters-head{
+        margin-top: 90px;
+      }
+    }
+
+    @media (max-width: 750px){
+      .grid{
+        min-height: 100vh !important;
+        position: absolute;
+        top: 110px;
+        left: 0;
+        overflow-y: auto;
+        /* bottom: -10px; */
+      }
+
+      .example-margin{
+        min-width: 84% !important;
+      }
+
+    }
+
+
+    @media (max-width: 650px){
+      .example-margin{
+        min-width: 78% !important;
+      }
+    }
+
+    @media (max-width: 450px){
+      .example-margin{
+        min-width: 70% !important;
+      }
+    }
+
+    @media (max-width: 330px){
+      .example-margin{
+        min-width: 60% !important;
+      }
+    }

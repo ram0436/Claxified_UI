@@ -1,6 +1,8 @@
+
 .mat-app-background {
     display: flex;
     height: 100%;
+    width: 100%;
     min-width: 100% !important;
     /* justify-content: center; */
     flex-wrap: wrap;
@@ -9,6 +11,7 @@
 
 #unique-component.mat-app-background {
     padding: 30px 0px 30px 115px;
+    /* margin: 0 auto; */
   }
 
 .card-image {
@@ -385,8 +388,8 @@
 .back-to-top-btn {
     position: fixed;
     bottom: 0;
-    left: 580px;
-    top: 95px;
+    left: 30%;
+    top: 16%;
     height: 45px;
     width: 140px;
     background-color: #f1f1f1;
@@ -539,8 +542,81 @@
     color: #007fb0;
 }
 
-/* @media (max-width: 1440px){
+@media (max-width: 1108px){
     #unique-component.mat-app-background {
-        padding: 30px 20px 30px 60px;
+        padding-top: 45px;
+      }
+}
+
+@media (max-width: 790px){
+    #unique-component.mat-app-background {
+        /* padding-top: 100px; */
+        padding-left: 90px;
+      }
+}
+
+@media (max-width: 750px){
+    #unique-component.mat-app-background {
+        padding-left: 195px;
+        padding-top: 30px;
+      }
+}
+
+
+
+@media (max-width: 720px){
+    #unique-component.mat-app-background {
+        padding-left: 175px;
+      }
+}
+
+@media (max-width: 680px){
+    #unique-component.mat-app-background {
+        padding-left: 145px;
+      }
+}
+
+@media (max-width: 620px){
+    #unique-component.mat-app-background {
+        padding-left: 125px;
+      }
+}
+
+@media (max-width: 580px){
+    #unique-component.mat-app-background {
+        padding-left: 110px;
+      }
+}
+
+@media (max-width: 565px){
+    #unique-component.mat-app-background {
+        padding-left: 90px;
+      }
+}
+
+@media (max-width: 527px){
+    #unique-component.mat-app-background {
+        /* padding-left: 230px; */
+        padding-right: 0;
+        justify-content: center;
+      }
+}
+
+/* @media (max-width: 500px){
+    #unique-component.mat-app-background {
+        padding-left: 195px;
+      }
+}
+
+@media (max-width: 460px){
+    #unique-component.mat-app-background {
+        padding-left: 183px;
+      }
+}
+
+@media (max-width: 410px){
+    #unique-component.mat-app-background {
+        padding-left: 155px;
       }
 } */
+

@@ -55,6 +55,7 @@
     justify-content: space-between;
     margin-top: 15px;
     margin-right: 5px;
+    position: relative;
   }
   
   .filter-heading{
@@ -77,6 +78,7 @@
   .grid{
     padding: 0 20px;
     background-color: #fff;
+    /* z-index: 10000; */
     /* position: sticky;
     top: 60px;
     height: calc(100vh - 95px);
@@ -86,6 +88,19 @@
     scrollbar-width: 2px; 
     width: 24%; */
   }
+
+  .cancel-icon{
+    cursor: pointer;
+    font-size: 25px;
+    position: absolute;
+    top: 50px;
+    right: -15px;
+  }
+
+  .md-db-icon{
+    display: none;
+  }
+
 
   .sidebar-container::-webkit-scrollbar {
     /* display: none; */
@@ -136,4 +151,101 @@
   
     .filterSepreator{
       margin-top: -10px;
+    }
+
+    .md-apply-btn{
+      display: none;
+      width: 85vw;
+    }
+
+    .md-pb-10{
+      padding-bottom: 20px;
+    }
+
+    @media (max-width: 1430px) {
+      .filters-head{
+        margin-top: 30px;
+      }
+    }
+    @media (max-width: 1200px){
+      .example-margin {
+        min-width: 186px !important;
+        }
+    }
+
+    @media (max-width: 1105px) {
+      .filters-head{
+        margin-top: 50px;
+      }
+    }
+
+
+    @media (max-width: 1050px){
+      .example-margin {
+        min-width: 150px !important;
+        }
+    }
+
+    @media (max-width: 930px){
+      .example-margin {
+        min-width: 100px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+      .filters-head{
+        padding-top: 50px;
+      }
+    }
+
+    @media (max-width: 750px){
+      .grid{
+        /* min-height: calc(140vh - 110px) !important; */
+        /* position: fixed;
+        top: 120px;
+        left: 0;
+        overflow-y: auto; */
+        width: 100vw;
+        margin-top: -16px;
+        box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
+        -webkit-box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
+        -moz-box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
+        /* bottom: -10px; */
+      }
+
+      .example-margin{
+        min-width: 84% !important;
+      }
+
+      .clear-filters{
+        margin-right: 30px;
+      }
+
+      .md-db-icon{
+        display: inline-block;
+      }
+
+      .md-apply-btn{
+        display: block;
+      }
+
+    }
+
+
+    @media (max-width: 650px){
+      .example-margin{
+        min-width: 78% !important;
+      }
+    }
+
+    @media (max-width: 450px){
+      .example-margin{
+        min-width: 70% !important;
+      }
+    }
+
+    @media (max-width: 330px){
+      .example-margin{
+        min-width: 60% !important;
+      }
     }

@@ -103,10 +103,10 @@ nav ul li:hover {
 
 .search-bar-container {
     position: relative;
-    background-color: #0d475c;
+    /* background-color: #0d475c; */
     /* Changes made by Hamza */
     width: 75%;
-    margin-left: 20px;
+    padding-left: 20px;
 }
 
 .seearch-bar {
@@ -181,10 +181,15 @@ nav ul li:hover {
 }
 
 .navbar-inverse {
-    background-color: white;
+    background-color: #f1f1f1;
     border: none;
     border-bottom: 1px solid #ddd;
     border-radius: 0px;
+    overflow-x: auto;
+    white-space: nowrap;
+    max-width: 100%;
+    background-color: #f1f1f1;
+    scrollbar-width: none !important; 
 }
 
 .navbar-inverse .navbar-nav>li>a {
@@ -642,11 +647,11 @@ header {
 } */
 
 .menu-container-scrollable {
-    overflow-x: auto;
+    /* overflow-x: auto;
     white-space: nowrap;
     max-width: 100%;
     background-color: #f1f1f1;
-    scrollbar-width: none; 
+    scrollbar-width: none;  */
     -ms-overflow-style: none; 
     /* padding: 0px 13.6px; */
   }
@@ -655,7 +660,103 @@ header {
     width: 0; 
   }
 
+  .md-db-block{
+    display: none;
+  }
 /* .dropdown-menu li a:hover{
     text-decoration: none !important;
 } */
 
+@media (max-width: 1220px){
+
+    .search-bar-container{
+        padding-left: 65px;
+    }
+
+    .search-bar .inputs-wrapper{
+        width: 92%;
+    }
+
+    .search-bar .inputs-wrapper .location-container{
+        width: 40%;
+    }
+
+    .search-bar .inputs-wrapper .keyword-search-container{
+        width: 60%;
+    }
+
+}
+
+@media (max-width: 1100px){
+    .px-md-5{
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .logo-img{
+        margin-left: 5px;
+    }
+
+    .profile_i{
+        margin-right: 10px;
+    }
+
+}
+
+@media (max-width: 1025px){
+
+    .search-bar-container{
+        width: 70%;
+    }
+
+    .pull-right{
+        width: 30%;
+    }
+
+    .navbar-right{
+        justify-content: space-between;
+    }
+
+}
+
+@media (max-width: 850px){
+    .search-bar-container{
+        padding-left: 90px;
+    }
+}
+
+@media (max-width: 830px){
+    .search-bar-container{
+        width: 60%;
+    }
+
+    .pull-right{
+        width: 40%;
+    }
+}
+
+@media (max-width: 750px){
+    .navbar-right{
+        justify-content: flex-end;
+    }
+
+    .md-db-none{
+        display: none;
+    }
+
+    .md-db-block{
+        display: block;
+        width: 100%;
+        padding-left: 30px;
+    }
+
+    .pull-right{
+        width: 100%;
+    }
+
+
+    .search-bar-container.md-db-block{
+        padding-bottom: 10px;
+    }
+
+}

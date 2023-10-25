@@ -1,6 +1,9 @@
-<div class="flex bg">
-  <div class="w-30 bg-white">
-    <app-property-filter class="fixed-filter"></app-property-filter>
+<div class="flex-whole bg-whole md-w-100">
+  <div class="w-30 bg-white w-md-none md-none" [class.md-none]="!showFilters">
+    <app-property-filter
+      class="fixed-filter"
+      (resetClicked)="onResetClicked()"
+    ></app-property-filter>
   </div>
   <div class="spinner__loading" *ngIf="isLoading">
     <div>
@@ -8,6 +11,9 @@
     </div>
   </div>
   <div class="cards" *ngIf="!isLoading">
+    <div class="filters-md">
+      <span (click)="toggleFilters()">Show Filters</span>
+    </div>
     <app-post-card
       [cards]="cards"
       [isLoading]="isLoading"
