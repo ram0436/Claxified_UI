@@ -55,6 +55,7 @@
     justify-content: space-between;
     margin-top: 15px;
     margin-right: 5px;
+    position: relative;
   }
   
   .filter-heading{
@@ -88,6 +89,19 @@
   .sidebar-container::-webkit-scrollbar {
     display: none;
     }
+
+
+    .cancel-icon{
+      cursor: pointer;
+      font-size: 25px;
+      position: absolute;
+      top: 50px;
+      right: -15px;
+    }
+
+    .md-db-icon{
+      display: none;
+    }
     
     .example-margin {
     margin: 8px;
@@ -115,3 +129,105 @@
     .filterSepreator{
       margin-top: -10px;
     }
+
+    .md-apply-btn{
+      display: none;
+      width: 90vw;
+    }
+
+    .md-pb-10{
+      padding-bottom: 20px;
+      margin: 0;
+    }
+
+
+  @media (max-width: 1430px) {
+    .filters-head{
+      margin-top: 30px;
+    }
+  }
+  @media (max-width: 1200px){
+    .example-margin {
+      min-width: 186px !important;
+      }
+  }
+
+  @media (max-width: 1105px) {
+    .filters-head{
+      margin-top: 50px;
+    }
+  }
+
+
+  @media (max-width: 1050px){
+    .example-margin {
+      min-width: 150px !important;
+      }
+  }
+
+  @media (max-width: 930px){
+    .example-margin {
+      min-width: 100px !important;
+      }
+  }
+
+  @media (max-width: 768px) {
+    .filters-head{
+      margin-top: 90px;
+    }
+  }
+
+  @media (max-width: 750px){
+    .grid{
+      /* min-height: 100vh !important; */
+      /* position: absolute;
+      top: 110px;
+      left: 0;
+      overflow-y: auto; */
+      width: 100vw;
+      height: 89vh;
+      position: fixed;
+      overflow: auto;
+      scrollbar-width: 0;
+      box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
+      -webkit-box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
+      -moz-box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
+      /* bottom: -10px; */
+    }
+
+    .example-margin{
+      min-width: 84% !important;
+    }
+
+    .clear-filters{
+      margin-right: 30px;
+    }
+
+    .md-db-icon{
+      display: inline-block;
+    }
+
+    .md-apply-btn{
+      display: block;
+    }
+
+  }
+
+
+  @media (max-width: 650px){
+    .example-margin{
+      min-width: 78% !important;
+    }
+  }
+
+  @media (max-width: 450px){
+    .example-margin{
+      min-width: 70% !important;
+    }
+  }
+
+  @media (max-width: 330px){
+    .example-margin{
+      min-width: 60% !important;
+    }
+  }

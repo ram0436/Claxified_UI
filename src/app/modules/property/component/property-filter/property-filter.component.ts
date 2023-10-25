@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Renderer2, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer2, HostListener, EventEmitter, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatSelectionList } from '@angular/material/list';
@@ -22,6 +22,8 @@ import { CommonService } from 'src/app/shared/service/common.service';
   styleUrls: ['./property-filter.component.css']
 })
 export class PropertyFilterComponent {
+
+  @Output() resetClicked: EventEmitter<void> = new EventEmitter<void>();
 
   stateControl = new FormControl("");
   cityControl = new FormControl("");
@@ -336,7 +338,12 @@ export class PropertyFilterComponent {
     this.toPrice = 0;
     this.filterObj = { ...this.initialFilters }; // Reset to initial filters
     this.appliedFilters = [];
+    this.resetClicked.emit();
     window.location.reload();
+  }
+
+  closeFilters(){
+    this.resetClicked.emit();
   }
 
 

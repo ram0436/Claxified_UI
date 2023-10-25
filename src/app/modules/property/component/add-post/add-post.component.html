@@ -232,7 +232,10 @@
         *ngIf="fieldsToShow.includes('Facing')"
       >
         <mat-label>Facing</mat-label>
-        <mat-select (selectionChange)="handleFacingType($event)" [(ngModel)]="propertyData.facingType">
+        <mat-select
+          (selectionChange)="handleFacingType($event)"
+          [(ngModel)]="propertyData.facingType"
+        >
           <mat-option
             *ngFor="let facingType of facingTypes"
             [value]="facingType.id"
