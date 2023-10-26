@@ -504,7 +504,7 @@ button {
     }
 }
 
-@media (max-width: 300px){
+@media (max-width: 360px){
 
     .h-365{
         height: 1300px;
