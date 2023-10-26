@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Filter } from 'src/app/shared/model/Filter';
 import { CommonService } from 'src/app/shared/service/common.service';
@@ -15,6 +15,8 @@ import { MatAutocomplete } from '@angular/material/autocomplete';
   styleUrls: ['./gadget-filter.component.css']
 })
 export class GadgetFilterComponent {
+
+  @Output() resetClicked: EventEmitter<void> = new EventEmitter<void>();
 
   stateControl = new FormControl("");
   cityControl = new FormControl("");
@@ -70,6 +72,11 @@ export class GadgetFilterComponent {
       }
     });
   }
+
+  closeFilters(){
+    this.resetClicked.emit();
+  }
+
   getAllStates() {
     this.commonService.getStatesByCountry(this.country.id).subscribe(data => {
       this.districts = data;
@@ -296,6 +303,7 @@ export class GadgetFilterComponent {
     this.fromPrice = 0;
     this.toPrice = 0;
     this.selectedBrand = '';
+    this.resetClicked.emit();
 
     this.filterObj = new Filter();  // Reset to initial filters
     this.appliedFilters = [];

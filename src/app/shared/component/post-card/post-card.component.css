@@ -559,7 +559,12 @@
     #unique-component.mat-app-background {
         padding-left: 195px;
         padding-top: 30px;
+        height: auto;
       }
+
+    .back-to-top-btn{
+        top: 20%;
+    }
 }
 
 
@@ -599,6 +604,7 @@
         /* padding-left: 230px; */
         padding-right: 0;
         justify-content: center;
+        padding-left: 75px;
       }
 }
 

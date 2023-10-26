@@ -174,6 +174,10 @@
     cursor: pointer;
 }
 
+.postImgCont{
+    width: 100%;
+}
+
 .postImg{
     width: 600px;
     height: 400px;
@@ -814,6 +818,8 @@ input[type="radio" i] {
     display: none;
 }
 
+
+
 @media (max-width: 1150px){
     .container-center{
         padding: 0 2%;
@@ -971,6 +977,16 @@ input[type="radio" i] {
 
     .pg_arrow{
         padding: 20px 4px;
+    }
+
+    .pg_arrow_left_after{
+        top: 85%;
+        left: 35%;
+    }
+
+    .pg_arrow_right_after{
+        top: 85%;
+        right: 35%;
     }
 
 
