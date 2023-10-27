@@ -14,6 +14,7 @@ export class PetPostsComponent {
   category: string = "";
   subCategoryId: Number = 0;
   isLoading: boolean = true;
+  showFilters: boolean = false;
   cards: any = [];
   subscription: any;
   actualCards: any;
@@ -33,6 +34,15 @@ export class PetPostsComponent {
       setTimeout(() => this.filterPosts(data), 500);
     });
   }
+
+  toggleFilters() {
+    this.showFilters = !this.showFilters;
+  }
+
+  onResetClicked() {
+    this.showFilters = false;
+  }
+
   getPosts() {
     this.cards = [];
     this.petService.getAllPetPosts().subscribe((data: any) => {

@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer2, HostListener, EventEmitter, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatSelectionList } from '@angular/material/list';
@@ -14,6 +14,8 @@ import { CommonService } from 'src/app/shared/service/common.service';
   styleUrls: ['./appliance-filter.component.css', '../../../modulefilter.component.css']
 })
 export class ApplianceFilterComponent {
+
+  @Output() resetClicked: EventEmitter<void> = new EventEmitter<void>();
 
   stateControl = new FormControl("");
   cityControl = new FormControl("");
@@ -217,6 +219,12 @@ export class ApplianceFilterComponent {
     this.filterObj = { ...this.initialFilters }; // Reset to initial filters
     this.appliedFilters = [];
     window.location.reload();
+    this.resetClicked.emit();
+  }
+
+  
+  closeFilters(){
+    this.resetClicked.emit();
   }
 
   resetFilters() {

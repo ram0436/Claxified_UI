@@ -111,8 +111,8 @@
           {{ imageIndex + 1 }} of {{ imagesList.length }}
         </p>
       </mat-card>
-      <div class="col-5 h200">
-        <mat-card class="border-1 ml mb-2 pt-10">
+      <div class="col-5 h200 md-display-none">
+        <mat-card class="border-1 ml mb-2 pt-10 md-display-none">
           <mat-card-title>
             ₹<span class="text-blue">{{
               formatPrice(postDetails?.price)
@@ -133,7 +133,7 @@
             </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class="mt-10 border-1 ml mb-2 pt-10">
+        <mat-card class="mt-10 border-1 ml mb-2 pt-10 md-display-none">
           <mat-card-title>{{ postDetails?.name }}</mat-card-title>
           <mat-card-content>
             <div class="seller-phone">
@@ -284,7 +284,9 @@
             </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class="mt-10 border-1 safe-ad-carousel ml mb-2">
+        <mat-card
+          class="mt-10 border-1 safe-ad-carousel ml mb-2 md-display-none"
+        >
           <div class="text-carousel carousel">
             <div class="text-carousel-title-container">
               <div class="text-carousel-title">Stay Safe</div>
@@ -333,11 +335,227 @@
           </div>
         </mat-card>
       </div>
+      <mat-card class="border-1 mb-2 col-7 pt-10 md-display-block">
+        <mat-card-title>
+          ₹<span class="text-blue">{{ formatPrice(postDetails?.price) }}</span>
+          |
+          <span class="date-added">
+            {{ formatDate(postDetails?.createdOn) }}
+          </span>
+        </mat-card-title>
+        <mat-card-content class="description">
+          <p style="margin: 0">{{ postDetails?.title }}</p>
+          <div class="loc-date">
+            <p class="loc">
+              {{ postDetails?.nearBy }},{{ postDetails?.city }} ,
+              {{ postDetails?.state }}
+            </p>
+            <!-- <p class="date">{{ formatDate(postDetails?.createdOn) }}</p> -->
+          </div>
+        </mat-card-content>
+      </mat-card>
       <mat-card class="col-7 border-1 mb-2 pt-16">
         <mat-card-title>Description</mat-card-title>
         <mat-card-content class="mt-10">
           <p class="description-content">{{ postDetails?.discription }}</p>
         </mat-card-content>
+      </mat-card>
+      <mat-card class="border-1 mb-2 pt-16 col-7 md-display-block">
+        <mat-card-title>{{ postDetails?.name }}</mat-card-title>
+        <mat-card-content>
+          <div class="seller-phone">
+            <div class="seller-phone-reveal">
+              <div class="seller-phone-number">
+                <span class="material-icons phone-icon"> call </span>
+                <h2 class="seller-phone-number-title">
+                  {{
+                    isPhoneNumberHidden
+                      ? postDetails?.mobile.slice(0, -4) + "XXXX"
+                      : postDetails?.mobile
+                  }}
+                </h2>
+              </div>
+              <a class="seller-phone-a"
+                ><button
+                  class="button button--secondary reveal-button"
+                  (click)="revealPhoneNumber()"
+                  [disabled]="!isPhoneNumberHidden"
+                  [ngClass]="{ 'disabled-button': !isPhoneNumberHidden }"
+                >
+                  Reveal
+                </button></a
+              >
+            </div>
+          </div>
+          <!-- <button class="post w-100" mat-raised-button color="primary">
+            Chat with seller
+          </button>
+          <br />
+          <br /> -->
+          <div>
+            <div class="action-btns">
+              <!-- <button class="button button--secondary favourite">
+                <span class="material-icons fvrt-icon"> favorite </span>
+                Favourite
+              </button> -->
+              <button
+                class="button button--secondary reporter"
+                (click)="toggleReportOptions()"
+              >
+                <span class="material-icons-outlined rpt-icon-lg">
+                  report
+                </span>
+                Report
+                <span class="material-icons-outlined rpt-icon">
+                  {{ iconName }}
+                </span>
+              </button>
+            </div>
+            <p class="report-success-title" *ngIf="showSuccessMessage">
+              Your report has been successfully submited.
+            </p>
+            <div class="report-options" *ngIf="showReportOptions">
+              <div class="form-element form-element--input claxified-radio">
+                <input
+                  type="radio"
+                  class="radio-switch hide-visually"
+                  id="radio-two"
+                  value="1"
+                  [checked]="selectedRadioValue === 1"
+                  (click)="setAdsReportType(1)"
+                />
+                <label for="radio-two">This is illegal/fraudulent</label>
+              </div>
+              <div class="form-element form-element--input claxified-radio">
+                <input
+                  type="radio"
+                  class="radio-switch hide-visually"
+                  id="radio-six"
+                  value="2"
+                  [checked]="selectedRadioValue === 2"
+                  (click)="setAdsReportType(2)"
+                />
+                <label for="radio-six">This ad is spam</label>
+              </div>
+              <div class="form-element form-element--input claxified-radio">
+                <input
+                  type="radio"
+                  class="radio-switch hide-visually"
+                  id="radio-three"
+                  value="3"
+                  [checked]="selectedRadioValue === 3"
+                  (click)="setAdsReportType(3)"
+                />
+                <label for="radio-three">This ad is a duplicate</label>
+              </div>
+              <div class="form-element form-element--input claxified-radio">
+                <input
+                  type="radio"
+                  class="radio-switch hide-visually"
+                  id="radio-four"
+                  value="4"
+                  [checked]="selectedRadioValue === 4"
+                  (click)="setAdsReportType(4)"
+                />
+                <label for="radio-four">This ad is in the wrong category</label>
+              </div>
+              <div class="form-element form-element--input claxified-radio">
+                <input
+                  type="radio"
+                  class="radio-switch hide-visually"
+                  id="radio-one"
+                  value="5"
+                  [checked]="selectedRadioValue === 5"
+                  (click)="setAdsReportType(5)"
+                />
+                <label for="radio-one"
+                  >The ad goes against <a>posting rules</a>
+                </label>
+              </div>
+              <div class="form-element form-element--input claxified-radio">
+                <input
+                  type="radio"
+                  class="radio-switch hide-visually"
+                  id="radio-five"
+                  value="6"
+                  [checked]="selectedRadioValue === 6"
+                  (click)="setAdsReportType(6)"
+                />
+                <label for="radio-five">Others </label>
+              </div>
+              <textarea
+                placeholder="Please provide more information"
+                class="more-info"
+                [(ngModel)]="reportDetail"
+              ></textarea>
+              <div class="display-warning" *ngIf="showOptionWarning">
+                Please select one option.
+              </div>
+              <div class="action-btns">
+                <button
+                  class="button button--secondary close-reporter"
+                  (click)="toggleReportOptions()"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="button button--secondary send-report"
+                  (click)="sendReport()"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="mt-10 border-1 safe-ad-carousel col-7 md-display-block">
+        <div class="text-carousel carousel">
+          <div class="text-carousel-title-container">
+            <div class="text-carousel-title">Stay Safe</div>
+            <div class="text-carousel-logo logo-image">
+              <span>Claxified</span>
+            </div>
+          </div>
+          <div class="loaded carousel-container">
+            <ul class="carousel-inner remove-outline-onfocus">
+              <li class="carousel-item np">
+                <p>{{ carouselItems[currentSlideIndex] }}</p>
+                <div class="slide-overlay"></div>
+              </li>
+            </ul>
+            <div class="carousel-controls-container">
+              <button
+                class="slide-panel prev"
+                [disabled]="currentSlideIndex === 0"
+                (click)="prevItem()"
+              >
+                <span class="material-icons-outlined pgns-icon">
+                  chevron_left
+                </span>
+              </button>
+              <button
+                class="slide-panel next"
+                (click)="nextItem()"
+                [disabled]="currentSlideIndex === carouselItems.length - 1"
+              >
+                <span class="material-icons-outlined pgns-icon">
+                  chevron_right
+                </span>
+              </button>
+            </div>
+            <div class="carousel-counter-container">
+              <div class="carousel-counter">
+                {{ currentSlideIndex + 1 }} of {{ carouselItems.length }}
+              </div>
+            </div>
+          </div>
+          <div class="link carousel-link text-carousel-link">
+            <a routerLink="/user/account/help" target="_blank">
+              Read All Safety Tips
+            </a>
+          </div>
+        </div>
       </mat-card>
       <!-- <mat-card class="col-7 border-1 mb-2">
         <mat-card-title>Relared Ads</mat-card-title>

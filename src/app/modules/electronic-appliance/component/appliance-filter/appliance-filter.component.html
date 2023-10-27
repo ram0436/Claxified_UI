@@ -9,6 +9,12 @@
       >
         Reset
       </div>
+      <span
+        class="material-icons-outlined cancel-icon md-db-icon"
+        (click)="closeFilters()"
+      >
+        cancel
+      </span>
       <iframe id="hiddenFrame" style="display: none"></iframe>
     </div>
     <!-- Price Range Filter -->
@@ -114,7 +120,7 @@
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
-    <div class="example-label-container" *ngIf="subCategory !=undefined">
+    <div class="example-label-container" *ngIf="subCategory != undefined">
       <label id="example-name-label" class="example-name-label">Price</label>
       <div class="pd-5">
         <label class="example-value-label">{{
@@ -125,7 +131,11 @@
         }}</label>
       </div>
     </div>
-    <div style="display: flex" class="price-slider" *ngIf="subCategory !=undefined">
+    <div
+      style="display: flex"
+      class="price-slider"
+      *ngIf="subCategory != undefined"
+    >
       <mat-slider
         class="example-margin"
         min="0"
@@ -146,5 +156,15 @@
         Apply
       </button>
     </div>
+  </div>
+  <div class="example-label-container md-pb-10">
+    <button
+      class="md-apply-btn"
+      mat-raised-button
+      color="primary"
+      (click)="closeFilters()"
+    >
+      Apply
+    </button>
   </div>
 </div>
