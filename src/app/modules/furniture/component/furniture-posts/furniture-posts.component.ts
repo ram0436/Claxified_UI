@@ -14,6 +14,7 @@ export class FurniturePostsComponent {
   category: string = "";
   subCategoryId: Number = 0;
   isLoading: boolean = true;
+  showFilters: boolean = false;
   cards: any = [];
   subscription: any;
   actualCards: any;
@@ -45,6 +46,16 @@ export class FurniturePostsComponent {
       this.subCategoryId = 0;
     })
   }
+
+  toggleFilters() {
+    this.showFilters = !this.showFilters;
+  }
+
+  onResetClicked() {
+    this.showFilters = false;
+  }
+  
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }

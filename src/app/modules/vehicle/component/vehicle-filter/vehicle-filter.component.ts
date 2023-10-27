@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer2, HostListener, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Filter } from 'src/app/shared/model/Filter';
 import { CommonService } from 'src/app/shared/service/common.service';
@@ -17,6 +17,8 @@ import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autoc
   styleUrls: ['./vehicle-filter.component.css']
 })
 export class VehicleFilterComponent {
+
+  @Output() resetClicked: EventEmitter<void> = new EventEmitter<void>();
 
   stateControl = new FormControl("");
   cityControl = new FormControl("");
@@ -353,6 +355,11 @@ export class VehicleFilterComponent {
     this.ownerMultiSelect.writeValue([]);
     this.fuelMultiSelect.writeValue([]);
     this.transMultiSelect.writeValue([]);
+    this.resetClicked.emit();
+  }
+
+  closeFilters(){
+    this.resetClicked.emit();
   }
 
 

@@ -8,6 +8,12 @@
     >
       Reset
     </div>
+    <span
+      class="material-icons-outlined cancel-icon md-db-icon"
+      (click)="closeFilters()"
+    >
+      cancel
+    </span>
     <iframe id="hiddenFrame" style="display: none"></iframe>
   </div>
   <!-- Price Range Filter -->
@@ -116,7 +122,11 @@
   </mat-form-field>
 
   <!-- Brand Filter -->
-  <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="subCategory !=undefined">
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="subCategory != undefined"
+  >
     <mat-label>Brand</mat-label>
     <mat-select
       #brandMultiSelect
@@ -129,7 +139,7 @@
       }}</mat-option>
     </mat-select>
   </mat-form-field>
-  <div class="example-label-container" *ngIf="subCategory !=undefined">
+  <div class="example-label-container" *ngIf="subCategory != undefined">
     <label id="example-name-label" class="example-name-label">Price</label>
     <div class="pd-5">
       <label class="example-value-label">{{
@@ -140,7 +150,11 @@
       }}</label>
     </div>
   </div>
-  <div style="display: flex" class="price-slider" *ngIf="subCategory !=undefined">
+  <div
+    style="display: flex"
+    class="price-slider"
+    *ngIf="subCategory != undefined"
+  >
     <mat-slider
       class="example-margin"
       min="0"
@@ -161,8 +175,13 @@
       Apply
     </button>
   </div>
-  <label id="example-name-label" class="example-name-label" *ngIf="subCategory !=undefined">Year</label>
-  <div style="display: flex" *ngIf="subCategory !=undefined">
+  <label
+    id="example-name-label"
+    class="example-name-label"
+    *ngIf="subCategory != undefined"
+    >Year</label
+  >
+  <div style="display: flex" *ngIf="subCategory != undefined">
     <mat-form-field class="wt-95">
       <mat-label>From</mat-label>
       <input matInput placeholder="Enter from year" [(ngModel)]="fromYear" />
@@ -181,7 +200,7 @@
       Apply
     </button>
   </div>
-  <div *ngIf="subCategory !=undefined">
+  <div *ngIf="subCategory != undefined">
     <div class="example-label-container">
       <label id="example-name-label" class="example-name-label"
         >Km driven</label
@@ -195,7 +214,11 @@
         }}</label>
       </div>
     </div>
-    <div style="display: flex" class="price-slider" *ngIf="subCategory !=undefined">
+    <div
+      style="display: flex"
+      class="price-slider"
+      *ngIf="subCategory != undefined"
+    >
       <mat-slider
         class="example-margin"
         min="0"
@@ -217,7 +240,11 @@
       </button>
     </div>
   </div>
-  <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="subCategory !=undefined">
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="subCategory != undefined"
+  >
     <mat-label>No. Owners</mat-label>
     <mat-select
       #ownerMultiSelect
@@ -229,7 +256,11 @@
       }}</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="subCategory !=undefined">
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="subCategory != undefined"
+  >
     <mat-label>Fuel type</mat-label>
     <mat-select
       #fuelMultiSelect
@@ -242,7 +273,11 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="fill" class="form-field-w-100" *ngIf="subCategory !=undefined">
+  <mat-form-field
+    appearance="fill"
+    class="form-field-w-100"
+    *ngIf="subCategory != undefined"
+  >
     <mat-label>Transmission type</mat-label>
     <mat-select
       #transMultiSelect
@@ -256,4 +291,14 @@
       >
     </mat-select>
   </mat-form-field>
+  <div class="example-label-container md-pb-10">
+    <button
+      class="md-apply-btn"
+      mat-raised-button
+      color="primary"
+      (click)="closeFilters()"
+    >
+      Apply
+    </button>
+  </div>
 </div>
