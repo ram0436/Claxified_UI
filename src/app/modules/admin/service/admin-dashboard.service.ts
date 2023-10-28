@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -22,7 +23,15 @@ export class AdminDashboardService {
   verifyAd(categoryId: number, tableRefGuid: string) {
     return this.httpClient.post(`${this.BaseURL}Dashboard/verifyAd?categoryId=${categoryId}&tabRefGuid=${tableRefGuid}`, null);
   }
-  
+
+  addDashboardMessage(requestBody: any) {
+    return this.httpClient.post(`${this.BaseURL}Dashboard/AddDashboardMessage`, requestBody);
+  }
+
+  getDashboardMessage(): Observable<any[]> {
+    const apiUrl = `${this.BaseURL}Dashboard/GetDashboardMessage`;
+    return this.httpClient.get<any[]>(apiUrl);
+  }
   
 
 }

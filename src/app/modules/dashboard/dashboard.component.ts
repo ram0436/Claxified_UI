@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonService } from 'src/app/shared/service/common.service';
+import { AdminDashboardService } from '../admin/service/admin-dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,7 +9,9 @@ import { CommonService } from 'src/app/shared/service/common.service';
 })
 export class DashboardComponent {
 
-  constructor(private commonService: CommonService) { }
+  messages: any[] = [];
+
+  constructor(private commonService: CommonService, private AdminDashboardService: AdminDashboardService) { }
 
   cards: any = [];
   currentDate: Date = new Date();
@@ -18,5 +21,14 @@ export class DashboardComponent {
       this.cards = data;
       this.isLoading = false;
     })
+
+    this.AdminDashboardService.getDashboardMessage().subscribe(
+      (data: any[]) => {
+        this.messages = data;
+      },
+      (error: any) => {
+      }
+    );
+
   }
 }

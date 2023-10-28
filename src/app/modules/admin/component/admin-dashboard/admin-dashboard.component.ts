@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from './../../../../shared/service/common.service';
 import { AdminDashboardService } from '../../service/admin-dashboard.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import * as moment from 'moment';
 
 @Component({
@@ -11,16 +12,45 @@ import * as moment from 'moment';
 })
 export class AdminDashboardComponent implements OnInit {
   
-  // mainCategory: any[] = [];
   selectedCategoryId! : number;
   allCards: any[] = [];
   mainCategories : any = [];
+  title: string = '';
+  message: string = '';
 
-  constructor(private route: ActivatedRoute, private router: Router, private commonService: CommonService, private AdminDashboardService: AdminDashboardService) { }
+  constructor(private route: ActivatedRoute, private router: Router, private commonService: CommonService, private AdminDashboardService: AdminDashboardService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.getMainCategories();
   }
+
+  onSubmit() {
+    const requestBody = {
+      id: 0,
+      title: this.title,
+      message: this.message,
+      createdBy: localStorage.getItem('id'),
+      createdOn: new Date().toISOString()
+    };
+
+    this.AdminDashboardService.addDashboardMessage(requestBody).subscribe(
+      (response: any) => {
+        this.showNotification("Message Added Successfully");
+      },
+      (error: any) => {
+        this.showNotification("Error Addin Message");
+      }
+    );
+  }
+
+  showNotification(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top'
+    });
+  }
+ 
 
   getMainCategories() {
     this.commonService.getAllCategory().subscribe((data: any) => {

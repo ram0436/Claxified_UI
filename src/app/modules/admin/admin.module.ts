@@ -8,6 +8,10 @@ import { MatCardModule } from '@angular/material/card';
 import {NgFor} from '@angular/common';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -21,7 +25,11 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     NgFor, 
     MatInputModule, 
     FormsModule,
-    MatCardModule
+    MatCardModule,
+    MatTabsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSnackBarModule
   ]
 })
 export class AdminModule { }
