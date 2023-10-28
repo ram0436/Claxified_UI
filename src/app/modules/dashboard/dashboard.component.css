@@ -275,15 +275,15 @@
 }
 
 .marquee-message{
-    background-color: #ae080f;
-    color: #fff;
+    /* background-color: #ae080f; */
+    color: orangered;
     padding: 5px 0;
 }
 
 .marquee-message .messages{
     display: flex;
-    align-items: center;
-    justify-content: center;
+    /* align-items: center;
+    justify-content: center; */
     gap: 200px;
 }
 
