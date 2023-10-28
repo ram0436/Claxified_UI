@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Observable } from 'rxjs';
@@ -51,6 +51,22 @@ export class UserService {
   uploadResume(formData: any){
 
     return this.httpClient.post(`https://cfd.azurewebsites.net/api/User/uploadResume`, formData);
+  }
+
+  sendLoginOTP(mobileNumber: string): Observable<any> {
+    const url = `https://cfd.azurewebsites.net/api/Auth/SendLoginOTP`;
+    const body = { mobile: mobileNumber };
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.httpClient.post(url, body, { headers: headers });
+  }
+
+  OTPLogin(mobileNo: string, otp: number, firstName: string): Observable<any> {
+    const url = `https://cfd.azurewebsites.net/api/Auth/OTPLogin?mobileNo=${mobileNo}&otp=${otp}&firstName=${firstName}`;
+    return this.httpClient.post(url, null, {
+      headers: new HttpHeaders({
+        'Accept': '*/*'
+      })
+    });
   }
 
 }
