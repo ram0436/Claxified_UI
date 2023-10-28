@@ -274,6 +274,23 @@
     margin: 0 !important;
 }
 
+.marquee-message{
+    background-color: #ae080f;
+    color: #fff;
+    padding: 5px 0;
+}
+
+.marquee-message .messages{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 200px;
+}
+
+.marquee-message .messages .message{
+    text-align: center;
+}
+
 @media (max-width: 1108px){
     .d-card{
         /* padding-top: 10px; */
@@ -307,12 +324,14 @@
         width: 109%;
         margin-left: -60px !important;
         /* padding-top: 30px; */
+        margin-top: 113px !important;
     }
 }
 
 @media (max-width: 750px){
     .d-card{
         padding-top: 60px;
+        margin-top: 125px !important;
     }
 }
 
