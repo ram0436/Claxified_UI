@@ -51,16 +51,14 @@ export class LoginComponent {
 
       this.userService.OTPLogin(requestPayload.mobileNo, requestPayload.otp, requestPayload.firstName)
         .subscribe((data: any) => {
-          localStorage.setItem("role", data.role);
-          localStorage.setItem("authToken", data.authToken);
-          localStorage.setItem("id", data.userId);
-          this.dialogRef.close();
-          this.userService.setData("login");
-          if (data.role == 'Admin') {
-            this.router.navigate(['/user/admin']);
-          } else {
-            this.router.navigate(['/user/account']);
-          }
+            localStorage.setItem("role", data.role);
+            localStorage.setItem("authToken", data.authToken);
+            localStorage.setItem("id", data.id);
+            this.dialogRef.close();
+            this.userService.setData("login");
+            if (data.role == 'Admin')
+              this.router.navigate(['/user/admin']);
+            else this.router.navigate(['/user/account']);
         }, error => {
           this.showNotification("Unauthorized User")
         });

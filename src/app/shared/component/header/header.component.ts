@@ -17,12 +17,19 @@ import { PropertyType } from '../../enum/PropertyType';
 import { JobType } from '../../enum/JobType';
 import { CommercialServiceType } from '../../enum/CommercialServiceType';
 import { Location } from '@angular/common';
+import { AdminDashboardService } from 'src/app/modules/admin/service/admin-dashboard.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+
+  searchQuery: string = '';
+  locationSearchQuery: string = '';
+  searchResults: any[] = [];
 
   expandIconVisible: boolean = true;
   vehicleTypes = VehicleType;
@@ -40,7 +47,7 @@ export class HeaderComponent implements OnInit {
   userData: any;
   imageUrl: string = "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
   dialogRef: MatDialogRef<any> | null = null;
-  constructor(private dialog: MatDialog, private router: Router, private userService: UserService,  private location: Location) {
+  constructor(private dialog: MatDialog, private router: Router, private userService: UserService, private location: Location, private AdminDashboardService: AdminDashboardService, private snackBar: MatSnackBar) {
 
    }
 
@@ -80,9 +87,6 @@ export class HeaderComponent implements OnInit {
     return queryParams;
   }
 
-  searchQuery: string = '';
-
-  locationSearchQuery: string = '';
 
   clearSearchText(): void {
     this.searchQuery = '';
@@ -90,6 +94,28 @@ export class HeaderComponent implements OnInit {
 
   clearLocationSearchText(): void {
     this.locationSearchQuery = ''; 
+  }
+
+  search(): void {
+    if ((this.searchQuery && this.searchQuery.length >= 3) || (this.locationSearchQuery && this.locationSearchQuery.length >= 3)) {
+      this.AdminDashboardService.searchAds(this.searchQuery, this.locationSearchQuery).subscribe(
+        (results: any[]) => {
+          this.searchResults = results;
+        },
+        (error) => {
+        }
+      );
+    } else {
+      this.showNotification('Search query should have at least 3 characters');
+    }
+  }
+
+  showNotification(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top'
+    });
   }
 
   ngOnInit() {
@@ -101,6 +127,9 @@ export class HeaderComponent implements OnInit {
       this.getUserData();
     })
   }
+
+
+
   openLoginModal() {
 
     if (this.dialogRef) {
