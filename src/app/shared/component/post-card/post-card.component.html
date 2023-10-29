@@ -15,7 +15,10 @@
     <a
       class="custom-link"
       [routerLink]="
-        '/' + card.mainCategory + '/post-details/' + card.tableRefGuid
+        '/' +
+        getCategoryFromMapping(card.categoryId) +
+        '/post-details/' +
+        card.tableRefGuid
       "
       target="_self"
     >

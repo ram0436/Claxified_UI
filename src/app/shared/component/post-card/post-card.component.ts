@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, HostListener } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, HostListener } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
@@ -14,7 +14,15 @@ import { UserService } from 'src/app/modules/user/service/user.service';
     templateUrl: './post-card.component.html',
     styleUrls: ['./post-card.component.css']
 })
-export class PostCardComponent implements OnInit {
+export class PostCardComponent implements OnInit, OnChanges {
+
+  private _searchCards: any;
+
+  @Input() set searchCards(value: any) {
+    this._searchCards = value;
+    this.updateCards();
+  }
+
 
     @Input() isLoading: Boolean = false;
     @Input() cards: any;
@@ -56,6 +64,21 @@ export class PostCardComponent implements OnInit {
         id: SalaryPeriod[key],
       }));
 
+      categoryMapping: { [key: string]: string } = {
+        '1': 'Gadgets',
+        '2': 'Vehicles',
+        '3': 'Properties',
+        '4': 'Jobs',
+        '5': 'Electronics & Appliances',
+        '6': 'Furniture',
+        '7': 'Books',
+        '8': 'Sports & Hobbies',
+        '9': 'Pets',
+        '10': 'Fashion',
+        '11': 'Commercial Services'
+
+      };
+
     scrollToTop() {
         const scrollDuration = 300; // Duration of the scroll animation in milliseconds
         const scrollStep = -window.scrollY / (scrollDuration / 15); // Divide the scroll distance into smaller steps
@@ -75,6 +98,18 @@ export class PostCardComponent implements OnInit {
       const scrollY = window.scrollY || document.documentElement.scrollTop;
       this.isScrolledDown = scrollY > 0;
     }
+
+    
+  get searchCards(): any {
+    return this._searchCards;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['searchCards'] || changes['cards']) {
+      this.updateCards();
+    }
+  }
+
   
     constructor(private router: Router, private commonService: CommonService, private route: ActivatedRoute, private dialog: MatDialog,private UserService : UserService) { 
       this.route.paramMap.subscribe(params => {
@@ -82,13 +117,16 @@ export class PostCardComponent implements OnInit {
       }); } 
 
     ngOnInit() {
-        this.paginatedCards = this.cards.slice(0, this.displayedCardCount);
+        this.updateCards();
         this.getMainCategories();
+    }
 
-        // if (this.cards.length > 0) {
-        //     this.stateAbbreviation(this.cards[0]); // Call it with the first card as an example
-        //   }
-
+    updateCards() {
+      if (this.searchCards && this.searchCards.length > 0) {
+        this.paginatedCards = this.searchCards.slice(0, this.displayedCardCount);
+      } else {
+        this.paginatedCards = this.cards.slice(0, this.displayedCardCount);
+      }
     }
 
 formatPrice(price: number): string {
@@ -97,6 +135,10 @@ formatPrice(price: number): string {
   const formattedPrice = roundedPrice.toLocaleString('en-IN');
 
   return formattedPrice;
+}
+
+getCategoryFromMapping(categoryId: string): string {
+  return this.categoryMapping[categoryId] || ''; // Return an empty string if categoryId is not found in the mapping
 }
 
 // toggleFavorite(event: Event) {

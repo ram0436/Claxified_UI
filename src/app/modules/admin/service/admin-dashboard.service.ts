@@ -1,13 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { tap } from 'rxjs/operators'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminDashboardService {
   
+  private searchResultsSubject = new BehaviorSubject<any[]>([]);
+  public searchResults$ = this.searchResultsSubject.asObservable();
 
   constructor(private httpClient: HttpClient) { }
   private BaseURL = environment.baseUrl;
@@ -32,6 +35,19 @@ export class AdminDashboardService {
     const apiUrl = `${this.BaseURL}Dashboard/GetDashboardMessage`;
     return this.httpClient.get<any[]>(apiUrl);
   }
+
+  // searchAds(searchItem: string, city: string): Observable<any[]> {
+  //   const apiUrl = `${this.BaseURL}Dashboard/GlobalSearch?searchItem=${searchItem}&city=${city}`;
+  //   return this.httpClient.get<any[]>(apiUrl);
+  // }
   
+  searchAds(searchQuery: string, locationSearchQuery: string): Observable<any[]> {
+    const apiUrl = `${this.BaseURL}Dashboard/GlobalSearch?searchItem=${searchQuery}&city=${locationSearchQuery}`;
+    return this.httpClient.get<any[]>(apiUrl).pipe(
+      tap((results) => {
+        this.searchResultsSubject.next(results);
+      })
+    );
+  }
 
 }
