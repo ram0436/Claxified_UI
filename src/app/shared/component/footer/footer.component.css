@@ -10,21 +10,20 @@ footer{
     /* flex-wrap: wrap; */
     /* max-width: 1400px; */
     width: 100%;
-    padding: 20px 30px;
-    margin: 0 auto !important;
+    padding: 20px 0px;
 }
 
 .row {
     display: flex;
     flex-wrap: wrap;
-    width: 85%;
+    width: 95%;
     /* gap: 10px; */
     /* margin-right: -15px;
     margin-left: -15px; */
 }
 
 .row div{
-    flex: 1;
+    width: 20%;
 }
 
 #button-addon1 {
@@ -122,6 +121,18 @@ i {
     padding-left: 15px;
 } */
 
+@media (max-width: 1273px){
+    /* .footer-heading{
+        font-size: 17px;
+    } */
+
+    .col-md-6 {
+        flex: 0 0 33%;
+        max-width: 33%;
+    }
+
+}
+
 
 @media (max-width: 1200px)
 {
@@ -129,16 +140,32 @@ i {
         max-width: 1140px;
     }
 
+
     .col-md-6 {
-        flex: 0 0 25%;
-        max-width: 25%;
+        flex: 0 0 33%;
+        max-width: 33%;
+    }
+}
+
+@media (max-width: 993px){
+    .footer-heading{
+        font-size: 17px;
     }
 }
 
 @media (max-width: 912px)
 {
+    .footer-heading{
+        font-size: 20px;
+    }
+
     .container{
         max-width: 960px;
+    }
+
+    .col-md-6 {
+        flex: 0 0 33% !important;
+        max-width: 33% !important;
     }
 }
 

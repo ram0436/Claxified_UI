@@ -30,6 +30,7 @@ export class HeaderComponent implements OnInit {
   searchQuery: string = '';
   locationSearchQuery: string = '';
   searchResults: any[] = [];
+  allItems: any[] = [];
 
   expandIconVisible: boolean = true;
   vehicleTypes = VehicleType;
@@ -94,6 +95,16 @@ export class HeaderComponent implements OnInit {
 
   clearLocationSearchText(): void {
     this.locationSearchQuery = ''; 
+  }
+
+  getAllItems(): void{
+    this.AdminDashboardService.getAllItems().subscribe(
+      (allItems: any[]) => {
+        this.allItems = allItems;
+      },
+      (error) => {
+      }
+    );
   }
 
   search(): void {
@@ -175,6 +186,8 @@ export class HeaderComponent implements OnInit {
       });
     }
   }
+
+  
   toggleExpandIcons(): void {
     this.expandIconVisible = !this.expandIconVisible;
   }
