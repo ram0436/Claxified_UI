@@ -10,7 +10,9 @@ import { tap } from 'rxjs/operators';
 export class AdminDashboardService {
   
   private searchResultsSubject = new BehaviorSubject<any[]>([]);
+  private getAllItemsSubject = new BehaviorSubject<any[]>([]);
   public searchResults$ = this.searchResultsSubject.asObservable();
+  public getAllItems$ = this.getAllItemsSubject.asObservable();
 
   constructor(private httpClient: HttpClient) { }
   private BaseURL = environment.baseUrl;
@@ -46,6 +48,14 @@ export class AdminDashboardService {
     return this.httpClient.get<any[]>(apiUrl).pipe(
       tap((results) => {
         this.searchResultsSubject.next(results);
+      })
+    );
+  }
+
+  getAllItems(): Observable<any[]>{
+    return this.httpClient.get<any[]>(`${this.BaseURL}Dashboard/GetAll?pageIndex=1&pageSize=30`).pipe(
+      tap((results) => {
+        this.getAllItemsSubject.next(results);
       })
     );
   }

@@ -38,9 +38,13 @@ export class DashboardComponent {
 
     this.AdminDashboardService.searchResults$.subscribe((results) => {
         this.cards = results;
-        this.isLoading = false;
+    });
+
+    this.AdminDashboardService.getAllItems$.subscribe((results) => {
+        this.cards = results;
     });
 
   }
 
 }
+

@@ -3,9 +3,10 @@
     <div class="container px-md-5">
       <div class="icon-text">
         <a
-          href="#"
+          [routerLink]="['/']"
           title="CLAXIFIED.COM | Sell & Buy anything | Free classified in India"
           class="icon-text1"
+          (click)="getAllItems()"
         >
           <div class="logo-img">
             <img src="../../../../assets/logo.gif" alt="Logo" />

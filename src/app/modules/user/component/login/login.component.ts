@@ -16,6 +16,10 @@ export class LoginComponent {
   otp: string = "";
   firstName: string = "";
   otpSent: boolean = false;
+  otpMessage: boolean = false;
+  otpFailed: boolean = false;
+  unauthorizedUser: boolean = false;
+
 
   constructor(private userService: UserService, private router: Router, private dialogRef: MatDialogRef<LoginComponent>, private snackBar: MatSnackBar) { }
   signIn() {
@@ -35,9 +39,17 @@ export class LoginComponent {
   sendOTP() {
     this.userService.sendLoginOTP(this.phoneNumber).subscribe((response: any) => {
       this.otpSent = true;
-      this.showNotification("OTP has been sent successfully")
+      this.otpMessage = true;
+      // this.showNotification("OTP has been sent successfully")
+      setTimeout(() => {
+        this.otpMessage = false; 
+      }, 3000);
     }, error => {
-      this.showNotification("Error sending OTP")
+      this.otpFailed = true; 
+      setTimeout(() => {
+        this.otpFailed = false; 
+      }, 3000);
+      // this.showNotification("Error sending OTP")
     });
   }
 
@@ -60,7 +72,10 @@ export class LoginComponent {
               this.router.navigate(['/user/admin']);
             else this.router.navigate(['/user/account']);
         }, error => {
-          this.showNotification("Unauthorized User")
+          this.unauthorizedUser = true;
+          setTimeout(() => {
+            this.unauthorizedUser = false; 
+          }, 3000);
         });
     }
   }
