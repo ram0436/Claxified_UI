@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UserService } from '../../service/user.service';
@@ -20,8 +21,17 @@ export class LoginComponent {
   otpFailed: boolean = false;
   unauthorizedUser: boolean = false;
 
+  resendCountdown: number = 30;
+  resendTimer: any;
+  resendEnabled: boolean = false;
 
-  constructor(private userService: UserService, private router: Router, private dialogRef: MatDialogRef<LoginComponent>, private snackBar: MatSnackBar) { }
+  phoneNumberErrorMessage: boolean = false;
+  otpErrorMessage: boolean =false;
+  firstNameErrorMessage: boolean = false;
+
+
+constructor(private httpClient: HttpClient, private userService: UserService, private router: Router, private dialogRef: MatDialogRef<LoginComponent>, private snackBar: MatSnackBar) { }
+
   signIn() {
     let payload = { userId: this.email, password: this.password };
     this.userService.login(payload).subscribe((data: any) => {
@@ -36,25 +46,54 @@ export class LoginComponent {
     })
   }
 
+  ngOnDestroy() {
+    clearInterval(this.resendTimer);
+  }
+
   sendOTP() {
-    this.userService.sendLoginOTP(this.phoneNumber).subscribe((response: any) => {
-      this.otpSent = true;
-      this.otpMessage = true;
-      // this.showNotification("OTP has been sent successfully")
-      setTimeout(() => {
-        this.otpMessage = false; 
-      }, 3000);
-    }, error => {
-      this.otpFailed = true; 
-      setTimeout(() => {
-        this.otpFailed = false; 
-      }, 3000);
-      // this.showNotification("Error sending OTP")
+
+    this.phoneNumberErrorMessage = false;
+
+    if (this.phoneNumber.length !== 10) {
+      this.phoneNumberErrorMessage = true;
+      return;
+   }
+
+
+    this.httpClient.get('https://api64.ipify.org?format=json').subscribe((ipInfo: any) => {
+      const ipAddress = ipInfo.ip;
+      this.userService.sendLoginOTP(this.phoneNumber, ipAddress).subscribe(
+        (response: any) => {
+          this.otpSent = true;
+          this.otpMessage = true;
+          this.startResendCountdown();
+          setTimeout(() => {
+            this.otpMessage = false; 
+          }, 5000);
+        },
+        (error) => {
+          this.otpFailed = true; 
+          setTimeout(() => {
+            this.otpFailed = false; 
+          }, 5000);
+        }
+      );
     });
   }
 
   loginWithOTP() {
-    if (this.phoneNumber && this.otp && this.firstName) {
+    this.otpErrorMessage = false;
+    this.firstNameErrorMessage = false;
+  
+    if (this.otp.length !== 4) {
+      this.otpErrorMessage = true;
+    }
+  
+    if (this.firstName.length < 2) {
+      this.firstNameErrorMessage = true;
+    }
+
+    if (!this.firstNameErrorMessage && !this.otpErrorMessage) {
       const requestPayload = {
         mobileNo: this.phoneNumber,
         otp: parseInt(this.otp, 10),
@@ -69,13 +108,13 @@ export class LoginComponent {
             this.dialogRef.close();
             this.userService.setData("login");
             if (data.role == 'Admin')
-              this.router.navigate(['/user/admin']);
+              this.router.navigate(['/Admin/admin-dashboard']);
             else this.router.navigate(['/user/account']);
         }, error => {
           this.unauthorizedUser = true;
           setTimeout(() => {
             this.unauthorizedUser = false; 
-          }, 3000);
+          }, 5000);
         });
     }
   }
@@ -92,5 +131,25 @@ export class LoginComponent {
   closeDialog(){
     this.dialogRef.close();
   }
+
+  startResendCountdown() {
+    this.resendEnabled = false;
+    this.resendCountdown = 30;
+    this.resendTimer = setInterval(() => {
+      this.resendCountdown--;
+      if (this.resendCountdown <= 0) {
+        clearInterval(this.resendTimer);
+        this.resendEnabled = true;
+      }
+    }, 1000);
+  }
+  
+  resendOTP() {
+    if (this.resendEnabled) {
+      this.sendOTP();
+    }
+  }
+
+
 
 }

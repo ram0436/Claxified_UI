@@ -1,77 +1,115 @@
 .login-page {
-    top: 0;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-    background-color: #303F9F;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    overflow: hidden;
-  }
-  
-  .otp-send-message{
-    width: 80%;
-    margin: -10px auto 10px auto;
-    display: block;
-    color: #008c15;
-  }
+  top: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background-color: #303F9F;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
 
-  .otp-failure-message{
-    width: 80%;
-    margin: -10px auto 10px auto;
-    display: block;
-    color: red;
-  }
 
-  mat-card {
-    /* width: 30%; */
-    /* margin: 10% auto; */
-    border-radius: 8px;
-  }
-  mat-form-field, mat-checkbox {
-    width: 80%;
-    display: block;
-    margin: auto;
-  }
-  mat-card-content {
-    margin-top: 20px;
-  }
-  
-  .login-button {
-    margin-top: 20px;
-    display: block;
-    width: 80%;
-    margin: 20px auto;
-  }
-  .cdk-overlay-pane {
-    width: 500px;
-    pointer-events: auto;
-    box-sizing: border-box;
-    z-index: 1000;
-    display: flex;
-    max-height: 100%;
+
+mat-card {
+  /* width: 30%; */
+  /* margin: 10% auto; */
+  border-radius: 8px;
+}
+mat-form-field, mat-checkbox {
+  width: 80%;
+  display: block;
+  margin: auto;
+}
+mat-card-content {
+  margin-top: 20px;
+}
+
+.login-button {
+  margin-top: 20px;
+  display: block;
+  width: 80%;
+  margin: 20px auto;
+}
+.cdk-overlay-pane {
+  width: 500px;
+  pointer-events: auto;
+  box-sizing: border-box;
+  z-index: 1000;
+  display: flex;
+  max-height: 100%;
 }
 .mat-mdc-tab-group {
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-  margin-top: 10px;
+display: flex;
+flex-direction: column;
+max-width: 100%;
+margin-top: 10px;
 }
 .mat-mdc-dialog-actions {
-  justify-content: start;
-  margin-left: 85%;
+justify-content: start;
+margin-left: 85%;
 }
 .mat-mdc-card-title {
-  margin-top: 15px;
+margin-top: 15px;
 }
 
 .cancel-icon{
-  cursor: pointer;
-  font-size: 25px;
-  position: absolute;
-  top: 15px;
-  right: 15px;
+cursor: pointer;
+font-size: 25px;
+position: absolute;
+top: 15px;
+right: 15px;
+}
+
+.countdown-message{
+color: #172B4D;
+}
+
+/* #9e9798 */
+
+.resend-link {
+color: #0065ff;
+cursor: pointer;
+text-decoration: underline;
+margin-left: 5px; /* Add margin for spacing */
+}
+
+.receive-message{
+width: 80%;
+margin: 0px auto 20px auto;
+display: block;
+color: #9e9798;
+font-weight: 500;
+font-size: 13px;
+}
+
+.otp-send-message{
+width: 80%;
+margin: 20px auto 10px auto;
+display: flex;
+align-items: center;
+gap: 5px;
+justify-content: center;
+font-weight: 500;
+font-size: 13px;
+color: #008c15;
+}
+
+.otp-send-message .material-icons-outlined, .otp-failure-message .material-icons-outlined{
+font-size: 22px;
+}
+
+.otp-failure-message{
+width: 80%;
+margin: -10px auto 10px auto;
+display: block;
+display: flex;
+align-items: center;
+gap: 5px;
+font-weight: 500;
+font-size: 13px;
+color: red;
 }
