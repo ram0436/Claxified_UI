@@ -99,6 +99,7 @@
             mat-menu-item
             routerLink="/Admin/admin-dashboard"
             class="button-item"
+            *ngIf="isAdmin"
           >
             <span class="material-icons-outlined"> admin_panel_settings </span>
             <span>Admin Dashboard</span>

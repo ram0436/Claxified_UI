@@ -48,8 +48,15 @@ export class HeaderComponent implements OnInit {
   userData: any;
   imageUrl: string = "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
   dialogRef: MatDialogRef<any> | null = null;
+  isAdmin : boolean = false;
   constructor(private dialog: MatDialog, private router: Router, private userService: UserService, private location: Location, private AdminDashboardService: AdminDashboardService, private snackBar: MatSnackBar) {
-
+    this.userService.getData().subscribe(data => {
+      var role = localStorage.getItem("role");
+      if(role != null && role == 'Admin')
+        this.isAdmin = true;
+      else
+        this.isAdmin = false;
+    })
    }
 
    hideSecondNav = false;
@@ -136,7 +143,12 @@ export class HeaderComponent implements OnInit {
     }
     this.userService.getData().subscribe(data => {
       this.getUserData();
-    })
+    });
+    var role = localStorage.getItem("role");
+    if(role != null && role == 'Admin')
+      this.isAdmin = true;
+    else
+      this.isAdmin = false;
   }
 
 
