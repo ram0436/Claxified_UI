@@ -31,7 +31,7 @@ export class LoginComponent {
       this.dialogRef.close();
       this.userService.setData("login");
       if (data.role == 'Admin')
-        this.router.navigate(['/user/admin']);
+        this.router.navigate(['/Admin/admin-dashboard']);
       else this.router.navigate(['/user/account']);
     })
   }
