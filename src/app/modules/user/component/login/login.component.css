@@ -12,6 +12,20 @@
     overflow: hidden;
   }
   
+  .otp-send-message{
+    width: 80%;
+    margin: -10px auto 10px auto;
+    display: block;
+    color: #008c15;
+  }
+
+  .otp-failure-message{
+    width: 80%;
+    margin: -10px auto 10px auto;
+    display: block;
+    color: red;
+  }
+
   mat-card {
     /* width: 30%; */
     /* margin: 10% auto; */

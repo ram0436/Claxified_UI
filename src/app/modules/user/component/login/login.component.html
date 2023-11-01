@@ -49,6 +49,10 @@
             />
             <mat-icon matSuffix>phone</mat-icon>
           </mat-form-field>
+          <p class="otp-send-message" *ngIf="otpMessage">
+            OTP has been sent successfully
+          </p>
+          <p class="otp-failure-message" *ngIf="otpFailed">Error Sending OTP</p>
           <mat-form-field *ngIf="otpSent">
             <input
               matInput
@@ -69,6 +73,9 @@
             />
             <mat-icon matSuffix>person</mat-icon>
           </mat-form-field>
+          <p class="otp-failure-message" *ngIf="unauthorizedUser">
+            Unauthorized User*
+          </p>
           <button
             mat-raised-button
             color="primary"
@@ -81,36 +88,5 @@
         </form>
       </mat-card-content>
     </mat-tab>
-    <!-- <mat-tab label="By Mobile">
-      <mat-card-content>
-        <form action="">
-          <mat-form-field>
-            <input
-              matInput
-              placeholder="Phone Number"
-              name="phoneNumber"
-              [(ngModel)]="phoneNumber"
-            />
-            <mat-icon matSuffix>phone</mat-icon>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="Enter OTP" type="number" name="OTP" />
-            <mat-icon matSuffix>shield</mat-icon>
-          </mat-form-field>
-          <mat-form-field>
-            <input
-              matInput
-              placeholder="First Name"
-              type="text"
-              name="firstName"
-            />
-            <mat-icon matSuffix>person</mat-icon>
-          </mat-form-field>
-          <button mat-raised-button color="primary" class="login-button">
-            Send OTP
-          </button>
-        </form>
-      </mat-card-content>
-    </mat-tab> -->
   </mat-tab-group>
 </mat-card>
