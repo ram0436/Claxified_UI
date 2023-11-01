@@ -91,7 +91,6 @@ export class LoginComponent {
   
     if (this.otp.length !== 4) {
       this.otpErrorMessage = true;
-      console.log(this.otp.length)
     }
   
     if (this.firstName.length < 2) {
