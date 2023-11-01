@@ -12,19 +12,7 @@
     overflow: hidden;
   }
   
-  .otp-send-message{
-    width: 80%;
-    margin: -10px auto 10px auto;
-    display: block;
-    color: #008c15;
-  }
 
-  .otp-failure-message{
-    width: 80%;
-    margin: -10px auto 10px auto;
-    display: block;
-    color: red;
-  }
 
   mat-card {
     /* width: 30%; */
@@ -74,4 +62,54 @@
   position: absolute;
   top: 15px;
   right: 15px;
+}
+
+.countdown-message{
+  color: #172B4D;
+}
+
+/* #9e9798 */
+
+.resend-link {
+  color: #0065ff;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 5px; /* Add margin for spacing */
+}
+
+.receive-message{
+  width: 80%;
+  margin: 0px auto 20px auto;
+  display: block;
+  color: #9e9798;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.otp-send-message{
+  width: 80%;
+  margin: 20px auto 10px auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 13px;
+  color: #008c15;
+}
+
+.otp-send-message .material-icons-outlined, .otp-failure-message .material-icons-outlined{
+  font-size: 22px;
+}
+
+.otp-failure-message{
+  width: 80%;
+  margin: -10px auto 10px auto;
+  display: block;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+  font-size: 13px;
+  color: red;
 }

@@ -49,20 +49,40 @@
             />
             <mat-icon matSuffix>phone</mat-icon>
           </mat-form-field>
-          <p class="otp-send-message" *ngIf="otpMessage">
-            OTP has been sent successfully
+          <p class="otp-failure-message" *ngIf="phoneNumberErrorMessage">
+            <span class="material-icons-outlined"> report </span>
+            Please enter a valid 10-digit mobile number*
           </p>
-          <p class="otp-failure-message" *ngIf="otpFailed">Error Sending OTP</p>
+          <p *ngIf="otpSent" class="receive-message">
+            Didn't receive the OTP yet?
+            <span *ngIf="!resendEnabled" class="countdown-message"
+              >Resend in {{ resendCountdown }}s</span
+            >
+            <span
+              *ngIf="resendEnabled"
+              class="resend-link"
+              (click)="resendOTP()"
+              >Resend</span
+            >
+          </p>
+          <p class="otp-failure-message" *ngIf="otpFailed">
+            <span class="material-icons-outlined"> report </span> Error Sending
+            OTP
+          </p>
           <mat-form-field *ngIf="otpSent">
             <input
               matInput
               placeholder="Enter OTP"
-              type="number"
-              name="OTP"
+              name="otp"
               [(ngModel)]="otp"
+              inputmode="numeric"
             />
             <mat-icon matSuffix>shield</mat-icon>
           </mat-form-field>
+          <p class="otp-failure-message" *ngIf="otpErrorMessage">
+            <span class="material-icons-outlined"> report </span>
+            Please enter a 4-digit OTP*
+          </p>
           <mat-form-field *ngIf="otpSent">
             <input
               matInput
@@ -73,6 +93,10 @@
             />
             <mat-icon matSuffix>person</mat-icon>
           </mat-form-field>
+          <p class="otp-failure-message" *ngIf="firstNameErrorMessage">
+            <span class="material-icons-outlined"> report </span>
+            First Name should at least contain 2 characters*
+          </p>
           <p class="otp-failure-message" *ngIf="unauthorizedUser">
             Unauthorized User*
           </p>
@@ -85,6 +109,10 @@
           >
             {{ otpSent ? "Login" : "Send OTP" }}
           </button>
+          <p class="otp-send-message" *ngIf="otpMessage">
+            <span class="material-icons-outlined"> verified </span> OTP has been
+            sent successfully
+          </p>
         </form>
       </mat-card-content>
     </mat-tab>

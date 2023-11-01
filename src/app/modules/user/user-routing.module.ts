@@ -9,6 +9,7 @@ import { HelpComponent } from './component/help/help.component';
 
 const routes: Routes = [
     { path: 'account', component: AccountComponent ,},
+    { path: 'admin', component: AccountComponent ,},
     { path: 'account/personal', component: PersonalComponent },
     { path: 'account/myadds', component: MyAddsComponent },
     { path: 'account/security', component: SecurityComponent },
