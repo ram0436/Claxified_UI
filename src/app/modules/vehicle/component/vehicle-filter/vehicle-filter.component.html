@@ -125,7 +125,7 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="subCategory != undefined"
+    *ngIf="subCategory != undefined && subCategory != '9' && subCategory != '10'"
   >
     <mat-label>Brand</mat-label>
     <mat-select
@@ -178,10 +178,10 @@
   <label
     id="example-name-label"
     class="example-name-label"
-    *ngIf="subCategory != undefined"
+    *ngIf="subCategory != undefined && subCategory != '9' && subCategory != '10'"
     >Year</label
   >
-  <div style="display: flex" *ngIf="subCategory != undefined">
+  <div style="display: flex" *ngIf="subCategory != undefined && subCategory != '9' && subCategory != '10'">
     <mat-form-field class="wt-95">
       <mat-label>From</mat-label>
       <input matInput placeholder="Enter from year" [(ngModel)]="fromYear" />
@@ -200,7 +200,7 @@
       Apply
     </button>
   </div>
-  <div *ngIf="subCategory != undefined">
+  <div *ngIf="subCategory != undefined && subCategory != '9' && subCategory != '10'">
     <div class="example-label-container">
       <label id="example-name-label" class="example-name-label"
         >Km driven</label
@@ -217,7 +217,7 @@
     <div
       style="display: flex"
       class="price-slider"
-      *ngIf="subCategory != undefined"
+      *ngIf="subCategory != undefined && subCategory != '9' && subCategory != '10'"
     >
       <mat-slider
         class="example-margin"
@@ -243,7 +243,7 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="subCategory != undefined"
+    *ngIf="subCategory != undefined && subCategory != '9' && subCategory != '10'"
   >
     <mat-label>No. Owners</mat-label>
     <mat-select
@@ -259,7 +259,7 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="subCategory != undefined"
+    *ngIf="subCategory != undefined && subCategory != '9' && subCategory != '10'"
   >
     <mat-label>Fuel type</mat-label>
     <mat-select
@@ -276,7 +276,7 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="subCategory != undefined"
+    *ngIf="subCategory != undefined && subCategory != '9' && subCategory != '10'"
   >
     <mat-label>Transmission type</mat-label>
     <mat-select

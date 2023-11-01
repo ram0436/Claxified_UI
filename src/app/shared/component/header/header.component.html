@@ -284,6 +284,16 @@
                   >Accessories</a
                 >
               </li>
+              <li>
+                <a
+                  [routerLink]="'/Gadgets/view-posts'"
+                  [queryParams]="{
+                    type: 'Gadget',
+                    sub: gadgetsTypes.Others
+                  }"
+                  >Others</a
+                >
+              </li>
             </ul>
           </li>
           <li class="dropdown auto-pointer-events">
@@ -335,6 +345,16 @@
                     sub: vehicleTypes.SpareParts
                   }"
                   >Spare parts</a
+                >
+              </li>
+              <li>
+                <a
+                  [routerLink]="'/Vehicles/view-posts'"
+                  [queryParams]="{
+                    type: 'Vehicle',
+                    sub: vehicleTypes.Others
+                  }"
+                  >Others</a
                 >
               </li>
             </ul>
@@ -408,6 +428,16 @@
                     sub: propertyTypes.PGAndGuestHouses
                   }"
                   >PG & Guest Houses</a
+                >
+              </li>
+              <li>
+                <a
+                  [routerLink]="'/Properties/view-posts'"
+                  [queryParams]="{
+                    type: 'property',
+                    sub: propertyTypes.Others
+                  }"
+                  >Others</a
                 >
               </li>
             </ul>
@@ -570,7 +600,7 @@
                     type: 'job',
                     sub: jobTypes.Others
                   }"
-                  >Other Jobs</a
+                  >Others</a
                 >
               </li>
             </ul>
@@ -676,6 +706,16 @@
                   >Washing Machine</a
                 >
               </li>
+              <li>
+                <a
+                  [routerLink]="'/Electronics & Appliances/view-posts'"
+                  [queryParams]="{
+                    type: 'Appliances',
+                    sub: ElectronicAppliancesTypes.Others
+                  }"
+                  >Others</a
+                >
+              </li>
             </ul>
           </li>
           <li class="dropdown dropdown auto-pointer-events">
@@ -726,7 +766,7 @@
                     type: 'Furniture',
                     sub: furnitureTypes.OtherHouseholdItems
                   }"
-                  >Other Household items</a
+                  >Others</a
                 >
               </li>
             </ul>
@@ -852,7 +892,7 @@
                     type: 'Sport',
                     sub: sportTypes.OtherHobbies
                   }"
-                  >Other Hobbies</a
+                  >Others</a
                 >
               </li>
             </ul>
@@ -905,7 +945,7 @@
                     type: 'Pet',
                     sub: petTypes.OtherPets
                   }"
-                  >Other Pets</a
+                  >Others</a
                 >
               </li>
             </ul>
@@ -1068,6 +1108,16 @@
                     sub: commercialServicTypes.HealthAndBeauty
                   }"
                   >Health & Beauty</a
+                >
+              </li>
+              <li>
+                <a
+                  [routerLink]="'/Commercial Services/view-posts'"
+                  [queryParams]="{
+                    type: 'service',
+                    sub: commercialServicTypes.Others
+                  }"
+                  >Others</a
                 >
               </li>
             </ul>

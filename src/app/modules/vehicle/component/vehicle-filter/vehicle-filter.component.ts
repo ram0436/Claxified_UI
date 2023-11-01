@@ -65,7 +65,7 @@ export class VehicleFilterComponent {
   //Changes made by Hamza
   filtersSelected: boolean = false; 
   initialFilters: any;
-
+  
   constructor(private commonService: CommonService, private route: ActivatedRoute,
     private vehicleService: VehicleService) { }
 

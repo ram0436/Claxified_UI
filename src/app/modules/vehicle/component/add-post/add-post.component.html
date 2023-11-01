@@ -11,7 +11,7 @@
     </div>
     <h4>INCLUDE SOME DETAILS</h4>
     <div class="include-details">
-      <mat-form-field *ngIf="subCategory != 'Spare Parts'">
+      <mat-form-field *ngIf="subCategory != 'Spare Parts' && subCategory != 'Others'">
         <mat-label>Brand</mat-label>
         <input
           type="text"
@@ -61,7 +61,7 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <mat-form-field *ngIf="subCategory != 'Spare Parts'">
+      <mat-form-field *ngIf="subCategory != 'Spare Parts' && subCategory != 'Others'">
         <mat-label>Year</mat-label>
         <input
           matInput
@@ -71,7 +71,7 @@
           [(ngModel)]="vehicleData.year"
         />
       </mat-form-field>
-      <mat-form-field *ngIf="subCategory != 'Spare Parts'">
+      <mat-form-field *ngIf="subCategory != 'Spare Parts' && subCategory != 'Others'">
         <mat-label>KM driven</mat-label>
         <input
           matInput
@@ -81,7 +81,7 @@
           [(ngModel)]="vehicleData.kmDriven"
         />
       </mat-form-field>
-      <div *ngIf="subCategory != 'Spare Parts'">
+      <div *ngIf="subCategory != 'Spare Parts' && subCategory != 'Others'">
         <mat-label>Fuel Type</mat-label>
         <div class="fueltype">
           <mat-chip-listbox [(ngModel)]="vehicleData.fuelType">
@@ -94,7 +94,7 @@
           </mat-chip-listbox>
         </div>
       </div>
-      <div *ngIf="subCategory != 'Spare Parts'">
+      <div *ngIf="subCategory != 'Spare Parts' && subCategory != 'Others'">
         <mat-label>Transmission</mat-label>
         <div class="fueltype">
           <mat-chip-listbox [(ngModel)]="vehicleData.transmissionType">
@@ -107,7 +107,7 @@
           </mat-chip-listbox>
         </div>
       </div>
-      <div *ngIf="subCategory != 'Spare Parts'">
+      <div *ngIf="subCategory != 'Spare Parts' && subCategory != 'Others'">
         <mat-label>No of owners</mat-label>
         <div class="fueltype">
           <mat-chip-listbox [(ngModel)]="vehicleData.noOfOwner">

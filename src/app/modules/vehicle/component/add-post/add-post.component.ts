@@ -326,6 +326,10 @@ export class AddPostComponent {
     });
   }
   addSpecificPayload(commonPayload: any): any {
+    Object.keys(this.vehicleData).forEach((key:any)=>{
+      if(this.vehicleData[key] == null)
+        this.vehicleData[key] = 0;
+    });
     var imageList: { vehiclesId: number; imageId: string; imageURL: any; }[] = [];
     this.cardsCount.forEach(imageURL => {
       if (imageURL != "")
