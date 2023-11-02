@@ -35,7 +35,7 @@ export class AddPostComponent {
   imageUrl: string = '../../../../../assets/img_not_available.png';
   firstImageUploaded: boolean = false; // Changes made by Hamza
   isFromAdmin: boolean = false;
-
+  mode :any;
   constructor(private gadgetService: GadgetService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document, private userService: UserService,private router : Router,private cdr: ChangeDetectorRef) {  }
 
@@ -61,8 +61,8 @@ export class AddPostComponent {
           break;
         }
       }
-      let mode = params['mode'];
-      if(mode !=undefined){
+      this.mode = params['mode'];
+      if(this.mode !=undefined){
         let guid = localStorage.getItem('guid');
         this.gadgetService.getGadgetPostByGuid(guid).subscribe((res:any)=>{
           this.commonPayload = res[0];

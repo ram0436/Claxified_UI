@@ -5,7 +5,7 @@
       <h4>SELECTED CATEGORY</h4>
       <div class="selected-cat">
         <p>{{ mainCategory }}/{{ subCategory }}</p>
-        <a routerLink="/post-menu">Change</a>
+        <a routerLink="/post-menu" *ngIf="mode == undefined">Change</a>
       </div>
       <nav class="navbar-bottom"></nav>
     </div>
