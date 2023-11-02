@@ -4,6 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UserService } from '../../service/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent {
   otpMessage: boolean = false;
   otpFailed: boolean = false;
   unauthorizedUser: boolean = false;
+  loginSuccessfull: boolean = false;
 
   resendCountdown: number = 30;
   resendTimer: any;
@@ -29,8 +31,57 @@ export class LoginComponent {
   otpErrorMessage: boolean =false;
   firstNameErrorMessage: boolean = false;
 
+  validPhoneNumberMessage: boolean = false;
+  validOTPMessage: boolean = false;
+  validFirstNameMessage: boolean = false;
+
+  disableSendOTPButton: boolean = false;
+
 
 constructor(private httpClient: HttpClient, private userService: UserService, private router: Router, private dialogRef: MatDialogRef<LoginComponent>, private snackBar: MatSnackBar) { }
+
+validatePhoneNumber(): boolean {
+  if (this.otpSent) {
+    const regex = /^[0-9]{10}$/;
+    const isValid = regex.test(this.phoneNumber);
+    this.disableSendOTPButton = !isValid || this.validPhoneNumberMessage;
+    return isValid;
+  } else {
+    const regex = /^[0-9]*$/;
+    const isValid = regex.test(this.phoneNumber);
+    this.disableSendOTPButton = !isValid || this.validPhoneNumberMessage;
+    return isValid;
+  }
+}
+
+
+  validateOTP(): boolean{
+    if (this.loginSuccessfull) {
+    const regex = /^[0-9]{4}$/;
+    const isValid = regex.test(this.otp);
+    this.disableSendOTPButton = !isValid || this.validOTPMessage || this.validFirstNameMessage;
+    return isValid;
+    } else {
+      const regex = /^[0-9]*$/;
+      const isValid = regex.test(this.otp);
+      this.disableSendOTPButton = !isValid || this.validOTPMessage || this.validFirstNameMessage;
+      return isValid;
+    }
+  }
+
+  validateFirstName(): boolean {
+    if (this.loginSuccessfull) {
+      const regex = /^[a-zA-Z]+$/;
+      const isValid = regex.test(this.firstName);
+      this.disableSendOTPButton = !isValid || this.validOTPMessage || this.validFirstNameMessage;
+      return isValid;
+      } else {
+        const regex = /^[a-zA-Z]*$/;
+        const isValid = regex.test(this.firstName);
+        this.disableSendOTPButton = !isValid || this.validOTPMessage || this.validFirstNameMessage;
+        return isValid;
+      }
+  }
 
   signIn() {
     let payload = { userId: this.email, password: this.password };
@@ -50,9 +101,18 @@ constructor(private httpClient: HttpClient, private userService: UserService, pr
     clearInterval(this.resendTimer);
   }
 
+  
+
   sendOTP() {
 
     this.phoneNumberErrorMessage = false;
+
+    const phoneNumberRegex = /^[0-9]{10}$/;
+    if (!phoneNumberRegex.test(this.phoneNumber)) {
+      this.phoneNumberErrorMessage = true;
+      return;
+    }
+
 
     if (this.phoneNumber.length !== 10) {
       this.phoneNumberErrorMessage = true;
@@ -84,6 +144,18 @@ constructor(private httpClient: HttpClient, private userService: UserService, pr
   loginWithOTP() {
     this.otpErrorMessage = false;
     this.firstNameErrorMessage = false;
+
+    const otpRegex = /^[0-9]{4}$/;
+    if (!otpRegex.test(this.otp)) {
+      this.otpErrorMessage = true;
+      return;
+    }
+
+    const firstNameRegex = /^[a-zA-Z]+$/;
+    if (!firstNameRegex.test(this.firstName)) {
+      this.firstNameErrorMessage = true;
+      return;
+    }
   
     if (this.otp.length !== 4) {
       this.otpErrorMessage = true;
@@ -102,6 +174,7 @@ constructor(private httpClient: HttpClient, private userService: UserService, pr
 
       this.userService.OTPLogin(requestPayload.mobileNo, requestPayload.otp, requestPayload.firstName)
         .subscribe((data: any) => {
+            this.loginSuccessfull = true;
             localStorage.setItem("role", data.role);
             localStorage.setItem("authToken", data.authToken);
             localStorage.setItem("id", data.id);
