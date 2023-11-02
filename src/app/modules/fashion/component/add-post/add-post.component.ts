@@ -30,7 +30,7 @@ export class AddPostComponent {
 
   firstImageUploaded: boolean = false; // Changes made by Hamza
   isFromAdmin: boolean = false;
-
+  mode : any;
   constructor(private fashionService: FashionService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document, private userService: UserService, private router: Router) { }
 
@@ -46,8 +46,8 @@ export class AddPostComponent {
       this.subCategory = params['sub'].replaceAll("%20", " ");
       this.mainCategory = params['main'].replaceAll("%20", " ");
       this.setCategoryId();
-      let mode = params['mode'];
-      if(mode !=undefined){
+      this.mode = params['mode'];
+      if(this.mode !=undefined){
         let guid = localStorage.getItem('guid');
         this.fashionService.getFashionPostByGuid(guid).subscribe((res:any)=>{
           this.commonPayload = res[0];

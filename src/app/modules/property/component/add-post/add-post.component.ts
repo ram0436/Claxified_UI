@@ -114,7 +114,7 @@ export class AddPostComponent {
   shopsAndOfcSale = ['Furnishing', 'Construction Status', 'Listed by', 'Super Builtup area', 'Carpet Area', 'Maintenance', 'Car Parking', 'Bathrooms', 'Project Name'];
   pgAndGuestHouses = ['SubType', 'Furnishing', 'Listed by', 'Car Parking', 'Meals Included'];
   fieldsToShow: any = [];
-
+  mode : any;
   constructor(private propertyService: PropertyService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document, private userService: UserService,private router : Router) { }
 
@@ -163,8 +163,8 @@ export class AddPostComponent {
       }
       this.mainCategory = params['main'];
       this.setCategoryId();
-      let mode = params['mode'];
-      if(mode !=undefined){
+      this.mode = params['mode'];
+      if(this.mode !=undefined){
         let guid = localStorage.getItem('guid');
         this.propertyService.getPropertyPostById(guid).subscribe((res:any)=>{
           this.commonPayload = res[0];
