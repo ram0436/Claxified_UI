@@ -305,7 +305,7 @@ nav ul li:hover {
 
 .pull-right {
     float: right !important;
-    width: 24%;
+    width: 22.8%;
 }
 
 ::ng-deep .mdc-list-item__primary-text {
@@ -322,6 +322,7 @@ nav ul li:hover {
 
 .login {
     cursor: pointer;
+    margin-right: 10px;
 }
 
 .profile_i {

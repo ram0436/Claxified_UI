@@ -4,7 +4,7 @@
       <div class="icon-text">
         <a
           [routerLink]="['/']"
-          title="CLAXIFIED.COM | Sell & Buy anything | Free classified in India"
+          title="CLAXIFIED.COM | Sell & Buy online | Free Classified in India"
           class="icon-text1"
           (click)="getAllItems()"
         >
@@ -160,11 +160,11 @@
                 >
               </button>
             </li>
-            <li class="login register" *ngIf="!isUserLogedIn">
+            <!-- <li class="login register" *ngIf="!isUserLogedIn">
               <a (click)="openSignUpModal()">Register</a>
-            </li>
+            </li> -->
             <li class="login" *ngIf="!isUserLogedIn">
-              <a (click)="openLoginModal()">Login</a>
+              <a (click)="openLoginModal()">Login & Register</a>
             </li>
             <li class="neon__button">
               <a (click)="postAdd()">
