@@ -16,6 +16,7 @@
   <mat-card-content>
     <form (ngSubmit)="otpSent ? loginWithOTP() : sendOTP()" class="login-form">
       <mat-form-field>
+        <span matPrefix class="country-code">+91-</span>
         <input
           matInput
           placeholder="Phone Number"
