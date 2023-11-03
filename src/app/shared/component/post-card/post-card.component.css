@@ -22,6 +22,18 @@
     
 }
 
+::ng-deep .custom-dialog-container {
+    margin-top: 85px;
+    width: 400px;
+    max-width: 80vw;
+    position: static;
+    pointer-events: auto;
+    box-sizing: border-box;
+    z-index: 1000;
+    display: flex;
+    max-height: 100%;
+  }
+
 /* Changes made by hamza */
 /* .premium-chip {
     position: absolute;

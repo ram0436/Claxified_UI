@@ -101,8 +101,6 @@ validatePhoneNumber(): boolean {
     clearInterval(this.resendTimer);
   }
 
-  
-
   sendOTP() {
 
     this.phoneNumberErrorMessage = false;
