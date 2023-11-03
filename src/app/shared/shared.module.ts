@@ -20,6 +20,7 @@ import { RouterModule } from '@angular/router';
 import { FooterComponent } from './component/footer/footer.component';
 import { LocationsComponent } from './component/locations/locations.component';
 import { VacancyOpeningComponent } from './component/vacancy-opening/vacancy-opening.component';
+import { GetHelpComponent } from './component/get-help/get-help.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { VacancyOpeningComponent } from './component/vacancy-opening/vacancy-ope
     PostCardComponent,
     FooterComponent,
     LocationsComponent,
-    VacancyOpeningComponent
+    VacancyOpeningComponent,
+    GetHelpComponent
   ],
   imports: [
     CommonModule,

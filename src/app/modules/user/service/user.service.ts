@@ -69,4 +69,8 @@ export class UserService {
     });
   }
 
+  addUserFeedback(requestBody: any) {
+    return this.httpClient.post(`https://cfd.azurewebsites.net/api/User/AddUserFeedback`, requestBody);
+  }
+
 }

@@ -6,6 +6,7 @@ import { PersonalComponent } from './component/personal/personal.component';
 import { SecurityComponent } from './component/security/security.component';
 import { SavedComponent } from './component/saved/saved.component';
 import { HelpComponent } from './component/help/help.component';
+import { FeedbackFormComponent } from './component/feedback-form/feedback-form.component';
 
 const routes: Routes = [
     { path: 'account', component: AccountComponent ,},
@@ -13,7 +14,8 @@ const routes: Routes = [
     { path: 'account/myadds', component: MyAddsComponent },
     { path: 'account/security', component: SecurityComponent },
     { path: 'account/saved', component: SavedComponent },
-    { path: 'account/help', component: HelpComponent }
+    { path: 'account/help', component: HelpComponent },
+    { path: 'account/feedback', component: FeedbackFormComponent }
 ];
 
 @NgModule({

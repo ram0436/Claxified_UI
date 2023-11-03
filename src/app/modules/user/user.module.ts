@@ -17,6 +17,7 @@ import { UserRoutingModule } from './user-routing.module';
 import { SecurityComponent } from './component/security/security.component';
 import { SavedComponent } from './component/saved/saved.component';
 import { HelpComponent } from './component/help/help.component';
+import { FeedbackFormComponent } from './component/feedback-form/feedback-form.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { HelpComponent } from './component/help/help.component';
     MyAddsComponent,
     SecurityComponent,
     SavedComponent,
-    HelpComponent
+    HelpComponent,
+    FeedbackFormComponent
   ],
   imports: [
     CommonModule,

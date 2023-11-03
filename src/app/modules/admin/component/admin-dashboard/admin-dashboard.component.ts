@@ -18,6 +18,8 @@ export class AdminDashboardComponent implements OnInit {
   title: string = '';
   message: string = '';
 
+  validDescriptionMessage: boolean =false;
+
   constructor(private route: ActivatedRoute, private router: Router, private commonService: CommonService, private AdminDashboardService: AdminDashboardService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
@@ -25,22 +27,30 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   onSubmit() {
-    const requestBody = {
-      id: 0,
-      title: this.title,
-      message: this.message,
-      createdBy: localStorage.getItem('id'),
-      createdOn: new Date().toISOString()
-    };
 
-    this.AdminDashboardService.addDashboardMessage(requestBody).subscribe(
-      (response: any) => {
-        this.showNotification("Message Added Successfully");
-      },
-      (error: any) => {
-        this.showNotification("Error Addin Message");
-      }
-    );
+    this.validDescriptionMessage = this.message.length === 0;
+
+    if (!this.validDescriptionMessage){
+
+      const requestBody = {
+        id: 0,
+        title: this.title,
+        message: this.message,
+        createdBy: localStorage.getItem('id'),
+        createdOn: new Date().toISOString()
+      };
+  
+      this.AdminDashboardService.addDashboardMessage(requestBody).subscribe(
+        (response: any) => {
+          this.showNotification("Message Added Successfully");
+        },
+        (error: any) => {
+          this.showNotification("Error Addin Message");
+        }
+      );
+
+    }
+
   }
 
   showNotification(message: string): void {
