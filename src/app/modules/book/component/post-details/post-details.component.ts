@@ -335,7 +335,15 @@ export class PostDetailsComponent {
       this.dialogRef.close();
     }
 
-    this.dialogRef = this.dialog.open(LoginComponent, { width: '500px' });
+    this.dialogRef = this.dialog.open(LoginComponent, {
+      width: '400px',
+      panelClass: 'custom-dialog-container'
+    });
+  
+    const dialogRefElement = document.querySelector('.custom-dialog-container');
+    if (dialogRefElement) {
+      dialogRefElement.setAttribute('style', 'margin-top: 85px');
+    }
 
     this.dialogRef.afterClosed().subscribe(result => {
       if (localStorage.getItem("authToken") != null)

@@ -818,6 +818,18 @@ input[type="radio" i] {
     display: none;
 }
 
+::ng-deep .custom-dialog-container {
+    margin-top: 85px;
+    width: 400px;
+    max-width: 80vw;
+    position: static;
+    pointer-events: auto;
+    box-sizing: border-box;
+    z-index: 1000;
+    display: flex;
+    max-height: 100%;
+  }
+
 
 
 @media (max-width: 1150px){
