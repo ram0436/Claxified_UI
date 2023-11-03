@@ -98,15 +98,20 @@
             </mat-form-field>
             <mat-form-field>
               <mat-label>Message</mat-label>
-              <input
+              <textarea
                 matInput
                 placeholder="Message"
                 type="text"
                 name="message"
                 [(ngModel)]="message"
-              />
-              <mat-icon matSuffix>receipt</mat-icon>
+                rows="3"
+              ></textarea>
+              <!-- <mat-icon matSuffix>receipt</mat-icon> -->
             </mat-form-field>
+            <p class="failure-message" *ngIf="validDescriptionMessage">
+              <span class="material-icons-outlined"> report </span>
+              Description is required*
+            </p>
             <!-- Call onSubmit() function when button is clicked -->
             <button
               mat-raised-button

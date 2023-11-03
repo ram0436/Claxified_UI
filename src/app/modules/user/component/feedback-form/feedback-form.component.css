@@ -1,3 +1,23 @@
+.adds-conrainer{
+    max-width: 1400px;
+    padding: 1rem;
+    margin: auto;
+}
+
+.feedback-top-text{
+    font-size: 16px;
+    color: gray;
+}
+
+.send-feedback{
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+    margin: 0px auto;
+    color: #fff;
+    background-color: #3c3241;
+}
+
 .admin-dashboard{
     max-width: 1400px;
     padding: 1rem;
@@ -199,16 +219,10 @@
     margin: auto;
 }
 
-  
-  .save-button {
-    margin-top: 20px;
-    display: block;
-    width: 100%;
-    margin: 0px auto;
-    color: #fff !important;
-    background-color: #3c3241 !important;
-  }
-
+.feedback-top{
+    margin: 40px auto;
+    width: 50%;
+}
 
 .message-form{
     display: flex;
@@ -216,6 +230,15 @@
     margin: 40px auto;
     width: 50%;
 }
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  /* .send-feedback.disabled{
+  } */
 
 .failure-message{
     width: 100%;

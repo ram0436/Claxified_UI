@@ -1,0 +1,46 @@
+<div class="adds-conrainer mt-all-120">
+  <div class="feedback-top">
+    <h3>Feedback Form</h3>
+    <p class="feedback-top-text">
+      Your opinion is important to us. This way we can improve our services.
+    </p>
+  </div>
+  <mat-card-content>
+    <form class="message-form">
+      <mat-form-field>
+        <mat-label>Title</mat-label>
+        <input matInput placeholder="Title" name="title" [(ngModel)]="title" />
+        <mat-icon matSuffix>title</mat-icon>
+      </mat-form-field>
+      <p class="failure-message" *ngIf="validTitleMessage">
+        <span class="material-icons-outlined"> report </span>
+        Title is required*
+      </p>
+      <mat-form-field>
+        <mat-label>Message</mat-label>
+        <textarea
+          matInput
+          placeholder="Message"
+          type="text"
+          name="message"
+          [(ngModel)]="message"
+          rows="3"
+        ></textarea>
+        <!-- <mat-icon matSuffix>receipt</mat-icon> -->
+      </mat-form-field>
+      <p class="failure-message" *ngIf="validFeedbackMessage">
+        <span class="material-icons-outlined"> report </span>
+        Message is required*
+      </p>
+      <!-- Call onSubmit() function when button is clicked -->
+      <button
+        mat-raised-button
+        color="primary"
+        class="send-feedback"
+        (click)="onSubmit()"
+      >
+        Submit
+      </button>
+    </form>
+  </mat-card-content>
+</div>

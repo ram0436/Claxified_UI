@@ -27,11 +27,12 @@ mat-card-content {
 }
 
 .login-button {
-  margin-top: 20px;
   display: block;
   width: 85%;
   margin: 20px auto;
   margin-top: 40px;
+  color: #fff !important;
+  background-color: #3c3241 !important;
 }
 
 ::ng-deep .cdk-overlay-pane{
@@ -139,4 +140,5 @@ color: red;
 .login-title{
   margin-top: 8px;
   margin-bottom: 15px;
+  font-family: 'Roboto', sans-serif;
 }
