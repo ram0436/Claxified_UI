@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/modules/user/service/user.service';
@@ -32,6 +32,9 @@ export class HeaderComponent implements OnInit {
   searchResults: any[] = [];
   allItems: any[] = [];
 
+  isSlideVisible = false;
+
+
   expandIconVisible: boolean = true;
   vehicleTypes = VehicleType;
   gadgetsTypes = GadgetType;
@@ -49,7 +52,7 @@ export class HeaderComponent implements OnInit {
   imageUrl: string = "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
   dialogRef: MatDialogRef<any> | null = null;
   isAdmin : boolean = false;
-  constructor(private dialog: MatDialog, private router: Router, private userService: UserService, private location: Location, private AdminDashboardService: AdminDashboardService, private snackBar: MatSnackBar) {
+  constructor(private dialog: MatDialog, private router: Router, private userService: UserService, private location: Location, private AdminDashboardService: AdminDashboardService, private snackBar: MatSnackBar, private elRef: ElementRef) {
     this.userService.getData().subscribe(data => {
       var role = localStorage.getItem("role");
       if(role != null && role == 'Admin')
@@ -69,6 +72,14 @@ export class HeaderComponent implements OnInit {
      this.hideSecondNav = scrollPosition > 0;
    }
 
+   @HostListener('document:click', ['$event'])
+   handleDocumentClick(event: Event) {
+     const clickedInside = this.elRef.nativeElement.contains(event.target);
+     if (!clickedInside) {
+       this.isSlideVisible = false;
+     }
+   }
+
    reloadApp() {
     // Navigate to the root route (you can replace this with your desired route)
     this.router.navigate(['/']);
@@ -76,6 +87,10 @@ export class HeaderComponent implements OnInit {
     // Trigger a hard reload of the application
     this.location.replaceState('/');
     window.location.reload();
+  }
+
+  toggleSlideVisibility() {
+    this.isSlideVisible = !this.isSlideVisible;
   }
 
    generateGadgetsLink(subCategory?: GadgetType) {
@@ -155,6 +170,10 @@ export class HeaderComponent implements OnInit {
 
   openLoginModal() {
 
+    if(this.isSlideVisible){
+      this.isSlideVisible = !this.isSlideVisible;
+    }
+
     if (this.dialogRef) {
       this.dialogRef.close();
     }
@@ -187,6 +206,9 @@ export class HeaderComponent implements OnInit {
     });
   }
   logout() {
+    if(this.isSlideVisible){
+      this.isSlideVisible = !this.isSlideVisible
+    }
     if (localStorage.getItem("authToken") != null) {
       localStorage.removeItem("authToken");
       localStorage.removeItem("role");

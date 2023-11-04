@@ -170,7 +170,7 @@
             <li class="login" *ngIf="!isUserLogedIn">
               <a (click)="openLoginModal()">Login & Register</a>
             </li>
-            <li class="neon__button">
+            <li class="neon__button sm-d-none">
               <a (click)="postAdd()">
                 <span></span>
                 <span></span>
@@ -179,7 +179,125 @@
                 Post Free Ad
               </a>
             </li>
+            <li class="menu-icon" (click)="toggleSlideVisibility()">
+              <span class="material-icons-outlined"> menu </span>
+              <span class="menu-text">Menu</span>
+            </li>
           </ul>
+          <div
+            *ngIf="isSlideVisible"
+            class="side-nav-box side-nav-box--right slide slide-enter-done"
+          >
+            <nav class="side-menu">
+              <section class="side-meu-section">
+                <div class="side-menu-sublist">
+                  <li class="neon__button" (click)="toggleSlideVisibility()">
+                    <a
+                      (click)="postAdd()"
+                      class="side-menu-link app-download-button"
+                    >
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      Post Free Ad
+                    </a>
+                  </li>
+                </div>
+              </section>
+              <section class="side-meu-section">
+                <div class="side-menu-sublist">
+                  <a
+                    (click)="toggleSlideVisibility()"
+                    class="side-menu-link"
+                    routerLink="/"
+                    *ngIf="!isUserLogedIn"
+                  >
+                    <span class="material-icons-outlined"> chevron_right </span>
+                    Home
+                  </a>
+                  <a
+                    (click)="toggleSlideVisibility()"
+                    routerLink="/user/account/personal"
+                    class="side-menu-link"
+                    *ngIf="isUserLogedIn"
+                  >
+                    <span class="material-icons-outlined"> chevron_right </span>
+                    Go to Profile
+                  </a>
+                  <a
+                    (click)="toggleSlideVisibility()"
+                    routerLink="/Admin/admin-dashboard"
+                    class="side-menu-link"
+                    *ngIf="isUserLogedIn && isAdmin"
+                  >
+                    <span class="material-icons-outlined"> chevron_right </span>
+                    Admin Dashboard
+                  </a>
+                  <a
+                    (click)="toggleSlideVisibility()"
+                    class="side-menu-link"
+                    *ngIf="isUserLogedIn"
+                    routerLink="/user/account/myadds"
+                  >
+                    <span class="material-icons-outlined"> chevron_right </span>
+                    Manage Ads
+                  </a>
+                  <a
+                    (click)="toggleSlideVisibility()"
+                    class="side-menu-link"
+                    *ngIf="isUserLogedIn"
+                    routerLink="/user/account/saved"
+                  >
+                    <span class="material-icons-outlined"> chevron_right </span>
+                    My Wishlist
+                  </a>
+                  <a
+                    (click)="toggleSlideVisibility()"
+                    class="side-menu-link"
+                    *ngIf="isUserLogedIn"
+                    routerLink="/user/account/feedback"
+                  >
+                    <span class="material-icons-outlined"> chevron_right </span>
+                    Feedback
+                  </a>
+                  <a
+                    (click)="toggleSlideVisibility()"
+                    routerLink="/help"
+                    class="side-menu-link"
+                  >
+                    <span class="material-icons-outlined"> chevron_right </span>
+                    Help & Contact
+                  </a>
+                  <a
+                    (click)="toggleSlideVisibility()"
+                    class="side-menu-link border-enable"
+                    *ngIf="isUserLogedIn"
+                    routerLink="/user/account"
+                  >
+                    <span class="material-icons-outlined"> chevron_right </span>
+                    Acount & Settings
+                  </a>
+                  <a
+                    (click)="openLoginModal()"
+                    class="side-menu-link"
+                    *ngIf="!isUserLogedIn"
+                  >
+                    <span class="material-icons-outlined"> chevron_right </span>
+                    Login/Register
+                  </a>
+                  <a
+                    (click)="logout()"
+                    class="side-menu-link"
+                    *ngIf="isUserLogedIn"
+                  >
+                    <span class="material-icons-outlined"> chevron_right </span>
+                    Logout
+                  </a>
+                </div>
+              </section>
+            </nav>
+          </div>
         </div>
       </div>
     </div>
