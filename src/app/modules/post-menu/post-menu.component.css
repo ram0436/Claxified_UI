@@ -15,7 +15,7 @@
     font-size: 24px;
     font-weight: 700;
     text-transform: uppercase;
-    margin-top: 80px;
+    margin-top: 120px;
 }
 
 .head {
@@ -24,7 +24,7 @@
 
 .cat {
     width: 60%;
-    margin-left: 270px;
+    margin: 0 auto;
     overflow: hidden;
     box-sizing: border-box;
     border: 1px solid black;
@@ -117,3 +117,22 @@
     color: #222 !important;
 }
   
+@media (max-width: 750px){
+    .heading{
+        margin-top: 200px;
+    }
+
+    .cat{
+        width: 80%;
+    }
+}
+
+@media (max-width: 500px){
+    .cat{
+        width: 95%;
+    }
+
+    .name{
+        margin-left: 0;
+    }
+}

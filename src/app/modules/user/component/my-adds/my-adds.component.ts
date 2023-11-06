@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { CommonService } from 'src/app/shared/service/common.service';
@@ -9,6 +9,8 @@ import { CommonService } from 'src/app/shared/service/common.service';
     styleUrls: ['./my-adds.component.css']
 })
 export class MyAddsComponent {
+
+    @ViewChild('scrollContainer', { static: false }) scrollContainer: ElementRef | undefined;
 
     constructor(private commonService: CommonService,private router : Router,private elementRef: ElementRef) { }
 
@@ -27,6 +29,21 @@ export class MyAddsComponent {
         this.getAllAds();
         this.getMainCategory();
     }
+
+  // Call this function when you want to scroll the element to the right
+  scrollRight() {
+    if (this.scrollContainer) {
+      this.scrollContainer.nativeElement.scrollLeft += 50; // Adjust the scroll distance as needed
+    }
+  }
+
+  // Call this function when you want to scroll the element to the left
+  scrollLeft() {
+    if (this.scrollContainer) {
+      this.scrollContainer.nativeElement.scrollLeft -= 50; // Adjust the scroll distance as needed
+    }
+  }
+
     formatDate(date: any): any {
         const inputDate: Date = new Date(date);
         return moment(inputDate).format('MMM DD, YYYY');

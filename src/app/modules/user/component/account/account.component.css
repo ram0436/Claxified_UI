@@ -1,15 +1,15 @@
 .col-4{
     width: 30%;
-    margin-right: 33px;
 }
 .flex{
     display: flex;
+    gap: 20px;
 }
 .mt-35{
     margin-top: 35px;
 }
-.w-96{
-    width: 96%;
+.w-100{
+    width: 100%;
 }
 .mat-mdc-card-title{
     padding: 17px 17px;
@@ -32,7 +32,7 @@
 
   .upload-button {
     position: absolute;
-    top: 75%;
+    top: 80%;
     left: 18%;
     transform: translate(-50%, -50%);
     background-color: #007bff;
@@ -58,3 +58,55 @@
   .p-17{
     padding: 17px 17px;
   }
+
+  @media (max-width: 750px) {
+    .sm-mt-175{
+      margin-top: 175px;
+    }
+
+    .col-6{
+      width: 95.5%;
+    }
+
+    .upload-button{
+      left: 10%;
+    }
+
+  }
+
+  @media (max-width: 600px){
+    .upload-button{
+      left: 15%;
+    }
+  }
+
+  @media (max-width: 500px){
+    .fl-wrap-md{
+      flex-wrap: wrap !important;
+      row-gap: 20px;
+    }
+
+    .col-4{
+      width: 45%;
+    }
+
+    .upload-button{
+      left: 18%;
+    }
+
+  }
+
+@media (max-width: 400px){
+  .col-4{
+    width: 100%;
+  }
+
+  .col-6{
+    width: 97.5%;
+  }
+
+  .upload-button{
+    left: 22%;
+  }
+
+}

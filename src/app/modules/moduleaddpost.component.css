@@ -490,6 +490,10 @@ button {
         flex-direction: column;
     }
 
+    .container{
+        width: 80%;
+    }
+
 }
 
 @media (max-width: 450px){
