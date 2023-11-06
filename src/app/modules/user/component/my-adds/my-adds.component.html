@@ -48,7 +48,8 @@
                   <a class="cursor"
                     ><span class="material-icons" (click)="toggleMenu(ad?.id)"
                       >more_horiz</span
-                    ></a>
+                    ></a
+                  >
                   <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                     <ul class="menu-name">
                       <li class="menu-item cursor" (click)="editAd(ad)">
@@ -113,9 +114,10 @@
                 </div>
                 <div class="col-sm-1">
                   <a class="cursor"
-                  ><span class="material-icons" (click)="toggleMenu(ad?.id)"
-                    >more_horiz</span
-                  ></a>
+                    ><span class="material-icons" (click)="toggleMenu(ad?.id)"
+                      >more_horiz</span
+                    ></a
+                  >
                   <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                     <ul class="menu-name">
                       <li class="menu-item cursor" (click)="editAd(ad)">

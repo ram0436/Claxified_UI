@@ -11,6 +11,13 @@
     /* border-left: 5px solid #ffce32; */
 }
 
+
+
+.card-container {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
 .border-left-blue{
     border-left: 5px solid #337ab7;
 }
@@ -25,7 +32,24 @@
 .rel{
     position: relative;
     width: 109%;
+    overflow: auto;
+    scrollbar-width: none !important;
 }
+
+.rel::-webkit-scrollbar {
+    width: 0%; /* Width of the scrollbar */
+}
+
+.rel::-webkit-scrollbar-thumb {
+    background-color: transparent; /* Color of the thumb */
+}
+
+.rel::-webkit-scrollbar-track {
+    background-color: transparent; /* Color of the track */
+}
+
+
+
 .date{
     display: flex;
     font-size: 12px;
@@ -165,4 +189,23 @@
 }
 .pending-bg{
     border-left: 5px solid #ffce32;
+}
+
+@media (max-width:1200px){
+    .rel{
+        width: 105%;
+    }
+}
+
+@media (max-width:900px){
+    .rel{
+        width: 100%;
+    }
+}
+
+@media (max-width: 750px){
+    .adds-conrainer{
+        margin-top: 175px;
+        padding: 1rem 1.5rem;
+    }
 }

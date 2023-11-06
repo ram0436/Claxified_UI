@@ -1,11 +1,12 @@
 .w-950{
-    width: 950px;
+    width: 95%;
 }
 .pt-40{
     padding-top: 40px;
 }
 .flex{
     display: flex;
+    align-items: center;
 }
 .w-70{
     width: 70%;
@@ -15,4 +16,15 @@
 }
 .fw-500{
     font-weight: 500;
+}
+
+@media (max-width: 750px){
+    .container.w-950{
+        margin-top: 175px;
+        padding: 1rem 1.5rem;
+    }
+
+    .w-70{
+        width: 90%;
+    }
 }

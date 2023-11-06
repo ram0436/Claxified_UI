@@ -1,62 +1,67 @@
-<div class="container">
-    <h2>Account</h2>
-    <div class="w-96">
-        <mat-card class="col-6">
-            <mat-card-content class="flex">
-                <div class="circle">
-                    <img [src]="imageUrl" alt="Uploaded Image">
-                    <input type="file" id="upload" (change)="uploadProfilePicture($event)" style="display: none;">
-                </div>
-                <button class="upload-button" (click)="selectFile()">+</button>
-                <div class="p-17">
-                    <p>{{userData?.email}}</p>
-                    <a routerLink="/user/account/personal">My Profile</a>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </div>
-    <div class="flex mt-35">
-        <mat-card class="col-4">
-            <a routerLink="/user/account/personal">
-                <mat-card-title>Personal Information</mat-card-title>
-                <mat-card-content>
-                    <p>This section contains the contact details displayed on the site</p>
-                </mat-card-content>
-            </a>
-        </mat-card>
-        <mat-card class="col-4">
-            <a routerLink="/user/account/security">
-                <mat-card-title>Login & security</mat-card-title>
-                <mat-card-content>
-                    <p>This section contains the contact details displayed on the site</p>
-                </mat-card-content>
-            </a>
-        </mat-card>
-        <mat-card class="col-4">
-            <mat-card-title>Account verification</mat-card-title>
-            <mat-card-content>
-                <p>This section contains the contact details displayed on the site</p>
-            </mat-card-content>
-        </mat-card>
-    </div>
-    <div class="flex mt-35">
-        <mat-card class="col-4">
-            <mat-card-title>Support & legal</mat-card-title>
-            <mat-card-content>
-                <p>This section contains the contact details displayed on the site</p>
-            </mat-card-content>
-        </mat-card>
-        <mat-card class="col-4">
-            <mat-card-title>Preferences</mat-card-title>
-            <mat-card-content>
-                <p>This section contains the contact details displayed on the site</p>
-            </mat-card-content>
-        </mat-card>
-        <mat-card class="col-4">
-            <mat-card-title>Get to know us</mat-card-title>
-            <mat-card-content>
-                <p>This section contains the contact details displayed on the site</p>
-            </mat-card-content>
-        </mat-card>
-    </div>
+<div class="container sm-mt-175">
+  <h2>Account</h2>
+  <div class="w-100">
+    <mat-card class="col-6">
+      <mat-card-content class="flex">
+        <div class="circle">
+          <img [src]="imageUrl" alt="Uploaded Image" />
+          <input
+            type="file"
+            id="upload"
+            (change)="uploadProfilePicture($event)"
+            style="display: none"
+          />
+        </div>
+        <button class="upload-button" (click)="selectFile()">+</button>
+        <div class="p-17">
+          <p>{{ userData?.email }}</p>
+          <a routerLink="/user/account/personal">My Profile</a>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="flex mt-35 fl-wrap-md">
+    <mat-card class="col-4">
+      <a routerLink="/user/account/personal">
+        <mat-card-title>Personal Information</mat-card-title>
+        <mat-card-content>
+          <p>This section contains the contact details displayed on the site</p>
+        </mat-card-content>
+      </a>
+    </mat-card>
+    <mat-card class="col-4">
+      <a routerLink="/user/account/security">
+        <mat-card-title>Login & security</mat-card-title>
+        <mat-card-content>
+          <p>This section contains the contact details displayed on the site</p>
+        </mat-card-content>
+      </a>
+    </mat-card>
+    <mat-card class="col-4">
+      <mat-card-title>Account verification</mat-card-title>
+      <mat-card-content>
+        <p>This section contains the contact details displayed on the site</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="flex mt-35 fl-wrap-md">
+    <mat-card class="col-4">
+      <mat-card-title>Support & legal</mat-card-title>
+      <mat-card-content>
+        <p>This section contains the contact details displayed on the site</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="col-4">
+      <mat-card-title>Preferences</mat-card-title>
+      <mat-card-content>
+        <p>This section contains the contact details displayed on the site</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="col-4">
+      <mat-card-title>Get to know us</mat-card-title>
+      <mat-card-content>
+        <p>This section contains the contact details displayed on the site</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

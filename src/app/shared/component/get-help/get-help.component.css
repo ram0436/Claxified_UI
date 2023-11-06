@@ -164,3 +164,10 @@ ul li{
     text-decoration:  none;
     color: rgb(75, 75, 75);
 }
+
+@media (max-width: 750px){
+    .adds-conrainer{
+        margin-top: 175px;
+        padding: 1rem 1.5rem;
+    }
+}
