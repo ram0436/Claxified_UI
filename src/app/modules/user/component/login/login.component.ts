@@ -71,17 +71,18 @@ validatePhoneNumber(): boolean {
 
   validateFirstName(): boolean {
     if (this.loginSuccessfull) {
-      const regex = /^[a-zA-Z]+$/;
+      const regex = /^[a-zA-Z][a-zA-Z ]+$/;
       const isValid = regex.test(this.firstName);
       this.disableSendOTPButton = !isValid || this.validOTPMessage || this.validFirstNameMessage;
       return isValid;
-      } else {
-        const regex = /^[a-zA-Z]*$/;
-        const isValid = regex.test(this.firstName);
-        this.disableSendOTPButton = !isValid || this.validOTPMessage || this.validFirstNameMessage;
-        return isValid;
-      }
+    } else {
+      const regex = /^[a-zA-Z][a-zA-Z ]*$/;
+      const isValid = regex.test(this.firstName);
+      this.disableSendOTPButton = !isValid || this.validOTPMessage || this.validFirstNameMessage;
+      return isValid;
+    }
   }
+  
 
   signIn() {
     let payload = { userId: this.email, password: this.password };
@@ -149,7 +150,7 @@ validatePhoneNumber(): boolean {
       return;
     }
 
-    const firstNameRegex = /^[a-zA-Z]+$/;
+    const firstNameRegex = /^[a-zA-Z][a-zA-Z ]*$/;
     if (!firstNameRegex.test(this.firstName)) {
       this.firstNameErrorMessage = true;
       return;
