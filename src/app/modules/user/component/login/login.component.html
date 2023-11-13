@@ -19,7 +19,7 @@
         <span matPrefix class="country-code">+91-</span>
         <input
           matInput
-          placeholder="Phone Number"
+          placeholder="Enter 10 digit mobile."
           name="phoneNumber"
           [(ngModel)]="phoneNumber"
           (input)="validPhoneNumberMessage = !validatePhoneNumber()"
@@ -67,7 +67,7 @@
       <mat-form-field *ngIf="otpSent">
         <input
           matInput
-          placeholder="First Name"
+          placeholder="Enter name"
           type="text"
           name="firstName"
           [(ngModel)]="firstName"
