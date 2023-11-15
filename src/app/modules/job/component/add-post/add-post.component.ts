@@ -47,6 +47,9 @@ export class AddPostComponent {
     salaryFrom: null,
     salaryTo: null
   }
+
+  postOffices: any[] = [];
+
   mode : any;
   constructor(private jobService: JobService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document, private userService: UserService, private router: Router) { }
@@ -185,17 +188,23 @@ export class AddPostComponent {
 
   getAddress(event: any) {
     let pincode = event.target.value;
-    if (pincode.length == 6) {
+    if (pincode.length === 6) {
       this.commonService.getAddress(pincode).subscribe((data: any) => {
         if (data[0].PostOffice != null) {
           var address = data[0].PostOffice[0];
           this.commonPayload.state = address.State;
           this.commonPayload.city = address.District;
-          this.commonPayload.nearBy = address.Name;
+          this.postOffices = data[0].PostOffice;
+          if (this.postOffices.length > 1) {
+            this.commonPayload.nearBy = this.postOffices[0].Name;
+          } else {
+            this.commonPayload.nearBy = address.Name;
+          }
         }
-      })
+      });
     }
   }
+  
   showNotification(message: string): void {
     this.snackBar.open(message, 'Close', {
       duration: 5000,
