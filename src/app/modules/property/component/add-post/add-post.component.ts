@@ -105,6 +105,8 @@ export class AddPostComponent {
   carModels: any;
   carModelId: any;
 
+  postOffices: any[] = [];
+
   firstImageUploaded: boolean = false; // Changes made by Hamza
   isFromAdmin: boolean = false;
   houseApartmentsSale = ['HouseType', 'Bedrooms', 'Bathrooms', 'Furnishing', 'Construction Status', 'Listed by', 'Super Builtup area', 'Carpet Area', 'Maintenance', 'Total Floors', 'Floor No', 'Car Parking', 'Facing', 'Project Name'];
@@ -283,17 +285,23 @@ export class AddPostComponent {
 
   getAddress(event: any) {
     let pincode = event.target.value;
-    if (pincode.length == 6) {
+    if (pincode.length === 6) {
       this.commonService.getAddress(pincode).subscribe((data: any) => {
         if (data[0].PostOffice != null) {
           var address = data[0].PostOffice[0];
           this.commonPayload.state = address.State;
           this.commonPayload.city = address.District;
-          this.commonPayload.nearBy = address.Name;
+          this.postOffices = data[0].PostOffice;
+          if (this.postOffices.length > 1) {
+            this.commonPayload.nearBy = this.postOffices[0].Name;
+          } else {
+            this.commonPayload.nearBy = address.Name;
+          }
         }
-      })
+      });
     }
   }
+  
   showNotification(message: string): void {
     this.snackBar.open(message, 'Close', {
       duration: 5000,

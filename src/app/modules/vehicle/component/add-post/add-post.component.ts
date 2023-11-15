@@ -65,6 +65,9 @@ export class AddPostComponent {
   isDraggingEnabled = true;
   isFromAdmin: boolean = false;
   mode : any;
+
+  postOffices: any[] = [];
+
   constructor(private vehicleService: VehicleService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document, private userService: UserService,private router : Router,private cdr: ChangeDetectorRef) { }
 
@@ -254,17 +257,37 @@ export class AddPostComponent {
     this.router.navigateByUrl('/Admin/admin-dashboard');
   }
 
+  // getAddress(event: any) {
+  //   let pincode = event.target.value;
+  //   if (pincode.length == 6) {
+  //     this.commonService.getAddress(pincode).subscribe((data: any) => {
+  //       if (data[0].PostOffice != null) {
+  //         var address = data[0].PostOffice[0];
+  //         this.commonPayload.state = address.State;
+  //         this.commonPayload.city = address.District;
+  //         this.commonPayload.nearBy = address.Name;
+  //       }
+  //     })
+  //   }
+  // }
+
   getAddress(event: any) {
     let pincode = event.target.value;
-    if (pincode.length == 6) {
+    if (pincode.length === 6) {
       this.commonService.getAddress(pincode).subscribe((data: any) => {
         if (data[0].PostOffice != null) {
           var address = data[0].PostOffice[0];
           this.commonPayload.state = address.State;
           this.commonPayload.city = address.District;
-          this.commonPayload.nearBy = address.Name;
+          this.postOffices = data[0].PostOffice;
+          // If there are multiple post offices, set the default value to the first one
+          if (this.postOffices.length > 1) {
+            this.commonPayload.nearBy = this.postOffices[0].Name;
+          } else {
+            this.commonPayload.nearBy = address.Name;
+          }
         }
-      })
+      });
     }
   }
   showNotification(message: string): void {

@@ -155,12 +155,15 @@
       </mat-form-field>
       <mat-form-field *ngIf="commonPayload.state != ''">
         <mat-label>Near By</mat-label>
-        <input
-          matInput
-          placeholder="Nearby"
-          [(ngModel)]="commonPayload.nearBy"
-          readonly
-        />
+        <!-- Add a dropdown for post office names -->
+        <mat-select [(ngModel)]="commonPayload.nearBy">
+          <mat-option
+            *ngFor="let postOffice of postOffices"
+            [value]="postOffice.Name"
+          >
+            {{ postOffice.Name }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
     </div>
     <div class="details">
