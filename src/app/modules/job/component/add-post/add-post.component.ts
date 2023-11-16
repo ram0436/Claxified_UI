@@ -50,6 +50,8 @@ export class AddPostComponent {
 
   postOffices: any[] = [];
 
+  isPriceValid: boolean = true;
+
   mode : any;
   constructor(private jobService: JobService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document, private userService: UserService, private router: Router) { }

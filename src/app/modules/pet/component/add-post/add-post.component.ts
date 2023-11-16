@@ -33,6 +33,9 @@ export class AddPostComponent {
   firstImageUploaded: boolean = false; // Changes made by Hamza
   isFromAdmin: boolean = false;
   mode : any;
+
+  isPriceValid: boolean = true;
+
   constructor(private petService: PetService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document, private userService: UserService, private router: Router) { }
 
@@ -60,13 +63,22 @@ export class AddPostComponent {
       }
     });
   }
+  // allowOnlyNumbers(event: Event): void {
+  //   const inputElement = event.target as HTMLInputElement;
+  //   const inputValue = inputElement.value;
+  //   const numericInput = inputValue.replace(/[^0-9]/g, '');
+  //   const formattedInput = numericInput.length < 2 ? '00' : numericInput;
+  //   inputElement.value = formattedInput;
+  //   this.numericValue = parseFloat(formattedInput);
+  // }
   allowOnlyNumbers(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const inputValue = inputElement.value;
     const numericInput = inputValue.replace(/[^0-9]/g, '');
-    const formattedInput = numericInput.length < 2 ? '00' : numericInput;
-    inputElement.value = formattedInput;
-    this.numericValue = parseFloat(formattedInput);
+    inputElement.value = numericInput;
+    this.numericValue = parseFloat(numericInput);
+  
+    this.isPriceValid = numericInput.length >= 2;
   }
   allowOnlyNumbersPincode(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
@@ -278,6 +290,8 @@ export class AddPostComponent {
       this.showNotification("price is rerquired");
     else if (payload.price < 10 || payload.price > 1000000)
       this.showNotification("price should be min 10 and max 1000000");
+    else if (payload.price.length < 2)
+      this.showNotification("price should be contain a minimum of two digits");
     else if (payload.petImageList.length <= 0)
       this.showNotification("In upload photo, at least 1 photo is required.");
     else if (payload.pincode.length < 6)
