@@ -107,6 +107,8 @@ export class AddPostComponent {
 
   postOffices: any[] = [];
 
+  isPriceValid: boolean = true;
+
   firstImageUploaded: boolean = false; // Changes made by Hamza
   isFromAdmin: boolean = false;
   houseApartmentsSale = ['HouseType', 'Bedrooms', 'Bathrooms', 'Furnishing', 'Construction Status', 'Listed by', 'Super Builtup area', 'Carpet Area', 'Maintenance', 'Total Floors', 'Floor No', 'Car Parking', 'Facing', 'Project Name'];
@@ -180,14 +182,24 @@ export class AddPostComponent {
       }
     });
   }
+  // allowOnlyNumbers(event: Event): void {
+  //   const inputElement = event.target as HTMLInputElement;
+  //   const inputValue = inputElement.value;
+  //   const numericInput = inputValue.replace(/[^0-9]/g, '');
+  //   const formattedInput = numericInput.length < 2 ? '00' : numericInput;
+  //   inputElement.value = formattedInput;
+  //   this.numericValue = parseFloat(formattedInput);
+  // }
   allowOnlyNumbers(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const inputValue = inputElement.value;
     const numericInput = inputValue.replace(/[^0-9]/g, '');
-    const formattedInput = numericInput.length < 2 ? '00' : numericInput;
-    inputElement.value = formattedInput;
-    this.numericValue = parseFloat(formattedInput);
+    inputElement.value = numericInput;
+    this.numericValue = parseFloat(numericInput);
+  
+    this.isPriceValid = numericInput.length >= 2;
   }
+
   selectFile() {
     if (this.document) {
       const uploadElement = this.document.getElementById("fileUpload");
@@ -432,6 +444,8 @@ export class AddPostComponent {
       this.showNotification("price is rerquired");
     else if (payload.price < 10 || payload.price > 1000000)
       this.showNotification("price should be min 10 and max 1000000");
+    else if (payload.price.length < 2)
+        this.showNotification("price should be contain a minimum of two digits");
     else if (payload.propertyImageList.length <= 0)
       this.showNotification("In upload photo, at least 1 photo is required.");
     else if (payload.pincode.length < 6)
