@@ -27,6 +27,7 @@ export class VacancyOpeningComponent {
   positionType: VacancyPositionType = VacancyPositionType.FullTime;
   qualificationType: Qualification = Qualification.MTech;
   technicalSkillType: TechnicalSkillType = TechnicalSkillType.Others;
+  Qualification = Qualification;
 
   constructor(private userService: UserService, private renderer: Renderer2, private snackBar: MatSnackBar, private router: Router) { }
 
@@ -38,9 +39,10 @@ export class VacancyOpeningComponent {
     this.positionType = value;
   }
 
-  setQualificationType(value: number) {
+  setQualificationType(value: Qualification) {
     this.qualificationType = value;
   }
+
   setTechnicalSkillsType(value: number) {
     this.technicalSkillType = value;
   }
@@ -97,6 +99,7 @@ export class VacancyOpeningComponent {
             aboutMe: aboutMe,
           };
 
+          console.log(vacancyData);
 
           this.userService.applyForVacancy(vacancyData).subscribe(response => {
             this.showNotification('Your application has been successfully submitted.');

@@ -64,6 +64,14 @@ export class AddPostComponent {
   allowOnlyNumbers(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const inputValue = inputElement.value;
+    const numericInput = inputValue.replace(/[^0-9]/g, '');
+    const formattedInput = numericInput.length < 2 ? '00' : numericInput;
+    inputElement.value = formattedInput;
+    this.numericValue = parseFloat(formattedInput);
+  }
+  allowOnlyNumbersPincode(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const inputValue = inputElement.value;
     const numericInput = inputValue.replace(/[^0-9.-]/g, '');
     inputElement.value = numericInput;
     this.numericValue = parseFloat(numericInput);
@@ -261,8 +269,8 @@ export class AddPostComponent {
     let flag = false;
     if (payload.title == "")
       this.showNotification("Title is required");
-    else if (payload.title.length < 15 || payload.title.length > 50)
-      this.showNotification("Title should be min 15 and max of 50 charecters");
+    else if (payload.title.length < 5 || payload.title.length > 50)
+      this.showNotification("Title should be min 5 and max of 50 charecters");
     else if (payload.discription == "")
       this.showNotification("discription is required");
     else if (payload.discription.length < 15 || payload.discription.length > 500)
