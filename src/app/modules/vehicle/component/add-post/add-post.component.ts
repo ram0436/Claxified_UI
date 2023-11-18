@@ -464,8 +464,8 @@ allowOnlyNumbers(event: Event): void {
       this.showNotification("discription should be min 15 and max 500 charecters");
     else if (payload.price == 0)
       this.showNotification("price is rerquired");
-    else if (payload.price < 10 || payload.price > 1000000)
-      this.showNotification("price should be min 10 and max 1000000");
+    else if (payload.price < 10)
+      this.showNotification("price should be min 10");
     else if (payload.price.length < 2)
       this.showNotification("price should be contain a minimum of two digits");
     else if (payload.vehicleImageList.length <= 0)
