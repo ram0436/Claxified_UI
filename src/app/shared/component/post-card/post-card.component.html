@@ -41,6 +41,7 @@
           [ngClass]="{
             disable: card.imageIndex === imagesList.length - 1
           }"
+          id="{{ 'cardId' + card.id }}"
         >
           arrow_forward_ios
         </span>
@@ -64,7 +65,8 @@
         </span>
         <div class="image-count">
           <span class="material-icons"> photo_camera </span>
-          {{ card.imageIndex + 1 }} of {{ imagesList.length }}
+          {{ card.imageIndex + (imagesList.length > 0 ? 1 : 0) }} of
+          {{ imagesList.length }}
         </div>
       </div>
       <!-- <span>{{ card?.tableRefGuid }}</span> -->

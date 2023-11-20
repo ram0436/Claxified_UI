@@ -113,6 +113,7 @@ export class PostCardComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['searchCards'] || changes['cards']) {
       this.updateCards();
+      this.getMainCategories();
     }
   }
 
@@ -223,9 +224,36 @@ openLoginModal() {
     }
   }
   showNext(event: Event, card: any) {
-    event.preventDefault();
-    event.stopPropagation();
-    card.imageIndex = card.imageIndex + 1;
+      event.preventDefault();
+      event.stopPropagation();
+
+      const totalImages =
+      (card.gadgetImageList && card.gadgetImageList.length) ||
+      (card.vehicleImageList && card.vehicleImageList.length) ||
+      (card.electronicApplianceImageList && card.electronicApplianceImageList.length) ||
+      (card.furnitureImageList && card.furnitureImageList.length) ||
+      (card.sportImageList && card.sportImageList.length) ||
+      (card.petImageList && card.petImageList.length) ||
+      (card.fashionImageList && card.fashionImageList.length) ||
+      (card.bookImageList && card.bookImageList.length) ||
+      (card.propertyImageList && card.propertyImageList.length) ||
+      (card.jobImageList && card.jobImageList.length) ||
+      (card.commercialServiceImageList && card.commercialServiceImageList.length) ||
+      (card.commercialServiceImagesList && card.commercialServiceImagesList.length) ||
+      0;
+      
+      if (card.imageIndex < totalImages - 1) {
+        card.imageIndex = card.imageIndex + 1;
+      }
+  }
+
+  isDisabled(card: any): boolean {
+    const element = document.getElementById(`cardId${card.id}`)!; 
+    return element.classList.contains('disable');
+  }
+  
+  handleDisabledClick() {
+    
   }
 
 

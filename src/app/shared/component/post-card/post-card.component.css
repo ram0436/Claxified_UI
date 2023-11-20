@@ -500,9 +500,9 @@
     color: #72ef36;
 }
 
-.disable{
+/* .disable{
     pointer-events: none;
-}
+} */
 
 .set-fav-card.fill{
     background-color: #0d475c;
