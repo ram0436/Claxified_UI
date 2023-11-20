@@ -783,16 +783,12 @@ input[type="radio" i] {
     color: #fff;
     border-radius: 50%;
     cursor: pointer;
-    display: none;
-    /* height: 48px;
-    line-height: 48px; */
+    display: block;
     position: absolute;
-    right: 7px;
-    top: 10px;
-    /* width: 48px; */
-    padding: 15px 12px 12px 14px;
+    right: 15px;
+    top: 15px;
+    padding: 6px 5px 4.5px 6px;
     z-index: 10;
-    /* display: flex; */
     align-items: center;
     justify-content: center;
 }

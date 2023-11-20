@@ -9,7 +9,7 @@
   </button>
   <mat-card
     class="example-card"
-    *ngFor="let card of paginatedCards; let isFirst = first"
+    *ngFor="let card of paginatedCards; let isFirst = first; let i = index"
     [style.height.px]="increaseHeight ? 330 + 10 : 330"
   >
     <a
@@ -23,12 +23,28 @@
       target="_self"
     >
       <div class="post-image">
+        <span
+          class="material-icons pg_arrow pg_arrow_left"
+          (click)="showPrevious($event, card)"
+        >
+          arrow_back_ios_new
+        </span>
         <img
           mat-card-image
           [src]="getCardImageURL(card)"
           alt="{{ card?.title }}"
           class="card-image"
         />
+        <span
+          class="material-icons pg_arrow pg_arrow_right"
+          (click)="showNext($event, card)"
+          [ngClass]="{
+            disable: card.imageIndex === imagesList.length - 1
+          }"
+          id="{{ 'cardId' + card.id }}"
+        >
+          arrow_forward_ios
+        </span>
         <span
           class="material-icons set-fav-card"
           [class.material-icons-outlined]="!favoriteStatus[card?.tableRefGuid]"
@@ -49,6 +65,7 @@
         </span>
         <div class="image-count">
           <span class="material-icons"> photo_camera </span>
+          {{ card.imageIndex + (imagesList.length > 0 ? 1 : 0) }} of
           {{ imagesList.length }}
         </div>
       </div>
