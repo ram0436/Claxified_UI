@@ -33,6 +33,9 @@ export class PostCardComponent implements OnInit, OnChanges {
     isUserLogedIn: boolean = false;
     dialogRef: MatDialogRef<any> | null = null;
 
+    cardsImages: any[] = [];
+
+
     additionalHeightForYear = 10;
 
     // Pagination properties
@@ -79,6 +82,9 @@ export class PostCardComponent implements OnInit, OnChanges {
 
       };
 
+      imageIndices: number[] = [];
+
+
     scrollToTop() {
         const scrollDuration = 300; // Duration of the scroll animation in milliseconds
         const scrollStep = -window.scrollY / (scrollDuration / 15); // Divide the scroll distance into smaller steps
@@ -117,8 +123,10 @@ export class PostCardComponent implements OnInit, OnChanges {
       }); } 
 
     ngOnInit() {
+
         this.updateCards();
         this.getMainCategories();
+
     }
 
     updateCards() {
@@ -138,23 +146,9 @@ formatPrice(price: number): string {
 }
 
 getCategoryFromMapping(categoryId: string): string {
-  return this.categoryMapping[categoryId] || ''; // Return an empty string if categoryId is not found in the mapping
+  return this.categoryMapping[categoryId] || ''; 
 }
 
-// toggleFavorite(event: Event) {
-
-//   if (localStorage.getItem('id') != null)
-//   {
-//     event.preventDefault(); 
-//     event.stopPropagation();
-//     this.isFavorite = !this.isFavorite;
-//   }
-//   else{
-//     event.preventDefault(); 
-//     event.stopPropagation();
-//     this.openLoginModal();
-//   }
-// }
 
 toggleFavorite(event: Event, productId: string, categoryId: string) {
   event.preventDefault();
@@ -162,17 +156,13 @@ toggleFavorite(event: Event, productId: string, categoryId: string) {
 
 
   if (localStorage.getItem('id') != null) {
-    // Check if the card has a favorite status, if not, set it to false
     this.favoriteStatus[productId] = this.favoriteStatus[productId] || false;
 
-    // Toggle the favorite status for the specific card
     this.favoriteStatus[productId] = !this.favoriteStatus[productId];
 
     if (this.favoriteStatus[productId]) {
       this.addToWishlist(productId, categoryId);
     } else {
-      // Remove from wishlist API call (if applicable)
-      // Implement this method if you have a remove from wishlist functionality
     }
   } else {
     this.openLoginModal();
@@ -191,7 +181,6 @@ addToWishlist(productId: string, categoryId: string) {
 
   this.UserService.AddWishList(wishlistItem).subscribe(
     (response: any) => {
-      // Handle success response, if needed
     },
     (error: any) => {
       console.error('Error adding to Wishlist:', error);
@@ -222,6 +211,23 @@ openLoginModal() {
       this.isUserLogedIn = true;
   });
 }
+
+
+
+
+  showPrevious(event: Event, card: any) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (card.imageIndex > 0) {
+      card.imageIndex = card.imageIndex - 1;
+    }
+  }
+  showNext(event: Event, card: any) {
+    event.preventDefault();
+    event.stopPropagation();
+    card.imageIndex = card.imageIndex + 1;
+  }
+
 
 
 
@@ -271,17 +277,6 @@ openLoginModal() {
             return moment(inputDate).format('MMM DD');
         }
     }
-    // onPageChange(event: PageEvent): void {
-    //     this.currentPage = event.pageIndex;
-    //     this.calculatePagination();
-    // }
-    // calculatePagination() {
-    //     this.totalPages = Math.ceil(this.cards.length / this.pageSize);
-    //     this.paginatedCards = this.cards.slice(
-    //         this.currentPage * this.pageSize,
-    //         (this.currentPage + 1) * this.pageSize
-    //     );
-    // }
     getMainCategories() {
         this.commonService.getAllCategory().subscribe((data: any) => {
             this.mainCategories = data;
@@ -296,52 +291,59 @@ openLoginModal() {
             }
         }
     }
-    getCardImageURL(card: any): string {
-        this.imagesList = [];
-        if (card.gadgetImageList && card.gadgetImageList[0]?.imageURL) {
-            this.imagesList = card.gadgetImageList;
-            return card.gadgetImageList[0]?.imageURL;
-        } else if (card.vehicleImageList && card.vehicleImageList[0]?.imageURL) {
-            this.imagesList = card.vehicleImageList;
-            return card.vehicleImageList[0]?.imageURL;
-        } else if (card.electronicApplianceImageList && card.electronicApplianceImageList[0]?.imageURL) {
-            this.imagesList = card.electronicApplianceImageList;
-            return card.electronicApplianceImageList[0]?.imageURL;
-        } else if (card.furnitureImageList && card.furnitureImageList[0]?.imageURL) {
-            this.imagesList = card.furnitureImageList;
-            return card.furnitureImageList[0]?.imageURL;
-        }else if (card.sportImageList && card.sportImageList[0]?.imageURL) {
-            this.imagesList = card.sportImageList;
-            return card.sportImageList[0]?.imageURL;
-        }else if (card.petImageList && card.petImageList[0]?.imageURL) {
-            this.imagesList = card.petImageList;
-            return card.petImageList[0]?.imageURL;
-        }else if (card.fashionImageList && card.fashionImageList[0]?.imageURL) {
-            this.imagesList = card.fashionImageList;
-            return card.fashionImageList[0]?.imageURL;
-        }else if (card.bookImageList && card.bookImageList[0]?.imageURL) {
-            this.imagesList = card.bookImageList;
-            return card.bookImageList[0]?.imageURL;
-        }else if (card.propertyImageList && card.propertyImageList[0]?.imageURL) {
-            this.imagesList = card.propertyImageList;
-            return card.propertyImageList[0]?.imageURL;
-        }else if (card.jobImageList && card.jobImageList[0]?.imageURL) {
-            this.imagesList = card.jobImageList;
-            return card.jobImageList[0]?.imageURL;
-        }else if (card.commercialServiceImagesList && card.commercialServiceImagesList[0]?.imageURL) {
-            this.imagesList = card.commercialServiceImagesList;
-            return card.commercialServiceImagesList[0]?.imageURL;
-        }
-        else {
-            return '../../../assets/image_not_available.jpg';
-        }
+
+  
+  getCardImageURL(card: any): string {
+    this.imagesList = [];
+    if (card.gadgetImageList && card.gadgetImageList[0]?.imageURL) {
+        this.imagesList = card.gadgetImageList;
+        return card.gadgetImageList[card.imageIndex]?.imageURL;
+    } else if (card.vehicleImageList && card.vehicleImageList[0]?.imageURL) {
+        this.imagesList = card.vehicleImageList;
+        return card.vehicleImageList[card.imageIndex]?.imageURL;
+    } else if (card.electronicApplianceImageList && card.electronicApplianceImageList[0]?.imageURL) {
+        this.imagesList = card.electronicApplianceImageList;
+        return card.electronicApplianceImageList[card.imageIndex]?.imageURL;
+    } else if (card.furnitureImageList && card.furnitureImageList[0]?.imageURL) {
+        this.imagesList = card.furnitureImageList;
+        return card.furnitureImageList[card.imageIndex]?.imageURL;
+    }else if (card.sportImageList && card.sportImageList[0]?.imageURL) {
+        this.imagesList = card.sportImageList;
+        return card.sportImageList[card.imageIndex]?.imageURL;
+    }else if (card.petImageList && card.petImageList[0]?.imageURL) {
+        this.imagesList = card.petImageList;
+        return card.petImageList[card.imageIndex]?.imageURL;
+    }else if (card.fashionImageList && card.fashionImageList[0]?.imageURL) {
+        this.imagesList = card.fashionImageList;
+        return card.fashionImageList[card.imageIndex]?.imageURL;
+    }else if (card.bookImageList && card.bookImageList[0]?.imageURL) {
+        this.imagesList = card.bookImageList;
+        return card.bookImageList[card.imageIndex]?.imageURL;
+    }else if (card.propertyImageList && card.propertyImageList[0]?.imageURL) {
+        this.imagesList = card.propertyImageList;
+        return card.propertyImageList[card.imageIndex]?.imageURL;
+    }else if (card.jobImageList && card.jobImageList[0]?.imageURL) {
+        this.imagesList = card.jobImageList;
+        return card.jobImageList[card.imageIndex]?.imageURL;
+    }else if (card.commercialServiceImageList && card.commercialServiceImageList[0]?.imageURL) {
+        this.imagesList = card.commercialServiceImageList;
+        return card.commercialServiceImageList[0]?.imageURL;
     }
+    else if (card.commercialServiceImagesList && card.commercialServiceImagesList[0]?.imageURL) {
+        this.imagesList = card.commercialServiceImagesList;
+        return card.commercialServiceImagesList[0]?.imageURL;
+    }
+    else {
+        return '../../../assets/image_not_available.jpg';
+    }
+}
     setMainCategoryName(cards: any) {
         for (var i = 0; i < cards.length; i++) {
             for (var j = 0; j < this.mainCategories.length; j++) {
                 if (cards[i].categoryId == this.mainCategories[j].id) {
                     cards[i].mainCategory = this.mainCategories[j].categoryName;
                     cards[i].isFeatured = i === 0;
+                    cards[i].imageIndex = 0; 
                     break;
                 }
             }
@@ -434,23 +436,3 @@ openLoginModal() {
     
 }
 
-// AddFavorite() {
-
-//   const reportPayload = {
-//     id: 0,
-//     productId: this.productId,
-//     categoryId: this.categoryId,
-//     createdBy: localStorage.getItem('id'),
-//     createdOn: new Date().toISOString(),
-//   };
-
-
-//   this.UserService.AdReportByUser(reportPayload).subscribe(
-//     (response: any) => {
-//     },
-//     (error: any) => {
-//       // Handle error response, if needed
-//       console.error('Error sending report:', error);
-//     }
-//   );
-// }

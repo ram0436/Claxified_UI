@@ -15,6 +15,7 @@ export class VehiclePostsComponent {
   subCategoryId: Number = 0;
   isLoading: boolean = true;
   showFilters: boolean = false;
+  imagesList: any = [];
   cards: any = [];
   subscription: any;
   actualCards: any;
