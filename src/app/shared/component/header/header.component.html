@@ -168,7 +168,10 @@
               <a (click)="openSignUpModal()">Register</a>
             </li> -->
             <li class="login" *ngIf="!isUserLogedIn">
-              <a (click)="openLoginModal()">Login & Register</a>
+              <a class="login-flex" (click)="openLoginModal()">
+                <span class="material-icons"> person </span>
+                Login & Register</a
+              >
             </li>
             <li class="neon__button sm-d-none">
               <a (click)="postAdd()">
