@@ -1,5 +1,10 @@
+.bold{
+  font-weight: 600;
+}
+
 @media (max-width: 750px) {
     .sm-mt-175{
       margin-top: 175px;
     }
   }
+

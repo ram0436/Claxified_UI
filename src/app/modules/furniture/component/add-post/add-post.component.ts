@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { FurnitureService } from '../../service/furniture.service';
 import { DOCUMENT } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -7,6 +7,12 @@ import { UserService } from 'src/app/modules/user/service/user.service';
 import { Common } from 'src/app/shared/model/CommonPayload';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { AdminDashboardService } from './../../../admin/service/admin-dashboard.service';
+import { MatRadioGroup, MatRadioButton } from '@angular/material/radio';
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatSelectionList } from '@angular/material/list';
+import { Filter } from 'src/app/shared/model/Filter';
+import { Observable, map, startWith } from 'rxjs';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-add-post',
@@ -25,7 +31,6 @@ export class AddPostComponent {
   currentUploadImageIndex: number = 0;
   allUploadedFiles: any = [];
   progress: boolean = false;
-  userData: any;
   imageUrl: string = '../../../../../assets/img_not_available.png';
   firstImageUploaded: boolean = false; // Changes made by Hamza
   isFromAdmin: boolean = false;
@@ -35,10 +40,62 @@ export class AddPostComponent {
 
   isPriceValid: boolean = true;
 
+  locationConfirmationType: 'pincode' | 'manual' = 'pincode';
+
+  stateControl = new FormControl("");
+  cityControl = new FormControl("");
+  nearByControl = new FormControl("");
+  filteredStates!: Observable<{ id: number; name: string; }[]>;
+  filteredCities!: Observable<{ id: number; name: string; }[]>;
+  filteredNearBy!: Observable<{ id: number; name: string; }[]>;
+
+  country: any;
+  districts: any = [];
+  cities: any = [];
+  nearByPlaces: any = [];
+  filtersSelected: boolean = false; 
+  appliedFilters: any = [];
+
+  filterObj = new Filter();
+
+  @ViewChild('stateMatAutocomplete') stateAutocomplete!: MatAutocomplete;
+  @ViewChild('cityMatAutocomplete') cityAutocomplete!: MatAutocomplete;
+  @ViewChild('nearByMatAutocomplete') nearByAutocomplete!: MatAutocomplete;
+  @ViewChild(MatSelectionList)
+  matSelectionList!: MatSelectionList;
+
+  userData: any = {
+    id: null,
+    authToken: null,
+    userId: null,
+    firstName: null,
+    lastName: null,
+    role: null,
+    mobileNumber: null,
+    isActiveUser: false,
+    watsAppNumber: null,
+    email: null,
+    isBlockedUser: false,
+  };
+
+  selectedState: any;
+  selectedCity: any;
+  selectedNearBy: any;
+  isAppSupport : boolean = false;
+
   constructor(private furnitureService: FurnitureService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document, private userService: UserService,private router : Router) { }
 
   ngOnInit() {
+    var role = localStorage.getItem("role");
+    if(role != null && role == 'AppSupport')
+      this.isAppSupport = true;
+    else
+      this.isAppSupport = false;
+    this.commonService.getCountry().subscribe((data: any) => {
+      this.country = data[0];
+      this.getAllStates();
+    });
     this.route.queryParams.subscribe(params => {
       this.isFromAdmin = params['fromAdmin'] === 'true';
     });
@@ -62,6 +119,141 @@ export class AddPostComponent {
       }
     });
   }
+
+  getAllStates() {
+    this.commonService.getStatesByCountry(this.country.id).subscribe(data => {
+      this.districts = data;
+      this.getFilteredStates();
+    });
+  }
+
+  getFilteredStates() {
+    this.filteredStates = this.stateControl.valueChanges.pipe(
+      startWith(""),
+      map((value) => this.filterLocations(value || "", this.districts))
+    );
+  }
+  filterLocations(value: any, dataArray: any[]): { id: number; name: string }[] {
+    var filterValue = "";
+    if (typeof value == 'object')
+      filterValue = value.name.toLowerCase();
+    else
+      filterValue = value.toLowerCase();
+    return dataArray.filter(
+      (data: any) => data.name.toLowerCase().indexOf(filterValue) === 0
+    );
+  }
+
+  onDistrictChange(event: any) {
+    this.selectedState = event.option.value;
+    this.filterObj.state = (event.option.value == null) ? null : event.option.value.name;
+    this.commonService.setData(this.filterObj);
+    this.updateAppliedFilters("state", this.filterObj.state);
+    if (this.filterObj.state == null)
+      this.appliedFilters = this.appliedFilters.filter((item: any) => (item.name != 'city' && item.name != 'nearBy'));
+    else
+      this.getCities(event.option.value.id);
+
+    this.filtersSelected = true; //Changes made by Hamza
+    this.filterObj.state = event.option.value ? event.option.value.name : null;
+    this.filterObj.city = null; // Reset city when state changes
+    this.filterObj.nearBy = null; // Reset nearby when state changes
+  }
+
+  onCityChange(event: any) {
+    this.selectedCity = event.option.value;
+    this.filterObj.city = (event.option.value == null) ? null : event.option.value.name;
+    this.commonService.setData(this.filterObj);
+    this.updateAppliedFilters("city", this.filterObj.city);
+    if (this.filterObj.city == null)
+      this.appliedFilters = this.appliedFilters.filter((item: any) => (item.name != 'nearBy'));
+    else
+      this.getNearByPlaces(event.option.value.id);
+    this.filtersSelected = true; //Changes made by Hamza
+  }
+  onNearByChange(event: any) {
+    this.selectedNearBy = event.option.value;
+    this.filterObj.nearBy = (event.option.value == null) ? null : event.option.value.name;
+    this.updateAppliedFilters("nearBy", this.filterObj.nearBy);
+    this.commonService.setData(this.filterObj);
+    this.filtersSelected = true; //Changes made by Hamza
+  }
+
+  updateAppliedFilters(filterName: string, value: any) {
+    let matchFound = false;
+    for (let i = 0; i < this.appliedFilters.length; i++) {
+      if (this.appliedFilters[i].name == filterName && (filterName == 'state' || filterName == 'city' || filterName == 'nearBy' || filterName == 'price' || filterName == 'kms')) {
+        matchFound = true;
+        (value == null) ? this.appliedFilters.splice(i, 1) : this.appliedFilters[i].value = value;
+        break;
+      }
+    }
+    if (!matchFound)
+      this.appliedFilters.push({ name: filterName, value: value })
+  }
+
+  displayLocation(brand: any): string {
+    return brand?.name || "";
+  }
+
+  getCities(stateId: Number) {
+    this.commonService.getCitiesByState(stateId).subscribe(data => {
+      this.cities = data;
+      this.getFilteredCities();
+    });
+  }
+
+  getFilteredCities() {
+    this.filteredCities = this.cityControl.valueChanges.pipe(
+      startWith(""),
+      map((value) => this.filterLocations(value || "", this.cities))
+    );
+  }
+  getFilteredNearBy() {
+    this.filteredNearBy = this.nearByControl.valueChanges.pipe(
+      startWith(""),
+      map((value) => this.filterLocations(value || "", this.nearByPlaces))
+    );
+  }
+  getNearByPlaces(cityId: Number) {
+    this.commonService.getNearPlacesByCity(cityId).subscribe(data => {
+      this.nearByPlaces = data;
+      this.getFilteredNearBy();
+    })
+  }
+
+  updateLocationFromAddress(data: any) {
+    if (data[0].PostOffice != null) {
+      var address = data[0].PostOffice[0];
+      this.commonPayload.state = address.State;
+      this.commonPayload.city = address.District;
+      this.postOffices = data[0].PostOffice;
+      // If there are multiple post offices, set the default value to the first one
+      if (this.postOffices.length > 1) {
+        this.commonPayload.nearBy = this.postOffices[0].Name;
+      } else {
+        this.commonPayload.nearBy = address.Name;
+      }
+    }
+  }
+
+  resetManualLocationInputs() {
+    this.stateControl.setValue("");
+    this.cityControl.setValue("");
+    this.nearByControl.setValue("");
+    this.selectedState = null;
+    this.selectedCity = null;
+    this.selectedNearBy = null;
+  }
+  
+
+  onLocationConfirmationTypeChange() {
+    if (this.locationConfirmationType === 'pincode') {
+      this.resetManualLocationInputs();
+    }
+  }
+
+
   // allowOnlyNumbers(event: Event): void {
   //   const inputElement = event.target as HTMLInputElement;
   //   const inputValue = inputElement.value;
@@ -229,6 +421,11 @@ export class AddPostComponent {
   }
   saveFurniturePost(payload: any) {
     if(this.validatePostForm(payload))
+      if (this.locationConfirmationType === 'manual') {
+        payload.state = this.selectedState ? this.selectedState.name : null;
+        payload.city = this.selectedCity ? this.selectedCity.name : null;
+        payload.nearBy = this.selectedNearBy ? this.selectedNearBy.name : null;
+      }
     this.furnitureService.saveFurniturePost(payload).subscribe(data => {
       this.showNotification("Post added succesfully");
       this.router.navigateByUrl('/post-menu');
@@ -292,8 +489,11 @@ export class AddPostComponent {
         this.showNotification("price should be contain a minimum of two digits");
     else if (payload.furnitureImageList.length <= 0)
       this.showNotification("In upload photo, at least 1 photo is required.");
-    else if (payload.pincode.length < 6)
+    else if (this.locationConfirmationType === 'pincode' && payload.pincode.length < 6)
       this.showNotification("Pincode should be 6 digits");
+    else if (this.locationConfirmationType === 'manual' && (!payload.state || !payload.city || !payload.nearBy)) {
+      this.showNotification("State, City, and Near By are required for manual location entry");
+    }
     else
       flag = true;
     return flag;
@@ -308,6 +508,11 @@ export class AddPostComponent {
   }
   updateFurniturePost(payload: any) {
     if (this.validatePostForm(payload))
+      if (this.locationConfirmationType === 'manual') {
+        payload.state = this.selectedState ? this.selectedState.name : null;
+        payload.city = this.selectedCity ? this.selectedCity.name : null;
+        payload.nearBy = this.selectedNearBy ? this.selectedNearBy.name : null;
+     }
       this.furnitureService.updateFurniturePost(payload).subscribe(data => {
         this.showNotification("Post updated succesfully");
         this.router.navigateByUrl('/post-menu');

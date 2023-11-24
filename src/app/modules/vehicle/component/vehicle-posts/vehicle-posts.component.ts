@@ -48,10 +48,12 @@ export class VehiclePostsComponent {
     this.cards = [];
     this.vehicleService.getAllVehiclePosts().subscribe((data: any) => {
       this.actualCards = data;
-      if(this.subCategoryId !=0)
-      this.cards = this.actualCards.filter((card: any) => card.subCategoryId == this.subCategoryId);
+      if(this.subCategoryId !=0){
+      this.cards = this.actualCards.filter((card: any) => card.subCategoryId == this.subCategoryId && card.isVerified);
+      }
       else
       this.cards = data;
+      this.cards = data.filter((card: any) => card.isVerified);
       this.isLoading = false;
       this.subCategoryId = 0;
     })
