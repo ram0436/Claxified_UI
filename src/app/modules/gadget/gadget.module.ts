@@ -23,6 +23,7 @@ import { GadgetFilterComponent } from './component/gadget-filter/gadget-filter.c
 import { PostDetailComponent } from './component/post-detail/post-detail.component';
 import { GadgetRoutingModule } from './gadget-routing.module';
 import { GadgetPostsComponent } from './component/gadget-posts/gadget-posts.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { GadgetPostsComponent } from './component/gadget-posts/gadget-posts.comp
     MatButtonModule,
     MatPaginatorModule,
     MatSliderModule,
+    MatRadioModule
   ]
 })
 export class GadgetModule { }

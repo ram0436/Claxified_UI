@@ -23,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 
@@ -56,6 +57,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     MatButtonModule,
     MatPaginatorModule,
     MatSliderModule,
+    MatRadioModule
   ]
 })
 export class FurnitureModule { }

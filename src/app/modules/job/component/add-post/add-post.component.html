@@ -125,46 +125,164 @@
     </div>
     <div class="include-details">
       <h4 class="loc">CONFIRM YOUR LOCATION</h4>
-      <mat-form-field>
-        <mat-label>Pincode</mat-label>
-        <input
-          matInput
-          placeholder="Enter your pincode"
-          (input)="getAddress($event); allowOnlyNumbers($event)"
-          [(ngModel)]="commonPayload.pincode"
-          maxlength="6"
-        />
-      </mat-form-field>
-      <mat-form-field *ngIf="commonPayload.state != ''">
-        <mat-label>State</mat-label>
-        <input
-          matInput
-          placeholder="State"
-          [(ngModel)]="commonPayload.state"
-          readonly
-        />
-      </mat-form-field>
-      <mat-form-field *ngIf="commonPayload.state != ''">
-        <mat-label>City</mat-label>
-        <input
-          matInput
-          placeholder="City"
-          [(ngModel)]="commonPayload.city"
-          readonly
-        />
-      </mat-form-field>
-      <mat-form-field *ngIf="commonPayload.state != ''">
-        <mat-label>Near By</mat-label>
-        <!-- Add a dropdown for post office names -->
-        <mat-select [(ngModel)]="commonPayload.nearBy">
-          <mat-option
-            *ngFor="let postOffice of postOffices"
-            [value]="postOffice.Name"
+
+      <mat-radio-group
+        [(ngModel)]="locationConfirmationType"
+        class="location-radios"
+        color="primary"
+        (change)="onLocationConfirmationTypeChange()"
+      >
+        <mat-radio-button value="pincode"
+          ><span class="loc-radio"
+            >Confirm location by pincode</span
+          ></mat-radio-button
+        >
+        <mat-radio-button value="manual" class="loc-radio"
+          ><span class="loc-radio">Select your location</span></mat-radio-button
+        >
+      </mat-radio-group>
+
+      <div
+        class="confirm-location-input"
+        *ngIf="locationConfirmationType === 'pincode'"
+      >
+        <mat-form-field>
+          <mat-label>Pincode</mat-label>
+          <input
+            matInput
+            placeholder="Enter your pincode"
+            (input)="getAddress($event); allowOnlyNumbersPincode($event)"
+            [(ngModel)]="commonPayload.pincode"
+            maxlength="6"
+          />
+        </mat-form-field>
+        <mat-form-field *ngIf="commonPayload.state != ''">
+          <mat-label>State</mat-label>
+          <input
+            matInput
+            placeholder="State"
+            [(ngModel)]="commonPayload.state"
+            readonly
+          />
+        </mat-form-field>
+        <mat-form-field *ngIf="commonPayload.state != ''">
+          <mat-label>City</mat-label>
+          <input
+            matInput
+            placeholder="City"
+            [(ngModel)]="commonPayload.city"
+            readonly
+          />
+        </mat-form-field>
+        <mat-form-field *ngIf="commonPayload.state != ''">
+          <mat-label>Near By</mat-label>
+          <!-- Add a dropdown for post office names -->
+          <mat-select [(ngModel)]="commonPayload.nearBy">
+            <mat-option
+              *ngFor="let postOffice of postOffices"
+              [value]="postOffice.Name"
+            >
+              {{ postOffice.Name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div
+        class="confirm-location-input"
+        *ngIf="locationConfirmationType === 'manual'"
+      >
+        <!-- State -->
+        <mat-form-field appearance="fill" class="form-field-w-100">
+          <mat-label>State</mat-label>
+          <input
+            type="text"
+            placeholder="Pick one"
+            aria-label="Number"
+            matInput
+            [formControl]="stateControl"
+            [(ngModel)]="commonPayload.state"
+            [matAutocomplete]="state"
+          />
+          <mat-autocomplete
+            #stateMatAutocomplete
+            autoActiveFirstOption
+            #state="matAutocomplete"
+            (optionSelected)="onDistrictChange($event)"
+            [displayWith]="displayLocation"
           >
-            {{ postOffice.Name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+            <mat-option
+              *ngFor="let district of filteredStates | async"
+              [value]="district"
+            >
+              {{ district.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <!-- City -->
+        <mat-form-field
+          appearance="fill"
+          *ngIf="filterObj?.state"
+          class="form-field-w-100"
+        >
+          <mat-label>City</mat-label>
+          <input
+            type="text"
+            placeholder="Pick one"
+            aria-label="Number"
+            matInput
+            [formControl]="cityControl"
+            [matAutocomplete]="city"
+            [(ngModel)]="commonPayload.city"
+          />
+          <mat-autocomplete
+            #cityMatAutocomplete
+            autoActiveFirstOption
+            #city="matAutocomplete"
+            (optionSelected)="onCityChange($event)"
+            [displayWith]="displayLocation"
+          >
+            <mat-option
+              *ngFor="let city of filteredCities | async"
+              [value]="city"
+            >
+              {{ city.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <!-- Near By -->
+        <mat-form-field
+          appearance="fill"
+          *ngIf="filterObj?.city"
+          class="form-field-w-100"
+        >
+          <mat-label>Near By</mat-label>
+          <input
+            type="text"
+            placeholder="Pick one"
+            aria-label="Number"
+            matInput
+            [formControl]="nearByControl"
+            [matAutocomplete]="nearBy"
+            [(ngModel)]="commonPayload.nearBy"
+          />
+          <mat-autocomplete
+            #nearByMatAutocomplete
+            autoActiveFirstOption
+            #nearBy="matAutocomplete"
+            (optionSelected)="onNearByChange($event)"
+            [displayWith]="displayLocation"
+          >
+            <mat-option
+              *ngFor="let nearBy of filteredNearBy | async"
+              [value]="nearBy"
+            >
+              {{ nearBy.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
     </div>
     <div class="details">
       <h4>REVIEW YOUR DETAILS</h4>
@@ -184,11 +302,21 @@
         <div class="wd-300">
           <div class="wd-100">
             <p class="w-50">Name</p>
-            <p>{{ userData?.firstName }}</p>
+            <input
+              class="details-input"
+              type="text"
+              [(ngModel)]="userData.firstName"
+              [readonly]="!this.isAppSupport"
+            />
           </div>
           <div class="wd-100">
             <p class="w-50">Phone number</p>
-            <p>{{ userData?.mobileNo }}</p>
+            <input
+              class="details-input"
+              type="text"
+              [(ngModel)]="userData.mobileNo"
+              [readonly]="!this.isAppSupport"
+            />
           </div>
         </div>
       </div>

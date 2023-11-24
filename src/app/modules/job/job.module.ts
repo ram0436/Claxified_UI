@@ -23,6 +23,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { JobRoutingModule } from './job-routing.module';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 
@@ -56,6 +57,7 @@ import { JobRoutingModule } from './job-routing.module';
     MatButtonModule,
     MatPaginatorModule,
     MatSliderModule,
+    MatRadioModule
   ]
 })
 export class JobModule { }

@@ -18,6 +18,32 @@
     margin: auto;
 }
 
+.confirm-location-input{
+    display: flex;
+    flex-direction: column;
+}
+
+.location-radios{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.loc-radio{
+    padding-top: 5px;
+}
+
+.details-input{
+    border: none;
+    outline: none;
+}
+
+.mdc-radio{
+    width: auto;
+    height: auto;
+}
+
+
 nav {
     border-bottom: 1px solid #333;
 }

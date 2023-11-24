@@ -23,6 +23,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FashionRoutingModule } from './fashion-routing.module';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 
@@ -56,6 +57,7 @@ import { FashionRoutingModule } from './fashion-routing.module';
     MatButtonModule,
     MatPaginatorModule,
     MatSliderModule,
+    MatRadioModule
   ]
 })
 export class FashionModule { }
