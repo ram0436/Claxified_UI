@@ -47,10 +47,11 @@ export class GadgetPostsComponent {
     this.cards = [];
     this.gadgetService.getAllGadgetPosts().subscribe((data: any) => {
       this.actualCards = data;
-      if (this.subCategoryId != 0)
-        this.cards = this.actualCards.filter((card: any) => card.subCategoryId == this.subCategoryId);
-      else
-        this.cards = data;
+      if (this.subCategoryId != 0) {
+        this.cards = this.actualCards.filter((card: any) => card.subCategoryId == this.subCategoryId && card.isVerified === true);
+      } else {
+        this.cards = this.actualCards.filter((card: any) => card.isVerified === true);
+      }
       this.isLoading = false;
       this.subCategoryId = 0;
     })
