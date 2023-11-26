@@ -692,10 +692,11 @@ input[type="radio" i] {
 
 .phone-icon {
     display: inline-block;
-    font-size: 18px;
+    max-width: 22px;
+    height: 27px;
     line-height: 1;
     vertical-align: middle;
-    min-width: 18px;
+    min-width: 22px;
 }
 
 .seller-phone-number-title {
