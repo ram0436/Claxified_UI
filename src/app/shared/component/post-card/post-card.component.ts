@@ -275,7 +275,7 @@ openLoginModal() {
         }
       }
 
-      truncateCity(city: string, maxLength: number = 27): string {
+      truncateCity(city: string, maxLength: number = 24): string {
         if (city.length <= maxLength) {
           return city;
         } else {
