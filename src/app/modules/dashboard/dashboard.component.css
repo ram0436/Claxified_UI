@@ -1,7 +1,7 @@
 .mat-app-background {
     /* padding-top: 20px; */
     display: flex;
-    padding: 30px 40px 30px 105px !important;
+    padding: 30px 40px 30px 105px;
 }
 
 .card-image {
@@ -278,6 +278,8 @@
     /* background-color: #ae080f; */
     color: orangered;
     padding: 5px 0;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .marquee-message .messages{
@@ -285,11 +287,22 @@
     /* align-items: center;
     justify-content: center; */
     gap: 200px;
+    animation: marquee 20s linear infinite;
 }
 
 .marquee-message .messages .message{
     text-align: center;
 }
+
+@keyframes marquee {
+    0% {
+      transform: translateX(100%);
+    }
+  
+    100% {
+      transform: translateX(-40%);
+    }
+  }
 
 @media (max-width: 1108px){
     .d-card{
@@ -358,7 +371,7 @@
 @media (max-width: 385px){
     .d-card{
         width: 120%;
-        margin-left: -75px !important;
+        margin-left: -62px !important;
     }
 }
 

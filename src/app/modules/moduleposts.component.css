@@ -26,15 +26,16 @@
 
   /* changes made by hamza */
 
+
   .mat-mdc-card.mdc-card.example-card.ng-star-inserted {
   /* height: 335px !important; */
-  min-width: 260px !important;
-  max-width: 260px !important;
+  min-width: 270px !important;
+  max-width: 270px !important;
 }
 
 
 .mat-mdc-card-image.mdc-card__media.card-image{
-  width: 260px !important;
+  width: 270px !important;
   height: 230px !important;
 }
 

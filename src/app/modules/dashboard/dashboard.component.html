@@ -4,13 +4,13 @@
   </div>
 </div>
 <div *ngIf="!isLoading" class="d-card">
-  <marquee class="marquee-message">
+  <div class="marquee-message">
     <div class="messages">
       <div class="message" *ngFor="let message of messages">
         <h5>{{ message.title }} {{ message.message }}</h5>
       </div>
     </div>
-  </marquee>
+  </div>
   <app-post-card
     [isLoading]="isLoading"
     [cards]="cards"

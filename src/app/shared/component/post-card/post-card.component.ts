@@ -27,6 +27,7 @@ export class PostCardComponent implements OnInit, OnChanges {
     @Input() isLoading: Boolean = false;
     @Input() cards: any;
     @Input() increaseHeight = false;
+    @Input() increaseMargin = false;
     currentDate: Date = new Date();
     math = Math;
 

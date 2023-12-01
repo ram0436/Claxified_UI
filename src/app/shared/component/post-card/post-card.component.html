@@ -1,4 +1,9 @@
-<div id="unique-component" class="mat-app-background" *ngIf="!isLoading">
+<div
+  id="unique-component"
+  class="mat-app-background"
+  *ngIf="!isLoading"
+  [style.margin-left.px]="increaseMargin ? '30' : '0'"
+>
   <button
     class="back-to-top-btn"
     (click)="scrollToTop()"
