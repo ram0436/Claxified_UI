@@ -10,7 +10,7 @@
 }
 
 #unique-component.mat-app-background {
-    padding: 30px 0px 30px 90px;
+    padding: 30px 0px 30px 60px;
     /* margin: 0 auto; */
   }
 
@@ -399,13 +399,13 @@
 
 .mat-mdc-card.mdc-card.example-card.ng-star-inserted {
     height: 315px;
-    min-width: 260px; 
-    max-width: 260px;
+    min-width: 270px; 
+    max-width: 270px;
   }
   
   
   .mat-mdc-card-image.mdc-card__media.card-image{
-    width: 260px;
+    width: 270px;
     height: 230px;
   }
   
@@ -597,6 +597,7 @@
         padding-left: 195px;
         padding-top: 30px;
         height: auto;
+        margin-left: 0px !important;
       }
 
     .back-to-top-btn{
