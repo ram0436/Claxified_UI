@@ -83,7 +83,8 @@
     left: 0;
     bottom: 0;
     overflow-y: scroll;
-    scrollbar-width: none; 
+    scrollbar-width: none;
+    z-index: 20; 
   }
   
   .sidebar-container::-webkit-scrollbar {
@@ -189,6 +190,7 @@
       position: fixed;
       overflow: auto;
       scrollbar-width: 0;
+      z-index: 20;
       box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
       -webkit-box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
       -moz-box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);

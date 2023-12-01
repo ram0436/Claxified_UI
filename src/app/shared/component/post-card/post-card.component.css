@@ -10,7 +10,7 @@
 }
 
 #unique-component.mat-app-background {
-    padding: 30px 0px 30px 115px;
+    padding: 30px 0px 30px 90px;
     /* margin: 0 auto; */
   }
 
@@ -33,7 +33,7 @@
     justify-content: center !important;
     cursor: pointer;
     border-radius: 5px;
-    z-index: 10;
+    z-index: 5;
     font-size: 20px;
 }
 
@@ -399,13 +399,13 @@
 
 .mat-mdc-card.mdc-card.example-card.ng-star-inserted {
     height: 315px;
-    min-width: 250px; 
-    max-width: 250px;
+    min-width: 260px; 
+    max-width: 260px;
   }
   
   
   .mat-mdc-card-image.mdc-card__media.card-image{
-    width: 250px;
+    width: 260px;
     height: 230px;
   }
   
@@ -491,7 +491,7 @@
     right: 15px;
     top: 15px;
     padding: 6px 5px 4.5px 6px;
-    z-index: 10;
+    z-index: 5;
     align-items: center;
     justify-content: center;
 }
