@@ -100,6 +100,10 @@ export class AddPostComponent {
   selectedNearBy: any;
   isAppSupport : boolean = false;
 
+  isInputDisabledState: boolean = false;
+  isInputDisabledCity: boolean = false;
+  isInputDisabledNearBy: boolean = false;
+
   mode : any;
   constructor(private jobService: JobService, private commonService: CommonService, private snackBar: MatSnackBar, private route: ActivatedRoute, private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document, private userService: UserService, private router: Router) { }
@@ -142,6 +146,18 @@ export class AddPostComponent {
       }
     });
   }
+
+  clearSearchText(formControl: FormControl, fieldName: string): void {
+    formControl.setValue('');
+
+    if (fieldName === 'state') {
+      this.isInputDisabledState = false;
+    } else if (fieldName === 'city') {
+      this.isInputDisabledCity = false;
+    } else if (fieldName === 'nearBy') {
+      this.isInputDisabledNearBy = false;
+    }
+  }
  
   getAllStates() {
     this.commonService.getStatesByCountry(this.country.id).subscribe(data => {
@@ -170,6 +186,9 @@ export class AddPostComponent {
   onDistrictChange(event: any) {
     this.selectedState = event.option.value;
     this.filterObj.state = (event.option.value == null) ? null : event.option.value.name;
+    this.isInputDisabledState = true;
+    this.cityControl.setValue('');
+    this.isInputDisabledCity = false;
     this.commonService.setData(this.filterObj);
     this.updateAppliedFilters("state", this.filterObj.state);
     if (this.filterObj.state == null)
@@ -186,6 +205,7 @@ export class AddPostComponent {
   onCityChange(event: any) {
     this.selectedCity = event.option.value;
     this.filterObj.city = (event.option.value == null) ? null : event.option.value.name;
+    this.isInputDisabledCity = true;
     this.commonService.setData(this.filterObj);
     this.updateAppliedFilters("city", this.filterObj.city);
     if (this.filterObj.city == null)
@@ -197,6 +217,7 @@ export class AddPostComponent {
   onNearByChange(event: any) {
     this.selectedNearBy = event.option.value;
     this.filterObj.nearBy = (event.option.value == null) ? null : event.option.value.name;
+    this.isInputDisabledNearBy = true;
     this.updateAppliedFilters("nearBy", this.filterObj.nearBy);
     this.commonService.setData(this.filterObj);
     this.filtersSelected = true; //Changes made by Hamza

@@ -260,7 +260,7 @@ openLoginModal() {
 
 
 
-    truncateTitle(title: string, maxLength: number = 32): string {
+    truncateTitle(title: string, maxLength: number = 36): string {
         if (title.length <= maxLength) {
           return title;
         } else {
@@ -276,7 +276,7 @@ openLoginModal() {
         }
       }
 
-      truncateCity(city: string, maxLength: number = 24): string {
+      truncateCity(city: string, maxLength: number = 29): string {
         if (city.length <= maxLength) {
           return city;
         } else {
