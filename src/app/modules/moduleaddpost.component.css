@@ -405,6 +405,26 @@ button {
         min-height: 48px;
     }
 
+.details-input{
+    background-color: transparent;
+}
+
+.input-with-icon {
+    position: relative;
+  }
+  
+  .input-with-icon input {
+    padding-right: 5px;
+  }
+  
+  .input-with-icon .cross-icon {
+    position: absolute;
+    top: 30%;
+    right: 2px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: gray;
+  }
 
 @media (max-width: 1384px){
 
@@ -534,7 +554,7 @@ button {
     }
 }
 
-@media (max-width: 360px){
+@media (max-width: 315px){
 
     .h-365{
         height: 1300px;

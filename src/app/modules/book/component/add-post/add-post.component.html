@@ -171,29 +171,37 @@
         <!-- State -->
         <mat-form-field appearance="fill" class="form-field-w-100">
           <mat-label>State</mat-label>
-          <input
-            type="text"
-            placeholder="Pick one"
-            aria-label="Number"
-            matInput
-            [formControl]="stateControl"
-            [(ngModel)]="commonPayload.state"
-            [matAutocomplete]="state"
-          />
-          <mat-autocomplete
-            #stateMatAutocomplete
-            autoActiveFirstOption
-            #state="matAutocomplete"
-            (optionSelected)="onDistrictChange($event)"
-            [displayWith]="displayLocation"
-          >
-            <mat-option
-              *ngFor="let district of filteredStates | async"
-              [value]="district"
+          <div class="input-with-icon">
+            <input
+              type="text"
+              placeholder="Pick one"
+              aria-label="Number"
+              matInput
+              [formControl]="stateControl"
+              [(ngModel)]="commonPayload.state"
+              [matAutocomplete]="state"
+              [readOnly]="isInputDisabledState"
+            />
+            <mat-autocomplete
+              #stateMatAutocomplete
+              autoActiveFirstOption
+              #state="matAutocomplete"
+              (optionSelected)="onDistrictChange($event)"
+              [displayWith]="displayLocation"
             >
-              {{ district.name }}
-            </mat-option>
-          </mat-autocomplete>
+              <mat-option
+                *ngFor="let district of filteredStates | async"
+                [value]="district"
+              >
+                {{ district.name }}
+              </mat-option>
+            </mat-autocomplete>
+            <span
+              class="material-icons cross-icon"
+              (click)="clearSearchText(stateControl, 'state')"
+              >clear</span
+            >
+          </div>
         </mat-form-field>
 
         <!-- City -->
@@ -203,29 +211,37 @@
           class="form-field-w-100"
         >
           <mat-label>City</mat-label>
-          <input
-            type="text"
-            placeholder="Pick one"
-            aria-label="Number"
-            matInput
-            [formControl]="cityControl"
-            [matAutocomplete]="city"
-            [(ngModel)]="commonPayload.city"
-          />
-          <mat-autocomplete
-            #cityMatAutocomplete
-            autoActiveFirstOption
-            #city="matAutocomplete"
-            (optionSelected)="onCityChange($event)"
-            [displayWith]="displayLocation"
-          >
-            <mat-option
-              *ngFor="let city of filteredCities | async"
-              [value]="city"
+          <div class="input-with-icon">
+            <input
+              type="text"
+              placeholder="Pick one"
+              aria-label="Number"
+              matInput
+              [formControl]="cityControl"
+              [matAutocomplete]="city"
+              [(ngModel)]="commonPayload.city"
+              [readOnly]="isInputDisabledCity"
+            />
+            <mat-autocomplete
+              #cityMatAutocomplete
+              autoActiveFirstOption
+              #city="matAutocomplete"
+              (optionSelected)="onCityChange($event)"
+              [displayWith]="displayLocation"
             >
-              {{ city.name }}
-            </mat-option>
-          </mat-autocomplete>
+              <mat-option
+                *ngFor="let city of filteredCities | async"
+                [value]="city"
+              >
+                {{ city.name }}
+              </mat-option>
+            </mat-autocomplete>
+            <span
+              class="material-icons cross-icon"
+              (click)="clearSearchText(cityControl, 'city')"
+              >clear</span
+            >
+          </div>
         </mat-form-field>
 
         <!-- Near By -->
@@ -235,29 +251,37 @@
           class="form-field-w-100"
         >
           <mat-label>Near By</mat-label>
-          <input
-            type="text"
-            placeholder="Pick one"
-            aria-label="Number"
-            matInput
-            [formControl]="nearByControl"
-            [matAutocomplete]="nearBy"
-            [(ngModel)]="commonPayload.nearBy"
-          />
-          <mat-autocomplete
-            #nearByMatAutocomplete
-            autoActiveFirstOption
-            #nearBy="matAutocomplete"
-            (optionSelected)="onNearByChange($event)"
-            [displayWith]="displayLocation"
-          >
-            <mat-option
-              *ngFor="let nearBy of filteredNearBy | async"
-              [value]="nearBy"
+          <div class="input-with-icon">
+            <input
+              type="text"
+              placeholder="Pick one"
+              aria-label="Number"
+              matInput
+              [formControl]="nearByControl"
+              [matAutocomplete]="nearBy"
+              [(ngModel)]="commonPayload.nearBy"
+              [readOnly]="isInputDisabledNearBy"
+            />
+            <mat-autocomplete
+              #nearByMatAutocomplete
+              autoActiveFirstOption
+              #nearBy="matAutocomplete"
+              (optionSelected)="onNearByChange($event)"
+              [displayWith]="displayLocation"
             >
-              {{ nearBy.name }}
-            </mat-option>
-          </mat-autocomplete>
+              <mat-option
+                *ngFor="let nearBy of filteredNearBy | async"
+                [value]="nearBy"
+              >
+                {{ nearBy.name }}
+              </mat-option>
+            </mat-autocomplete>
+            <span
+              class="material-icons cross-icon"
+              (click)="clearSearchText(nearByControl, 'nearBy')"
+              >clear</span
+            >
+          </div>
         </mat-form-field>
       </div>
     </div>
