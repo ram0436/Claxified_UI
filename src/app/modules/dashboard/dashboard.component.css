@@ -350,6 +350,19 @@
     .marquee-message .messages{
         animation: marquee 15s linear infinite;
     }
+
+    @keyframes marquee {
+        0% {
+          transform: translateX(100%);
+        }
+      
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+
+
+
 }
 
 @media (max-width: 555px){
@@ -365,8 +378,18 @@
     }
 
     .marquee-message .messages{
-        animation: marquee 15s linear infinite;
+        animation: marquee 13s linear infinite;
     }
+
+    @keyframes marquee {
+        0% {
+          transform: translateX(100%);
+        }
+      
+        100% {
+          transform: translateX(-100%);
+        }
+      }
 }
 
 @media (max-width: 440px){
