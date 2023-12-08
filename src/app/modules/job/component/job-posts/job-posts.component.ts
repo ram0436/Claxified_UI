@@ -95,7 +95,7 @@ export class JobPostsComponent {
       })
     );
     this.cards = [];
-    this.cards = filteredData;
+    this.cards = filteredData.filter((card: any) => card.isVerified === true);
     this.isLoading = false;
     this.cdr.detectChanges();
   }
