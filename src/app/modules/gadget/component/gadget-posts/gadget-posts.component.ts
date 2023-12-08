@@ -95,8 +95,8 @@ export class GadgetPostsComponent {
       })
     );
     this.cards = [];
-    // this.cards = filteredData.filter((card: any) => card.isVerified === true);
-    this.cards = filteredData;
+    this.cards = filteredData.filter((card: any) => card.isVerified === true);
+    // this.cards = filteredData;
     
     this.isLoading = false;
     this.cdr.detectChanges();
