@@ -537,6 +537,22 @@ textarea {
     border: none;
 }
 
+.approve-btn{
+    color: #fff !important;
+    background-color: #3c3241 !important;
+    cursor: pointer;
+    align-items: center;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    font-size: 15px;
+    font-weight: 400;
+    height: 44px;
+    line-height: 20px;
+    padding: 10px 12px;
+    width: 100%;
+}
+
 .report-success-title{
     /* margin-top: 10px; */
     color: #498124;
@@ -775,8 +791,9 @@ input[type="radio" i] {
   }
 
 .btn-text h4{
-    margin-top: 15px;
-    font-size: 17px;
+    margin-top: 11px;
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .set-fav-card{

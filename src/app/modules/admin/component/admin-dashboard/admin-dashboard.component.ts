@@ -115,6 +115,16 @@ navigateToDetails(data:any){
   }
 }
 
+getPostDetailsLink(card: any): any[] {
+  const mainCategory = this.mainCategories.find((mainCategory: any) => mainCategory.id == card.categoryId);
+
+  if (mainCategory != null) {
+    return ['/' + mainCategory.categoryName + '/post-details', card.tableRefGuid];
+  }
+
+  return['/'];
+}
+
 generateNavigationUrl(mainCategory: string, subCategory: string, mode: string, categoryId: number, tableRefGuid: string): string {
     return `/${mainCategory}/add-post?main=${mainCategory}&sub=${subCategory}&mode=${mode}&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`;
   }

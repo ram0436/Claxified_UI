@@ -336,6 +336,19 @@
             </div>
           </div>
         </mat-card>
+        <mat-card
+          class="mt-10 border-1 approve-btn-carousel ml md-display-none"
+          *ngIf="isAdmin && !postDetails.isVerified"
+        >
+          <button
+            class="approve-btn button--secondary"
+            (click)="
+              verifyAdd(postDetails.categoryId, postDetails.tableRefGuid)
+            "
+          >
+            Approve Now
+          </button>
+        </mat-card>
       </div>
       <mat-card class="border-1 col-7 mb-2 pt-10 md-display-block">
         <mat-card-title>
@@ -558,6 +571,17 @@
             </a>
           </div>
         </div>
+      </mat-card>
+      <mat-card
+        class="mt-10 border-1 approve-btn-carousel col-7 md-display-block"
+        *ngIf="isAdmin && !postDetails.isVerified"
+      >
+        <button
+          class="approve-btn button--secondary"
+          (click)="verifyAdd(postDetails.categoryId, postDetails.tableRefGuid)"
+        >
+          Approve Now
+        </button>
       </mat-card>
       <!-- <mat-card class="col-7 border-1 mb-2">
         <mat-card-title>Relared Ads</mat-card-title>
