@@ -18,6 +18,7 @@ import { Location } from '@angular/common';
 import { UserService } from 'src/app/modules/user/service/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AdsReportType } from 'src/app/shared/enum/AdsReportType';
+import { AdminDashboardService } from './../../../admin/service/admin-dashboard.service';
 
 @Component({
   selector: 'app-post-details',
@@ -145,14 +146,45 @@ export class PostDetailsComponent {
   categoryId: string = '';
   favoriteStatus: { [key: string]: boolean } = {};
 
-  constructor(private propertyService: PropertyService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog,
+  isAdmin : boolean = false;
+  constructor(private propertyService: PropertyService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog, private AdminDashboardService: AdminDashboardService,
     private commonService: CommonService,private location : Location, private UserService: UserService, private snackBar: MatSnackBar) { 
       this.route.paramMap.subscribe(params => {
         this.adTabRefGuid = params.get('id') || '';
       });
-     }
+    }
+
+    verifyAdd(categoryId: number, tableRefGuid: string): void {
+      if (this.isAdmin) {
+          this.route.queryParams.subscribe(params => {
+            this.AdminDashboardService.verifyAd(categoryId, tableRefGuid).subscribe(
+              (response: any) => {
+                this.adVerifiedNotification('Ad verified successfully');
+              },
+              (error: any) => {
+                this.adVerifiedNotification('Cannot verify this ad');
+              }
+            );
+          });
+        }
+    }
+
+    adVerifiedNotification(message: string): void{
+      this.snackBar.open(message, 'Close', {
+        duration: 5000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top'
+      });
+      this.router.navigateByUrl('/Admin/admin-dashboard');
+    }
+   
 
   ngOnInit() {
+    var role = localStorage.getItem("role");
+    if(role != null && role == 'Admin')
+      this.isAdmin = true;
+    else
+      this.isAdmin = false;
     this.getMainCategories();
     setTimeout(()=> this.getSubCategory(this.postDetails.categoryId),1000);
     var tableRefGuid;

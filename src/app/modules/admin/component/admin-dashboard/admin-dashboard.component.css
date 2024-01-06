@@ -249,6 +249,10 @@
     color: red;
 }
 
+.title-a{
+    text-decoration: none;
+}
+
 @media (max-width:1200px){
     .admin-rel{
         width: 105%;

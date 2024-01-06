@@ -55,7 +55,12 @@
                         class="product-info cursor"
                         (click)="navigateToDetails(card)"
                       >
-                        <h4>{{ card?.title }}</h4>
+                        <a
+                          [routerLink]="getPostDetailsLink(card)"
+                          class="title-a"
+                        >
+                          <h4>{{ card?.title }}</h4>
+                        </a>
                         <p *ngIf="card?.year">
                           {{ card?.year }} - {{ card?.kmDriven }}
                         </p>
