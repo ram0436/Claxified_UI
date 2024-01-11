@@ -191,6 +191,19 @@
     border-left: 5px solid #ffce32;
 }
 
+.menu-name{
+    position: relative;
+}
+
+.close-icon{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 20px;
+    color: gray;
+    cursor: pointer;
+}
+
 @media (max-width:1200px){
     .rel{
         width: 105%;

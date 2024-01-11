@@ -73,4 +73,9 @@ export class UserService {
     return this.httpClient.post(`https://cfd.azurewebsites.net/api/User/AddUserFeedback`, requestBody);
   }
 
+  deleteAd(id: number, category: string): Observable<any> {
+    const apiUrl = `https://cfd.azurewebsites.net/api/${category}/${id}`;
+    return this.httpClient.delete(apiUrl);
+  }
+
 }

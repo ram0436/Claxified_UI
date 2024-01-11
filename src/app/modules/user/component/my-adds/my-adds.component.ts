@@ -2,6 +2,7 @@ import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { CommonService } from 'src/app/shared/service/common.service';
+import { UserService } from '../../service/user.service';
 
 @Component({
     selector: 'app-my-adds',
@@ -12,7 +13,7 @@ export class MyAddsComponent {
 
     @ViewChild('scrollContainer', { static: false }) scrollContainer: ElementRef | undefined;
 
-    constructor(private commonService: CommonService,private router : Router,private elementRef: ElementRef) { }
+    constructor(private commonService: CommonService, private UserService: UserService, private router : Router,private elementRef: ElementRef) { }
 
     userId: any = 0;
     allAds: any = [];
@@ -86,6 +87,51 @@ export class MyAddsComponent {
         this.isMenuOpen = !this.isMenuOpen;
         this.selectedId = id;
     }
+    closeMenu(id: number) {
+        this.isMenuOpen = !this.isMenuOpen;
+        this.selectedId = id;
+    }
+    confirmDelete(ad: any): void {
+        const category = this.getCategoryName(ad);
+        if (confirm('Are you sure you want to delete this ad?')) {
+          this.deleteAd(ad.id, category);
+        }
+      }
+    
+    deleteAd(adId: number, category: string): void {
+        this.UserService.deleteAd(adId, category).subscribe(
+          (response) => {
+            // console.log('Ad deleted successfully:', response);
+            this.getAllAds();
+            window.location.reload();
+          },
+          (error) => {
+          }
+        );
+      }  
+
+    getCategoryName(ad: any): string {
+        const mainCategory = this.mainCategories.find((mainCategory: any) => mainCategory.id === ad.categoryId);
+        if (mainCategory) {
+          switch (mainCategory.categoryName) {
+            case "Gadgets": return 'Gadget';
+            case "Vehicles": return 'Vehicle';
+            case "Books": return 'Book';
+            case "Commercial Services": return 'CommercialService';
+            case "Properties": return 'Property';
+            case "Jobs": return 'Job';
+            case "Electronics & Appliances": return 'ElectricAppliance';
+            case "Furniture": return 'Furniture';
+            case "Sports & Hobbies": return 'Sport';
+            case "Pets": return 'Pet';
+            case "Fashion": return 'Fashion';
+            default: return ''; 
+          }
+        } else {
+          return '';
+        }
+      }
+
     editAd(data: any) {
         localStorage.setItem('guid',data.tableRefGuid);
         let mainCategory = this.mainCategories.find((mainCategory:any)=>mainCategory.id == data.categoryId);
