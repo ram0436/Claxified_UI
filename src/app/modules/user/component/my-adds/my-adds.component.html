@@ -52,10 +52,15 @@
                   >
                   <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                     <ul class="menu-name">
+                      <span class="material-icons-outlined close-icon">
+                        close
+                      </span>
                       <li class="menu-item cursor" (click)="editAd(ad)">
                         Edit
                       </li>
-                      <li class="menu-item cursor">Delete</li>
+                      <li class="menu-item cursor" (click)="confirmDelete(ad)">
+                        Delete
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -120,10 +125,15 @@
                   >
                   <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                     <ul class="menu-name">
+                      <span class="material-icons-outlined close-icon">
+                        close
+                      </span>
                       <li class="menu-item cursor" (click)="editAd(ad)">
                         Edit
                       </li>
-                      <li class="menu-item cursor">Delete</li>
+                      <li class="menu-item cursor" (click)="confirmDelete(ad)">
+                        Delete
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -188,10 +198,18 @@
                   >
                   <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                     <ul class="menu-name">
+                      <span
+                        class="material-icons-outlined close-icon"
+                        (click)="closeMenu(ad?.id)"
+                      >
+                        close
+                      </span>
                       <li class="menu-item cursor" (click)="editAd(ad)">
                         Edit
                       </li>
-                      <li class="menu-item cursor">Delete</li>
+                      <li class="menu-item cursor" (click)="confirmDelete(ad)">
+                        Delete
+                      </li>
                     </ul>
                   </div>
                 </div>
