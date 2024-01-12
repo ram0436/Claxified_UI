@@ -204,6 +204,16 @@
     cursor: pointer;
 }
 
+.deco-none{
+    text-decoration: none;
+    color: gray;
+}
+
+.del-icon{
+    color: red;
+    margin-left: 5px;
+}
+
 @media (max-width:1200px){
     .rel{
         width: 105%;

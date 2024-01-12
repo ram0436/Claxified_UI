@@ -45,12 +45,19 @@
                   <p>This ad is live now</p>
                 </div>
                 <div class="col-sm-1">
-                  <a class="cursor"
-                    ><span class="material-icons" (click)="toggleMenu(ad?.id)"
-                      >more_horiz</span
-                    ></a
-                  >
-                  <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
+                  <a class="cursor deco-none"
+                    ><span
+                      class="material-icons-outlined edit-icon"
+                      (click)="editAd(ad)"
+                      >edit</span
+                    >
+                    <span
+                      class="material-icons-outlined del-icon"
+                      (click)="confirmDelete(ad)"
+                      >delete_outline</span
+                    >
+                  </a>
+                  <!-- <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                     <ul class="menu-name">
                       <span class="material-icons-outlined close-icon">
                         close
@@ -62,7 +69,7 @@
                         Delete
                       </li>
                     </ul>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <div class="card-foot-sec">
@@ -118,12 +125,19 @@
                   <p>This add is in inActive</p>
                 </div>
                 <div class="col-sm-1">
-                  <a class="cursor"
-                    ><span class="material-icons" (click)="toggleMenu(ad?.id)"
-                      >more_horiz</span
-                    ></a
-                  >
-                  <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
+                  <a class="cursor deco-none"
+                    ><span
+                      class="material-icons-outlined edit-icon"
+                      (click)="editAd(ad)"
+                      >edit</span
+                    >
+                    <span
+                      class="material-icons-outlined del-icon"
+                      (click)="confirmDelete(ad)"
+                      >delete_outline</span
+                    >
+                  </a>
+                  <!-- <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                     <ul class="menu-name">
                       <span class="material-icons-outlined close-icon">
                         close
@@ -135,7 +149,7 @@
                         Delete
                       </li>
                     </ul>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <div class="card-foot-sec">
@@ -191,12 +205,19 @@
                   <p>Wait 120 days to post for free or pay to post now</p>
                 </div>
                 <div class="col-sm-1">
-                  <a class="cursor"
-                    ><span class="material-icons" (click)="toggleMenu(ad?.id)"
-                      >more_horiz</span
-                    ></a
-                  >
-                  <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
+                  <a class="cursor deco-none"
+                    ><span
+                      class="material-icons-outlined edit-icon"
+                      (click)="editAd(ad)"
+                      >edit</span
+                    >
+                    <span
+                      class="material-icons-outlined del-icon"
+                      (click)="confirmDelete(ad)"
+                      >delete_outline</span
+                    >
+                  </a>
+                  <!-- <div class="menu" *ngIf="isMenuOpen && selectedId == ad?.id">
                     <ul class="menu-name">
                       <span
                         class="material-icons-outlined close-icon"
@@ -211,7 +232,7 @@
                         Delete
                       </li>
                     </ul>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <div class="card-foot-sec">
