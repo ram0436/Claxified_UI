@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl : "https://cfd.azurewebsites.net/api/"
+  baseUrl : "https://clxfd.azurewebsites.net/api/"
 };
