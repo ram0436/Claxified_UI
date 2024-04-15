@@ -39,6 +39,7 @@ export class AccountComponent {
       }
     })
   }
+  
   ngOnInit() {
     if (localStorage.getItem("id") != null) {
       this.userService.getUserById(Number(localStorage.getItem("id"))).subscribe((userData: any) => {

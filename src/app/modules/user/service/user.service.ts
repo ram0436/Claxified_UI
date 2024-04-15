@@ -1,41 +1,42 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
+import { Observable } from "rxjs";
+import { environment } from "src/environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class UserService {
-
+  private BaseURL = environment.baseUrl;
   private dataSubject = new Subject<any>();
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   login(payload: any) {
-    return this.httpClient.post("https://cfd.azurewebsites.net/api/Auth", payload);
+    return this.httpClient.post(`${this.BaseURL}Auth`, payload);
   }
   register(payload: any) {
-    return this.httpClient.post("https://cfd.azurewebsites.net/api/User", payload);
+    return this.httpClient.post(`${this.BaseURL}User`, payload);
   }
   AdReportByUser(payload: any) {
-    return this.httpClient.post("https://cfd.azurewebsites.net//api/User/AdReportByUser", payload);
+    return this.httpClient.post(`${this.BaseURL}User/AdReportByUser`, payload);
   }
   AddWishList(payload: any) {
-    return this.httpClient.post("https://cfd.azurewebsites.net/api/User/AddWishList", payload);
+    return this.httpClient.post(`${this.BaseURL}User/AddWishList`, payload);
   }
   GetWishlistByUserId(userId: number) {
-    const url = `https://cfd.azurewebsites.net/api/User/GetWishlistByUserId?userId=${userId}`;
+    const url = `${this.BaseURL}User/GetWishlistByUserId?userId=${userId}`;
     return this.httpClient.get(url);
   }
   uploadProfilePicture(formData: any) {
-    return this.httpClient.post("https://cfd.azurewebsites.net/api/User/UploadImages", formData);
+    return this.httpClient.post(`${this.BaseURL}User/UploadImages`, formData);
   }
   getUserById(id: number) {
-    return this.httpClient.get("https://cfd.azurewebsites.net/api/User/" + id);
+    return this.httpClient.get(`${this.BaseURL}User/` + id);
   }
   updateUser(payload: any) {
-    return this.httpClient.put("https://cfd.azurewebsites.net/api/User/" + payload.id, payload);
+    return this.httpClient.put(`${this.BaseURL}User/` + payload.id, payload);
   }
   setData(data: any) {
     this.dataSubject.next(data);
@@ -45,37 +46,49 @@ export class UserService {
   }
 
   applyForVacancy(vacancyData: any): Observable<any> {
-    return this.httpClient.post<any>(`https://cfd.azurewebsites.net/api/User/ApplyForVacancy`, vacancyData);
+    return this.httpClient.post<any>(
+      `${this.BaseURL}User/ApplyForVacancy`,
+      vacancyData
+    );
   }
 
-  uploadResume(formData: any){
-
-    return this.httpClient.post(`https://cfd.azurewebsites.net/api/User/uploadResume`, formData);
+  uploadResume(formData: any) {
+    return this.httpClient.post(`${this.BaseURL}User/uploadResume`, formData);
   }
 
-  sendLoginOTP(mobileNumber: string, ipAddress: string, createdOn: string): Observable<any> {
-    const url = `https://cfd.azurewebsites.net/api/Auth/SendLoginOTP`;
-    const body = { mobile: mobileNumber, ipAddress: ipAddress, createdOn: createdOn };
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  sendLoginOTP(
+    mobileNumber: string,
+    ipAddress: string,
+    createdOn: string
+  ): Observable<any> {
+    const url = `${this.BaseURL}Auth/SendLoginOTP`;
+    const body = {
+      mobile: mobileNumber,
+      ipAddress: ipAddress,
+      createdOn: createdOn,
+    };
+    const headers = new HttpHeaders({ "Content-Type": "application/json" });
     return this.httpClient.post(url, body, { headers: headers });
   }
 
   OTPLogin(mobileNo: string, otp: number, firstName: string): Observable<any> {
-    const url = `https://cfd.azurewebsites.net/api/Auth/OTPLogin?mobileNo=${mobileNo}&otp=${otp}&firstName=${firstName}`;
+    const url = `${this.BaseURL}Auth/OTPLogin?mobileNo=${mobileNo}&otp=${otp}&firstName=${firstName}`;
     return this.httpClient.post(url, null, {
       headers: new HttpHeaders({
-        'Accept': '*/*'
-      })
+        Accept: "*/*",
+      }),
     });
   }
 
   addUserFeedback(requestBody: any) {
-    return this.httpClient.post(`https://cfd.azurewebsites.net/api/User/AddUserFeedback`, requestBody);
+    return this.httpClient.post(
+      `${this.BaseURL}User/AddUserFeedback`,
+      requestBody
+    );
   }
 
   deleteAd(id: number, category: string): Observable<any> {
-    const apiUrl = `https://cfd.azurewebsites.net/api/${category}/${id}`;
+    const apiUrl = `${this.BaseURL}${category}/${id}`;
     return this.httpClient.delete(apiUrl);
   }
-
 }
