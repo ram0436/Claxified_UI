@@ -378,6 +378,38 @@
     <div class="second-nav">
       <div class="menu-container-scrollable">
         <ul class="nav navbar-nav no-pointer-nav">
+          <li
+            *ngFor="let category of mainCategories"
+            class="dropdown auto-pointer-events"
+          >
+            <div class="li-item link-item li-item-p-0">
+              <span class="material-icons">{{
+                getMaterialIconForCategory(category.categoryName)
+              }}</span>
+              <a
+                class="menu-title"
+                (click)="getRouterLinkForCategory(category.categoryName)"
+                >{{ category.categoryName }}</a
+              >
+              <!-- [routerLink]="getRouterLinkForCategory(category)" -->
+            </div>
+            <ul class="dropdown-menu">
+              <li *ngFor="let subCategory of category.subCategories">
+                <a
+                  (click)="
+                    getRouterLinkForSubCategory(
+                      category.categoryName,
+                      subCategory.subCategoryName
+                    )
+                  "
+                >
+                  {{ subCategory.subCategoryName }}
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <!-- <ul class="nav navbar-nav no-pointer-nav">
           <li class="dropdown auto-pointer-events">
             <div class="li-item link-item li-item-p-0">
               <span class="material-icons"> devices_other </span>
@@ -1132,32 +1164,6 @@
               </li>
             </ul>
           </li>
-          <!-- <li class="dropdown auto-pointer-events">
-          <div class="li-item">
-            <span class="material-icons-outlined"> favorite_border </span>
-            <a class="dropdown-toggle">Matrimonial</a>
-          </div>
-          <ul class="dropdown-menu">
-            <li><a>Bride Search</a></li>
-            <li><a>Groom Search</a></li>
-          </ul>
-        </li>
-        <li class="dropdown auto-pointer-events">
-          <div class="li-item">
-            <span class="material-icons-outlined"> groups </span>
-            <a class="dropdown-toggle">Community</a>
-          </div>
-          <ul class="dropdown-menu">
-            <li><a>Travel & Partners</a></li>
-            <li><a>Event</a></li>
-            <li><a>Night Life</a></li>
-            <li><a>Group & Association</a></li>
-            <li><a>Sport Team & Partners</a></li>
-            <li><a>Artist & Theater</a></li>
-            <li><a>Other</a></li>
-
-          </ul>
-        </li> -->
           <li class="dropdown auto-pointer-events">
             <div class="li-item link-item">
               <span class="material-icons"> electrical_services </span>
@@ -1311,7 +1317,7 @@
               </li>
             </ul>
           </li>
-        </ul>
+        </ul> -->
       </div>
     </div>
   </nav>
