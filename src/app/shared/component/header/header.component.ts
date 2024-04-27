@@ -190,723 +190,277 @@ export class HeaderComponent implements OnInit {
   }
 
   getRouterLinkForCategory(categoryName: any) {
-    if (categoryName === "\r\nElectronics") {
-      this.router.navigate([`/Electronics & Appliances/view-posts`], {
-        queryParams: { type: "Appliances" },
-      });
-    } else if (categoryName === "Furnitures") {
-      this.router.navigate([`/Furniture/view-posts`], {
-        queryParams: { type: "Furniture" },
-      });
-    } else if (categoryName === "Sports") {
-      this.router.navigate([`/Sports & Hobbies/view-posts`], {
-        queryParams: { type: "Sport" },
-      });
-    } else {
-      this.router.navigate([`${categoryName}/view-posts`], {
-        queryParams: { type: `${categoryName}` },
-      });
-    }
+    this.router.navigate([`${categoryName}/view-posts`], {
+      queryParams: { type: `${categoryName}` },
+    });
   }
 
-  getRouterLinkForSubCategory(categoryName: any, subCategoryName: any) {
-    if (categoryName === "Vehicles") {
-      switch (subCategoryName) {
-        case "Cars":
-          this.router.navigate(["/Vehicles/view-posts"], {
-            queryParams: { type: categoryName, sub: this.vehicleTypes.Car },
-          });
-          break;
-        case "Bikes":
-          this.router.navigate(["/Vehicles/view-posts"], {
-            queryParams: { type: categoryName, sub: this.vehicleTypes.Bike },
-          });
-          break;
-        case "Scooty":
-          this.router.navigate(["/Vehicles/view-posts"], {
-            queryParams: { type: categoryName, sub: this.vehicleTypes.Scooty },
-          });
-          break;
-        case "Bicycle":
-          this.router.navigate(["/Vehicles/view-posts"], {
-            queryParams: { type: categoryName, sub: this.vehicleTypes.Bicycle },
-          });
-          break;
-        case "Spare parts":
-          this.router.navigate(["/Vehicles/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.vehicleTypes.SpareParts,
-            },
-          });
-          break;
-        case "Others":
-          this.router.navigate(["/Vehicles/view-posts"], {
-            queryParams: { type: categoryName, sub: this.vehicleTypes.Others },
-          });
-          break;
-        default:
-          this.router.navigate(["/Vehicles/view-posts"], {
-            queryParams: { type: categoryName, sub: this.vehicleTypes.Others },
-          });
-      }
-    } else if (categoryName === "Gadgets") {
-      switch (subCategoryName) {
-        case "Mobiles":
-          this.router.navigate(["/Gadgets/view-posts"], {
-            queryParams: { type: categoryName, sub: this.gadgetsTypes.Mobiles },
-          });
-          break;
-        case "Tablets":
-          this.router.navigate(["/Gadgets/view-posts"], {
-            queryParams: { type: categoryName, sub: this.gadgetsTypes.Tablets },
-          });
-          break;
-        case "Accessories":
-          this.router.navigate(["/Gadgets/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.gadgetsTypes.Accessories,
-            },
-          });
-          break;
-        case "Others":
-          this.router.navigate(["/Gadgets/view-posts"], {
-            queryParams: { type: categoryName, sub: this.gadgetsTypes.Others },
-          });
-          break;
-        default:
-          this.router.navigate(["/Gadgets/view-posts"], {
-            queryParams: { type: categoryName, sub: this.vehicleTypes.Others },
-          });
-      }
-    } else if (categoryName === "Properties") {
-      switch (subCategoryName) {
-        case "For Sale: Houses & Apartments":
-          this.router.navigate(["/Properties/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.propertyTypes.ForSaleHousesApartments,
-            },
-          });
-          break;
-        case "For Rent: Houses & Apartments":
-          this.router.navigate(["/Properties/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.propertyTypes.ForRentHousesApartments,
-            },
-          });
-          break;
-        case "Lands & Plot":
-          this.router.navigate(["/Properties/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.propertyTypes.LandsAndPlot,
-            },
-          });
-          break;
-        case "For Rent: Shop & Offices":
-          this.router.navigate(["/Properties/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.propertyTypes.ForRentShopOffices,
-            },
-          });
-          break;
-        case "For Sale: Shops & Offices":
-          this.router.navigate(["/Properties/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.propertyTypes.ForSaleShopsOffices,
-            },
-          });
-          break;
-        case "PG & Guest Houses":
-          this.router.navigate(["/Properties/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.propertyTypes.PGAndGuestHouses,
-            },
-          });
-          break;
-        case "Others":
-          this.router.navigate(["/Properties/view-posts"], {
-            queryParams: { type: categoryName, sub: this.propertyTypes.Others },
-          });
-          break;
-        default:
-          this.router.navigate(["/Properties/view-posts"], {
-            queryParams: { type: categoryName, sub: this.propertyTypes.Others },
-          });
-      }
-    } else if (categoryName === "Jobs") {
-      switch (subCategoryName) {
-        case "Data Entry & Back Office":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.DataEntryAndBackOffice,
-            },
-          });
-          break;
-        case "Media & Entertainment":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.MediaEntertainment,
-            },
-          });
-          break;
-        case "Sales & Marketting":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.SalesAndMarketting,
-            },
-          });
-          break;
-        case "BPO & Telecaller":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.BPOAndTelecaller,
-            },
-          });
-          break;
-        case "Health Care & Hospitility":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.HealthCareAndHospitility,
-            },
-          });
-          break;
-        case "Office Assistant":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.OfficeAssistant,
-            },
-          });
-          break;
-        case "Delivery & Collection":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.DeliveryAndCollection,
-            },
-          });
-          break;
-        case "Teacher":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.TeacherAndTrainer,
-            },
-          });
-          break;
-        case "Cook,driver & security":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.CookAndDriverAndSecurity,
-            },
-          });
-          break;
-        case "Receptionist & Front Office":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.ReceptionistAndFrontOffice,
-            },
-          });
-          break;
-        case "Operator & Technician":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.OperatorAndTechnician,
-            },
-          });
-          break;
-        case "IT & Software":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.ITAndSoftware,
-            },
-          });
-          break;
-        case "Hotel & Travel":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.HotelAndTravel,
-            },
-          });
-          break;
-        case "Accountant":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.FinanceAndAccounting,
-            },
-          });
-          break;
-        case "Others":
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.jobTypes.Others,
-            },
-          });
-          break;
-        default:
-          this.router.navigate(["/Jobs/view-posts"], {
-            queryParams: { type: categoryName, sub: this.jobTypes.Others },
-          });
-      }
-    } else if (categoryName === "\r\nElectronics") {
-      switch (subCategoryName) {
-        case "TV":
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.TV,
-            },
-          });
-          break;
-        case "Kitchen":
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.Kitchen,
-            },
-          });
-          break;
-        case "Computer & Laptop":
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.Computer,
-            },
-          });
-          break;
-        case "Cameras & Lenses":
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.Camera,
-            },
-          });
-          break;
-        case "Games & Entertainment":
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.GamesEntertainment,
-            },
-          });
-          break;
-        case "Refrigrator":
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.Refrigrator,
-            },
-          });
-          break;
-        case "Computer Accessories":
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.ComputerAccessories,
-            },
-          });
-          break;
-        case "AC":
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.AC,
-            },
-          });
-          break;
-        case "Washing Machine":
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.WashingMachine,
-            },
-          });
-          break;
-        case "Others":
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.Others,
-            },
-          });
-          break;
-        default:
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.Others,
-            },
-          });
-      }
-    } else if (categoryName === "Furnitures") {
-      switch (subCategoryName) {
-        case "Sofa & Dining":
-          this.router.navigate(["/Furniture/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.furnitureTypes.SofaAndDining,
-            },
-          });
-          break;
-        case "Beds":
-          this.router.navigate(["/Furniture/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.furnitureTypes.Beds,
-            },
-          });
-          break;
-        case "Kids Furniture":
-          this.router.navigate(["/Furniture/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.furnitureTypes.KidsFurniture,
-            },
-          });
-          break;
-        case "Others":
-          this.router.navigate(["/Furniture/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.furnitureTypes.OtherHouseholdItems,
-            },
-          });
-          break;
-          this.router.navigate(["/Electronics & Appliances/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.ElectronicAppliancesTypes.Others,
-            },
-          });
-          break;
-        default:
-          this.router.navigate(["/Furniture/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.furnitureTypes.OtherHouseholdItems,
-            },
-          });
-      }
-    } else if (categoryName === "Books") {
-      switch (subCategoryName) {
-        case "Science & Technology":
-          this.router.navigate(["/Books/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.bookTypes.ScienceAndTechnology,
-            },
-          });
-          break;
-        case "Business & Management":
-          this.router.navigate(["/Books/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.bookTypes.BusinessAndManagement,
-            },
-          });
-          break;
-        case "School & College":
-          this.router.navigate(["/Books/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.bookTypes.SchoolAndCollege,
-            },
-          });
-          break;
-        case "Competative":
-          this.router.navigate(["/Books/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.bookTypes.Competative,
-            },
-          });
-          break;
-        case "Art":
-          this.router.navigate(["/Books/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.bookTypes.Art,
-            },
-          });
-          break;
-        case "Others":
-          this.router.navigate(["/Books/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.bookTypes.Others,
-            },
-          });
-          break;
-        default:
-          this.router.navigate(["/Books/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.bookTypes.Others,
-            },
-          });
-      }
-    } else if (categoryName === "Sports") {
-      switch (subCategoryName) {
-        case "Gym & Fitness":
-          this.router.navigate(["/Sports & Hobbies/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.sportTypes.GymAndFitness,
-            },
-          });
-          break;
-        case "Musical Instruments":
-          this.router.navigate(["/Sports & Hobbies/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.sportTypes.MusicalInstruments,
-            },
-          });
-          break;
-        case "Sports Equipment":
-          this.router.navigate(["/Sports & Hobbies/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.sportTypes.SportsEquipment,
-            },
-          });
-          break;
-        case "Others":
-          this.router.navigate(["/Sports & Hobbies/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.sportTypes.OtherHobbies,
-            },
-          });
-          break;
-        default:
-          this.router.navigate(["/Sports & Hobbies/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.sportTypes.OtherHobbies,
-            },
-          });
-      }
-    } else if (categoryName === "Pets") {
-      switch (subCategoryName) {
-        case "Fishes & Aquarium":
-          this.router.navigate(["/Pets/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.petTypes.FishesAndAquarium,
-            },
-          });
-          break;
-        case "Pet Food & Accessories":
-          this.router.navigate(["/Pets/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.petTypes.PetFoodAndAccessories,
-            },
-          });
-          break;
-        case "Dogs":
-          this.router.navigate(["/Pets/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.petTypes.Dogs,
-            },
-          });
-          break;
-        case "Others":
-          this.router.navigate(["/Pets/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.petTypes.OtherPets,
-            },
-          });
-          break;
-        default:
-          this.router.navigate(["/Pets/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.petTypes.OtherPets,
-            },
-          });
-      }
-    } else if (categoryName === "Fashion") {
-      switch (subCategoryName) {
-        case "Men":
-          this.router.navigate(["/Fashion/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.fashionTypes.Men,
-            },
-          });
-          break;
-        case "Women":
-          this.router.navigate(["/Fashion/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.fashionTypes.Women,
-            },
-          });
-          break;
-        case "Kids":
-          this.router.navigate(["/Fashion/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.fashionTypes.Kids,
-            },
-          });
-          break;
-        default:
-          this.router.navigate(["/Fashion/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.fashionTypes.Men,
-            },
-          });
-      }
-    } else if (categoryName === "Commercial Services") {
-      switch (subCategoryName) {
-        case "Finance & Management":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.FinanceAndManagement,
-            },
-          });
-          break;
-        case "Education & Classess":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.EducationAndClassess,
-            },
-          });
-          break;
-        case "IT & Software":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.ITAndSoftware,
-            },
-          });
-          break;
-        case "Tour & Travel":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.TourAndTravel,
-            },
-          });
-          break;
-        case "Sales & Marketting":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.SalesAndMarketting,
-            },
-          });
-          break;
-        case "Electronics Repair & Services":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.ElectronicsRepairAndServices,
-            },
-          });
-          break;
-        case "Security & Cleaning":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.SecurityAndCleaning,
-            },
-          });
-          break;
-        case "Health & Beauty":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.HealthAndBeauty,
-            },
-          });
-          break;
-        case "Kids & Child care":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.KidsAndChildcare,
-            },
-          });
-          break;
-        case "Property & Repair":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.PropertyAndRepair,
-            },
-          });
-          break;
-        case "Video & Photograpghy":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.VedioAndPhotograpghy,
-            },
-          });
-          break;
-        case "Legal & Documentation Service":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.LegalAndDocumentaionService,
-            },
-          });
-          break;
-        case "Packers & Movers":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.PackersAndMovers,
-            },
-          });
-          break;
-        case "Others":
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.Others,
-            },
-          });
-          break;
-        default:
-          this.router.navigate(["/Commercial Services/view-posts"], {
-            queryParams: {
-              type: categoryName,
-              sub: this.commercialServicTypes.Others,
-            },
-          });
-      }
-    } else {
-      this.router.navigate(["/"]);
-    }
+  getRouterLinkForSubCategory(categoryName: string, subCategoryName: string) {
+    const categoryRoutes: { [key: string]: { [key: string]: any } } = {
+      Vehicles: {
+        Cars: { type: "Vehicles", sub: this.vehicleTypes.Car },
+        Bikes: { type: "Vehicles", sub: this.vehicleTypes.Bike },
+        Scooty: { type: "Vehicles", sub: this.vehicleTypes.Scooty },
+        Bicycle: { type: "Vehicles", sub: this.vehicleTypes.Bicycle },
+        "Spare parts": { type: "Vehicles", sub: this.vehicleTypes.SpareParts },
+        Others: { type: "Vehicles", sub: this.vehicleTypes.Others },
+      },
+      Gadgets: {
+        Mobiles: { type: "Gadgets", sub: this.gadgetsTypes.Mobiles },
+        Tablets: { type: "Gadgets", sub: this.gadgetsTypes.Tablets },
+        Accessories: { type: "Gadgets", sub: this.gadgetsTypes.Accessories },
+        Others: { type: "Gadgets", sub: this.gadgetsTypes.Others },
+      },
+      Properties: {
+        "For Sale: Houses & Apartments": {
+          type: "Properties",
+          sub: this.propertyTypes.ForSaleHousesApartments,
+        },
+        "For Rent: Houses & Apartments": {
+          type: "Properties",
+          sub: this.propertyTypes.ForRentHousesApartments,
+        },
+        "Lands & Plot": {
+          type: "Properties",
+          sub: this.propertyTypes.LandsAndPlot,
+        },
+        "For Rent: Shop & Offices": {
+          type: "Properties",
+          sub: this.propertyTypes.ForRentShopOffices,
+        },
+        "For Sale: Shops & Offices": {
+          type: "Properties",
+          sub: this.propertyTypes.ForSaleShopsOffices,
+        },
+        "PG & Guest Houses": {
+          type: "Properties",
+          sub: this.propertyTypes.PGAndGuestHouses,
+        },
+        Others: { type: "Properties", sub: this.propertyTypes.Others },
+      },
+      Jobs: {
+        "Data Entry & Back Office": {
+          type: "Jobs",
+          sub: this.jobTypes.DataEntryAndBackOffice,
+        },
+        "Media & Entertainment": {
+          type: "Jobs",
+          sub: this.jobTypes.MediaEntertainment,
+        },
+        "Sales & Marketting": {
+          type: "Jobs",
+          sub: this.jobTypes.SalesAndMarketting,
+        },
+        "BPO & Telecaller": {
+          type: "Jobs",
+          sub: this.jobTypes.BPOAndTelecaller,
+        },
+        "Health Care & Hospitility": {
+          type: "Jobs",
+          sub: this.jobTypes.HealthCareAndHospitility,
+        },
+        "Office Assistant": {
+          type: "Jobs",
+          sub: this.jobTypes.OfficeAssistant,
+        },
+        "Delivery & Collection": {
+          type: "Jobs",
+          sub: this.jobTypes.DeliveryAndCollection,
+        },
+        Teacher: { type: "Jobs", sub: this.jobTypes.TeacherAndTrainer },
+        "Cook,driver & security": {
+          type: "Jobs",
+          sub: this.jobTypes.CookAndDriverAndSecurity,
+        },
+        "Receptionist & Front Office": {
+          type: "Jobs",
+          sub: this.jobTypes.ReceptionistAndFrontOffice,
+        },
+        "Operator & Technician": {
+          type: "Jobs",
+          sub: this.jobTypes.OperatorAndTechnician,
+        },
+        "IT & Software": { type: "Jobs", sub: this.jobTypes.ITAndSoftware },
+        "Hotel & Travel": { type: "Jobs", sub: this.jobTypes.HotelAndTravel },
+        Accountant: { type: "Jobs", sub: this.jobTypes.FinanceAndAccounting },
+        Others: { type: "Jobs", sub: this.jobTypes.Others },
+      },
+      Electronics: {
+        TV: {
+          type: "Electronics",
+          sub: this.ElectronicAppliancesTypes.TV,
+        },
+        Kitchen: {
+          type: "Electronics",
+          sub: this.ElectronicAppliancesTypes.Kitchen,
+        },
+        "Computer & Laptop": {
+          type: "Electronics",
+          sub: this.ElectronicAppliancesTypes.Computer,
+        },
+        "Camera & Lenses": {
+          type: "Electronics",
+          sub: this.ElectronicAppliancesTypes.Camera,
+        },
+        "Games & Entertainment": {
+          type: "Electronics",
+          sub: this.ElectronicAppliancesTypes.GamesEntertainment,
+        },
+        Refrigrator: {
+          type: "Electronics",
+          sub: this.ElectronicAppliancesTypes.Refrigrator,
+        },
+        "Computer Accessories": {
+          type: "Electronics",
+          sub: this.ElectronicAppliancesTypes.ComputerAccessories,
+        },
+        AC: {
+          type: "Electronics",
+          sub: this.ElectronicAppliancesTypes.AC,
+        },
+        "Washing Machine": {
+          type: "Electronics",
+          sub: this.ElectronicAppliancesTypes.WashingMachine,
+        },
+        Others: {
+          type: "Electronics",
+          sub: this.ElectronicAppliancesTypes.Others,
+        },
+      },
+      Furniture: {
+        "Sofa & Dining": {
+          type: "Furniture",
+          sub: this.furnitureTypes.SofaAndDining,
+        },
+        Beds: { type: "Furniture", sub: this.furnitureTypes.Beds },
+        "Kids Furniture": {
+          type: "Furniture",
+          sub: this.furnitureTypes.KidsFurniture,
+        },
+        Others: {
+          type: "Furniture",
+          sub: this.furnitureTypes.OtherHouseholdItems,
+        },
+      },
+      Books: {
+        "Science & Technology": {
+          type: "Books",
+          sub: this.bookTypes.ScienceAndTechnology,
+        },
+        "Business & Management": {
+          type: "Books",
+          sub: this.bookTypes.BusinessAndManagement,
+        },
+        "School & College": {
+          type: "Books",
+          sub: this.bookTypes.SchoolAndCollege,
+        },
+        Competative: { type: "Books", sub: this.bookTypes.Competative },
+        Art: { type: "Books", sub: this.bookTypes.Art },
+        Others: { type: "Books", sub: this.bookTypes.Others },
+      },
+      Sports: {
+        "Gym & Fitness": {
+          type: "Sports",
+          sub: this.sportTypes.GymAndFitness,
+        },
+        "Musical Instruments": {
+          type: "Sports",
+          sub: this.sportTypes.MusicalInstruments,
+        },
+        "Sports Equipment": {
+          type: "Sports",
+          sub: this.sportTypes.SportsEquipment,
+        },
+        Others: { type: "Sports", sub: this.sportTypes.OtherHobbies },
+      },
+      Pets: {
+        "Fishes & Aquarium": {
+          type: "Pets",
+          sub: this.petTypes.FishesAndAquarium,
+        },
+        "Pet Food & Accessories": {
+          type: "Pets",
+          sub: this.petTypes.PetFoodAndAccessories,
+        },
+        Dogs: { type: "Pets", sub: this.petTypes.Dogs },
+        Others: { type: "Pets", sub: this.petTypes.OtherPets },
+      },
+      Fashion: {
+        Men: { type: "Fashion", sub: this.fashionTypes.Men },
+        Women: { type: "Fashion", sub: this.fashionTypes.Women },
+        Kids: { type: "Fashion", sub: this.fashionTypes.Kids },
+        Others: { type: "Fashion", sub: this.fashionTypes.Men },
+      },
+      "Commercial Services": {
+        "Finance & Management": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.FinanceAndManagement,
+        },
+        "Education & Classess": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.EducationAndClassess,
+        },
+        "IT & Software": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.ITAndSoftware,
+        },
+        "Tour & Travel": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.TourAndTravel,
+        },
+        "Sales & Marketting": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.SalesAndMarketting,
+        },
+        "Electronics Repair & Services": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.ElectronicsRepairAndServices,
+        },
+        "Security & Cleaning": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.SecurityAndCleaning,
+        },
+        "Health & Beauty": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.HealthAndBeauty,
+        },
+        "Kids & Child care": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.KidsAndChildcare,
+        },
+        "Property & Repair": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.PropertyAndRepair,
+        },
+        "Video & Photograpghy": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.VedioAndPhotograpghy,
+        },
+        "Legal & Documentation Service": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.LegalAndDocumentaionService,
+        },
+        "Packers & Movers": {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.PackersAndMovers,
+        },
+        Others: {
+          type: "Commercial Services",
+          sub: this.commercialServicTypes.Others,
+        },
+      },
+    };
+
+    const defaultSubCategory = { type: categoryName, sub: "Others" };
+
+    const routeData =
+      categoryRoutes[categoryName]?.[subCategoryName] || defaultSubCategory;
+    const route = `/${categoryName}/view-posts`;
+
+    this.router.navigate([route], {
+      queryParams: { type: routeData.type, sub: routeData.sub },
+    });
   }
 
   search(): void {
