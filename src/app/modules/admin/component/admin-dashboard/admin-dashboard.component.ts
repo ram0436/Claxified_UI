@@ -200,7 +200,7 @@ export class AdminDashboardComponent implements OnInit {
           );
           break;
         }
-        case "Electronics & Appliances": {
+        case "Electronics": {
           this.router.navigateByUrl(
             `/Electronics/add-post?main=Electronics&sub=TV&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`
           );
@@ -212,7 +212,7 @@ export class AdminDashboardComponent implements OnInit {
           );
           break;
         }
-        case "Sports & Hobbies": {
+        case "Sports": {
           this.router.navigateByUrl(
             `/Sports/add-post?main=Sports&sub=Gym%20%26%20Fitness&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`
           );
