@@ -196,7 +196,7 @@ export class AdminDashboardComponent implements OnInit {
         }
         case "Jobs": {
           this.router.navigateByUrl(
-            `/Books/add-post?main=Books&sub=Science & Technology&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`
+            `/Jobs/add-post?main=Jobs&sub=Data Entry & Back Office&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`
           );
           break;
         }
@@ -208,7 +208,7 @@ export class AdminDashboardComponent implements OnInit {
         }
         case "Furniture": {
           this.router.navigateByUrl(
-            `/Books/add-post?main=Books&sub=Science & Technology&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`
+            `/Furniture/add-post?main=Furniture&sub=Sofa & Dining&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`
           );
           break;
         }
@@ -220,7 +220,7 @@ export class AdminDashboardComponent implements OnInit {
         }
         case "Pets": {
           this.router.navigateByUrl(
-            `/Books/add-post?main=Books&sub=Science & Technology&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`
+            `/Pets/add-post?main=Pets&sub=Fishes & Aquarium&mode=edit&fromAdmin=true&categoryId=${categoryId}&tableRefGuid=${tableRefGuid}`
           );
           break;
         }
