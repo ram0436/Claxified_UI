@@ -171,9 +171,9 @@ export class HeaderComponent implements OnInit {
       return "maps_home_work";
     } else if (categoryName === "Jobs") {
       return "work_outline";
-    } else if (categoryName === "\r\nElectronics") {
+    } else if (categoryName === "Electronics") {
       return "tv";
-    } else if (categoryName === "Furnitures") {
+    } else if (categoryName === "Furniture") {
       return "bed";
     } else if (categoryName === "Books") {
       return "auto_stories";
