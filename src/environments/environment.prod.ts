@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl : "https://clxfd.azurewebsites.net/api/"
+  baseUrl : "https://claxified.azurewebsites.net/api/"
 };
