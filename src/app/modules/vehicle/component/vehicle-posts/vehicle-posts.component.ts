@@ -1,16 +1,18 @@
-import { ChangeDetectorRef, Component, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { CommonService } from 'src/app/shared/service/common.service';
-import { VehicleService } from '../../service/vehicle.service';
+import { ChangeDetectorRef, Component, ViewEncapsulation } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { CommonService } from "src/app/shared/service/common.service";
+import { VehicleService } from "../../service/vehicle.service";
 
 @Component({
-  selector: 'app-vehicle-posts',
-  templateUrl: './vehicle-posts.component.html',
-  styleUrls: ['./vehicle-posts.component.css', '../../../moduleposts.component.css'],
-  encapsulation: ViewEncapsulation.None
+  selector: "app-vehicle-posts",
+  templateUrl: "./vehicle-posts.component.html",
+  styleUrls: [
+    "./vehicle-posts.component.css",
+    "../../../moduleposts.component.css",
+  ],
+  encapsulation: ViewEncapsulation.None,
 })
 export class VehiclePostsComponent {
-
   category: string = "";
   subCategoryId: Number = 0;
   isLoading: boolean = true;
@@ -19,15 +21,19 @@ export class VehiclePostsComponent {
   cards: any = [];
   subscription: any;
   actualCards: any;
-  constructor(private route: ActivatedRoute, private commonService: CommonService, private cdr: ChangeDetectorRef,
-    private vehicleService: VehicleService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private commonService: CommonService,
+    private cdr: ChangeDetectorRef,
+    private vehicleService: VehicleService
+  ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       this.isLoading = true;
-      this.category = params['type'];
-      if(params['sub'] !=undefined)
-      this.subCategoryId = Number(params['sub']);
+      this.category = params["type"];
+      if (params["sub"] != undefined)
+        this.subCategoryId = Number(params["sub"]);
       this.getPosts();
     });
     this.subscription = this.commonService.getData().subscribe((data: any) => {
@@ -49,29 +55,38 @@ export class VehiclePostsComponent {
     this.vehicleService.getAllVehiclePosts().subscribe((data: any) => {
       this.actualCards = data;
       if (this.subCategoryId != 0) {
-        this.cards = this.actualCards.filter((card: any) => card.subCategoryId == this.subCategoryId && card.isVerified === true);
+        this.cards = this.actualCards.filter(
+          (card: any) =>
+            card.subCategoryId == this.subCategoryId && card.isVerified === true
+        );
       } else {
-        this.cards = this.actualCards.filter((card: any) => card.isVerified === true);
+        this.cards = this.actualCards.filter(
+          (card: any) => card.isVerified === true
+        );
       }
       this.isLoading = false;
       this.subCategoryId = 0;
-    })
+    });
   }
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
   filterPosts(data: any) {
     const filterObj: { [key: string]: { operator: string; value: any } } = {};
-    Object.keys(data).forEach(key => {
+    Object.keys(data).forEach((key) => {
       if (data[key] != null && data[key] != "") {
-        if (key == 'kmDriven')
-          filterObj[key] = { operator: '<=', value: data[key] };
-        else if (key == 'state' || key == 'subCategoryId' || key == 'city' || key == 'nearBy')
-          filterObj[key] = { operator: '==', value: data[key] };
-        else if (key == 'year' || key =='price')
-          filterObj[key] = { operator: 'between', value: data[key] };
-        else
-          filterObj[key] = { operator: 'includes', value: data[key] };
+        if (key == "kmDriven")
+          filterObj[key] = { operator: "<=", value: data[key] };
+        else if (
+          key == "state" ||
+          key == "subCategoryId" ||
+          key == "city" ||
+          key == "nearBy"
+        )
+          filterObj[key] = { operator: "==", value: data[key] };
+        else if (key == "year" || key == "price")
+          filterObj[key] = { operator: "between", value: data[key] };
+        else filterObj[key] = { operator: "includes", value: data[key] };
       }
     });
     const filteredData = this.actualCards.filter((item: any) =>
@@ -79,17 +94,17 @@ export class VehiclePostsComponent {
         const { operator, value } = condition;
         const itemValue = item[field];
 
-        if (Array.isArray(itemValue) && operator === 'includes') {
-          return itemValue.some(v => value.includes(v));
+        if (Array.isArray(itemValue) && operator === "includes") {
+          return itemValue.some((v) => value.includes(v));
         } else {
           switch (operator) {
-            case '==':
+            case "==":
               return item[field] === value;
-            case '<=':
+            case "<=":
               return item[field] <= value;
-            case 'includes':
+            case "includes":
               return value.includes(itemValue);
-            case 'between':
+            case "between":
               return value[0] <= itemValue && value[1] >= itemValue;
             default:
               return true;
