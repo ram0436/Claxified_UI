@@ -153,7 +153,14 @@ export class PostCardComponent implements OnInit, OnChanges {
   }
 
   getCategoryFromMapping(categoryId: string): string {
-    return this.categoryMapping[categoryId] || "";
+    const category = this.categoryMapping[categoryId] || "";
+    if (category.includes("Electronics & Appliances")) {
+      return "Electronics";
+    } else if (category.includes("Sports & Hobbies")) {
+      return "Sports";
+    } else {
+      return category;
+    }
   }
 
   toggleFavorite(event: Event, productId: string, categoryId: string) {
