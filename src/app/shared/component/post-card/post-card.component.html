@@ -80,8 +80,12 @@
         <span class="date-added">{{ formatDate(card?.createdOn) }}</span>
       </mat-card-title>
       <mat-card-title class="title title-sm" *ngIf="card?.salaryPeriodType">
-        ₹<span class="text-blue"
-          >{{ card?.salaryFrom }}-{{ card?.salaryTo }}</span
+        ₹<span class="text-blue">
+          {{
+            card?.minSalary && card?.maxSalary
+              ? card?.minSalary + "-" + card?.maxSalary
+              : card?.salaryFrom + "-" + card?.salaryTo
+          }}</span
         >
         | {{ getSalaryPeriod(card?.salaryPeriodType) }} |
         <span class="date-added date-added-sm">
