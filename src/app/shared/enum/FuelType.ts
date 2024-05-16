@@ -1,6 +1,6 @@
-export enum FuelType{
-    Petrol = 0,
-    Diesel = 1,
-    LPG = 2,
-    Electric = 3
+export enum FuelType {
+  Petrol = 0,
+  Diesel = 1,
+  CNG = 2,
+  Electric = 3,
 }
