@@ -6,6 +6,7 @@ import {
   HostListener,
   EventEmitter,
   Output,
+  ChangeDetectorRef,
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Filter } from "src/app/shared/model/Filter";
@@ -84,7 +85,8 @@ export class VehicleFilterComponent {
   constructor(
     private commonService: CommonService,
     private route: ActivatedRoute,
-    private vehicleService: VehicleService
+    private vehicleService: VehicleService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -131,9 +133,44 @@ export class VehicleFilterComponent {
           break;
         }
       }
+      this.filterFuelTypes();
+      this.filterTransmissionTypes();
     });
     this.initialFilters = { ...this.filterObj };
   }
+
+  filterFuelTypes() {
+    if (this.subCategory == "6" || this.subCategory == "7") {
+      this.fuelTypes = this.fuelTypes.filter(
+        (fuel) => fuel.label !== "Diesel" && fuel.label !== "CNG"
+      );
+    } else {
+      this.fuelTypes = Object.keys(FuelType).map((key: any) => ({
+        label: key,
+        id: FuelType[key],
+      }));
+      this.fuelTypes = this.fuelTypes.slice(this.fuelTypes.length / 2);
+    }
+  }
+
+  filterTransmissionTypes() {
+    if (this.subCategory == "7" || this.subCategory == "6") {
+      this.transmissionTypes = this.transmissionTypes.filter(
+        (transmission) => transmission.label === "Manual"
+      );
+    } else {
+      this.transmissionTypes = Object.keys(TransmissionType).map(
+        (key: any) => ({
+          label: key,
+          id: TransmissionType[key],
+        })
+      );
+      this.transmissionTypes = this.transmissionTypes.slice(
+        this.transmissionTypes.length / 2
+      );
+    }
+  }
+
   getAllStates() {
     this.commonService.getStatesByCountry(this.country.id).subscribe((data) => {
       this.districts = data;
