@@ -14,11 +14,11 @@
           !isLoading && mainCategories.length > 0 && subCategories.length > 0
         "
       >
-        <a routerLink="/Sports & Hobbies/view-posts">{{
+        <a routerLink="/Sports/view-posts">{{
           getMainCategoryName(postDetails?.categoryId)
         }}</a>
         /<a
-          [routerLink]="'/Sports & Hobbies/view-posts'"
+          [routerLink]="'/Sports/view-posts'"
           [queryParams]="{ type: 'sport', sub: postDetails?.subCategoryId }"
           >{{ getSubCategoryName(postDetails?.subCategoryId) }}</a
         >
