@@ -14,11 +14,11 @@
           !isLoading && mainCategories.length > 0 && subCategories.length > 0
         "
       >
-        <a routerLink="/Electronics & Appliances/view-posts">{{
+        <a routerLink="/Electronics/view-posts">{{
           getMainCategoryName(postDetails?.categoryId)
         }}</a>
         /<a
-          [routerLink]="'/Electronics & Appliances/view-posts'"
+          [routerLink]="'/Electronics/view-posts'"
           [queryParams]="{ type: 'Books', sub: postDetails?.subCategoryId }"
           >{{ getSubCategoryName(postDetails?.subCategoryId) }}</a
         >

@@ -125,6 +125,7 @@ export class AddPostComponent {
     });
   }
 
+
   clearSearchText(formControl: FormControl, fieldName: string): void {
     formControl.setValue('');
 
