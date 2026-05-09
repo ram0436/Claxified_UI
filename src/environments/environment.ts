@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl : "https://claxified.azurewebsites.net/api/"
+  baseUrl : "https://claxified-api-czb6bderbcayayfq.southindia-01.azurewebsites.net/api/"
 };
 
 /*
