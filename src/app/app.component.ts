@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'CLAXIFIED.COM | Free Classified Ads in India | Sell Anything Online';
+  title = 'https://www.claxified.com | Free Classified Ads in India | Sell Anything Online';
 }
