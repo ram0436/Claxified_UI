@@ -145,7 +145,7 @@ validatePhoneNumber(): boolean {
     this.otpErrorMessage = false;
     this.firstNameErrorMessage = false;
 
-    const otpRegex = /^[0-9]{4}$/;
+    const otpRegex = /^[0-9]{6}$/;
     if (!otpRegex.test(this.otp)) {
       this.otpErrorMessage = true;
       return;
@@ -157,7 +157,7 @@ validatePhoneNumber(): boolean {
       return;
     }
   
-    if (this.otp.length !== 4) {
+    if (this.otp.length !== 6) {
       this.otpErrorMessage = true;
     }
   
