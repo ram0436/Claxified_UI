@@ -263,6 +263,10 @@ export class HeaderComponent implements OnInit {
           type: "Jobs",
           sub: this.jobTypes.OfficeAssistant,
         },
+        "Retail & Store Jobs": {
+          type: "Jobs",
+          sub: this.jobTypes.RetailAndStore,
+        },
         "Delivery & Collection": {
           type: "Jobs",
           sub: this.jobTypes.DeliveryAndCollection,

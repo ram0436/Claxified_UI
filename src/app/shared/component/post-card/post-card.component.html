@@ -75,7 +75,7 @@
         </div>
       </div>
       <!-- <span>{{ card?.tableRefGuid }}</span> -->
-      <mat-card-title class="title title-flex" *ngIf="card?.price > 0"
+      <mat-card-title class="title title-flex" *ngIf="!card?.salaryPeriodType"
         >₹<span class="text-blue">{{ formatPrice(card?.price) }}</span> |
         <span class="date-added">{{ formatDate(card?.createdOn) }}</span>
       </mat-card-title>
