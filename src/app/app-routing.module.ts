@@ -5,6 +5,7 @@ import { PostMenuComponent } from "./modules/post-menu/post-menu.component";
 import { AuthGuard } from "./modules/auth/authguard/authguard";
 import { VacancyOpeningComponent } from "./shared/component/vacancy-opening/vacancy-opening.component";
 import { HelpComponent } from "./modules/user/component/help/help.component";
+import { PageComponent } from "./pages/page/page.component";
 
 const routes: Routes = [
   {
@@ -85,6 +86,7 @@ const routes: Routes = [
   },
   { path: "vacancy-opening", component: VacancyOpeningComponent },
   { path: "help", component: HelpComponent },
+  { path: "page/:slug", component: PageComponent },
 ];
 
 @NgModule({

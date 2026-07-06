@@ -675,16 +675,17 @@ export class AddPostComponent {
     });
   }
   saveVehiclePost(payload: any) {
-    if (this.validatePostForm(payload))
+    if (this.validatePostForm(payload)) {
       if (this.locationConfirmationType === "manual") {
         payload.state = this.selectedState ? this.selectedState.name : null;
         payload.city = this.selectedCity ? this.selectedCity.name : null;
         payload.nearBy = this.selectedNearBy ? this.selectedNearBy.name : null;
       }
-    this.vehicleService.saveVehiclePost(payload).subscribe((data) => {
-      this.showNotification("Post added succesfully");
-      this.router.navigateByUrl("/post-menu");
-    });
+      this.vehicleService.saveVehiclePost(payload).subscribe((data) => {
+        this.showNotification("Post added succesfully");
+        this.router.navigateByUrl("/post-menu");
+      });
+    }
   }
   onYearChangeEvent(event: any) {
     this.vehicleData.year = event.target.value;
@@ -733,22 +734,22 @@ export class AddPostComponent {
   validatePostForm(payload: any): boolean {
     let flag = false;
     if (payload.title == "") this.showNotification("Title is required");
-    else if (payload.title.length < 5 || payload.title.length > 50)
-      this.showNotification("Title should be min 5 and max of 50 charecters");
+    else if (payload.title.length < 15 || payload.title.length > 80)
+      this.showNotification("Title should be min 15 and max of 80 charecters");
     else if (payload.discription == "")
-      this.showNotification("discription is required");
+      this.showNotification("Description is required");
     else if (
       payload.discription.length < 15 ||
       payload.discription.length > 500
     )
       this.showNotification(
-        "discription should be min 15 and max 500 charecters"
+        "Description should be min 15 and max 500 charecters"
       );
-    else if (payload.price == 0) this.showNotification("price is rerquired");
+    else if (payload.price == 0) this.showNotification("Price is rerquired");
     else if (payload.price < 10)
-      this.showNotification("price should be min 10");
+      this.showNotification("Price should be min 10");
     else if (payload.price.length < 2)
-      this.showNotification("price should be contain a minimum of two digits");
+      this.showNotification("Price should be contain a minimum of two digits");
     else if (payload.vehicleImageList.length <= 0)
       this.showNotification("In upload photo, at least 1 photo is required.");
     else if (
@@ -801,16 +802,17 @@ export class AddPostComponent {
     }
   }
   updateVehiclePost(payload: any) {
-    if (this.validatePostForm(payload))
+    if (this.validatePostForm(payload)) {
       if (this.locationConfirmationType === "manual") {
         payload.state = this.selectedState ? this.selectedState.name : null;
         payload.city = this.selectedCity ? this.selectedCity.name : null;
         payload.nearBy = this.selectedNearBy ? this.selectedNearBy.name : null;
       }
-    this.vehicleService.updateVehiclePost(payload).subscribe((data) => {
-      this.showNotification("Post updated succesfully");
-      this.router.navigateByUrl("/post-menu");
-    });
+      this.vehicleService.updateVehiclePost(payload).subscribe((data) => {
+        this.showNotification("Post updated succesfully");
+        this.router.navigateByUrl("/post-menu");
+      });
+    }
   }
   getBikeModels(brandId: Number) {
     this.vehicleService.getBikeModels(brandId).subscribe((res) => {
