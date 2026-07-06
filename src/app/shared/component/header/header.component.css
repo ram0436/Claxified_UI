@@ -109,6 +109,23 @@ nav ul li:hover {
   text-decoration: none;
 }
 
+.icon-text1 {
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* removes gray flash on mobile tap */
+}
+
+.icon-text1:focus,
+.icon-text1:active {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+
+.logo-img img {
+  outline: none;
+  border: none;
+}
+
 .css-1pr0bng {
   display: flex;
   align-items: center;
