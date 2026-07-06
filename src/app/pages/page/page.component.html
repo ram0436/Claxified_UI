@@ -1,0 +1,26 @@
+<div class="page-container" *ngIf="pageData; else notFound">
+  <!-- Title -->
+  <h1 class="page-title">{{ pageData.title }}</h1>
+
+  <!-- Paragraphs -->
+  <div class="page-paragraphs">
+    <p *ngFor="let para of pageData.paragraphs">
+      {{ para }}
+    </p>
+  </div>
+
+  <!-- Sections -->
+  <div class="page-sections">
+    <div class="section-card" *ngFor="let section of pageData.sections">
+      <h3>{{ section.heading }}</h3>
+      <p>{{ section.text }}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #notFound>
+  <div class="not-found">
+    <h1>404</h1>
+    <p>Page not found</p>
+  </div>
+</ng-template>
