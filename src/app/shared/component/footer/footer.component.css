@@ -1,6 +1,6 @@
 /* MAIN FOOTER */
 .footer {
-  background: #1f1f21;
+  background: #000000;
   font-family: "Montserrat", sans-serif;
 }
 
@@ -142,17 +142,17 @@ i {
 }
 
 .bg-light-black {
-  background: #292a2c;
+  background: #53beb0;
   /* padding: 20px 0; */
 }
 
 .footer-heading {
-  font-size: 20px;
+  font-size: 15px;
   color: #fff;
   font-weight: 600;
   margin: 20px 0 10px 0;
   line-height: 1.2;
-  text-transform: uppercase;
+  text-transform:initial;
 }
 
 .list-head {
