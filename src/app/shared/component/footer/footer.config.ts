@@ -69,15 +69,15 @@ export const FOOTER_DATA = [
     ],
   },
   {
-    title: "Popular Cities",
+    title: "Trending Location",
     type: "text",
     links: [
-      { label: "Bengaluru" },
-      { label: "Mumbai" },
-      { label: "Delhi" },
-      { label: "Hyderabad" },
-      { label: "Chennai" },
-      { label: "Pune" },
+      { label: "Whitefield" },
+      { label: "Marathahalli" },
+      { label: "HSR Layout" },
+      { label: "Koramangala" },
+      { label: "BTM Layout" },
+      { label: "Brookefield" },
     ],
   },
   {
