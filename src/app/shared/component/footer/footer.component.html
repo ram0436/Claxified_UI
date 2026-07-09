@@ -1,10 +1,19 @@
 <footer class="footer">
   <div class="footer-container">
+    <!-- LOGO / SLOGAN -->
+    <div class="footer-top">
+      <img
+        src="https://cfdblob.blob.core.windows.net/logo/Claxified_Slogan.png"
+        alt="Claxified - Sell Anything, Find Everything"
+        class="footer-slogan-logo"
+      />
+    </div>
+
+    <!-- LINK GRID -->
     <div class="footer-grid">
       <div *ngFor="let section of footerSections" class="footer-col">
         <h3 class="footer-heading">{{ section.title }}</h3>
 
-        <!-- ROUTE LINKS -->
         <ng-container *ngIf="isRouteSection(section)">
           <a
             *ngFor="let link of section.links"
@@ -15,7 +24,6 @@
           </a>
         </ng-container>
 
-        <!-- TEXT LINKS -->
         <ng-container *ngIf="!isRouteSection(section)">
           <span *ngFor="let link of section.links" class="footer-link disabled">
             {{ link.label }}
@@ -25,13 +33,11 @@
     </div>
   </div>
 
-  <!-- Bottom Bar -->
-  <div class="footer-bottom bg-dark-color">
-    <div class="container text-center">
-      <img src="../../../../assets/footerlogo.png" alt="" class="footer-logo" />
-      <p class="copyright-text">
-        © 2022–2026 Claxified™. All Rights Reserved. Owned & Operated by Alphazed Software Private Limited.
-      </p>
-    </div>
+  <!-- BOTTOM BAR -->
+  <div class="footer-bottom">
+    <p class="copyright-text">
+      © 2022–2026 Claxified™. All Rights Reserved.<br />
+      Owned &amp; Operated by Alphazed Software Private Limited.
+    </p>
   </div>
 </footer>
