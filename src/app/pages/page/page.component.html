@@ -1,23 +1,48 @@
 <div class="page-container" *ngIf="pageData; else notFound">
-  <!-- Title -->
-  <h1 class="page-title">{{ pageData.title }}</h1>
+  <!-- ================= TITLE ================= -->
+  <h1 class="page-title">
+    {{ pageData.title }}
+  </h1>
 
-  <!-- Paragraphs -->
+  <!-- ================= PARAGRAPHS ================= -->
   <div class="page-paragraphs">
     <p *ngFor="let para of pageData.paragraphs">
       {{ para }}
     </p>
   </div>
 
-  <!-- Sections -->
+  <!-- ================= SECTIONS ================= -->
   <div class="page-sections">
-    <div class="section-card" *ngFor="let section of pageData.sections">
-      <h3>{{ section.heading }}</h3>
-      <p>{{ section.text }}</p>
+    <div
+      class="section-card"
+      *ngFor="let section of pageData.sections"
+      [ngClass]="section.type"
+    >
+      <!-- Section Heading -->
+      <h3>
+        {{ section.heading }}
+      </h3>
+
+      <!-- Section Text -->
+      <p *ngIf="section.text">
+        {{ section.text }}
+      </p>
+
+      <!-- ================= BULLET LIST (IMPORTANT) ================= -->
+      <ul *ngIf="section.list?.length" class="section-list">
+        <li *ngFor="let item of section.list">
+          {{ item }}
+        </li>
+      </ul>
+
+      <p *ngIf="section.footer">
+        {{ section.footer }}
+      </p>
     </div>
   </div>
 </div>
 
+<!-- ================= 404 PAGE ================= -->
 <ng-template #notFound>
   <div class="not-found">
     <h1>404</h1>
