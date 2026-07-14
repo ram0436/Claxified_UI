@@ -2057,7 +2057,6 @@ export const PAGE_DATA: any = {
     title: "Terms & Conditions for Claxified",
 
     paragraphs: [
-      "Effective Date: July 2026",
       'Welcome to Claxified, India\'s AI-powered classified marketplace. These Terms & Conditions ("Terms") govern your access to and use of the Claxified website, mobile applications, and related services (collectively, the "Platform").',
       "By accessing or using Claxified, you agree to comply with these Terms. If you do not agree with any part of these Terms, you should discontinue using the Platform immediately.",
     ],
@@ -2314,7 +2313,6 @@ export const PAGE_DATA: any = {
     title: "Privacy Policy",
 
     paragraphs: [
-      "Effective Date: July 13, 2026",
       "Welcome to Claxified. Your privacy is important to us. This Privacy Policy explains how Claxified collects, uses, stores, protects, and shares your information when you use our website, mobile applications, and related services.",
       "By accessing or using Claxified, you agree to the practices described in this Privacy Policy. If you do not agree with this policy, please discontinue using our services.",
     ],
@@ -3531,7 +3529,6 @@ export const PAGE_DATA: any = {
     title: "Copyright Policy",
 
     paragraphs: [
-      "Effective Date: July 13, 2026",
       "Welcome to Claxified, India's AI-powered classified marketplace. This Copyright Policy explains how intellectual property rights are protected on our platform and outlines the responsibilities of users when posting, sharing, or accessing content on Claxified.",
       "By using Claxified, you agree to respect the copyright and intellectual property rights of other users, businesses, creators, and third parties.",
     ],
