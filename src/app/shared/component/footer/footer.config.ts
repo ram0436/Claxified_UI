@@ -26,9 +26,7 @@ export const FOOTER_DATA = [
     title: "For Businesses",
     type: "route",
     links: [
-      { label: "Dealer Registration", slug: "dealer" },
-      { label: "Builder Registration", slug: "builder" },
-      { label: "Recruiter Registration", slug: "recruiter" },
+      { label: "Business Registration", slug: "business-registration" },
       { label: "Pricing Plans", slug: "pricing" },
       { label: "Refund Policy", slug: "refund" },
     ],

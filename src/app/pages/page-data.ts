@@ -1934,38 +1934,314 @@ export const PAGE_DATA: any = {
   },
 
   // ================= BUSINESS =================
-  dealer: {
-    title: "Dealer Registration",
-    paragraphs: [
-      "Register as a dealer and grow your business.",
-      "Reach more customers easily.",
-    ],
-    sections: [
-      { heading: "Benefits", text: "Higher visibility and premium tools." },
-    ],
-  },
+  "business-registration": {
+    title: "Business Registration with Claxified",
 
-  builder: {
-    title: "Builder Registration",
     paragraphs: [
-      "List your properties and connect with buyers.",
-      "Showcase projects professionally.",
+      "Grow Your Business with India's AI-Powered Classified Marketplace",
+      "Whether you are a local shop, startup, freelancer, service provider, manufacturer, wholesaler, retailer, dealer, or established company, Business Registration on Claxified helps you reach more customers, build trust, and grow your brand online.",
+      "Unlike individual sellers who post occasional advertisements, a registered business receives a dedicated business profile where customers can discover your company, browse all your products and services, and contact you directly.",
+      "Your Claxified Business Profile acts as your digital storefront, helping you generate leads 24×7 while increasing your online visibility across India.",
     ],
-    sections: [
-      { heading: "Features", text: "Property listings, analytics, leads." },
-    ],
-  },
 
-  recruiter: {
-    title: "Recruiter Registration",
-    paragraphs: [
-      "Find the best talent quickly.",
-      "Post jobs and manage applications.",
-    ],
     sections: [
       {
-        heading: "Hiring Tools",
-        text: "Smart filtering and applicant tracking.",
+        heading: "Why Register Your Business on Claxified?",
+        text: "Today's customers search online before making purchasing decisions. A professional business profile increases customer confidence and makes it easier for buyers to choose your business over unverified sellers. By registering your business with Claxified, you can:",
+        list: [
+          "Build a professional online presence",
+          "Increase brand awareness",
+          "Reach genuine buyers",
+          "Generate more enquiries",
+          "Showcase all your products and services",
+          "Improve local visibility",
+          "Receive direct customer calls and messages",
+          "Build long-term customer relationships",
+        ],
+        footer:
+          "Whether you operate locally or serve customers across India, Claxified helps your business get discovered by the right audience.",
+      },
+
+      {
+        heading: "Who Can Register?",
+        text: "Claxified welcomes businesses of all sizes. You can register if you are:",
+        list: [
+          "Retail Store",
+          "Local Shop",
+          "Manufacturer",
+          "Wholesaler",
+          "Distributor",
+          "Dealer",
+          "Service Provider",
+          "Contractor",
+          "Consultant",
+          "Freelancer",
+          "Startup",
+          "MSME",
+          "Home-Based Business",
+          "Educational Institute",
+          "Coaching Centre",
+          "Real Estate Agency",
+          "Automobile Dealer",
+          "Healthcare Provider",
+          "Restaurant",
+          "Hotel",
+          "Travel Agency",
+          "Repair Service",
+          "Digital Agency",
+          "IT Company",
+          "Construction Company",
+          "Interior Designer",
+          "Event Planner",
+          "Beauty Salon",
+          "Fitness Center",
+          "Financial Consultant",
+          "Legal Consultant",
+          "Any legally operating business",
+        ],
+      },
+
+      {
+        heading: "Professional Business Profile",
+        text: "Create a dedicated business page including:",
+        list: [
+          "Business Name",
+          "Business Logo",
+          "Cover Image",
+          "Company Description",
+          "Contact Details",
+          "Business Address",
+          "Website",
+          "Working Hours",
+          "Social Media Links",
+          "Business Categories",
+          "Products",
+          "Services",
+        ],
+        footer: "This creates a trusted digital identity for your business.",
+      },
+
+      {
+        heading: "Unlimited Business Exposure",
+        text: "Your business profile becomes discoverable by customers searching through:",
+        list: [
+          "Categories",
+          "Cities",
+          "States",
+          "Local Areas",
+          "Keywords",
+          "Product Searches",
+          "Service Searches",
+        ],
+        footer: "This increases your chances of receiving genuine enquiries.",
+      },
+
+      {
+        heading: "Showcase All Your Products",
+        text: "Instead of creating only one advertisement, businesses can display multiple listings under one profile. Customers can browse:",
+        list: [
+          "Products",
+          "Services",
+          "Featured Items",
+          "Latest Listings",
+          "Business Information",
+        ],
+        footer: "Everything remains organized in one place.",
+      },
+
+      {
+        heading: "Build Customer Trust",
+        text: "Customers prefer dealing with verified businesses. A complete business profile demonstrates:",
+        list: [
+          "Professionalism",
+          "Business authenticity",
+          "Transparency",
+          "Long-term commitment",
+        ],
+        footer:
+          "The more complete your profile, the more confidence customers have in contacting you. Verified and well-maintained business profiles generally attract higher trust than anonymous listings.",
+      },
+
+      {
+        heading: "Receive More Customer Enquiries",
+        text: "Your business profile helps customers contact you through:",
+        list: [
+          "Phone Calls",
+          "WhatsApp",
+          "Email",
+          "Contact Forms",
+          "Website",
+          "Direct Messages",
+        ],
+        footer:
+          "This increases opportunities for sales without paying commissions.",
+      },
+
+      {
+        heading: "Improve Local Search Visibility",
+        text: "Customers usually search using phrases like:",
+        list: [
+          "Car Dealer Near Me",
+          "Electrician in Mysuru",
+          "Furniture Shop in Bangalore",
+          "Laptop Repair Near Me",
+          "Real Estate Agent in Hyderabad",
+        ],
+        footer:
+          "A properly optimized business profile helps customers discover your business more easily.",
+      },
+
+      {
+        heading: "Better Brand Recognition",
+        text: "Every listing published by your business strengthens your brand. Instead of promoting individual advertisements only, customers begin recognizing your business name and reputation.",
+        footer: "Over time, this builds stronger customer loyalty.",
+      },
+
+      {
+        heading: "Easy Business Management",
+        text: "Manage everything from a single dashboard. You can:",
+        list: [
+          "Add Products",
+          "Edit Listings",
+          "Delete Listings",
+          "Renew Ads",
+          "View Enquiries",
+          "Update Business Information",
+          "Upload New Images",
+          "Track Your Listings",
+        ],
+        footer: "Everything is available from one place.",
+      },
+
+      {
+        heading: "Multiple Categories",
+        text: "Many businesses offer more than one product or service. Claxified allows businesses to publish listings across multiple categories, helping reach a broader audience.",
+      },
+
+      {
+        heading: "Mobile-Friendly Business Profile",
+        text: "Customers increasingly search from smartphones. Your business profile is optimized for mobile devices, making it easy for buyers to browse listings and contact you.",
+      },
+
+      {
+        heading: "AI-Powered Platform",
+        text: "Claxified leverages Artificial Intelligence to make selling smarter. Depending on available features, businesses can benefit from:",
+        list: [
+          "AI-generated listing descriptions",
+          "Smart category suggestions",
+          "Better search optimization",
+          "Improved listing quality",
+          "Faster ad creation",
+        ],
+      },
+
+      {
+        heading: "Reach Customers Across India",
+        text: "Whether your business serves one neighborhood or multiple states, Claxified helps connect you with buyers nationwide. Perfect for:",
+        list: [
+          "Local Businesses",
+          "Regional Sellers",
+          "National Dealers",
+          "Online Service Providers",
+        ],
+      },
+
+      {
+        heading: "Business Profile Features",
+        text: "A registered business can maintain:",
+        list: [
+          "Business Logo",
+          "Cover Banner",
+          "Business Description",
+          "Product Listings",
+          "Service Listings",
+          "Contact Details",
+          "Location",
+          "Google Map Location (where supported)",
+          "Business Hours",
+          "Email Address",
+          "Website",
+          "Social Links",
+          "WhatsApp Number",
+          "Photo Gallery",
+          "Videos (where supported)",
+        ],
+      },
+
+      {
+        heading: "Why Customers Prefer Registered Businesses",
+        text: "Customers feel more confident when they can see:",
+        list: [
+          "Business Name",
+          "Complete Contact Information",
+          "Company Details",
+          "Product Portfolio",
+          "Multiple Listings",
+          "Business Location",
+          "Verified Identity (where applicable)",
+        ],
+        footer:
+          "A complete profile helps reduce uncertainty and encourages enquiries.",
+      },
+
+      {
+        heading: "Ideal for Every Industry",
+        text: "Business Registration is suitable for:",
+        list: [
+          "Automobile Dealers",
+          "Real Estate Agencies",
+          "Electronics Stores",
+          "Furniture Shops",
+          "Mobile Stores",
+          "Fashion Retailers",
+          "Restaurants",
+          "Hotels",
+          "Hospitals",
+          "Clinics",
+          "Tutors",
+          "Coaching Institutes",
+          "Lawyers",
+          "Chartered Accountants",
+          "Architects",
+          "Interior Designers",
+          "Construction Companies",
+          "Travel Agencies",
+          "Packers & Movers",
+          "Beauty Salons",
+          "Gyms",
+          "Home Services",
+          "Repair Centers",
+          "Industrial Suppliers",
+          "Manufacturers",
+          "Wholesale Businesses",
+          "IT Companies",
+          "Software Firms",
+          "Digital Marketing Agencies",
+        ],
+      },
+
+      {
+        heading: "Why Choose Claxified?",
+        text: "Claxified is more than a classified website. It is an AI-powered marketplace built to help businesses:",
+        list: [
+          "Increase Online Visibility",
+          "Generate More Leads",
+          "Build Brand Recognition",
+          "Connect with Genuine Buyers",
+          "Manage Listings Easily",
+          "Promote Products and Services",
+          "Expand into New Markets",
+          "Grow Without Large Marketing Budgets",
+        ],
+        footer:
+          "Whether you're a small business or a growing enterprise, Claxified provides the tools to help you succeed online.",
+      },
+
+      {
+        heading: "Register Your Business Today",
+        text: "Create your free Business Profile on Claxified and start showcasing your products and services to thousands of potential buyers.",
+        footer:
+          "Build your brand, increase your visibility, generate quality enquiries, and grow your business with India's AI-powered classified marketplace. Claxified — Sell Anything. Find Everything.",
       },
     ],
   },
