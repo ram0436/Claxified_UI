@@ -1,0 +1,418 @@
+.edit-profile-wrapper {
+  max-width: 900px;
+  margin: 60px auto 60px auto;
+  padding: 0 20px;
+}
+
+.page-title {
+  color: #0d475c;
+  margin-top: 100px;
+  margin-bottom: 20px;
+}
+
+.section-card {
+  padding: 25px 30px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.section-title {
+  color: #3c3241;
+  margin-bottom: 20px;
+  font-size: 18px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #3c3241;
+  margin-bottom: 4px;
+}
+
+mat-form-field {
+  width: 100%;
+  display: block;
+}
+
+.field-row {
+  display: flex;
+  gap: 20px;
+}
+
+.field-half {
+  flex: 1;
+}
+
+.image-row {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 20px;
+}
+
+.image-upload-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.image-preview {
+  width: 100px;
+  height: 100px;
+  border: 1px dashed #b1adb3;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.cover-preview {
+  width: 220px;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-preview .material-icons-outlined {
+  color: #b1adb3;
+  font-size: 28px;
+}
+
+.working-hours-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.day-name {
+  width: 100px;
+  font-weight: 500;
+  color: #3c3241;
+}
+
+.time-field {
+  width: 130px !important;
+}
+
+.time-sep {
+  color: #635b67;
+}
+
+.save-button {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  height: 46px;
+  color: #fff !important;
+  background-color: #e75462 !important;
+  font-weight: 600;
+}
+
+/* ---------- Gallery upload (matches add-post styling) ---------- */
+
+.uplod-sectin {
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.uplod-sectin h4 {
+  font-weight: 700;
+  margin: 10px 0 20px 0;
+  color: #3c3241;
+  letter-spacing: 0.5px;
+}
+
+.progs {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.cards-cont {
+  max-width: 100%;
+  background-color: #fff !important;
+}
+
+.upld {
+  margin-left: 0;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.upload-card {
+  border: 2px solid rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+  display: inline-block;
+  height: 104px;
+  width: 104px;
+  vertical-align: top;
+  margin: 0 6px 6px 0;
+}
+
+.upload-card-brd {
+  border: 1px solid #ddd;
+  cursor: pointer;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100%;
+  width: 100%;
+}
+
+.upload-card-brd > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.camera {
+  border: none;
+  background-color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 0;
+  width: 30px;
+  cursor: pointer;
+}
+
+.camera img {
+  width: 100%;
+}
+
+.add {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #635b67;
+}
+
+.preview {
+  position: relative;
+  height: 100%;
+}
+
+.preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.delete-button {
+  top: 0;
+  right: 0;
+  background: red;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  float: right;
+  position: absolute;
+  margin: 4px;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.delete-icon {
+  color: white;
+  font-size: 12px;
+}
+
+.first-image {
+  position: relative;
+}
+
+.cover-tag {
+  position: absolute;
+  top: 75px;
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 6px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.h-365 {
+  min-height: 200px;
+}
+
+.hero-banner-edit {
+  position: relative;
+  margin: -25px -30px 45px -30px;
+}
+
+.cover-upload-zone {
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+  height: 240px;
+  background: #f5f7f8;
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Empty state — permanent camera prompt, no dummy photo */
+.cover-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #9aa5aa;
+  border: 2px dashed #d7dee1;
+  border-radius: 10px 10px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cover-placeholder .material-icons-outlined {
+  font-size: 32px;
+  color: #b1c9d3;
+}
+
+/* Filled state — overlay only on hover */
+.cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 71, 92, 0.55);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cover-upload-zone.has-image:hover .cover-overlay {
+  opacity: 1;
+}
+
+.cover-overlay .material-icons-outlined {
+  font-size: 28px;
+}
+
+.logo-strip-edit {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  padding: 0 25px;
+  margin-top: -35px;
+}
+
+.logo-upload-zone {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  border-radius: 12px;
+  background: #eef2f4;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-upload-zone img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Empty state — permanent camera icon */
+.logo-placeholder-icon {
+  font-size: 26px;
+  color: #b1c9d3;
+}
+
+/* Filled state — overlay only on hover */
+.logo-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.logo-upload-zone.has-image:hover .logo-overlay {
+  opacity: 1;
+}
+
+.logo-overlay .material-icons-outlined {
+  color: #fff;
+  font-size: 22px;
+}
+
+/* Live business-name preview text next to logo */
+.business-name-preview {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0d475c;
+  text-shadow: none;
+}
+
+.business-name-preview.is-placeholder {
+  color: #b1adb3;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.cover-progress,
+.logo-progress {
+  margin-top: 2px;
+}
+
+@media (max-width: 600px) {
+  .cover-upload-zone {
+    height: 160px;
+  }
+  .logo-upload-zone {
+    width: 65px;
+    height: 65px;
+  }
+  .logo-strip-edit {
+    padding: 0 15px;
+    gap: 10px;
+  }
+  .business-name-preview {
+    font-size: 16px;
+  }
+}

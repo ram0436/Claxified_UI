@@ -6,6 +6,7 @@ import { BusinessRegisterComponent } from "./components/business-register/busine
 import { BusinessDashboardComponent } from "./components/business-dashboard/business-dashboard.component";
 import { BusinessEditProfileComponent } from "./components/business-edit-profile/business-edit-profile.component";
 import { BusinessPublicProfileComponent } from "./components/business-public-profile/business-public-profile.component";
+import { BusinessProfileComponent } from "./components/business-profile/business-profile.component";
 
 const routes: Routes = [
   {
@@ -14,9 +15,8 @@ const routes: Routes = [
     children: [
       { path: "", component: BusinessLandingComponent },
       { path: "register", component: BusinessRegisterComponent },
-      { path: "dashboard", component: BusinessDashboardComponent },
+      { path: "profile", component: BusinessProfileComponent },
       { path: "profile/edit", component: BusinessEditProfileComponent },
-      // keep this LAST — it's a catch-all for /business/:location/:businessName
       {
         path: ":location/:businessName",
         component: BusinessPublicProfileComponent,

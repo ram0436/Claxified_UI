@@ -1,0 +1,132 @@
+<div class="business-login-wrapper mat-elevation-z12">
+  <span
+    class="material-icons-outlined login-cancel-icon"
+    (click)="closeDialog()"
+  >
+    cancel
+  </span>
+
+  <div class="business-login-brand-panel">
+    <div class="brand-logo">
+      <img
+        src="https://cfdblob.blob.core.windows.net/logo/CFD_Logo.png"
+        alt="Logo"
+      />
+    </div>
+
+    <h3 class="brand-heading">Interact directly with customers</h3>
+    <p class="brand-subtext">
+      When your business receives an enquiry, you'll be notified right away so
+      you can connect with them instantly.
+    </p>
+  </div>
+
+  <div class="business-login-form-panel">
+    <h2 class="form-heading">Grow with us!</h2>
+    <p class="form-subheading">
+      Register your business and sign in with your mobile number.
+    </p>
+
+    <form
+      (ngSubmit)="otpSent ? verifyOTPAndRegister() : sendOTP()"
+      class="business-login-form"
+    >
+      <label class="field-label">Business Name</label>
+      <mat-form-field appearance="outline">
+        <input
+          matInput
+          placeholder="Enter your business name"
+          name="businessName"
+          [(ngModel)]="businessName"
+          [disabled]="otpSent"
+          (input)="validBusinessNameMessage = !validateBusinessName()"
+        />
+        <mat-icon matSuffix>storefront</mat-icon>
+      </mat-form-field>
+      <p class="otp-failure-message" *ngIf="validBusinessNameMessage">
+        <span class="material-icons-outlined">report</span>
+        Business name looks invalid*
+      </p>
+      <p class="otp-failure-message" *ngIf="businessNameErrorMessage">
+        <span class="material-icons-outlined">report</span>
+        Please enter your business name (min 2 characters)*
+      </p>
+
+      <label class="field-label">Mobile Number</label>
+      <mat-form-field appearance="outline">
+        <span matPrefix class="country-code">+91-</span>
+        <input
+          matInput
+          placeholder="Enter 10-digit number"
+          name="phoneNumber"
+          [(ngModel)]="phoneNumber"
+          [disabled]="otpSent"
+          (input)="validPhoneNumberMessage = !validatePhoneNumber()"
+        />
+        <mat-icon matSuffix>phone</mat-icon>
+      </mat-form-field>
+      <p class="otp-failure-message" *ngIf="validPhoneNumberMessage">
+        <span class="material-icons-outlined">report</span>
+        Phone number should consist of only numbers*
+      </p>
+      <p class="otp-failure-message" *ngIf="phoneNumberErrorMessage">
+        <span class="material-icons-outlined">report</span>
+        Please enter a valid 10-digit mobile number*
+      </p>
+
+      <p *ngIf="otpSent" class="receive-message">
+        Didn't receive the OTP yet?
+        <span *ngIf="!resendEnabled" class="countdown-message">
+          Resend in {{ resendCountdown }}s
+        </span>
+        <span *ngIf="resendEnabled" class="resend-link" (click)="resendOTP()">
+          Resend
+        </span>
+      </p>
+      <p class="otp-failure-message" *ngIf="otpFailed">
+        <span class="material-icons-outlined">report</span> Error sending OTP
+      </p>
+
+      <ng-container *ngIf="otpSent">
+        <label class="field-label">Enter OTP</label>
+        <mat-form-field appearance="outline">
+          <input
+            matInput
+            placeholder="Enter OTP"
+            name="otp"
+            [(ngModel)]="otp"
+            (input)="validOTPMessage = !validateOTP()"
+          />
+          <mat-icon matSuffix>shield</mat-icon>
+        </mat-form-field>
+        <p class="otp-failure-message" *ngIf="validOTPMessage">
+          <span class="material-icons-outlined">report</span>
+          OTP should consist of only numbers*
+        </p>
+        <p class="otp-failure-message" *ngIf="otpErrorMessage">
+          <span class="material-icons-outlined">report</span>
+          Please enter a 4-digit OTP*
+        </p>
+      </ng-container>
+
+      <p class="otp-failure-message" *ngIf="unauthorizedUser">
+        <span class="material-icons-outlined">report</span> Unauthorized user*
+      </p>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="business-login-button"
+        type="submit"
+        [disabled]="(otpSent && !otp) || disableSendOTPButton"
+      >
+        {{ otpSent ? "Verify & Continue" : "Send OTP" }}
+      </button>
+
+      <p class="otp-send-message" *ngIf="otpMessage">
+        <span class="material-icons-outlined">verified</span> OTP has been sent
+        successfully
+      </p>
+    </form>
+  </div>
+</div>

@@ -70,6 +70,24 @@
   border-radius: 25px;
 }
 
+::ng-deep .cdk-global-overlay-wrapper {
+  align-items: initial !important;
+  height: auto;
+}
+
+::ng-deep .cdk-global-overlay-wrapper:has(.business-login-dialog-container) {
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+}
+
+.business-login-dialog-container .cdk-global-overlay-wrapper {
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 @media (max-width: 750px) {
   .business-nav-container {
     padding: 0 15px;

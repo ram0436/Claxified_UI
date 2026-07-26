@@ -22,12 +22,12 @@
         </a>
       </li>
       <li>
-        <a routerLink="/business/dashboard" routerLinkActive="active"
-          >Dashboard</a
+        <a routerLink="/business/profile/edit" routerLinkActive="active"
+          >Profile</a
         >
       </li>
       <li>
-        <a routerLink="/business/register" class="business-cta-btn">
+        <a (click)="openBusinessLoginModal()" class="business-cta-btn">
           Register Your Business
         </a>
       </li>
