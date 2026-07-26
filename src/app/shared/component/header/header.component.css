@@ -68,7 +68,7 @@
 }
 
 nav ul li:hover {
-  background-color: #fff;
+  /* background-color: #fff; */
 }
 
 .dropdown .li-item:hover a {
@@ -791,6 +791,25 @@ header {
 
 .side-nav-box .side-menu-link .icon {
   margin-right: 0;
+}
+
+.business-link {
+  cursor: pointer;
+  margin: 5px 20px 2px 0;
+}
+.business-link a {
+  color: #fff;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: inline-block;
+}
+.business-link a:hover {
+  background-color: #03e9f4 !important;
+  color: #050801 !important;
+  box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4,
+    0 0 200px #03e9f4;
+  -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
 }
 
 @media (max-width: 1220px) {

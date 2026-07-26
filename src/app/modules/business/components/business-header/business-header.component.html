@@ -1,0 +1,36 @@
+<header class="business-header">
+  <nav class="business-nav-container">
+    <a routerLink="/business" class="business-logo">
+      <img
+        src="https://cfdblob.blob.core.windows.net/logo/CFD_Logo.png"
+        alt="Logo"
+      />
+      <span class="business-logo-text">
+        CLAXIFIED <small>Business</small>
+      </span>
+    </a>
+
+    <ul class="business-nav-links">
+      <li><a routerLink="/">Back to Claxified</a></li>
+      <li>
+        <a
+          routerLink="/business"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          Overview
+        </a>
+      </li>
+      <li>
+        <a routerLink="/business/dashboard" routerLinkActive="active"
+          >Dashboard</a
+        >
+      </li>
+      <li>
+        <a routerLink="/business/register" class="business-cta-btn">
+          Register Your Business
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
