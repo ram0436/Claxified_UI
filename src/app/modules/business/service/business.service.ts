@@ -34,12 +34,20 @@ export class BusinessService {
     return this.http.get(`${this.baseUrl}Business/${tabRefGUID}`);
   }
 
-  uploadLogo(formData: any) {
-    return this.http.post(`${this.baseUrl}Business/UploadLogo`, formData);
+  uploadLogo(formData: FormData): Observable<string> {
+    return this.http.post(`${this.baseUrl}Business/UploadLogo`, formData, {
+      responseType: "text",
+    }) as Observable<string>;
   }
 
-  uploadCoverImage(formData: any) {
-    return this.http.post(`${this.baseUrl}Business/UploadCoverImage`, formData);
+  uploadCoverImage(formData: FormData): Observable<string> {
+    return this.http.post(
+      `${this.baseUrl}Business/UploadCoverImage`,
+      formData,
+      {
+        responseType: "text",
+      }
+    ) as Observable<string>;
   }
 
   uploadGalleryImages(formData: any) {

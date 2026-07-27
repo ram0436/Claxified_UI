@@ -1,13 +1,23 @@
-export class BusinessWorkingHours {
+export class AuditFields {
+  createdBy: number = 0;
+  createdOn: string = new Date().toISOString().slice(0, 23);
+  modifiedBy: number = 0;
+  modifiedOn: string = new Date().toISOString().slice(0, 23);
+  isDeleted: boolean = false;
+  deletedDate: string = new Date().toISOString().slice(0, 23);
+  deletedBy: number = 0;
+}
+
+export class BusinessWorkingHours extends AuditFields {
   id: number = 0;
   businessId: number = 0;
-  dayOfWeek: number = 0; // 0 = Sunday ... 6 = Saturday
+  dayOfWeek: number = 0;
   openTime: string = "";
   closeTime: string = "";
   isClosed: boolean = true;
 }
 
-export class BusinessContact {
+export class BusinessContact extends AuditFields {
   id: number = 0;
   businessId: number = 0;
   contactPerson: string = "";
@@ -17,7 +27,7 @@ export class BusinessContact {
   whatsApp: string = "";
 }
 
-export class BusinessSocialMedia {
+export class BusinessSocialMedia extends AuditFields {
   id: number = 0;
   businessId: number = 0;
   facebook: string = "";
@@ -27,7 +37,7 @@ export class BusinessSocialMedia {
   twitter: string = "";
 }
 
-export class BusinessAddress {
+export class BusinessAddress extends AuditFields {
   id: number = 0;
   businessId: number = 0;
   country: string = "";
@@ -40,7 +50,7 @@ export class BusinessAddress {
   googleMapURL: string = "";
 }
 
-export class BusinessGallery {
+export class BusinessGallery extends AuditFields {
   id: number = 0;
   businessId: number = 0;
   imageUrl: string = "";
@@ -49,7 +59,7 @@ export class BusinessGallery {
   displayOrder: number = 0;
 }
 
-export class BusinessVerification {
+export class BusinessVerification extends AuditFields {
   id: number = 0;
   businessId: number = 0;
   isGSTVerified: number = 0;
@@ -58,32 +68,24 @@ export class BusinessVerification {
   isEmailVerified: number = 0;
   isMobileVerified: number = 0;
   isBusinessVerified: boolean = false;
-  verificationDate: string | null = null;
+  verificationDate: string = new Date().toISOString().slice(0, 23);
   verifiedBy: number = 0;
   verificationRemarks: string = "";
 }
 
-export class Business {
-  createdBy: number = 0;
-  createdOn: string | null = null;
-  modifiedBy: number = 0;
-  modifiedOn: string | null = null;
-  isDeleted: boolean = false;
-  deletedDate: string | null = null;
-  deletedBy: number = 0;
-
+export class Business extends AuditFields {
   id: number = 0;
   tabRefGUID: string = "";
   userId: number = 0;
   businessName: string = "";
-  businessCategoryId: number | null = null;
-  businessSubCategoryId: number | null = null;
-  businessTypeId: number | null = null;
-  sellerTypeId: number | null = null;
+  businessCategoryId: number = 0;
+  businessSubCategoryId: number = 0;
+  businessTypeId: number = 0;
+  sellerTypeId: number = 0;
   description: string = "";
   logoUrl: string = "";
   coverImageUrl: string = "";
-  establishedYear: number | null = null;
+  establishedYear: number = 0;
   website: string = "";
   status: number = 1;
   businessWorkingHoursList: BusinessWorkingHours[] = [];

@@ -65,7 +65,6 @@ export class BusinessEditProfileComponent implements OnInit {
   ngOnInit(): void {
     this.userId = Number(localStorage.getItem("id"));
 
-    // Reuse a per-user business draft GUID the same way add-post reuses "guid"
     this.tabRefGUID =
       localStorage.getItem("businessGuid") || this.generateGuid();
     localStorage.setItem("businessGuid", this.tabRefGUID);
@@ -99,7 +98,7 @@ export class BusinessEditProfileComponent implements OnInit {
   }
 
   onCategoryChange() {
-    this.business.businessSubCategoryId = null;
+    // this.business.businessSubCategoryId = 0;
     this.businessSubCategories = [];
     if (this.business.businessCategoryId) {
       this.businessService
@@ -140,6 +139,8 @@ export class BusinessEditProfileComponent implements OnInit {
         const wh = new BusinessWorkingHours();
         wh.dayOfWeek = index;
         wh.isClosed = true;
+        wh.openTime = "00:00:00";
+        wh.closeTime = "00:00:00";
         return wh;
       });
     }
@@ -168,14 +169,17 @@ export class BusinessEditProfileComponent implements OnInit {
     const files = event.target.files;
     if (!files.length) return;
     const formData = new FormData();
-    formData.append("files", files[0]);
+    formData.append("file", files[0]); // singular, matches Swagger schema
     this.logoUploading = true;
     this.businessService.uploadLogo(formData).subscribe(
-      (data: any) => {
+      (url: string) => {
         this.logoUploading = false;
-        this.business.logoUrl = Array.isArray(data) ? data[0] : data;
+        this.business.logoUrl = url;
       },
-      () => (this.logoUploading = false)
+      (error) => {
+        this.logoUploading = false;
+        console.error("Logo upload failed:", error);
+      }
     );
   }
 
@@ -188,14 +192,17 @@ export class BusinessEditProfileComponent implements OnInit {
     const files = event.target.files;
     if (!files.length) return;
     const formData = new FormData();
-    formData.append("files", files[0]);
+    formData.append("file", files[0]); // singular, and only ever one file — no loop needed
     this.coverUploading = true;
     this.businessService.uploadCoverImage(formData).subscribe(
-      (data: any) => {
+      (url: string) => {
         this.coverUploading = false;
-        this.business.coverImageUrl = Array.isArray(data) ? data[0] : data;
+        this.business.coverImageUrl = url;
       },
-      () => (this.coverUploading = false)
+      (error) => {
+        this.coverUploading = false;
+        console.error("Cover upload failed:", error);
+      }
     );
   }
 
@@ -249,18 +256,26 @@ export class BusinessEditProfileComponent implements OnInit {
       return;
     }
 
+    const now = new Date().toISOString().slice(0, 23);
+
     this.business.userId = this.userId;
     this.business.tabRefGUID = this.tabRefGUID;
     this.business.createdBy = this.business.createdBy || this.userId;
-    (this.business as any).modifiedBy = this.userId;
-    (this.business as any).modifiedOn = new Date().toISOString().slice(0, 23);
-    if (!(this.business as any).createdOn) {
-      (this.business as any).createdOn = new Date().toISOString().slice(0, 23);
-    }
+    this.business.createdOn = this.business.createdOn || now;
+    this.business.modifiedBy = this.userId;
+    this.business.modifiedOn = now;
 
+    // Gallery — build from cardsCount, stamp audit fields on each item
     this.business.businessGalleryList = this.cardsCount
       .filter((url) => url !== "")
       .map((url, index) => ({
+        createdBy: this.userId,
+        createdOn: now,
+        modifiedBy: this.userId,
+        modifiedOn: now,
+        isDeleted: false,
+        deletedDate: "",
+        deletedBy: 0,
         id: 0,
         businessId: this.business.id,
         imageUrl: url,
@@ -269,18 +284,61 @@ export class BusinessEditProfileComponent implements OnInit {
         displayOrder: index,
       }));
 
+    // Working hours — stamp audit fields on each entry
+    this.business.businessWorkingHoursList =
+      this.business.businessWorkingHoursList.map((wh) => ({
+        ...wh,
+        createdBy: wh.createdBy || this.userId,
+        createdOn: wh.createdOn || now,
+        modifiedBy: this.userId,
+        modifiedOn: now,
+        businessId: this.business.id,
+      }));
+
+    // Contact
     this.business.businessContact.businessId = this.business.id;
+    this.business.businessContact.createdBy =
+      this.business.businessContact.createdBy || this.userId;
+    this.business.businessContact.createdOn =
+      this.business.businessContact.createdOn || now;
+    this.business.businessContact.modifiedBy = this.userId;
+    this.business.businessContact.modifiedOn = now;
+
+    // Address
     this.business.businessAddress.businessId = this.business.id;
+    this.business.businessAddress.createdBy =
+      this.business.businessAddress.createdBy || this.userId;
+    this.business.businessAddress.createdOn =
+      this.business.businessAddress.createdOn || now;
+    this.business.businessAddress.modifiedBy = this.userId;
+    this.business.businessAddress.modifiedOn = now;
+
+    // Social Media
     this.business.businessSocialMedia.businessId = this.business.id;
+    this.business.businessSocialMedia.createdBy =
+      this.business.businessSocialMedia.createdBy || this.userId;
+    this.business.businessSocialMedia.createdOn =
+      this.business.businessSocialMedia.createdOn || now;
+    this.business.businessSocialMedia.modifiedBy = this.userId;
+    this.business.businessSocialMedia.modifiedOn = now;
+
+    // Verification — wasn't being sent at all before; include it with safe defaults
+    this.business.businessVerification.businessId = this.business.id;
+    this.business.businessVerification.createdBy =
+      this.business.businessVerification.createdBy || this.userId;
+    this.business.businessVerification.createdOn =
+      this.business.businessVerification.createdOn || now;
+    this.business.businessVerification.modifiedBy = this.userId;
+    this.business.businessVerification.modifiedOn = now;
 
     this.saving = true;
     this.businessService.saveBusiness(this.business).subscribe(
-      () => {
+      (response) => {
         this.saving = false;
         this.showNotification("Business profile saved successfully");
         this.router.navigateByUrl("/business/profile");
       },
-      () => {
+      (error) => {
         this.saving = false;
         this.showNotification(
           "Something went wrong while saving. Please try again."
@@ -291,7 +349,7 @@ export class BusinessEditProfileComponent implements OnInit {
 
   showNotification(message: string): void {
     this.snackBar.open(message, "Close", {
-      duration: 4000,
+      duration: 5000,
       horizontalPosition: "end",
       verticalPosition: "top",
     });
