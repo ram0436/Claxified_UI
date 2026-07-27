@@ -85,6 +85,19 @@ export class BusinessEditProfileComponent implements OnInit {
     });
   }
 
+  // ---------- Public view ----------
+  viewPublicProfile(): void {
+    if (!this.business.tabRefGUID) {
+      this.showNotification("Save your profile first to get a public link");
+      return;
+    }
+    // opens in a new tab so the edit form stays where it was
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(["/business/profile", this.business.tabRefGUID])
+    );
+    window.open(url, "_blank");
+  }
+
   loadDropdownData() {
     this.businessService.getBusinessCategories().subscribe((data: any) => {
       this.businessCategories = data;

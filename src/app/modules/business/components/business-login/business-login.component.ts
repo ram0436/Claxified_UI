@@ -67,13 +67,8 @@ export class BusinessLoginComponent {
   }
 
   sendOTP() {
-    this.businessNameErrorMessage = false;
     this.phoneNumberErrorMessage = false;
-
-    if (!this.businessName || this.businessName.trim().length < 2) {
-      this.businessNameErrorMessage = true;
-      return;
-    }
+    this.businessNameErrorMessage = false;
 
     const phoneNumberRegex = /^[0-9]{10}$/;
     if (!phoneNumberRegex.test(this.phoneNumber)) {
@@ -81,9 +76,13 @@ export class BusinessLoginComponent {
       return;
     }
 
-    this.httpClient
-      .get("https://api64.ipify.org?format=json")
-      .subscribe((ipInfo: any) => {
+    if (!this.businessName || this.businessName.trim().length < 2) {
+      this.businessNameErrorMessage = true;
+      return;
+    }
+
+    this.httpClient.get("https://api64.ipify.org?format=json").subscribe({
+      next: (ipInfo: any) => {
         const ipAddress = ipInfo.ip;
         const createdOn = new Date().toISOString();
         this.userService
@@ -104,7 +103,15 @@ export class BusinessLoginComponent {
               }, 5000);
             }
           );
-      });
+      },
+      error: () => {
+        // IP lookup failed — don't block OTP sending, just skip the IP or show a message
+        this.otpFailed = true;
+        setTimeout(() => {
+          this.otpFailed = false;
+        }, 5000);
+      },
+    });
   }
 
   verifyOTPAndRegister() {

@@ -12,7 +12,7 @@
 
     <ul class="business-nav-links">
       <li><a routerLink="/">Back to Claxified</a></li>
-      <li>
+      <li *ngIf="isUserLogedIn">
         <a
           routerLink="/business"
           routerLinkActive="active"
@@ -21,12 +21,12 @@
           Overview
         </a>
       </li>
-      <li>
+      <li *ngIf="isUserLogedIn">
         <a routerLink="/business/profile/edit" routerLinkActive="active"
           >Profile</a
         >
       </li>
-      <li>
+      <li *ngIf="!isUserLogedIn">
         <a (click)="openBusinessLoginModal()" class="business-cta-btn">
           Register Your Business
         </a>

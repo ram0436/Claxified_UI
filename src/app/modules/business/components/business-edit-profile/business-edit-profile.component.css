@@ -4,9 +4,29 @@
   padding: 0 20px;
 }
 
+.edit-profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.public-view-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.public-view-button .material-icons-outlined {
+  font-size: 18px;
+}
+
 .page-title {
   color: #0d475c;
-  margin-top: 100px;
   margin-bottom: 20px;
 }
 

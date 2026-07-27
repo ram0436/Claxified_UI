@@ -1,5 +1,17 @@
 <div class="edit-profile-wrapper">
-  <h2 class="page-title">Edit Business Profile</h2>
+  <div class="edit-profile-header">
+    <h2 class="page-title">Edit Business Profile</h2>
+    <button
+      mat-stroked-button
+      color="primary"
+      class="public-view-button"
+      type="button"
+      (click)="viewPublicProfile()"
+    >
+      <!-- <span class="material-icons-outlined">visibility</span> -->
+      View Public Profile
+    </button>
+  </div>
 
   <!-- Basic Details -->
   <mat-card class="section-card">
@@ -82,6 +94,7 @@
         class="logo-progress"
       ></mat-progress-bar>
     </div>
+
     <h3 class="section-title">Basic Details</h3>
 
     <label class="field-label">Business Name</label>

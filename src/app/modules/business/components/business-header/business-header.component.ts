@@ -10,7 +10,17 @@ import { BusinessLoginComponent } from "../business-login/business-login.compone
 export class BusinessHeaderComponent {
   dialogRef!: MatDialogRef<BusinessLoginComponent>;
 
+  isUserLogedIn: boolean = false;
+  userData: any;
+
   constructor(private dialog: MatDialog) {}
+
+  ngOnInit() {
+    if (localStorage.getItem("authToken") != null) {
+      this.isUserLogedIn = true;
+    }
+    var role = localStorage.getItem("role");
+  }
 
   openBusinessLoginModal() {
     if (this.dialogRef) {
