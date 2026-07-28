@@ -1,0 +1,177 @@
+.business-login-wrapper {
+  display: flex;
+  width: 800px;
+  max-width: 90vw;
+  min-height: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background: #fff;
+}
+
+.login-cancel-icon {
+  cursor: pointer;
+  font-size: 25px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  color: #fff;
+  z-index: 5;
+}
+
+/* Left brand panel */
+.business-login-brand-panel {
+  width: 45%;
+  background: linear-gradient(160deg, #0d475c, #1a1030);
+  color: #fff;
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.brand-logo {
+  background: #fff;
+  border-radius: 30px;
+  padding: 10px 20px;
+  display: inline-flex;
+}
+
+.brand-logo img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.brand-illustration {
+  margin-top: 50px;
+  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 30px;
+}
+
+.brand-illustration-icon {
+  font-size: 60px;
+  color: #03e9f4;
+}
+
+.brand-heading {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.brand-subtext {
+  font-size: 14px;
+  color: #d9edf3;
+  line-height: 1.5;
+}
+
+/* Right form panel */
+.business-login-form-panel {
+  width: 55%;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-heading {
+  font-weight: 700;
+  color: #3c3241;
+  margin-bottom: 6px;
+}
+
+.form-subheading {
+  color: #635b67;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #3c3241;
+  margin-bottom: 4px;
+}
+
+.business-login-form mat-form-field {
+  width: 100%;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.country-code {
+  padding-left: 12px;
+}
+
+.business-login-button {
+  display: block;
+  width: 100%;
+  margin: 25px 0 0 0;
+  color: #fff !important;
+  background-color: #e75462 !important;
+  height: 44px;
+  font-weight: 600;
+}
+
+.otp-failure-message {
+  margin: -2px 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+  font-size: 13px;
+  color: red;
+}
+
+.otp-send-message {
+  margin: 15px 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 13px;
+  color: #008c15;
+}
+
+.otp-send-message .material-icons-outlined,
+.otp-failure-message .material-icons-outlined {
+  font-size: 20px;
+}
+
+.receive-message {
+  margin: 0 0 15px 0;
+  color: #9e9798;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.countdown-message {
+  color: #172b4d;
+}
+
+.resend-link {
+  color: #0065ff;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 5px;
+}
+
+@media (max-width: 750px) {
+  .business-login-wrapper {
+    flex-direction: column;
+    width: 95vw;
+  }
+  .business-login-brand-panel,
+  .business-login-form-panel {
+    width: 100%;
+  }
+  .business-login-brand-panel {
+    padding: 30px 20px;
+  }
+}

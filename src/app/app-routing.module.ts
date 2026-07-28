@@ -87,6 +87,13 @@ const routes: Routes = [
   { path: "vacancy-opening", component: VacancyOpeningComponent },
   { path: "help", component: HelpComponent },
   { path: "page/:slug", component: PageComponent },
+  {
+    path: "business",
+    loadChildren: () =>
+      import("./modules/business/business.module").then(
+        (m) => m.BusinessModule
+      ),
+  },
 ];
 
 @NgModule({
