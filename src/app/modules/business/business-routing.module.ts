@@ -15,9 +15,10 @@ const routes: Routes = [
     children: [
       { path: "", component: BusinessLandingComponent },
       { path: "register", component: BusinessRegisterComponent },
-      // { path: "profile", component: BusinessProfileComponent },
+      { path: "profile", component: BusinessProfileComponent },
       { path: "profile/edit", component: BusinessEditProfileComponent },
       { path: "profile/:tabRefGuid", component: BusinessProfileComponent },
+
       {
         path: ":location/:businessName",
         component: BusinessPublicProfileComponent,

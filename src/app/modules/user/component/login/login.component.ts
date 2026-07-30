@@ -192,6 +192,7 @@ export class LoginComponent {
             localStorage.setItem("role", data.role);
             localStorage.setItem("authToken", data.authToken);
             localStorage.setItem("id", data.id);
+            localStorage.setItem("firstName", data.firstName);
             this.dialogRef.close();
             this.userService.setData("login");
             if (data.role == "Admin")

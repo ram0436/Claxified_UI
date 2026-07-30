@@ -1,1 +1,397 @@
-<p>business-profile works!</p>
+<!-- ============ LOADING ============ -->
+<div class="page-loading" *ngIf="loading">
+  <div class="skeleton-grid" *ngIf="mode === 'list'">
+    <div class="skeleton-card" *ngFor="let s of skeletonItems">
+      <div class="skeleton-thumb shimmer"></div>
+      <div class="skeleton-line shimmer w-70"></div>
+    </div>
+  </div>
+
+  <div class="skeleton-detail" *ngIf="mode === 'detail'">
+    <div class="skeleton-cover shimmer"></div>
+    <div class="skeleton-line shimmer w-40" style="margin-top: 50px"></div>
+    <div class="skeleton-line shimmer w-60"></div>
+    <div class="skeleton-line shimmer w-90"></div>
+  </div>
+</div>
+
+<!-- ============ LIST MODE ============ -->
+<div class="profile-list-wrapper" *ngIf="mode === 'list' && !loading">
+  <div class="list-header">
+    <div>
+      <h2>My Businesses</h2>
+      <p class="list-subtitle">
+        Manage your registered businesses and profiles
+      </p>
+    </div>
+    <!-- <button
+      class="btn-primary"
+      *ngIf="businesses.length > 0"
+      (click)="registerNewBusiness()"
+    >
+      <span class="material-icons-outlined">add</span> Register Business
+    </button> -->
+  </div>
+
+  <div class="business-cards-grid" *ngIf="businesses.length > 0">
+    <div
+      class="business-card"
+      *ngFor="let biz of businesses; let i = index"
+      [style.animation-delay.ms]="i * 40"
+      (click)="openBusiness(biz)"
+      tabindex="0"
+      (keyup.enter)="openBusiness(biz)"
+    >
+      <div
+        class="business-card-logo"
+        [style.background]="
+          biz.logoUrl ? null : avatarGradient(biz.businessName)
+        "
+      >
+        <img *ngIf="biz.logoUrl" [src]="biz.logoUrl" alt="" />
+        <span *ngIf="!biz.logoUrl" class="avatar-initials">{{
+          getInitials(biz.businessName)
+        }}</span>
+      </div>
+      <span class="business-card-name">{{ biz.businessName }}</span>
+      <span class="material-icons-outlined card-chevron">chevron_right</span>
+    </div>
+  </div>
+
+  <div class="empty-list" *ngIf="businesses.length === 0">
+    <span class="material-icons-outlined empty-icon">storefront</span>
+    <h3>No businesses yet</h3>
+    <p>Create a business profile so customers can find you.</p>
+    <button class="btn-primary" (click)="registerNewBusiness()">
+      <span class="material-icons-outlined">add</span> Register Your First
+      Business
+    </button>
+  </div>
+</div>
+
+<!-- ============ DETAIL MODE ============ -->
+<div class="profile-wrapper" *ngIf="mode === 'detail' && !loading && business">
+  <button class="back-link" (click)="backToList()">
+    <span class="material-icons-outlined">arrow_back</span> All Businesses
+  </button>
+
+  <!-- Cover + logo only. Name/actions live below so they never sit on top of the image. -->
+  <div class="hero-banner">
+    <img
+      *ngIf="coverImageSrc"
+      [src]="coverImageSrc"
+      alt="Cover"
+      class="cover-image"
+    />
+    <div *ngIf="!coverImageSrc" class="cover-image cover-placeholder"></div>
+
+    <div
+      class="logo-box"
+      [style.background]="
+        logoImageSrc ? '#0d475c' : avatarGradient(business.businessName)
+      "
+    >
+      <img *ngIf="logoImageSrc" [src]="logoImageSrc" alt="Logo" />
+      <span *ngIf="!logoImageSrc" class="avatar-initials avatar-initials-lg">{{
+        getInitials(business.businessName)
+      }}</span>
+    </div>
+  </div>
+
+  <!-- Name, meta and the single Edit / Share actions -->
+  <div class="profile-header-row">
+    <div class="profile-header-info">
+      <div class="name-line">
+        <h2 class="business-name-text">
+          {{ business.businessName || "Your Business Name" }}
+        </h2>
+        <span class="verified-badge" *ngIf="isBusinessVerified">
+          <span class="material-icons-outlined">verified</span> Verified
+        </span>
+      </div>
+      <p class="profile-meta">
+        {{ business.businessCategory || "-" }}
+        <span *ngIf="business.businessSubCategory">
+          &middot; {{ business.businessSubCategory }}</span
+        >
+        <span *ngIf="business.businessType">
+          &middot; {{ business.businessType }}</span
+        >
+        <span *ngIf="business.establishedYear">
+          &middot; Est. {{ business.establishedYear }}</span
+        >
+      </p>
+    </div>
+
+    <div class="profile-header-actions">
+      <button class="btn-outline" (click)="shareProfile()">
+        <span class="material-icons-outlined">share</span> Share
+      </button>
+      <button class="btn-primary" (click)="editProfile()">
+        <span class="material-icons-outlined">edit</span> Edit Profile
+      </button>
+    </div>
+  </div>
+
+  <div class="tab-strip">
+    <span
+      class="tab-item"
+      [class.active]="activeTab === 'overview'"
+      (click)="setTab('overview')"
+    >
+      Overview
+    </span>
+    <span
+      class="tab-item"
+      [class.active]="activeTab === 'hours'"
+      (click)="setTab('hours')"
+    >
+      Working Hours
+    </span>
+    <span
+      class="tab-item"
+      [class.active]="activeTab === 'gallery'"
+      (click)="setTab('gallery')"
+    >
+      Gallery
+    </span>
+    <span
+      class="tab-item"
+      [class.active]="activeTab === 'services'"
+      (click)="setTab('services')"
+    >
+      Services
+    </span>
+  </div>
+
+  <!-- ---------- OVERVIEW ---------- -->
+  <ng-container *ngIf="activeTab === 'overview'">
+    <div class="content-card">
+      <div class="card-header">
+        <h3>Basic Details</h3>
+      </div>
+
+      <div class="detail-row">
+        <span class="material-icons-outlined detail-icon">category</span>
+        <div>
+          <span class="detail-label">Category</span>
+          <p class="detail-value">
+            {{ business.businessCategory || "-" }}
+            <span *ngIf="business.businessSubCategory">
+              &middot; {{ business.businessSubCategory }}</span
+            >
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="detail-row"
+        *ngIf="business.businessType || business.sellerType"
+      >
+        <span class="material-icons-outlined detail-icon">work_outline</span>
+        <div>
+          <span class="detail-label">Business Type</span>
+          <p class="detail-value">
+            {{ business.businessType || "-" }}
+            <span *ngIf="business.sellerType">
+              &middot; {{ business.sellerType }}</span
+            >
+          </p>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="material-icons-outlined detail-icon">location_on</span>
+        <div>
+          <span class="detail-label">Address</span>
+          <p class="detail-value">
+            {{ fullAddress || "No address available" }}
+          </p>
+          <a
+            *ngIf="business.businessAddressDto?.googleMapURL"
+            class="map-link"
+            [href]="business.businessAddressDto?.googleMapURL"
+            target="_blank"
+            rel="noopener"
+          >
+            View on map
+          </a>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="material-icons-outlined detail-icon">person</span>
+        <div>
+          <span class="detail-label">Contact Person</span>
+          <p class="detail-value">
+            {{ business.businessContactDto?.contactPerson || "-" }}
+          </p>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="material-icons-outlined detail-icon">call</span>
+        <div>
+          <span class="detail-label">Contact Numbers</span>
+          <p class="detail-value">
+            {{ business.businessContactDto?.mobile || "-" }}
+            <span *ngIf="business.businessContactDto?.alternateMobile">
+              &middot;
+              {{ business.businessContactDto?.alternateMobile }} (alt)</span
+            >
+          </p>
+          <p class="detail-sub" *ngIf="business.businessContactDto?.whatsApp">
+            WhatsApp: {{ business.businessContactDto?.whatsApp }}
+          </p>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="material-icons-outlined detail-icon">mail</span>
+        <div>
+          <span class="detail-label">Email</span>
+          <p class="detail-value">
+            {{ business.businessContactDto?.email || "No email available" }}
+          </p>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="material-icons-outlined detail-icon">language</span>
+        <div>
+          <span class="detail-label">Website</span>
+          <p class="detail-value">
+            <a
+              *ngIf="business.website"
+              [href]="business.website"
+              target="_blank"
+              rel="noopener"
+              class="inline-link"
+              >{{ business.website }}</a
+            >
+            <ng-container *ngIf="!business.website"
+              >No website available</ng-container
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card" *ngIf="verificationItems.length > 0">
+      <div class="card-header">
+        <h3>Verification</h3>
+      </div>
+      <div class="verification-chips">
+        <span
+          class="chip"
+          *ngFor="let item of verificationItems"
+          [class.chip-verified]="item.verified"
+        >
+          <span class="material-icons-outlined">{{
+            item.verified ? "check_circle" : "radio_button_unchecked"
+          }}</span>
+          {{ item.label }}
+        </span>
+      </div>
+      <p
+        class="verification-remark"
+        *ngIf="business.businessVerificationDto?.verificationRemarks"
+      >
+        {{ business.businessVerificationDto?.verificationRemarks }}
+      </p>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header">
+        <h3>About Business</h3>
+      </div>
+      <p class="about-text">
+        {{
+          business.description ||
+            "Tell us in detail about your company and services you offer"
+        }}
+      </p>
+    </div>
+
+    <div class="content-card" *ngIf="socialLinks.length > 0">
+      <div class="card-header">
+        <h3>Connect</h3>
+      </div>
+      <div class="social-links">
+        <a
+          class="social-chip"
+          *ngFor="let link of socialLinks"
+          [href]="link.url"
+          target="_blank"
+          rel="noopener"
+          [style.background]="link.color"
+        >
+          {{ link.label }}
+        </a>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ---------- WORKING HOURS ---------- -->
+  <div class="content-card" *ngIf="activeTab === 'hours'">
+    <h3>Working Hours</h3>
+    <div class="hours-list" *ngIf="workingHours.length > 0; else noHours">
+      <div class="hours-row" *ngFor="let wh of workingHours">
+        <span class="hours-day">{{ wh.day }}</span>
+        <span class="hours-value" [class.hours-closed]="wh.isClosed">{{
+          wh.hours
+        }}</span>
+      </div>
+    </div>
+    <ng-template #noHours>
+      <div class="empty-services">
+        <span class="material-icons-outlined empty-icon">schedule</span>
+        <p class="about-text">Working hours haven't been added yet.</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- ---------- GALLERY ---------- -->
+  <div class="content-card" *ngIf="activeTab === 'gallery'">
+    <h3>Gallery</h3>
+    <div class="gallery-grid" *ngIf="galleryItems.length > 0; else noGallery">
+      <a
+        class="gallery-item"
+        *ngFor="let img of galleryItems"
+        [href]="img.imageUrl"
+        target="_blank"
+        rel="noopener"
+      >
+        <img
+          [src]="img.thumbnailUrl || img.imageUrl"
+          [alt]="img.caption || 'Business photo'"
+        />
+        <span class="gallery-caption" *ngIf="img.caption">{{
+          img.caption
+        }}</span>
+      </a>
+    </div>
+    <ng-template #noGallery>
+      <div class="empty-services">
+        <span class="material-icons-outlined empty-icon">photo_library</span>
+        <p class="about-text">No photos uploaded yet.</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- ---------- SERVICES ---------- -->
+  <div class="content-card" *ngIf="activeTab === 'services'">
+    <h3>Services</h3>
+    <div class="empty-services">
+      <span class="material-icons-outlined empty-icon">design_services</span>
+      <p class="about-text">No services listed yet.</p>
+    </div>
+  </div>
+
+  <app-business-edit-profile
+    *ngIf="editPanelOpen"
+    [tabRefGuid]="tabRefGuid"
+    (close)="closeEditPanel()"
+    (saved)="onProfileSaved()"
+  ></app-business-edit-profile>
+</div>

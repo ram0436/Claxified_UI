@@ -37,7 +37,7 @@ export class PostMenuComponent {
   getAllCategory() {
     this.commonService.getAllCategory().subscribe((data: any) => {
       this.mainCategories = data;
-      console.log(this.mainCategories);
+      // console.log(this.mainCategories);
     });
   }
 

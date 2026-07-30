@@ -19,7 +19,6 @@
   z-index: 5;
 }
 
-/* Left brand panel */
 .business-login-brand-panel {
   width: 45%;
   background: linear-gradient(160deg, #0d475c, #1a1030);
@@ -28,7 +27,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   text-align: center;
 }
 
@@ -45,22 +43,10 @@
   object-fit: contain;
 }
 
-.brand-illustration {
-  margin-top: 50px;
-  margin-bottom: 30px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 30px;
-}
-
-.brand-illustration-icon {
-  font-size: 60px;
-  color: #03e9f4;
-}
-
 .brand-heading {
   font-weight: 600;
   margin-bottom: 12px;
+  margin-top: 40px;
 }
 
 .brand-subtext {
@@ -69,7 +55,6 @@
   line-height: 1.5;
 }
 
-/* Right form panel */
 .business-login-form-panel {
   width: 55%;
   padding: 50px 40px;

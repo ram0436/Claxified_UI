@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
+import { BusinessListItem, BusinessViewDto } from "../model/Business";
 
 @Injectable({
   providedIn: "root",
@@ -30,8 +31,16 @@ export class BusinessService {
     return this.http.get(`${this.baseUrl}Business/seller-types`);
   }
 
-  getBusinessByGuid(tabRefGUID: string) {
-    return this.http.get(`${this.baseUrl}Business/${tabRefGUID}`);
+  getBusinessByGuid(tabRefGUID: string): Observable<BusinessViewDto> {
+    return this.http.get<BusinessViewDto>(
+      `${this.baseUrl}Business/${tabRefGUID}`
+    );
+  }
+
+  getUserBusinesses(userId: number): Observable<BusinessListItem[]> {
+    return this.http.get<BusinessListItem[]>(
+      `${this.baseUrl}Business/businesses?userId=${userId}`
+    );
   }
 
   uploadLogo(formData: FormData): Observable<string> {
@@ -58,7 +67,11 @@ export class BusinessService {
   }
 
   saveBusiness(payload: any) {
-    return this.http.post(`${this.baseUrl}Business`, payload);
+    return this.http.post(`${this.baseUrl}Business/Register`, payload);
+  }
+
+  updateBusiness(id: number, payload: any) {
+    return this.http.put(`${this.baseUrl}Business/${id}`, payload);
   }
 
   deleteBusiness(id: number) {

@@ -28,7 +28,10 @@
   text-decoration: none;
   padding: 14px 28px;
   border-radius: 30px;
-  font-weight: 600;
+}
+
+.hero-cta:hover {
+  cursor: pointer;
 }
 
 .features {

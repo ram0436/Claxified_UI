@@ -1,8 +1,13 @@
-.mt-110{
-    margin-top: 110px;
+.mt-110 {
+  margin-top: 110px;
 }
-.mt-30{
-    margin-top: 30px;
+.mt-30 {
+  margin-top: 30px;
+}
+
+::ng-deep .cdk-global-overlay-wrapper,
+::ng-deep .cdk-overlay-container {
+  z-index: 2000 !important;
 }
 
 /* .bg-mat-app-background{
