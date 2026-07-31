@@ -100,21 +100,9 @@ export class Business extends AuditFields {
 // ---------- Registration payload (users + business combined) ----------
 
 export class BusinessRegisterUser {
-  id: number = 0;
-  userId: string = "";
-  password: string = "";
-  userImageList: any[] = [];
-  role: number = 0;
-  firstName: string = "";
-  lastName: string = "";
   mobileNo: string = "";
-  watsAppNo: string = "";
-  email: string = "";
-  isBlockedUser: boolean = false;
-  isActiveUser: boolean = true;
-  aboutMe: string = "";
-  createdOn: string = new Date().toISOString();
-  isMobileNoDND: boolean = false;
+  otp: number = 0;
+  name: string = "";
 }
 
 export class BusinessRegisterRequest {

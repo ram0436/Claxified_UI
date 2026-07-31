@@ -491,6 +491,15 @@
   </ng-template>
 
   <div class="edit-panel-footer">
+    <button
+      class="danger-link-btn"
+      type="button"
+      (click)="requestDeleteBusiness()"
+      [disabled]="saving"
+    >
+      <span class="material-icons-outlined">delete_outline</span>
+      Delete Business
+    </button>
     <button mat-stroked-button (click)="dismiss()" [disabled]="saving">
       Cancel
     </button>
@@ -503,5 +512,32 @@
     >
       {{ saving ? "Saving..." : "Save Business Profile" }}
     </button>
+  </div>
+  <div class="confirm-overlay" *ngIf="showDeleteConfirm">
+    <div class="confirm-card">
+      <span class="material-icons-outlined confirm-icon">warning_amber</span>
+      <h3>Delete this business?</h3>
+      <p>
+        This will permanently remove
+        <strong>{{ business.businessName || "this business" }}</strong>
+        and all its details, photos, and reviews. This can't be undone.
+      </p>
+      <div class="confirm-actions">
+        <button
+          mat-stroked-button
+          (click)="cancelDeleteBusiness()"
+          [disabled]="deleting"
+        >
+          Cancel
+        </button>
+        <button
+          class="confirm-delete-btn"
+          (click)="confirmDeleteBusiness()"
+          [disabled]="deleting"
+        >
+          {{ deleting ? "Deleting..." : "Yes, Delete" }}
+        </button>
+      </div>
+    </div>
   </div>
 </div>

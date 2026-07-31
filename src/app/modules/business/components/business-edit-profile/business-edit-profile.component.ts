@@ -76,6 +76,11 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
 
   activeSection: SectionId = "basic";
 
+  @Output() deleted = new EventEmitter<number>();
+
+  showDeleteConfirm: boolean = false;
+  deleting: boolean = false;
+
   sections: EditSection[] = [
     { id: "basic", label: "Basic Details", icon: "storefront", required: true },
     {
@@ -123,6 +128,34 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
     if (changes["tabRefGuid"] && !changes["tabRefGuid"].firstChange) {
       this.ngOnInit();
     }
+  }
+
+  requestDeleteBusiness(): void {
+    this.showDeleteConfirm = true;
+  }
+
+  cancelDeleteBusiness(): void {
+    this.showDeleteConfirm = false;
+  }
+
+  confirmDeleteBusiness(): void {
+    this.deleting = true;
+    this.businessService.deleteBusiness(this.business.id).subscribe(
+      () => {
+        this.deleting = false;
+        this.showDeleteConfirm = false;
+        this.showNotification("Business deleted successfully");
+        this.deleted.emit(this.business.id);
+        this.close.emit();
+        this.router.navigate(["/business/profile"]);
+      },
+      () => {
+        this.deleting = false;
+        this.showNotification(
+          "Something went wrong while deleting. Please try again."
+        );
+      }
+    );
   }
 
   setSection(id: SectionId) {
@@ -490,97 +523,207 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
 
     const now = new Date().toISOString().slice(0, 23);
 
-    this.business.userId = this.userId;
-    this.business.tabRefGUID = this.tabRefGuid || this.business.tabRefGUID;
-    this.business.createdBy = this.business.createdBy || this.userId;
-    this.business.createdOn = this.business.createdOn || now;
-    this.business.modifiedBy = this.userId;
-    this.business.modifiedOn = now;
-
-    this.business.businessGalleryList = this.cardsCount
+    // ---------- Gallery: always send a consistent shape, never [] ----------
+    const galleryEntries = this.cardsCount
       .map((url, index) => ({ url, id: this.galleryIds[index] }))
-      .filter((item) => item.url !== "")
-      .map((item, index) => ({
-        createdBy: this.userId,
-        createdOn: now,
-        modifiedBy: this.userId,
-        modifiedOn: now,
-        isDeleted: false,
-        deletedDate: "",
-        deletedBy: 0,
-        id: item.id,
-        businessId: this.business.id,
-        imageUrl: item.url,
-        thumbnailUrl: item.url,
-        caption: "",
-        displayOrder: index,
-      }));
+      .filter((item) => item.url !== "");
 
-    this.business.businessWorkingHoursList =
-      this.business.businessWorkingHoursList.map((wh) => ({
-        ...wh,
+    const businessGalleryList =
+      galleryEntries.length > 0
+        ? galleryEntries.map((item, index) => ({
+            createdBy: this.userId,
+            createdOn: now,
+            modifiedBy: this.userId,
+            modifiedOn: now,
+            isDeleted: false,
+            deletedDate: now,
+            deletedBy: 0,
+            id: item.id,
+            businessId: this.business.id,
+            imageUrl: item.url,
+            thumbnailUrl: item.url,
+            caption: "",
+            displayOrder: index,
+          }))
+        : [
+            {
+              createdBy: this.userId,
+              createdOn: now,
+              modifiedBy: this.userId,
+              modifiedOn: now,
+              isDeleted: false,
+              deletedDate: now,
+              deletedBy: 0,
+              id: 0,
+              businessId: this.business.id,
+              imageUrl: "",
+              thumbnailUrl: "",
+              caption: "",
+              displayOrder: 0,
+            },
+          ];
+
+    // ---------- Working hours: always all 7 days, never [] ----------
+    const businessWorkingHoursList = this.business.businessWorkingHoursList.map(
+      (wh) => ({
         createdBy: wh.createdBy || this.userId,
         createdOn: wh.createdOn || now,
         modifiedBy: this.userId,
         modifiedOn: now,
+        isDeleted: false,
+        deletedDate: now,
+        deletedBy: 0,
+        id: wh.id || 0,
         businessId: this.business.id,
-      }));
+        dayOfWeek: wh.dayOfWeek,
+        openTime: wh.openTime || "",
+        closeTime: wh.closeTime || "",
+        isClosed: wh.isClosed,
+      })
+    );
 
-    this.business.businessContact.businessId = this.business.id;
-    this.business.businessContact.createdBy =
-      this.business.businessContact.createdBy || this.userId;
-    this.business.businessContact.createdOn =
-      this.business.businessContact.createdOn || now;
-    this.business.businessContact.modifiedBy = this.userId;
-    this.business.businessContact.modifiedOn = now;
+    // ---------- Build the exact payload shape, blanks instead of "string" ----------
+    const payload = {
+      createdBy: this.business.createdBy || this.userId,
+      createdOn: this.business.createdOn || now,
+      modifiedBy: this.userId,
+      modifiedOn: now,
+      isDeleted: false,
+      deletedDate: now,
+      deletedBy: 0,
+      id: this.business.id || 0,
+      tabRefGUID: this.tabRefGuid || this.business.tabRefGUID || "",
+      userId: this.userId,
+      businessName: this.business.businessName || "",
+      businessCategoryId: this.business.businessCategoryId || 0,
+      businessSubCategoryId: this.business.businessSubCategoryId || 0,
+      businessTypeId: this.business.businessTypeId || 0,
+      sellerTypeId: this.business.sellerTypeId || 0,
+      description: this.business.description || "",
+      logoUrl: this.business.logoUrl || "",
+      coverImageUrl: this.business.coverImageUrl || "",
+      establishedYear: this.business.establishedYear || 0,
+      website: this.business.website || "",
+      status: this.business.status ?? 1,
 
-    this.business.businessAddress.businessId = this.business.id;
-    this.business.businessAddress.createdBy =
-      this.business.businessAddress.createdBy || this.userId;
-    this.business.businessAddress.createdOn =
-      this.business.businessAddress.createdOn || now;
-    this.business.businessAddress.modifiedBy = this.userId;
-    this.business.businessAddress.modifiedOn = now;
+      businessWorkingHoursList: this.business.businessWorkingHoursList.map(
+        (wh) => ({
+          createdBy: wh.createdBy || this.userId,
+          createdOn: wh.createdOn || now,
+          modifiedBy: this.userId,
+          modifiedOn: now,
+          isDeleted: false,
+          deletedDate: now,
+          deletedBy: 0,
+          id: wh.id || 0,
+          businessId: this.business.id,
+          dayOfWeek: wh.dayOfWeek,
+          openTime: wh.openTime || "",
+          closeTime: wh.closeTime || "",
+          isClosed: wh.isClosed,
+        })
+      ),
 
-    this.business.businessSocialMedia.businessId = this.business.id;
-    this.business.businessSocialMedia.createdBy =
-      this.business.businessSocialMedia.createdBy || this.userId;
-    this.business.businessSocialMedia.createdOn =
-      this.business.businessSocialMedia.createdOn || now;
-    this.business.businessSocialMedia.modifiedBy = this.userId;
-    this.business.businessSocialMedia.modifiedOn = now;
+      businessVerification: {
+        createdBy: this.business.businessVerification.createdBy || this.userId,
+        createdOn: this.business.businessVerification.createdOn || now,
+        modifiedBy: this.userId,
+        modifiedOn: now,
+        isDeleted: false,
+        deletedDate: now,
+        deletedBy: 0,
+        id: this.business.businessVerification.id || 0,
+        businessId: this.business.id || 0,
+        isGSTVerified: this.business.businessVerification.isGSTVerified || 0,
+        isPANVerified: this.business.businessVerification.isPANVerified || 0,
+        isAadhaarVerified:
+          this.business.businessVerification.isAadhaarVerified || 0,
+        isEmailVerified:
+          this.business.businessVerification.isEmailVerified || 0,
+        isMobileVerified:
+          this.business.businessVerification.isMobileVerified || 0,
+        isBusinessVerified:
+          this.business.businessVerification.isBusinessVerified || false,
+        verificationDate: null,
+        verifiedBy: 0,
+        verificationRemarks:
+          this.business.businessVerification.verificationRemarks || "",
+      },
 
-    this.business.businessVerification.businessId = this.business.id;
-    this.business.businessVerification.createdBy =
-      this.business.businessVerification.createdBy || this.userId;
-    this.business.businessVerification.createdOn =
-      this.business.businessVerification.createdOn || now;
-    this.business.businessVerification.modifiedBy = this.userId;
-    this.business.businessVerification.modifiedOn = now;
+      businessContact: {
+        createdBy: this.business.businessContact.createdBy || this.userId,
+        createdOn: this.business.businessContact.createdOn || now,
+        modifiedBy: this.userId,
+        modifiedOn: now,
+        isDeleted: false,
+        deletedDate: now,
+        deletedBy: 0,
+        id: this.business.businessContact.id || 0,
+        businessId: this.business.id || 0,
+        contactPerson: this.business.businessContact.contactPerson || "",
+        mobile: this.business.businessContact.mobile || "",
+        alternateMobile: this.business.businessContact.alternateMobile || "",
+        email: this.business.businessContact.email || "",
+        whatsApp: this.business.businessContact.whatsApp || "",
+      },
+
+      businessSocialMedia: {
+        createdBy: this.business.businessSocialMedia.createdBy || this.userId,
+        createdOn: this.business.businessSocialMedia.createdOn || now,
+        modifiedBy: this.userId,
+        modifiedOn: now,
+        isDeleted: false,
+        deletedDate: now,
+        deletedBy: 0,
+        id: this.business.businessSocialMedia.id || 0,
+        businessId: this.business.id || 0,
+        facebook: this.business.businessSocialMedia.facebook || "",
+        instagram: this.business.businessSocialMedia.instagram || "",
+        linkedIn: this.business.businessSocialMedia.linkedIn || "",
+        youTube: this.business.businessSocialMedia.youTube || "",
+        twitter: this.business.businessSocialMedia.twitter || "",
+      },
+
+      businessAddress: {
+        createdBy: this.business.businessAddress.createdBy || this.userId,
+        createdOn: this.business.businessAddress.createdOn || now,
+        modifiedBy: this.userId,
+        modifiedOn: now,
+        isDeleted: false,
+        deletedDate: now,
+        deletedBy: 0,
+        id: this.business.businessAddress.id || 0,
+        businessId: this.business.id || 0,
+        country: this.business.businessAddress.country || "",
+        state: this.business.businessAddress.state || "",
+        city: this.business.businessAddress.city || "",
+        area: this.business.businessAddress.area || "",
+        pincode: this.business.businessAddress.pincode || "",
+        address: this.business.businessAddress.address || "",
+        isPrimary: this.business.businessAddress.isPrimary ?? true,
+        googleMapURL: this.business.businessAddress.googleMapURL || "",
+      },
+
+      businessGalleryList,
+    };
 
     this.saving = true;
 
-    // console.log("Business ID:", this.business.id);
-    // console.log(
-    //   "Full Business Payload:",
-    //   JSON.stringify(this.business, null, 2)
-    // );
+    // console.log("Business Update Payload:", JSON.stringify(payload, null, 2));
 
-    this.businessService
-      .updateBusiness(this.business.id, this.business)
-      .subscribe(
-        () => {
-          this.saving = false;
-          this.showNotification("Business profile saved successfully");
-          this.saved.emit(this.tabRefGuid || this.business.tabRefGUID);
-        },
-        (error) => {
-          this.saving = false;
-          this.showNotification(
-            "Something went wrong while saving. Please try again."
-          );
-        }
-      );
+    this.businessService.updateBusiness(this.business.id, payload).subscribe(
+      () => {
+        this.saving = false;
+        this.showNotification("Business profile saved successfully");
+        this.saved.emit(this.tabRefGuid || this.business.tabRefGUID);
+      },
+      (error) => {
+        this.saving = false;
+        this.showNotification(
+          "Something went wrong while saving. Please try again."
+        );
+      }
+    );
   }
 
   showNotification(message: string): void {

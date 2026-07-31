@@ -238,4 +238,27 @@ export class BusinessProfileComponent implements OnInit {
     const c2 = this.avatarPalette[(idx + 2) % this.avatarPalette.length];
     return `linear-gradient(135deg, ${c1}, ${c2})`;
   }
+
+  deleteBusiness(item: BusinessListItem, event: Event) {
+    event.stopPropagation(); // 🚫 prevent card click
+
+    const confirmDelete = confirm(
+      `Are you sure you want to delete "${item.businessName}"?`
+    );
+
+    if (!confirmDelete) return;
+
+    this.businessService.deleteBusiness(Number(item.businessId)).subscribe(
+      () => {
+        // remove from UI instantly
+        this.businesses = this.businesses.filter(
+          (b) => b.businessId !== item.businessId
+        );
+      },
+      (error) => {
+        console.error("Delete failed", error);
+        alert("Failed to delete business");
+      }
+    );
+  }
 }

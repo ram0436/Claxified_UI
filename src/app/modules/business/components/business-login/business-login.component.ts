@@ -138,7 +138,8 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
       this.otpErrorMessage = true;
       return;
     }
-    const otpRegex = /^[0-9]+$/;
+
+    const otpRegex = /^[0-9]{4,6}$/;
     if (!otpRegex.test(this.otp)) {
       this.otpErrorMessage = true;
       return;
@@ -149,19 +150,9 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
     const payload = new BusinessRegisterRequest();
 
     // ---------- users ----------
-    payload.users.userId = this.phoneNumber; // mobile number, per spec
+    payload.users.otp = Number(this.otp);
     payload.users.mobileNo = this.phoneNumber;
-    payload.users.firstName = this.userName || this.businessName;
-    payload.users.isActiveUser = true;
-    payload.users.createdOn = now;
-    payload.users.userImageList = [
-      {
-        id: 0,
-        imageId: "",
-        imageURL: "",
-        usersId: this.loggedInUserId, // numeric id from localStorage
-      },
-    ];
+    payload.users.name = this.userName || this.businessName;
 
     // ---------- business (top-level) ----------
     payload.business.businessName = this.businessName;

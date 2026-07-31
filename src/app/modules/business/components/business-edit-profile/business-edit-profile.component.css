@@ -611,6 +611,116 @@ mat-form-field {
   margin-top: 2px;
 }
 
+.edit-panel-footer {
+  display: flex;
+  justify-content: space-between; /* was flex-end */
+  align-items: center;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.danger-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #b0292f;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.danger-link-btn .material-icons-outlined {
+  font-size: 18px;
+}
+
+.danger-link-btn:hover:not(:disabled) {
+  background: #fdecec;
+}
+
+.danger-link-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Delete confirmation overlay ---------- */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1100; /* above the drawer */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.15s ease;
+}
+
+.confirm-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px 32px;
+  width: 380px;
+  max-width: 90vw;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.confirm-icon {
+  font-size: 40px;
+  color: #e75462;
+  background: #fdecec;
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.confirm-card h3 {
+  margin: 14px 0 8px 0;
+  color: #3c3241;
+  font-size: 18px;
+}
+
+.confirm-card p {
+  color: #635b67;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.confirm-delete-btn {
+  background-color: #e75462;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.confirm-delete-btn:hover:not(:disabled) {
+  background-color: #d8404f;
+}
+
+.confirm-delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* =========================================================
      RESPONSIVE — panel collapses tab nav into a top strip
      ========================================================= */
