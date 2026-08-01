@@ -1,0 +1,115 @@
+<footer class="business-footer">
+  <div class="business-footer-container">
+    <div class="business-footer-top">
+      <div class="business-footer-brand">
+        <img
+          src="https://cfdblob.blob.core.windows.net/logo/Claxified_Business_Footer.png"
+          alt="Claxified Business"
+          class="business-footer-logo"
+        />
+        <p class="business-footer-tagline">
+          The complete platform to list, promote, and grow your business online.
+        </p>
+        <div class="business-footer-social">
+          <a href="#" aria-label="Facebook"
+            ><span class="material-icons">facebook</span></a
+          >
+          <a href="#" aria-label="Instagram"
+            ><span class="material-icons">photo_camera</span></a
+          >
+          <a href="#" aria-label="LinkedIn"
+            ><span class="material-icons">business_center</span></a
+          >
+          <a href="#" aria-label="YouTube"
+            ><span class="material-icons">smart_display</span></a
+          >
+        </div>
+      </div>
+
+      <div class="business-footer-newsletter">
+        <h3 class="business-footer-heading">Stay Updated</h3>
+        <p>Get tips on growing your business and new feature updates.</p>
+        <form class="newsletter-form" (submit)="$event.preventDefault()">
+          <input
+            type="email"
+            placeholder="Enter your business email"
+            class="newsletter-input"
+          />
+          <button type="submit" class="newsletter-btn">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- LINK GRID -->
+    <div class="business-footer-grid">
+      <div class="business-footer-col">
+        <h3 class="business-footer-heading">Platform</h3>
+        <a routerLink="/business" class="business-footer-link">Overview</a>
+        <a routerLink="/business/profile" class="business-footer-link"
+          >My Businesses</a
+        >
+        <a routerLink="/business/pricing" class="business-footer-link"
+          >Pricing</a
+        >
+        <a routerLink="/business/ai-tools" class="business-footer-link"
+          >AI-Powered Tools</a
+        >
+      </div>
+
+      <div class="business-footer-col">
+        <h3 class="business-footer-heading">Resources</h3>
+        <a routerLink="/business/how-it-works" class="business-footer-link"
+          >How It Works</a
+        >
+        <a routerLink="/business/success-stories" class="business-footer-link"
+          >Success Stories</a
+        >
+        <a routerLink="/business/blog" class="business-footer-link"
+          >Business Blog</a
+        >
+        <a routerLink="/business/faq" class="business-footer-link">FAQs</a>
+      </div>
+
+      <div class="business-footer-col">
+        <h3 class="business-footer-heading">Support</h3>
+        <a routerLink="/business/help-center" class="business-footer-link"
+          >Help Center</a
+        >
+        <a routerLink="/business/contact" class="business-footer-link"
+          >Contact Us</a
+        >
+        <a routerLink="/business/terms" class="business-footer-link"
+          >Terms of Service</a
+        >
+        <a routerLink="/business/privacy" class="business-footer-link"
+          >Privacy Policy</a
+        >
+      </div>
+
+      <div class="business-footer-col">
+        <h3 class="business-footer-heading">Get in Touch</h3>
+        <span class="business-footer-contact">
+          <span class="material-icons">call</span> +92 300 1234567
+        </span>
+        <span class="business-footer-contact">
+          <span class="material-icons">mail</span> business@claxified.com
+        </span>
+        <span class="business-footer-contact">
+          <span class="material-icons">location_on</span> Bengaluru, Karnataka,
+          India
+        </span>
+        <a (click)="registerNewBusiness()" class="business-footer-cta">
+          Register Your Business
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="business-footer-bottom">
+    <p class="business-copyright-text">
+      © 2022–2026 Claxified Business™. All Rights Reserved.
+    </p>
+    <a routerLink="/" class="back-to-main-link">Back to Claxified</a>
+  </div>
+</footer>
