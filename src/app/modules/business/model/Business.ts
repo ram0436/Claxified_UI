@@ -73,6 +73,7 @@ export class BusinessVerification extends AuditFields {
   verificationRemarks: string = "";
 }
 
+/** Used for creating/updating a business (POST /api/Business) */
 export class Business extends AuditFields {
   id: number = 0;
   tabRefGUID: string = "";
@@ -94,4 +95,105 @@ export class Business extends AuditFields {
   businessSocialMedia: BusinessSocialMedia = new BusinessSocialMedia();
   businessAddress: BusinessAddress = new BusinessAddress();
   businessGalleryList: BusinessGallery[] = [];
+}
+
+// ---------- Registration payload (users + business combined) ----------
+
+export class BusinessRegisterUser {
+  mobileNo: string = "";
+  otp: number = 0;
+  name: string = "";
+}
+
+export class BusinessRegisterRequest {
+  users: BusinessRegisterUser = new BusinessRegisterUser();
+  business: Business = new Business();
+}
+
+// ---------- "My Businesses" list (GET /Business/businesses?userId=) ----------
+
+export interface BusinessListItem {
+  businessId: string;
+  businessName: string;
+  logoUrl: string;
+}
+
+export interface BusinessVerificationDto {
+  id: number;
+  isGSTVerified: number;
+  isPANVerified: number;
+  isAadhaarVerified: number;
+  isEmailVerified: number;
+  isMobileVerified: number;
+  isBusinessVerified: number | boolean;
+  verificationDate: string;
+  verificationRemarks: string;
+}
+
+export interface BusinessContactDto {
+  id: number;
+  contactPerson: string;
+  mobile: string;
+  alternateMobile: string;
+  email: string;
+  whatsApp: string;
+}
+
+export interface BusinessAddressDto {
+  id: number;
+  country: string;
+  state: string;
+  city: string;
+  area: string;
+  address: string;
+  pincode: string;
+  isPrimary: boolean;
+  googleMapURL: string;
+}
+
+export interface BusinessSocialMediaDto {
+  id: number;
+  facebook: string;
+  instagram: string;
+  linkedIn: string;
+  youTube: string;
+  twitter: string;
+}
+
+export interface BusinessWorkingHoursDto {
+  id: number;
+  dayOfWeek: number;
+  openTime: string;
+  closeTime: string;
+  isClosed: boolean;
+}
+
+export interface BusinessGalleryDto {
+  id: number;
+  imageUrl: string;
+  thumbnailUrl: string;
+  caption: string;
+  displayOrder: number;
+}
+
+export interface BusinessViewDto {
+  id: number;
+  businessName: string;
+  businessCategory: string;
+  businessSubCategory: string;
+  businessType: string;
+  sellerType: string;
+  tabRefGUID: string;
+  description: string;
+  logoUrl: string;
+  coverImageUrl: string;
+  establishedYear: number;
+  website: string;
+  status: number;
+  businessVerificationDto?: BusinessVerificationDto;
+  businessContactDto?: BusinessContactDto;
+  businessAddressDto?: BusinessAddressDto;
+  businessSocialMediaDto?: BusinessSocialMediaDto;
+  businessWorkingHoursDtoList?: BusinessWorkingHoursDto[];
+  businessGalleryDtoList?: BusinessGalleryDto[];
 }

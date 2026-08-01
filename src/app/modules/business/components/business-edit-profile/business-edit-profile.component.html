@@ -1,5 +1,10 @@
-<div class="edit-profile-wrapper">
-  <div class="edit-profile-header">
+<div class="edit-panel-backdrop" (click)="dismiss()"></div>
+
+<div class="edit-panel-drawer">
+  <div class="edit-panel-header">
+    <button class="icon-btn" (click)="dismiss()">
+      <span class="material-icons-outlined">arrow_back</span>
+    </button>
     <h2 class="page-title">Edit Business Profile</h2>
     <button
       mat-stroked-button
@@ -8,432 +13,531 @@
       type="button"
       (click)="viewPublicProfile()"
     >
-      <!-- <span class="material-icons-outlined">visibility</span> -->
       View Public Profile
     </button>
   </div>
 
-  <!-- Basic Details -->
-  <mat-card class="section-card">
-    <div class="hero-banner-edit">
-      <!-- Cover -->
+  <div class="edit-panel-body" *ngIf="!loading; else panelLoading">
+    <!-- LEFT: tab strip, mirrors the reference screenshot -->
+    <nav class="edit-tabs-nav">
       <div
-        class="cover-upload-zone"
-        [class.has-image]="business.coverImageUrl"
-        (click)="selectCoverFile()"
+        class="edit-tab-item"
+        *ngFor="let s of sections"
+        [class.active]="activeSection === s.id"
+        (click)="setSection(s.id)"
       >
-        <img
-          *ngIf="business.coverImageUrl"
-          [src]="business.coverImageUrl"
-          alt="Cover"
-          class="cover-image"
-        />
-
-        <div class="cover-placeholder" *ngIf="!business.coverImageUrl">
-          <span class="material-icons-outlined">photo_camera</span>
-          <span>Add Cover Photo</span>
-        </div>
-
-        <div class="cover-overlay" *ngIf="business.coverImageUrl">
-          <span class="material-icons-outlined">photo_camera</span>
-          <span>Change Cover Photo</span>
-        </div>
-
-        <input
-          type="file"
-          id="coverUpload"
-          style="display: none"
-          (change)="uploadCoverImage($event)"
-        />
+        <span class="material-icons-outlined">{{ s.icon }}</span>
+        <span class="edit-tab-label">{{ s.label }}</span>
+        <span class="required-chip" *ngIf="s.required">Required</span>
       </div>
-      <mat-progress-bar
-        mode="indeterminate"
-        *ngIf="coverUploading"
-        class="cover-progress"
-      ></mat-progress-bar>
+    </nav>
 
-      <div class="logo-strip-edit">
-        <!-- Logo -->
-        <div
-          class="logo-upload-zone"
-          [class.has-image]="business.logoUrl"
-          (click)="selectLogoFile()"
-        >
-          <img *ngIf="business.logoUrl" [src]="business.logoUrl" alt="Logo" />
-
-          <span
-            class="material-icons-outlined logo-placeholder-icon"
-            *ngIf="!business.logoUrl"
+    <!-- RIGHT: content for the active tab -->
+    <div class="edit-tabs-content">
+      <!-- ---------- BASIC DETAILS ---------- -->
+      <mat-card class="section-card" *ngIf="activeSection === 'basic'">
+        <div class="hero-banner-edit">
+          <div
+            class="cover-upload-zone"
+            [class.has-image]="business.coverImageUrl"
+            (click)="selectCoverFile()"
           >
-            photo_camera
-          </span>
-
-          <div class="logo-overlay" *ngIf="business.logoUrl">
-            <span class="material-icons-outlined">photo_camera</span>
+            <img
+              *ngIf="business.coverImageUrl"
+              [src]="business.coverImageUrl"
+              alt="Cover"
+              class="cover-image"
+            />
+            <div class="cover-placeholder" *ngIf="!business.coverImageUrl">
+              <span class="material-icons-outlined">photo_camera</span>
+              <span>Add Cover Photo</span>
+            </div>
+            <div class="cover-overlay" *ngIf="business.coverImageUrl">
+              <span class="material-icons-outlined">photo_camera</span>
+              <span>Change Cover Photo</span>
+            </div>
+            <input
+              type="file"
+              id="coverUpload"
+              style="display: none"
+              (change)="uploadCoverImage($event)"
+            />
           </div>
+          <mat-progress-bar
+            mode="indeterminate"
+            *ngIf="coverUploading"
+            class="cover-progress"
+          ></mat-progress-bar>
 
-          <input
-            type="file"
-            id="logoUpload"
-            style="display: none"
-            (change)="uploadLogo($event)"
-          />
-        </div>
-
-        <!-- Live business-name preview, not editable here -->
-        <h2
-          class="business-name-preview"
-          [class.is-placeholder]="!business.businessName"
-        >
-          {{ business.businessName || "Your Business Name" }}
-        </h2>
-      </div>
-      <mat-progress-bar
-        mode="indeterminate"
-        *ngIf="logoUploading"
-        class="logo-progress"
-      ></mat-progress-bar>
-    </div>
-
-    <h3 class="section-title">Basic Details</h3>
-
-    <label class="field-label">Business Name</label>
-    <mat-form-field appearance="outline">
-      <input
-        matInput
-        [(ngModel)]="business.businessName"
-        placeholder="Enter business name"
-      />
-    </mat-form-field>
-
-    <div class="field-row">
-      <div class="field-half">
-        <label class="field-label">Business Category</label>
-        <mat-form-field appearance="outline">
-          <mat-select
-            [(ngModel)]="business.businessCategoryId"
-            (selectionChange)="onCategoryChange()"
-            placeholder="Select category"
-          >
-            <mat-option
-              *ngFor="let cat of businessCategories"
-              [value]="cat.id"
-              >{{ cat.name }}</mat-option
-            >
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="field-half">
-        <label class="field-label">Business Sub-Category</label>
-        <mat-form-field appearance="outline">
-          <mat-select
-            [(ngModel)]="business.businessSubCategoryId"
-            placeholder="Select sub-category"
-          >
-            <mat-option
-              *ngFor="let sub of businessSubCategories"
-              [value]="sub.id"
-              >{{ sub.name }}</mat-option
-            >
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </div>
-
-    <div class="field-row">
-      <div class="field-half">
-        <label class="field-label">Business Type</label>
-        <mat-form-field appearance="outline">
-          <mat-select
-            [(ngModel)]="business.businessTypeId"
-            placeholder="Select business type"
-          >
-            <mat-option *ngFor="let t of businessTypes" [value]="t.id">{{
-              t.name
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="field-half">
-        <label class="field-label">Seller Type</label>
-        <mat-form-field appearance="outline">
-          <mat-select
-            [(ngModel)]="business.sellerTypeId"
-            placeholder="Select seller type"
-          >
-            <mat-option *ngFor="let s of sellerTypes" [value]="s.id">{{
-              s.name
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </div>
-
-    <div class="field-row">
-      <div class="field-half">
-        <label class="field-label">Established Year</label>
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            type="number"
-            [(ngModel)]="business.establishedYear"
-            placeholder="e.g. 2015"
-          />
-        </mat-form-field>
-      </div>
-      <div class="field-half">
-        <label class="field-label">Website</label>
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            [(ngModel)]="business.website"
-            placeholder="https://yourbusiness.com"
-          />
-        </mat-form-field>
-      </div>
-    </div>
-  </mat-card>
-
-  <!-- About Business -->
-  <mat-card class="section-card">
-    <h3 class="section-title">About Business</h3>
-    <mat-form-field appearance="outline">
-      <textarea
-        matInput
-        rows="4"
-        [(ngModel)]="business.description"
-        placeholder="Tell us in detail about your company and services you offer"
-      ></textarea>
-    </mat-form-field>
-  </mat-card>
-
-  <!-- Contact -->
-  <mat-card class="section-card">
-    <h3 class="section-title">Contact Details</h3>
-    <div class="field-row">
-      <div class="field-half">
-        <label class="field-label">Contact Person</label>
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            [(ngModel)]="business.businessContact.contactPerson"
-          />
-        </mat-form-field>
-      </div>
-      <div class="field-half">
-        <label class="field-label">Mobile</label>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="business.businessContact.mobile" />
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="field-row">
-      <div class="field-half">
-        <label class="field-label">Alternate Mobile</label>
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            [(ngModel)]="business.businessContact.alternateMobile"
-          />
-        </mat-form-field>
-      </div>
-      <div class="field-half">
-        <label class="field-label">WhatsApp</label>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="business.businessContact.whatsApp" />
-        </mat-form-field>
-      </div>
-    </div>
-    <label class="field-label">Email</label>
-    <mat-form-field appearance="outline">
-      <input matInput [(ngModel)]="business.businessContact.email" />
-    </mat-form-field>
-  </mat-card>
-
-  <!-- Address -->
-  <mat-card class="section-card">
-    <h3 class="section-title">Address</h3>
-    <div class="field-row">
-      <div class="field-half">
-        <label class="field-label">Country</label>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="business.businessAddress.country" />
-        </mat-form-field>
-      </div>
-      <div class="field-half">
-        <label class="field-label">State</label>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="business.businessAddress.state" />
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="field-row">
-      <div class="field-half">
-        <label class="field-label">City</label>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="business.businessAddress.city" />
-        </mat-form-field>
-      </div>
-      <div class="field-half">
-        <label class="field-label">Area</label>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="business.businessAddress.area" />
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="field-row">
-      <div class="field-half">
-        <label class="field-label">Pincode</label>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="business.businessAddress.pincode" />
-        </mat-form-field>
-      </div>
-      <div class="field-half">
-        <label class="field-label">Google Map URL</label>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="business.businessAddress.googleMapURL" />
-        </mat-form-field>
-      </div>
-    </div>
-    <label class="field-label">Full Address</label>
-    <mat-form-field appearance="outline">
-      <textarea
-        matInput
-        rows="2"
-        [(ngModel)]="business.businessAddress.address"
-      ></textarea>
-    </mat-form-field>
-  </mat-card>
-
-  <!-- Social Media -->
-  <mat-card class="section-card">
-    <h3 class="section-title">Social Media</h3>
-    <div class="field-row">
-      <div class="field-half">
-        <label class="field-label">Facebook</label>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="business.businessSocialMedia.facebook" />
-        </mat-form-field>
-      </div>
-      <div class="field-half">
-        <label class="field-label">Instagram</label>
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            [(ngModel)]="business.businessSocialMedia.instagram"
-          />
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="field-row">
-      <div class="field-half">
-        <label class="field-label">LinkedIn</label>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="business.businessSocialMedia.linkedIn" />
-        </mat-form-field>
-      </div>
-      <div class="field-half">
-        <label class="field-label">YouTube</label>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="business.businessSocialMedia.youTube" />
-        </mat-form-field>
-      </div>
-    </div>
-    <label class="field-label">Twitter</label>
-    <mat-form-field appearance="outline">
-      <input matInput [(ngModel)]="business.businessSocialMedia.twitter" />
-    </mat-form-field>
-  </mat-card>
-
-  <!-- Working Hours -->
-  <mat-card class="section-card">
-    <h3 class="section-title">Working Hours</h3>
-    <div
-      class="working-hours-row"
-      *ngFor="let wh of business.businessWorkingHoursList"
-    >
-      <span class="day-name">{{ dayNames[wh.dayOfWeek] }}</span>
-      <mat-checkbox [(ngModel)]="wh.isClosed">Closed</mat-checkbox>
-      <mat-form-field
-        appearance="outline"
-        class="time-field"
-        *ngIf="!wh.isClosed"
-      >
-        <input matInput type="time" [(ngModel)]="wh.openTime" />
-      </mat-form-field>
-      <span class="time-sep" *ngIf="!wh.isClosed">to</span>
-      <mat-form-field
-        appearance="outline"
-        class="time-field"
-        *ngIf="!wh.isClosed"
-      >
-        <input matInput type="time" [(ngModel)]="wh.closeTime" />
-      </mat-form-field>
-    </div>
-  </mat-card>
-
-  <!-- Gallery -->
-  <mat-card class="section-card">
-    <div class="uplod-sectin h-365">
-      <h4>UPLOAD UP TO 10 PHOTOS</h4>
-      <div class="progs" *ngIf="galleryProgress">
-        <h5>Upload Progress</h5>
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      </div>
-      <div class="cards-cont">
-        <ul class="upld">
-          <li
-            class="upload-card"
-            *ngFor="let item of cardsCount; let i = index"
-          >
+          <div class="logo-strip-edit">
             <div
-              class="upload-card-brd"
-              (click)="selectFile()"
-              id="{{ i }}"
-              *ngIf="item == ''"
+              class="logo-upload-zone"
+              [class.has-image]="business.logoUrl"
+              (click)="selectLogoFile()"
             >
+              <img
+                *ngIf="business.logoUrl"
+                [src]="business.logoUrl"
+                alt="Logo"
+              />
+              <span
+                class="material-icons-outlined logo-placeholder-icon"
+                *ngIf="!business.logoUrl"
+                >photo_camera</span
+              >
+              <div class="logo-overlay" *ngIf="business.logoUrl">
+                <span class="material-icons-outlined">photo_camera</span>
+              </div>
               <input
                 type="file"
-                id="galleryUpload"
-                name="galleryUpload"
-                (change)="selectImage($event)"
+                id="logoUpload"
                 style="display: none"
-                multiple
+                (change)="uploadLogo($event)"
               />
-              <div>
-                <button class="camera">
-                  <img src="../../../../../assets/camera.svg" alt="camera" />
-                </button>
-                <span class="add">Add photo</span>
-              </div>
             </div>
-            <div class="upload-card-brd" *ngIf="item != ''">
-              <div class="preview">
-                <button
-                  class="delete-button"
-                  (click)="deleteBackgroundImage(i)"
+            <h2
+              class="business-name-preview"
+              [class.is-placeholder]="!business.businessName"
+            >
+              {{ business.businessName || "Your Business Name" }}
+            </h2>
+          </div>
+          <mat-progress-bar
+            mode="indeterminate"
+            *ngIf="logoUploading"
+            class="logo-progress"
+          ></mat-progress-bar>
+        </div>
+
+        <h3 class="section-title">Basic Details</h3>
+
+        <label class="field-label">Business Name</label>
+        <mat-form-field appearance="outline">
+          <input
+            matInput
+            [(ngModel)]="business.businessName"
+            placeholder="Enter business name"
+          />
+        </mat-form-field>
+
+        <div class="field-row">
+          <div class="field-half">
+            <label class="field-label">Business Category</label>
+            <mat-form-field appearance="outline">
+              <mat-select
+                [(ngModel)]="business.businessCategoryId"
+                (selectionChange)="onCategoryChange()"
+                placeholder="Select category"
+              >
+                <mat-option
+                  *ngFor="let cat of businessCategories"
+                  [value]="cat.id"
+                  >{{ cat.name }}</mat-option
                 >
-                  <span class="delete-icon">&#10006;</span>
-                </button>
-                <div class="first-image" *ngIf="i === 0 && firstImageUploaded">
-                  <div class="cover-tag">Cover Photo</div>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="field-half">
+            <label class="field-label">Business Sub-Category</label>
+            <mat-form-field appearance="outline">
+              <mat-select
+                [(ngModel)]="business.businessSubCategoryId"
+                placeholder="Select sub-category"
+              >
+                <mat-option
+                  *ngFor="let sub of businessSubCategories"
+                  [value]="sub.id"
+                  >{{ sub.name }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-half">
+            <label class="field-label">Business Type</label>
+            <mat-form-field appearance="outline">
+              <mat-select
+                [(ngModel)]="business.businessTypeId"
+                placeholder="Select business type"
+              >
+                <mat-option *ngFor="let t of businessTypes" [value]="t.id">{{
+                  t.name
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="field-half">
+            <label class="field-label">Seller Type</label>
+            <mat-form-field appearance="outline">
+              <mat-select
+                [(ngModel)]="business.sellerTypeId"
+                placeholder="Select seller type"
+              >
+                <mat-option *ngFor="let s of sellerTypes" [value]="s.id">{{
+                  s.name
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-half">
+            <label class="field-label">Established Year</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="business.establishedYear"
+                placeholder="e.g. 2015"
+              />
+            </mat-form-field>
+          </div>
+          <div class="field-half">
+            <label class="field-label">Website</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [(ngModel)]="business.website"
+                placeholder="https://yourbusiness.com"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- ---------- ABOUT ---------- -->
+      <mat-card class="section-card" *ngIf="activeSection === 'about'">
+        <h3 class="section-title">About Business</h3>
+        <mat-form-field appearance="outline">
+          <textarea
+            matInput
+            rows="8"
+            [(ngModel)]="business.description"
+            placeholder="Tell us in detail about your company and services you offer"
+          ></textarea>
+        </mat-form-field>
+      </mat-card>
+
+      <!-- ---------- CONTACT ---------- -->
+      <mat-card class="section-card" *ngIf="activeSection === 'contact'">
+        <h3 class="section-title">Contact Details</h3>
+        <div class="field-row">
+          <div class="field-half">
+            <label class="field-label">Contact Person</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [(ngModel)]="business.businessContact.contactPerson"
+              />
+            </mat-form-field>
+          </div>
+          <div class="field-half">
+            <label class="field-label">Mobile</label>
+            <mat-form-field appearance="outline">
+              <input matInput [(ngModel)]="business.businessContact.mobile" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-half">
+            <label class="field-label">Alternate Mobile</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [(ngModel)]="business.businessContact.alternateMobile"
+              />
+            </mat-form-field>
+          </div>
+          <div class="field-half">
+            <label class="field-label">WhatsApp</label>
+            <mat-form-field appearance="outline">
+              <input matInput [(ngModel)]="business.businessContact.whatsApp" />
+            </mat-form-field>
+          </div>
+        </div>
+        <label class="field-label">Email</label>
+        <mat-form-field appearance="outline">
+          <input matInput [(ngModel)]="business.businessContact.email" />
+        </mat-form-field>
+      </mat-card>
+
+      <!-- ---------- ADDRESS ---------- -->
+      <mat-card class="section-card" *ngIf="activeSection === 'address'">
+        <h3 class="section-title">Address</h3>
+
+        <div class="field-row">
+          <div class="field-half">
+            <label class="field-label">Pincode</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                placeholder="Enter your pincode"
+                [(ngModel)]="business.businessAddress.pincode"
+                (input)="getAddress($event); allowOnlyNumbersPincode($event)"
+                maxlength="6"
+              />
+            </mat-form-field>
+          </div>
+          <div class="field-half">
+            <label class="field-label">Google Map URL</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [(ngModel)]="business.businessAddress.googleMapURL"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="field-row" *ngIf="business.businessAddress.state">
+          <div class="field-half">
+            <label class="field-label">State</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [(ngModel)]="business.businessAddress.state"
+                readonly
+              />
+            </mat-form-field>
+          </div>
+          <div class="field-half">
+            <label class="field-label">City</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [(ngModel)]="business.businessAddress.city"
+                readonly
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="field-row" *ngIf="business.businessAddress.state">
+          <div class="field-half">
+            <label class="field-label">Near By</label>
+            <mat-form-field appearance="outline">
+              <mat-select [(ngModel)]="business.businessAddress.area">
+                <mat-option
+                  *ngFor="let postOffice of postOffices"
+                  [value]="postOffice.Name"
+                >
+                  {{ postOffice.Name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="field-half">
+            <!-- Country stays editable, defaults to India but can be changed if ever needed -->
+            <label class="field-label">Country</label>
+            <mat-form-field appearance="outline">
+              <input matInput [(ngModel)]="business.businessAddress.country" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <label class="field-label">Full Address</label>
+        <mat-form-field appearance="outline">
+          <textarea
+            matInput
+            rows="2"
+            [(ngModel)]="business.businessAddress.address"
+          ></textarea>
+        </mat-form-field>
+      </mat-card>
+      <!-- ---------- SOCIAL MEDIA ---------- -->
+      <mat-card class="section-card" *ngIf="activeSection === 'social'">
+        <h3 class="section-title">Social Media</h3>
+        <div class="field-row">
+          <div class="field-half">
+            <label class="field-label">Facebook</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [(ngModel)]="business.businessSocialMedia.facebook"
+              />
+            </mat-form-field>
+          </div>
+          <div class="field-half">
+            <label class="field-label">Instagram</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [(ngModel)]="business.businessSocialMedia.instagram"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-half">
+            <label class="field-label">LinkedIn</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [(ngModel)]="business.businessSocialMedia.linkedIn"
+              />
+            </mat-form-field>
+          </div>
+          <div class="field-half">
+            <label class="field-label">YouTube</label>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [(ngModel)]="business.businessSocialMedia.youTube"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+        <label class="field-label">Twitter</label>
+        <mat-form-field appearance="outline">
+          <input matInput [(ngModel)]="business.businessSocialMedia.twitter" />
+        </mat-form-field>
+      </mat-card>
+
+      <!-- ---------- WORKING HOURS ---------- -->
+      <mat-card class="section-card" *ngIf="activeSection === 'hours'">
+        <h3 class="section-title">Working Hours</h3>
+        <div
+          class="working-hours-row"
+          *ngFor="let wh of business.businessWorkingHoursList"
+        >
+          <span class="day-name">{{ dayNames[wh.dayOfWeek] }}</span>
+          <mat-checkbox [(ngModel)]="wh.isClosed">Closed</mat-checkbox>
+          <mat-form-field
+            appearance="outline"
+            class="time-field"
+            *ngIf="!wh.isClosed"
+          >
+            <input matInput type="time" [(ngModel)]="wh.openTime" />
+          </mat-form-field>
+          <span class="time-sep" *ngIf="!wh.isClosed">to</span>
+          <mat-form-field
+            appearance="outline"
+            class="time-field"
+            *ngIf="!wh.isClosed"
+          >
+            <input matInput type="time" [(ngModel)]="wh.closeTime" />
+          </mat-form-field>
+        </div>
+      </mat-card>
+
+      <!-- ---------- GALLERY ---------- -->
+      <mat-card class="section-card" *ngIf="activeSection === 'gallery'">
+        <div class="uplod-sectin h-365">
+          <h4>UPLOAD UP TO 10 PHOTOS</h4>
+          <div class="progs" *ngIf="galleryProgress">
+            <h5>Upload Progress</h5>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          </div>
+          <div class="cards-cont">
+            <ul class="upld">
+              <li
+                class="upload-card"
+                *ngFor="let item of cardsCount; let i = index"
+              >
+                <div
+                  class="upload-card-brd"
+                  (click)="selectFile()"
+                  id="{{ i }}"
+                  *ngIf="item == ''"
+                >
+                  <input
+                    type="file"
+                    id="galleryUpload"
+                    name="galleryUpload"
+                    (change)="selectImage($event)"
+                    style="display: none"
+                    multiple
+                  />
+                  <div>
+                    <button class="camera">
+                      <img
+                        src="../../../../../assets/camera.svg"
+                        alt="camera"
+                      />
+                    </button>
+                    <span class="add">Add photo</span>
+                  </div>
                 </div>
-                <img [src]="item" height="100px" width="100px" alt="" />
-              </div>
-            </div>
-          </li>
-        </ul>
+                <div class="upload-card-brd" *ngIf="item != ''">
+                  <div class="preview">
+                    <button
+                      class="delete-button"
+                      (click)="deleteBackgroundImage(i)"
+                    >
+                      <span class="delete-icon">&#10006;</span>
+                    </button>
+                    <div
+                      class="first-image"
+                      *ngIf="i === 0 && firstImageUploaded"
+                    >
+                      <div class="cover-tag">Cover Photo</div>
+                    </div>
+                    <img [src]="item" height="100px" width="100px" alt="" />
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <ng-template #panelLoading>
+    <div class="edit-panel-loading">Loading business details…</div>
+  </ng-template>
+
+  <div class="edit-panel-footer">
+    <button
+      class="danger-link-btn"
+      type="button"
+      (click)="requestDeleteBusiness()"
+      [disabled]="saving"
+    >
+      <span class="material-icons-outlined">delete_outline</span>
+      Delete Business
+    </button>
+    <button mat-stroked-button (click)="dismiss()" [disabled]="saving">
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      class="save-button"
+      (click)="saveBusinessProfile()"
+      [disabled]="saving"
+    >
+      {{ saving ? "Saving..." : "Save Business Profile" }}
+    </button>
+  </div>
+  <div class="confirm-overlay" *ngIf="showDeleteConfirm">
+    <div class="confirm-card">
+      <span class="material-icons-outlined confirm-icon">warning_amber</span>
+      <h3>Delete this business?</h3>
+      <p>
+        This will permanently remove
+        <strong>{{ business.businessName || "this business" }}</strong>
+        and all its details, photos, and reviews. This can't be undone.
+      </p>
+      <div class="confirm-actions">
+        <button
+          mat-stroked-button
+          (click)="cancelDeleteBusiness()"
+          [disabled]="deleting"
+        >
+          Cancel
+        </button>
+        <button
+          class="confirm-delete-btn"
+          (click)="confirmDeleteBusiness()"
+          [disabled]="deleting"
+        >
+          {{ deleting ? "Deleting..." : "Yes, Delete" }}
+        </button>
       </div>
     </div>
-  </mat-card>
-
-  <button
-    mat-raised-button
-    color="primary"
-    class="save-button"
-    (click)="saveBusinessProfile()"
-    [disabled]="saving"
-  >
-    {{ saving ? "Saving..." : "Save Business Profile" }}
-  </button>
+  </div>
 </div>

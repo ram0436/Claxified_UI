@@ -1,8 +1,200 @@
-.edit-profile-wrapper {
-  max-width: 900px;
-  margin: 60px auto 60px auto;
-  padding: 0 20px;
+/* =========================================================
+   PANEL / DRAWER SCAFFOLDING (new — slide-in behaviour)
+   ========================================================= */
+
+.edit-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
 }
+
+.edit-panel-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(1100px, 94vw);
+  background: #fff;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.18);
+  animation: slideIn 0.25s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.edit-panel-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.edit-panel-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #635b67;
+  font-size: 14px;
+}
+
+.edit-panel-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 30px;
+  border-top: 1px solid #eee;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.edit-panel-footer .save-button {
+  width: auto;
+  min-width: 220px;
+  margin-top: 0;
+}
+
+/* =========================================================
+     LEFT TAB NAV (mirrors the "Complete your Profile" strip)
+     ========================================================= */
+
+.edit-tabs-nav {
+  width: 280px;
+  flex-shrink: 0;
+  border-right: 1px solid #eee;
+  overflow-y: auto;
+  padding: 20px 0;
+  background: #fafbfc;
+}
+
+.edit-tab-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  cursor: pointer;
+  color: #635b67;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.edit-tab-item .material-icons-outlined {
+  font-size: 20px;
+  color: #b1adb3;
+}
+
+.edit-tab-item:hover {
+  background: #f0f4f6;
+}
+
+.edit-tab-item.active {
+  background: #eaf3f7;
+  color: #0d475c;
+  font-weight: 700;
+}
+
+.edit-tab-item.active .material-icons-outlined {
+  color: #0d475c;
+}
+
+.edit-tab-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #e75462;
+}
+
+.edit-tab-label {
+  flex: 1;
+}
+
+.required-chip {
+  font-size: 10px;
+  font-weight: 700;
+  background: #fdecea;
+  color: #e75462;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+
+/* =========================================================
+     RIGHT CONTENT AREA (holds your original .section-card etc.)
+     ========================================================= */
+
+.edit-tabs-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 25px 30px 40px 30px;
+}
+
+/* Inside the panel there's only ever one active section-card,
+     so drop the bottom margin that stacked cards used to need */
+.edit-tabs-content .section-card {
+  margin-bottom: 0;
+}
+
+/* =========================================================
+     PANEL HEADER (replaces the old page-level header)
+     ========================================================= */
+
+.edit-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 30px;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.edit-panel-header .page-title {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #0d475c;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.icon-btn:hover {
+  background: #f0f4f6;
+}
+
+/* =========================================================
+     ORIGINAL STYLES — kept exactly as-is
+     ========================================================= */
 
 .edit-profile-header {
   display: flex;
@@ -224,7 +416,7 @@ mat-form-field {
 }
 
 .first-image {
-  position: static; /* no longer needs its own positioning context */
+  position: static;
 }
 
 .cover-tag {
@@ -232,7 +424,7 @@ mat-form-field {
   left: 0;
   right: 0;
   bottom: 0;
-  width: auto; /* let left/right:0 define the span instead of % width */
+  width: auto;
   background-color: #007bff;
   color: white;
   font-size: 12px;
@@ -300,7 +492,6 @@ mat-form-field {
   display: block;
 }
 
-/* Empty state — permanent camera prompt, no dummy photo */
 .cover-placeholder {
   position: absolute;
   inset: 0;
@@ -321,7 +512,6 @@ mat-form-field {
   color: #b1c9d3;
 }
 
-/* Filled state — overlay only on hover */
 .cover-overlay {
   position: absolute;
   inset: 0;
@@ -377,13 +567,11 @@ mat-form-field {
   object-fit: cover;
 }
 
-/* Empty state — permanent camera icon */
 .logo-placeholder-icon {
   font-size: 26px;
   color: #b1c9d3;
 }
 
-/* Filled state — overlay only on hover */
 .logo-overlay {
   position: absolute;
   inset: 0;
@@ -404,7 +592,6 @@ mat-form-field {
   font-size: 22px;
 }
 
-/* Live business-name preview text next to logo */
 .business-name-preview {
   margin: 0 0 8px 0;
   font-size: 20px;
@@ -424,6 +611,157 @@ mat-form-field {
   margin-top: 2px;
 }
 
+.edit-panel-footer {
+  display: flex;
+  justify-content: space-between; /* was flex-end */
+  align-items: center;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.danger-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #b0292f;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.danger-link-btn .material-icons-outlined {
+  font-size: 18px;
+}
+
+.danger-link-btn:hover:not(:disabled) {
+  background: #fdecec;
+}
+
+.danger-link-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Delete confirmation overlay ---------- */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1100; /* above the drawer */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.15s ease;
+}
+
+.confirm-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px 32px;
+  width: 380px;
+  max-width: 90vw;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.confirm-icon {
+  font-size: 40px;
+  color: #e75462;
+  background: #fdecec;
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.confirm-card h3 {
+  margin: 14px 0 8px 0;
+  color: #3c3241;
+  font-size: 18px;
+}
+
+.confirm-card p {
+  color: #635b67;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.confirm-delete-btn {
+  background-color: #e75462;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.confirm-delete-btn:hover:not(:disabled) {
+  background-color: #d8404f;
+}
+
+.confirm-delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+     RESPONSIVE — panel collapses tab nav into a top strip
+     ========================================================= */
+
+@media (max-width: 900px) {
+  .edit-panel-drawer {
+    width: 100vw;
+  }
+
+  .edit-panel-body {
+    flex-direction: column;
+  }
+
+  .edit-tabs-nav {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 8px;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  .edit-tab-item {
+    padding: 10px 16px;
+    white-space: nowrap;
+  }
+
+  .edit-tab-item.active::before {
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    width: auto;
+    height: 3px;
+  }
+
+  .edit-tabs-content {
+    padding: 20px;
+  }
+}
+
 @media (max-width: 600px) {
   .cover-upload-zone {
     height: 160px;
@@ -438,5 +776,8 @@ mat-form-field {
   }
   .business-name-preview {
     font-size: 16px;
+  }
+  .edit-panel-footer {
+    padding: 12px 20px;
   }
 }

@@ -70,6 +70,10 @@
   border-radius: 25px;
 }
 
+.business-cta-btn:hover {
+  cursor: pointer;
+}
+
 ::ng-deep .cdk-global-overlay-wrapper {
   align-items: initial !important;
   height: auto;

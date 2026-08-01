@@ -1,3 +1,4 @@
+/* ===== Hero ===== */
 .hero {
   background: linear-gradient(135deg, #0d475c, #135f7c);
   color: #fff;
@@ -28,21 +29,110 @@
   text-decoration: none;
   padding: 14px 28px;
   border-radius: 30px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hero-cta:hover {
+  cursor: pointer;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(231, 84, 98, 0.35);
+}
+
+/* ===== Shared section heading style ===== */
+.section-head {
+  max-width: 620px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.section-head .eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e75462;
+  margin-bottom: 10px;
+}
+
+.section-head h2 {
+  font-size: 28px;
+  color: #3c3241;
+  margin: 0 0 12px;
+}
+
+.section-head p {
+  font-size: 15px;
+  color: #635b67;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.section-head.light .eyebrow {
+  color: #ffb1b8;
+}
+
+.section-head.light h2 {
+  color: #fff;
+}
+
+/* ===== Why Claxified Business ===== */
+.why-section {
+  background: #f4f9fb;
+  padding: 70px 20px;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.why-item {
+  background: #fff;
+  border: 1px solid #e2edf1;
+  border-radius: 14px;
+  padding: 24px 16px;
+  text-align: center;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.why-item:hover {
+  border-color: #135f7c;
+  transform: translateY(-3px);
+}
+
+.why-item .material-icons {
+  font-size: 30px;
+  color: #135f7c;
+  margin-bottom: 10px;
+}
+
+.why-item h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #3c3241;
   font-weight: 600;
 }
 
+/* ===== Feature cards (Everything You Need to Grow) ===== */
 .features {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 30px;
-  padding: 60px 20px;
+  padding: 70px 20px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .feature-card {
-  max-width: 280px;
   text-align: center;
-  padding: 20px;
+  padding: 24px 18px;
 }
 
 .feature-card .material-icons {
@@ -54,9 +144,178 @@
 .feature-card h3 {
   margin: 10px 0;
   color: #3c3241;
+  font-size: 17px;
 }
 
 .feature-card p {
   color: #635b67;
   font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ===== Steps ===== */
+.steps-section {
+  background: #f4f9fb;
+  padding: 70px 20px;
+}
+
+.steps-track {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 140px;
+  position: relative;
+}
+
+.step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: calc(50% + 34px);
+  width: calc(100% - 34px);
+  height: 2px;
+  background: #c9dee5;
+}
+
+.step-num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #0d475c;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 10px;
+  z-index: 1;
+}
+
+.step p {
+  font-size: 13px;
+  color: #3c3241;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ===== Industries ===== */
+.industries-section {
+  padding: 70px 20px;
+}
+
+.industry-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.industry-tags span {
+  background: #f4f9fb;
+  border: 1px solid #d9edf3;
+  color: #0d475c;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+/* ===== Why Choose (dark band, mirrors hero) ===== */
+.choose-section {
+  background: linear-gradient(135deg, #0d475c, #135f7c);
+  padding: 70px 20px;
+}
+
+.choose-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px 40px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.choose-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.choose-item .material-icons {
+  color: #e75462;
+  font-size: 20px;
+}
+
+.choose-item p {
+  color: #fff;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* ===== Final CTA ===== */
+.final-cta {
+  background: #fff;
+  text-align: center;
+  padding: 70px 20px;
+}
+
+.final-cta-content {
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.final-cta h2 {
+  font-size: 28px;
+  color: #3c3241;
+  margin: 0 0 14px;
+}
+
+.final-cta p {
+  color: #635b67;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 6px;
+}
+
+.final-cta .tagline {
+  font-weight: 600;
+  color: #0d475c;
+  margin-bottom: 24px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .why-grid,
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .choose-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .why-grid,
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+  .steps-track {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .step:not(:last-child)::after {
+    display: none;
+  }
 }

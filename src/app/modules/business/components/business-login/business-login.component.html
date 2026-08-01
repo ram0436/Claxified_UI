@@ -28,7 +28,7 @@
     </p>
 
     <form
-      (ngSubmit)="otpSent ? verifyOTPAndRegister() : sendOTP()"
+      (ngSubmit)="otpSent ? registerBusiness() : sendOTP()"
       class="business-login-form"
     >
       <label class="field-label">Business Name</label>
@@ -51,6 +51,19 @@
         <span class="material-icons-outlined">report</span>
         Please enter your business name (min 2 characters)*
       </p>
+
+      <label class="field-label">Your Name</label>
+      <mat-form-field appearance="outline">
+        <input
+          matInput
+          placeholder="Enter your name"
+          [disabled]="userName"
+          name="userName"
+          [(ngModel)]="userName"
+          (input)="validateUserName()"
+        />
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
 
       <label class="field-label">Mobile Number</label>
       <mat-form-field appearance="outline">
@@ -105,7 +118,7 @@
         </p>
         <p class="otp-failure-message" *ngIf="otpErrorMessage">
           <span class="material-icons-outlined">report</span>
-          Please enter a 4-digit OTP*
+          Please enter a valid OTP*
         </p>
       </ng-container>
 
@@ -118,9 +131,15 @@
         color="primary"
         class="business-login-button"
         type="submit"
-        [disabled]="(otpSent && !otp) || disableSendOTPButton"
+        [disabled]="(otpSent && !otp) || disableSendOTPButton || registering"
       >
-        {{ otpSent ? "Verify & Continue" : "Send OTP" }}
+        {{
+          registering
+            ? "Registering..."
+            : otpSent
+            ? "Register Business"
+            : "Send OTP"
+        }}
       </button>
 
       <p class="otp-send-message" *ngIf="otpMessage">
