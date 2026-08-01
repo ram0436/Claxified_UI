@@ -24,13 +24,6 @@
         Manage your registered businesses and profiles
       </p>
     </div>
-    <!-- <button
-      class="btn-primary"
-      *ngIf="businesses.length > 0"
-      (click)="registerNewBusiness()"
-    >
-      <span class="material-icons-outlined">add</span> Register Business
-    </button> -->
   </div>
 
   <div class="business-cards-grid" *ngIf="businesses.length > 0">
@@ -171,108 +164,130 @@
         <h3>Basic Details</h3>
       </div>
 
-      <div class="detail-row">
-        <span class="material-icons-outlined detail-icon">category</span>
-        <div>
-          <span class="detail-label">Category</span>
-          <p class="detail-value">
-            {{ business.businessCategory || "-" }}
-            <span *ngIf="business.businessSubCategory">
-              &middot; {{ business.businessSubCategory }}</span
+      <div class="detail-grid">
+        <div class="detail-row">
+          <span class="material-icons-outlined detail-icon">category</span>
+          <div>
+            <span class="detail-label">Category</span>
+            <p
+              class="detail-value"
+              [class.is-empty]="!business.businessCategory"
             >
-          </p>
+              {{ business.businessCategory || "Not specified" }}
+              <span *ngIf="business.businessSubCategory">
+                &middot; {{ business.businessSubCategory }}</span
+              >
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div
-        class="detail-row"
-        *ngIf="business.businessType || business.sellerType"
-      >
-        <span class="material-icons-outlined detail-icon">work_outline</span>
-        <div>
-          <span class="detail-label">Business Type</span>
-          <p class="detail-value">
-            {{ business.businessType || "-" }}
-            <span *ngIf="business.sellerType">
-              &middot; {{ business.sellerType }}</span
-            >
-          </p>
+        <div
+          class="detail-row"
+          *ngIf="business.businessType || business.sellerType"
+        >
+          <span class="material-icons-outlined detail-icon">work_outline</span>
+          <div>
+            <span class="detail-label">Business Type</span>
+            <p class="detail-value">
+              {{ business.businessType || "-" }}
+              <span *ngIf="business.sellerType">
+                &middot; {{ business.sellerType }}</span
+              >
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="detail-row">
-        <span class="material-icons-outlined detail-icon">location_on</span>
-        <div>
-          <span class="detail-label">Address</span>
-          <p class="detail-value">
-            {{ fullAddress || "No address available" }}
-          </p>
-          <a
-            *ngIf="business.businessAddressDto?.googleMapURL"
-            class="map-link"
-            [href]="business.businessAddressDto?.googleMapURL"
-            target="_blank"
-            rel="noopener"
+        <div class="detail-row full-width">
+          <span class="material-icons-outlined detail-icon icon-location"
+            >location_on</span
           >
-            View on map
-          </a>
-        </div>
-      </div>
-
-      <div class="detail-row">
-        <span class="material-icons-outlined detail-icon">person</span>
-        <div>
-          <span class="detail-label">Contact Person</span>
-          <p class="detail-value">
-            {{ business.businessContactDto?.contactPerson || "-" }}
-          </p>
-        </div>
-      </div>
-
-      <div class="detail-row">
-        <span class="material-icons-outlined detail-icon">call</span>
-        <div>
-          <span class="detail-label">Contact Numbers</span>
-          <p class="detail-value">
-            {{ business.businessContactDto?.mobile || "-" }}
-            <span *ngIf="business.businessContactDto?.alternateMobile">
-              &middot;
-              {{ business.businessContactDto?.alternateMobile }} (alt)</span
-            >
-          </p>
-          <p class="detail-sub" *ngIf="business.businessContactDto?.whatsApp">
-            WhatsApp: {{ business.businessContactDto?.whatsApp }}
-          </p>
-        </div>
-      </div>
-
-      <div class="detail-row">
-        <span class="material-icons-outlined detail-icon">mail</span>
-        <div>
-          <span class="detail-label">Email</span>
-          <p class="detail-value">
-            {{ business.businessContactDto?.email || "No email available" }}
-          </p>
-        </div>
-      </div>
-
-      <div class="detail-row">
-        <span class="material-icons-outlined detail-icon">language</span>
-        <div>
-          <span class="detail-label">Website</span>
-          <p class="detail-value">
+          <div>
+            <span class="detail-label">Address</span>
+            <p class="detail-value" [class.is-empty]="!fullAddress">
+              {{ fullAddress || "No address available" }}
+            </p>
             <a
-              *ngIf="business.website"
-              [href]="business.website"
+              *ngIf="business.businessAddressDto?.googleMapURL"
+              class="map-link"
+              [href]="business.businessAddressDto?.googleMapURL"
               target="_blank"
               rel="noopener"
-              class="inline-link"
-              >{{ business.website }}</a
             >
-            <ng-container *ngIf="!business.website"
-              >No website available</ng-container
+              View on map
+            </a>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <span class="material-icons-outlined detail-icon icon-contact"
+            >person</span
+          >
+          <div>
+            <span class="detail-label">Contact Person</span>
+            <p
+              class="detail-value"
+              [class.is-empty]="!business.businessContactDto?.contactPerson"
             >
-          </p>
+              {{ business.businessContactDto?.contactPerson || "Not provided" }}
+            </p>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <span class="material-icons-outlined detail-icon">call</span>
+          <div>
+            <span class="detail-label">Contact Numbers</span>
+            <p
+              class="detail-value"
+              [class.is-empty]="!business.businessContactDto?.mobile"
+            >
+              <ng-container *ngIf="business.businessContactDto?.mobile"
+                >+91-{{ business.businessContactDto?.mobile }}</ng-container
+              >
+              <ng-container *ngIf="!business.businessContactDto?.mobile"
+                >Not provided</ng-container
+              >
+            </p>
+            <p class="detail-sub" *ngIf="business.businessContactDto?.whatsApp">
+              WhatsApp: {{ business.businessContactDto?.whatsApp }}
+            </p>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <span class="material-icons-outlined detail-icon">mail</span>
+          <div>
+            <span class="detail-label">Email</span>
+            <p
+              class="detail-value"
+              [class.is-empty]="!business.businessContactDto?.email"
+            >
+              {{ business.businessContactDto?.email || "No email available" }}
+            </p>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <span class="material-icons-outlined detail-icon icon-web"
+            >language</span
+          >
+          <div>
+            <span class="detail-label">Website</span>
+            <p class="detail-value" [class.is-empty]="!business.website">
+              <a
+                *ngIf="business.website"
+                [href]="business.website"
+                target="_blank"
+                rel="noopener"
+                class="inline-link"
+              >
+                {{ business.website }}
+              </a>
+              <ng-container *ngIf="!business.website"
+                >No website available</ng-container
+              >
+            </p>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 /* ===== Hero ===== */
 .hero {
-  background: linear-gradient(135deg, #0d475c, #135f7c);
+  background: linear-gradient(135deg, #003353, #135f7c);
   color: #fff;
   text-align: center;
   padding: 80px 20px;
@@ -137,7 +137,7 @@
 
 .feature-card .material-icons {
   font-size: 40px;
-  color: #0d475c;
+  color: #003353;
   margin-bottom: 10px;
 }
 
@@ -191,7 +191,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #0d475c;
+  background: #003353;
   color: #fff;
   display: flex;
   align-items: center;
@@ -226,7 +226,7 @@
 .industry-tags span {
   background: #f4f9fb;
   border: 1px solid #d9edf3;
-  color: #0d475c;
+  color: #003353;
   font-size: 13px;
   font-weight: 600;
   padding: 8px 16px;
@@ -235,7 +235,7 @@
 
 /* ===== Why Choose (dark band, mirrors hero) ===== */
 .choose-section {
-  background: linear-gradient(135deg, #0d475c, #135f7c);
+  background: linear-gradient(135deg, #003353, #135f7c);
   padding: 70px 20px;
 }
 
@@ -291,7 +291,7 @@
 
 .final-cta .tagline {
   font-weight: 600;
-  color: #0d475c;
+  color: #003353;
   margin-bottom: 24px;
 }
 
