@@ -523,7 +523,7 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
 
     const now = new Date().toISOString().slice(0, 23);
 
-    // ---------- Gallery: always send a consistent shape, never [] ----------
+    // ---------- Gallery ----------
     const galleryEntries = this.cardsCount
       .map((url, index) => ({ url, id: this.galleryIds[index] }))
       .filter((item) => item.url !== "");
@@ -563,26 +563,7 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
             },
           ];
 
-    // ---------- Working hours: always all 7 days, never [] ----------
-    const businessWorkingHoursList = this.business.businessWorkingHoursList.map(
-      (wh) => ({
-        createdBy: wh.createdBy || this.userId,
-        createdOn: wh.createdOn || now,
-        modifiedBy: this.userId,
-        modifiedOn: now,
-        isDeleted: false,
-        deletedDate: now,
-        deletedBy: 0,
-        id: wh.id || 0,
-        businessId: this.business.id,
-        dayOfWeek: wh.dayOfWeek,
-        openTime: wh.openTime || "",
-        closeTime: wh.closeTime || "",
-        isClosed: wh.isClosed,
-      })
-    );
-
-    // ---------- Build the exact payload shape, blanks instead of "string" ----------
+    // ---------- Build the exact payload shape ----------
     const payload = {
       createdBy: this.business.createdBy || this.userId,
       createdOn: this.business.createdOn || now,
@@ -644,7 +625,7 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
           this.business.businessVerification.isMobileVerified || 0,
         isBusinessVerified:
           this.business.businessVerification.isBusinessVerified || false,
-        verificationDate: null,
+        verificationDate: now,
         verifiedBy: 0,
         verificationRemarks:
           this.business.businessVerification.verificationRemarks || "",
