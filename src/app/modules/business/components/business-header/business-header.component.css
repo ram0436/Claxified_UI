@@ -4,7 +4,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 70px;
+  height: 65px;
   background-color: #003353;
   z-index: 1002;
 }
@@ -25,7 +25,7 @@
 }
 
 .business-logo img {
-  height: 60px;
+  height: 65px;
   width: auto;
   object-fit: contain;
 }

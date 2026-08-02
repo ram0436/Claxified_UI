@@ -367,15 +367,16 @@
   </div>
 
   <!-- ---------- GALLERY ---------- -->
+  <!-- ---------- GALLERY ---------- -->
   <div class="content-card" *ngIf="activeTab === 'gallery'">
     <h3>Gallery</h3>
     <div class="gallery-grid" *ngIf="galleryItems.length > 0; else noGallery">
-      <a
+      <div
         class="gallery-item"
         *ngFor="let img of galleryItems"
-        [href]="img.imageUrl"
-        target="_blank"
-        rel="noopener"
+        (click)="openLightbox(img.imageUrl, img.caption)"
+        tabindex="0"
+        (keyup.enter)="openLightbox(img.imageUrl, img.caption)"
       >
         <img
           [src]="img.thumbnailUrl || img.imageUrl"
@@ -384,7 +385,7 @@
         <span class="gallery-caption" *ngIf="img.caption">{{
           img.caption
         }}</span>
-      </a>
+      </div>
     </div>
     <ng-template #noGallery>
       <div class="empty-services">
