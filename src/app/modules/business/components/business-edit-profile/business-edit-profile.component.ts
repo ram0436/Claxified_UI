@@ -650,13 +650,17 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
 
     this.saving = true;
 
-    // console.log("Business Update Payload:", JSON.stringify(payload, null, 2));
-
     this.businessService.updateBusiness(payload).subscribe(
       () => {
         this.saving = false;
         this.showNotification("Business profile saved successfully");
         this.saved.emit(this.tabRefGuid || this.business.tabRefGUID);
+
+        this.businessService.notifyBusinessUpdated(
+          this.tabRefGuid || this.business.tabRefGUID,
+          this.business.businessName,
+          this.business.logoUrl
+        );
       },
       (error) => {
         this.saving = false;

@@ -23,7 +23,9 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatCardModule } from "@angular/material/card";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { BusinessFooterComponent } from './components/business-footer/business-footer.component';
+import { BusinessFooterComponent } from "./components/business-footer/business-footer.component";
+import { BusinessDirectoriesComponent } from "./components/business-directories/business-directories.component";
+import { MatMenuModule } from "@angular/material/menu";
 
 @NgModule({
   declarations: [
@@ -37,6 +39,7 @@ import { BusinessFooterComponent } from './components/business-footer/business-f
     BusinessLoginComponent,
     BusinessProfileComponent,
     BusinessFooterComponent,
+    BusinessDirectoriesComponent,
   ],
   imports: [
     CommonModule,
@@ -53,6 +56,7 @@ import { BusinessFooterComponent } from './components/business-footer/business-f
     MatProgressBarModule,
     MatCardModule,
     MatSnackBarModule,
+    MatMenuModule,
   ],
 })
 export class BusinessModule {}
