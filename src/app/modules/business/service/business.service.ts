@@ -70,8 +70,8 @@ export class BusinessService {
     return this.http.post(`${this.baseUrl}Business/Register`, payload);
   }
 
-  updateBusiness(id: number, payload: any) {
-    return this.http.put(`${this.baseUrl}Business/${id}`, payload);
+  updateBusiness(payload: any) {
+    return this.http.put(`${this.baseUrl}Business/Edit`, payload);
   }
 
   deleteBusiness(id: number) {

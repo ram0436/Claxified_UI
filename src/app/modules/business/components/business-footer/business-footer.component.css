@@ -1,12 +1,12 @@
 .business-footer {
   background: linear-gradient(135deg, #0d475c, #135f7c);
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
 }
 
 .business-footer-container {
   max-width: 1300px;
   margin: auto;
-  padding: 60px 40px 0;
+  padding: 45px 40px 0;
 }
 
 /* ===== TOP: BRAND + NEWSLETTER ===== */
@@ -19,7 +19,7 @@
 }
 
 .business-footer-logo {
-  height: 100px;
+  height: 150px;
   width: auto;
   margin-bottom: 0px;
   margin-top: -35px;

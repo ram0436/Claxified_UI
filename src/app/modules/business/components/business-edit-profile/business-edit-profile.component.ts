@@ -521,23 +521,32 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
       return;
     }
 
-    const now = new Date().toISOString().slice(0, 23);
+    const now = new Date().toISOString();
+
+    // ---------- Resolve dropdown IDs back to names (API wants names, not IDs) ----------
+    const categoryName =
+      this.businessCategories.find(
+        (c) => c.id === this.business.businessCategoryId
+      )?.name || "";
+    const subCategoryName =
+      this.businessSubCategories.find(
+        (s) => s.id === this.business.businessSubCategoryId
+      )?.name || "";
+    const typeName =
+      this.businessTypes.find((t) => t.id === this.business.businessTypeId)
+        ?.name || "";
+    const sellerTypeName =
+      this.sellerTypes.find((s) => s.id === this.business.sellerTypeId)?.name ||
+      "";
 
     // ---------- Gallery ----------
     const galleryEntries = this.cardsCount
       .map((url, index) => ({ url, id: this.galleryIds[index] }))
       .filter((item) => item.url !== "");
 
-    const businessGalleryList =
+    const businessGalleryDtoList =
       galleryEntries.length > 0
         ? galleryEntries.map((item, index) => ({
-            createdBy: this.userId,
-            createdOn: now,
-            modifiedBy: this.userId,
-            modifiedOn: now,
-            isDeleted: false,
-            deletedDate: now,
-            deletedBy: 0,
             id: item.id,
             businessId: this.business.id,
             imageUrl: item.url,
@@ -547,13 +556,6 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
           }))
         : [
             {
-              createdBy: this.userId,
-              createdOn: now,
-              modifiedBy: this.userId,
-              modifiedOn: now,
-              isDeleted: false,
-              deletedDate: now,
-              deletedBy: 0,
               id: 0,
               businessId: this.business.id,
               imageUrl: "",
@@ -563,23 +565,16 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
             },
           ];
 
-    // ---------- Build the exact payload shape ----------
+    // ---------- Build the exact payload shape the API expects ----------
     const payload = {
-      createdBy: this.business.createdBy || this.userId,
-      createdOn: this.business.createdOn || now,
-      modifiedBy: this.userId,
-      modifiedOn: now,
-      isDeleted: false,
-      deletedDate: now,
-      deletedBy: 0,
       id: this.business.id || 0,
-      tabRefGUID: this.tabRefGuid || this.business.tabRefGUID || "",
       userId: this.userId,
       businessName: this.business.businessName || "",
-      businessCategoryId: this.business.businessCategoryId || 0,
-      businessSubCategoryId: this.business.businessSubCategoryId || 0,
-      businessTypeId: this.business.businessTypeId || 0,
-      sellerTypeId: this.business.sellerTypeId || 0,
+      businessCategory: categoryName,
+      businessSubCategory: subCategoryName,
+      businessType: typeName,
+      sellerType: sellerTypeName,
+      tabRefGUID: this.tabRefGuid || this.business.tabRefGUID || "",
       description: this.business.description || "",
       logoUrl: this.business.logoUrl || "",
       coverImageUrl: this.business.coverImageUrl || "",
@@ -587,32 +582,7 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
       website: this.business.website || "",
       status: this.business.status ?? 1,
 
-      businessWorkingHoursList: this.business.businessWorkingHoursList.map(
-        (wh) => ({
-          createdBy: wh.createdBy || this.userId,
-          createdOn: wh.createdOn || now,
-          modifiedBy: this.userId,
-          modifiedOn: now,
-          isDeleted: false,
-          deletedDate: now,
-          deletedBy: 0,
-          id: wh.id || 0,
-          businessId: this.business.id,
-          dayOfWeek: wh.dayOfWeek,
-          openTime: wh.openTime || "",
-          closeTime: wh.closeTime || "",
-          isClosed: wh.isClosed,
-        })
-      ),
-
-      businessVerification: {
-        createdBy: this.business.businessVerification.createdBy || this.userId,
-        createdOn: this.business.businessVerification.createdOn || now,
-        modifiedBy: this.userId,
-        modifiedOn: now,
-        isDeleted: false,
-        deletedDate: now,
-        deletedBy: 0,
+      businessVerificationDto: {
         id: this.business.businessVerification.id || 0,
         businessId: this.business.id || 0,
         isGSTVerified: this.business.businessVerification.isGSTVerified || 0,
@@ -626,19 +596,12 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
         isBusinessVerified:
           this.business.businessVerification.isBusinessVerified || false,
         verificationDate: now,
-        verifiedBy: 0,
         verificationRemarks:
           this.business.businessVerification.verificationRemarks || "",
+        verifiedBy: this.business.businessVerification.verifiedBy || 0,
       },
 
-      businessContact: {
-        createdBy: this.business.businessContact.createdBy || this.userId,
-        createdOn: this.business.businessContact.createdOn || now,
-        modifiedBy: this.userId,
-        modifiedOn: now,
-        isDeleted: false,
-        deletedDate: now,
-        deletedBy: 0,
+      businessContactDto: {
         id: this.business.businessContact.id || 0,
         businessId: this.business.id || 0,
         contactPerson: this.business.businessContact.contactPerson || "",
@@ -648,14 +611,20 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
         whatsApp: this.business.businessContact.whatsApp || "",
       },
 
-      businessSocialMedia: {
-        createdBy: this.business.businessSocialMedia.createdBy || this.userId,
-        createdOn: this.business.businessSocialMedia.createdOn || now,
-        modifiedBy: this.userId,
-        modifiedOn: now,
-        isDeleted: false,
-        deletedDate: now,
-        deletedBy: 0,
+      businessAddressDto: {
+        id: this.business.businessAddress.id || 0,
+        businessId: this.business.id || 0,
+        country: this.business.businessAddress.country || "",
+        state: this.business.businessAddress.state || "",
+        city: this.business.businessAddress.city || "",
+        area: this.business.businessAddress.area || "",
+        address: this.business.businessAddress.address || "",
+        pincode: this.business.businessAddress.pincode || "",
+        isPrimary: this.business.businessAddress.isPrimary ?? true,
+        googleMapURL: this.business.businessAddress.googleMapURL || "",
+      },
+
+      businessSocialMediaDto: {
         id: this.business.businessSocialMedia.id || 0,
         businessId: this.business.id || 0,
         facebook: this.business.businessSocialMedia.facebook || "",
@@ -665,34 +634,25 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
         twitter: this.business.businessSocialMedia.twitter || "",
       },
 
-      businessAddress: {
-        createdBy: this.business.businessAddress.createdBy || this.userId,
-        createdOn: this.business.businessAddress.createdOn || now,
-        modifiedBy: this.userId,
-        modifiedOn: now,
-        isDeleted: false,
-        deletedDate: now,
-        deletedBy: 0,
-        id: this.business.businessAddress.id || 0,
-        businessId: this.business.id || 0,
-        country: this.business.businessAddress.country || "",
-        state: this.business.businessAddress.state || "",
-        city: this.business.businessAddress.city || "",
-        area: this.business.businessAddress.area || "",
-        pincode: this.business.businessAddress.pincode || "",
-        address: this.business.businessAddress.address || "",
-        isPrimary: this.business.businessAddress.isPrimary ?? true,
-        googleMapURL: this.business.businessAddress.googleMapURL || "",
-      },
+      businessWorkingHoursDtoList: this.business.businessWorkingHoursList.map(
+        (wh) => ({
+          id: wh.id || 0,
+          businessId: this.business.id,
+          dayOfWeek: wh.dayOfWeek,
+          openTime: wh.openTime || "",
+          closeTime: wh.closeTime || "",
+          isClosed: wh.isClosed,
+        })
+      ),
 
-      businessGalleryList,
+      businessGalleryDtoList,
     };
 
     this.saving = true;
 
     // console.log("Business Update Payload:", JSON.stringify(payload, null, 2));
 
-    this.businessService.updateBusiness(this.business.id, payload).subscribe(
+    this.businessService.updateBusiness(payload).subscribe(
       () => {
         this.saving = false;
         this.showNotification("Business profile saved successfully");

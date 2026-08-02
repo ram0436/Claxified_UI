@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BusinessService } from "../../service/business.service";
 import { BusinessListItem, BusinessViewDto } from "../../model/Business";
@@ -43,6 +43,30 @@ export class BusinessProfileComponent implements OnInit {
   ];
 
   editPanelOpen: boolean = false;
+
+  lightboxOpen: boolean = false;
+  lightboxSrc: string = "";
+  lightboxCaption: string = "";
+
+  openLightbox(src?: string, caption?: string) {
+    if (!src) return;
+    this.lightboxSrc = src;
+    this.lightboxCaption = caption || "";
+    this.lightboxOpen = true;
+  }
+
+  closeLightbox() {
+    this.lightboxOpen = false;
+    this.lightboxSrc = "";
+    this.lightboxCaption = "";
+  }
+
+  @HostListener("document:keydown.escape")
+  onEscapeKey() {
+    if (this.lightboxOpen) {
+      this.closeLightbox();
+    }
+  }
 
   constructor(
     private businessService: BusinessService,

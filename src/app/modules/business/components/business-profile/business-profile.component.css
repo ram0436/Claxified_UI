@@ -698,6 +698,104 @@ button {
   }
 }
 
+/* ---------- Gallery item as clickable div (was <a>) ---------- */
+.gallery-item {
+  cursor: pointer;
+}
+
+/* ---------- Clickable cover / logo ---------- */
+.cover-image-clickable,
+.logo-image-clickable {
+  cursor: zoom-in;
+}
+
+/* ---------- Lightbox ---------- */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 16, 22, 0.88);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  animation: lightboxIn 0.15s ease;
+  cursor: zoom-out;
+}
+
+@keyframes lightboxIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lightbox-image {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  cursor: default;
+  animation: lightboxZoomIn 0.18s ease;
+}
+
+@keyframes lightboxZoomIn {
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.lightbox-caption {
+  color: #fff;
+  margin-top: 16px;
+  font-size: 14px;
+  text-align: center;
+  max-width: 80vw;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: scale(1.05);
+}
+
+.lightbox-close:focus-visible {
+  outline: 2px solid #03e9f4;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox-overlay,
+  .lightbox-image {
+    animation: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .business-card,
   .shimmer,
