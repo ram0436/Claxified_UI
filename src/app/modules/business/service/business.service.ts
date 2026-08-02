@@ -11,6 +11,14 @@ export class BusinessService {
   private baseUrl = environment.baseUrl;
   private dataSubject = new Subject<any>();
 
+  private businessUpdatedSource = new Subject<{
+    businessId: string;
+    businessName: string;
+    logoUrl: string;
+  }>();
+
+  businessUpdated$ = this.businessUpdatedSource.asObservable();
+
   constructor(private http: HttpClient) {}
 
   getBusinessCategories() {
@@ -76,5 +84,13 @@ export class BusinessService {
 
   deleteBusiness(id: number) {
     return this.http.delete(`${this.baseUrl}Business/${id}`);
+  }
+
+  notifyBusinessUpdated(
+    businessId: string,
+    businessName: string,
+    logoUrl: string
+  ): void {
+    this.businessUpdatedSource.next({ businessId, businessName, logoUrl });
   }
 }

@@ -8,7 +8,7 @@
   flex-direction: column;
   align-items: center;
   /* position: relative; */
-  padding: 5px 15px;
+  padding: 10px 15px;
 }
 
 .login-flex span {
@@ -139,7 +139,7 @@ nav ul li:hover {
   position: relative;
   /* background-color: #003554; */
   /* Changes made by Hamza */
-  width: 70%;
+  width: 65%;
   padding-left: 20px;
 }
 
@@ -353,7 +353,7 @@ a {
 
 .pull-right {
   float: right !important;
-  width: 29%;
+  width: 34%;
 }
 
 ::ng-deep .mdc-list-item__primary-text {
@@ -371,13 +371,14 @@ a {
 .login {
   cursor: pointer;
   margin-right: 10px;
+  margin: 5px 0px 2px 0;
 }
 
 .profile_i {
   background-color: #ffff;
   border: 1px solid #ffff;
   border-radius: 21px;
-  margin: 5px 20px 2px 0;
+  margin: 5px 10px 2px 0;
   padding: 3px 0px 2px 6px;
 }
 
@@ -395,6 +396,41 @@ a {
   margin: 3px 0px 0 5px !important;
 }
 
+.profile-btn {
+  display: flex !important;
+  align-items: center !important;
+  flex-direction: row-reverse;
+  gap: 0px;
+  color: #fff !important;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 10px 15px !important;
+  border-radius: 20px;
+  margin-top: 2px;
+  transition: background-color 0.2s ease;
+}
+
+.profile-btn:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.profile-btn-label {
+  white-space: nowrap;
+}
+
+.profile-btn .expand {
+  height: 22px !important;
+  width: 22px !important;
+  font-size: 22px !important;
+  margin: 0 !important;
+  color: #fff;
+  transition: transform 0.25s ease;
+  transform: rotate(180deg);
+}
+
+.profile-btn .expand.rotated {
+  transform: rotate(0deg);
+}
 ::ng-deep .cdk-overlay-pane {
   margin-top: 15px;
   /* z-index: 1300 !important; */
@@ -412,12 +448,12 @@ a {
   max-height: 100%;
 }
 
-.arrow {
+/* .arrow {
   margin: 0px;
   padding: 0px;
   justify-content: flex-start;
   min-width: 40px;
-}
+} */
 
 .stick {
   position: fixed;
@@ -600,7 +636,7 @@ a {
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 18px 13.6px; /* was 15px 13.6px */
+  padding: 18px 13.6px;
 }
 
 .li-item .material-icons,
@@ -800,23 +836,23 @@ header {
 
 .business-link {
   cursor: pointer;
-  margin: 5px 5px 2px 0;
+  margin: 5px 10px 2px 0;
 }
 
 .business-link a {
-  color: #fff;
+  color: #01e6ee !important;
   font-weight: 500;
   text-decoration: none;
   padding: 10px 15px;
   display: inline-block;
 }
-.business-link a:hover {
+/* .business-link a:hover {
   background-color: #03e9f4 !important;
   color: #050801 !important;
   box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4,
     0 0 200px #03e9f4;
   -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
-}
+} */
 
 @media (max-width: 1220px) {
   .icon-text {
@@ -829,6 +865,14 @@ header {
 
   .search-bar .inputs-wrapper .keyword-search-container {
     width: 60%;
+  }
+
+  .pull-right {
+    width: 45%;
+  }
+
+  .search-bar-container {
+    width: 52%;
   }
 }
 
@@ -847,11 +891,11 @@ header {
   }
 
   .pull-right {
-    width: 32%;
+    width: 45%;
   }
 
   .search-bar-container {
-    width: 65%;
+    width: 52%;
   }
 }
 
@@ -871,11 +915,11 @@ header {
 
 @media (max-width: 1000px) {
   .search-bar-container {
-    width: 60%;
+    width: 62%;
   }
 
   .pull-right {
-    width: 40%;
+    width: 35%;
   }
 }
 
@@ -891,11 +935,11 @@ header {
 
 @media (max-width: 860px) {
   .search-bar-container {
-    width: 55%;
+    width: 50%;
   }
 
   .pull-right {
-    width: 45%;
+    width: 55%;
   }
 }
 
@@ -906,6 +950,11 @@ header {
 
   .md-db-none {
     display: none;
+  }
+
+  .nav-bar {
+    flex-direction: column;
+    height: 115px;
   }
 
   .md-db-block {

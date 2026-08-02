@@ -6,35 +6,103 @@
         alt="Logo"
         class="business-header-logo"
       />
-      <!-- <span class="business-logo-text">
-        CLAXIFIED <small>Business</small>
-      </span> -->
     </a>
 
     <ul class="business-nav-links">
-      <li><a routerLink="/">Back to Claxified</a></li>
-      <li>
+      <li><a routerLink="/">Marketplace</a></li>
+      <!-- <li >
         <a
           routerLink="/business"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
-          >Overview</a
         >
-      </li>
-      <li *ngIf="isUserLogedIn">
-        <a
-          routerLink="/business/profile"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          My Businesses
+          Explore
         </a>
+      </li> -->
+      <li *ngIf="!isUserLogedIn">
+        <a (click)="openLoginModal()">Login</a>
       </li>
+
+      <!-- Business switcher dropdown, replaces "My Businesses" -->
+      <li class="business-dropdown" *ngIf="isUserLogedIn">
+        <button
+          class="business-profile-btn"
+          mat-button
+          [matMenuTriggerFor]="businessMenu"
+          (click)="toggleExpandIcon()"
+        >
+          <!-- <img [src]="currentBusinessLogo" alt="" class="business-avatar-sm" /> -->
+          <span class="business-profile-btn-label">{{
+            currentBusinessName
+          }}</span>
+          <mat-icon class="expand" [class.rotated]="expandIconVisible"
+            >expand_more</mat-icon
+          >
+        </button>
+      </li>
+
       <li>
         <a (click)="openBusinessLoginModal()" class="business-cta-btn">
-          Register Business
+          + Register Business
         </a>
       </li>
     </ul>
   </nav>
+
+  <mat-menu
+    #businessMenu="matMenu"
+    xPosition="before"
+    class="business-menu-panel"
+  >
+    <button mat-menu-item class="business-menu-header" disabled>
+      <img [src]="currentBusinessLogo" alt="" class="business-avatar-lg" />
+      <div class="mt-10">
+        <p class="mt-0">{{ currentBusinessName }}</p>
+      </div>
+    </button>
+    <hr class="profile-hr" />
+
+    <button mat-menu-item class="button-item" (click)="goToBusinessDashboard()">
+      <span class="material-icons-outlined">dashboard</span>
+      <span class="btn-txt">Dashboard</span>
+    </button>
+    <button mat-menu-item class="button-item" (click)="goToBusinessProfile()">
+      <span class="material-icons-outlined">storefront</span>
+      <span class="btn-txt">Business Profile</span>
+    </button>
+    <button mat-menu-item class="button-item" (click)="goToListing()">
+      <span class="material-icons-outlined">list_alt</span>
+      <span class="btn-txt">Listing</span>
+    </button>
+    <button mat-menu-item class="button-item" (click)="goToAnalytics()">
+      <span class="material-icons-outlined">insights</span>
+      <span class="btn-txt">Analytics</span>
+    </button>
+    <button mat-menu-item class="button-item" (click)="goToLead()">
+      <span class="material-icons-outlined">contact_mail</span>
+      <span class="btn-txt">Lead</span>
+    </button>
+
+    <hr class="profile-hr" />
+
+    <button mat-menu-item class="button-item" (click)="goToOwnerProfile()">
+      <span class="material-icons-outlined">person_outline</span>
+      <span class="btn-txt">Owner Profile</span>
+    </button>
+    <button mat-menu-item class="button-item" (click)="goToMyBusiness()">
+      <span class="material-icons-outlined">business_center</span>
+      <span class="btn-txt">My Business</span>
+    </button>
+    <button mat-menu-item class="button-item" (click)="goToAccountSettings()">
+      <span class="material-icons">settings</span>
+      <span class="btn-txt">Account Setting</span>
+    </button>
+
+    <hr class="profile-hr" />
+
+    <button mat-menu-item class="button-item" (click)="logout()">
+      <span class="material-icons">logout</span>
+      <span class="btn-txt">Logout</span>
+    </button>
+  </mat-menu>
 </header>

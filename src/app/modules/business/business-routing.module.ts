@@ -7,6 +7,7 @@ import { BusinessDashboardComponent } from "./components/business-dashboard/busi
 import { BusinessEditProfileComponent } from "./components/business-edit-profile/business-edit-profile.component";
 import { BusinessPublicProfileComponent } from "./components/business-public-profile/business-public-profile.component";
 import { BusinessProfileComponent } from "./components/business-profile/business-profile.component";
+import { BusinessDirectoriesComponent } from "./components/business-directories/business-directories.component";
 
 const routes: Routes = [
   {
@@ -14,7 +15,8 @@ const routes: Routes = [
     component: BusinessLayoutComponent,
     children: [
       { path: "", component: BusinessLandingComponent },
-      { path: "register", component: BusinessRegisterComponent },
+      // { path: "register", component: BusinessRegisterComponent },
+      { path: "directories", component: BusinessDirectoriesComponent },
       { path: "profile", component: BusinessProfileComponent },
       { path: "profile/edit", component: BusinessEditProfileComponent },
       { path: "profile/:tabRefGuid", component: BusinessProfileComponent },
