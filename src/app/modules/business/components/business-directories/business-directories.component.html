@@ -8,5 +8,137 @@
         </p>
       </div>
     </div>
+
+    <!-- Loading state -->
+    <div class="state-block" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Loading businesses…</p>
+    </div>
+
+    <!-- Error state -->
+    <div class="state-block" *ngIf="!loading && loadError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load the business directory right now.</p>
+      <button class="retry-button" (click)="fetchBusinesses()">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Empty state -->
+    <div
+      class="state-block"
+      *ngIf="!loading && !loadError && businesses.length === 0"
+    >
+      <span class="material-icons-outlined state-icon">storefront</span>
+      <p>No businesses have been listed yet.</p>
+    </div>
+
+    <!-- Directory grid -->
+    <div
+      class="directory-grid"
+      *ngIf="!loading && !loadError && businesses.length > 0"
+    >
+      <div
+        class="business-card"
+        *ngFor="let business of businesses; trackBy: trackByBusinessId"
+        (click)="viewBusiness(business)"
+      >
+        <div class="card-cover" [class.no-image]="!business.coverImageUrl">
+          <img
+            *ngIf="business.coverImageUrl"
+            [src]="business.coverImageUrl"
+            [alt]="business.businessName + ' cover'"
+          />
+          <span
+            class="cover-placeholder-icon material-icons-outlined"
+            *ngIf="!business.coverImageUrl"
+            >storefront</span
+          >
+          <span
+            class="verified-badge"
+            *ngIf="business.businessVerificationDto?.isBusinessVerified"
+          >
+            <span class="material-icons-outlined">verified</span>
+            Verified
+          </span>
+        </div>
+
+        <div class="card-logo-wrap">
+          <div class="card-logo" [class.has-image]="business.logoUrl">
+            <img
+              *ngIf="business.logoUrl"
+              [src]="business.logoUrl"
+              [alt]="business.businessName + ' logo'"
+            />
+            <span *ngIf="!business.logoUrl" class="logo-initials">{{
+              getInitials(business.businessName)
+            }}</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="card-title-row">
+            <h3 class="card-title">
+              {{ business.businessName || "Unnamed Business" }}
+            </h3>
+            <span
+              class="status-pill"
+              *ngIf="isOpenNow(business) !== null"
+              [class.open]="isOpenNow(business) === true"
+              [class.closed]="isOpenNow(business) === false"
+            >
+              {{ isOpenNow(business) ? "Open Now" : "Closed" }}
+            </span>
+          </div>
+
+          <p class="card-category" *ngIf="business.businessCategory">
+            {{ business.businessCategory
+            }}<ng-container *ngIf="business.businessSubCategory">
+              &middot; {{ business.businessSubCategory }}</ng-container
+            >
+          </p>
+
+          <p class="card-location" *ngIf="getLocationLabel(business)">
+            <span class="material-icons-outlined">location_on</span>
+            {{ getLocationLabel(business) }}
+          </p>
+
+          <p class="card-established" *ngIf="business.establishedYear">
+            Est. {{ business.establishedYear }}
+          </p>
+
+          <div class="card-actions">
+            <button
+              class="card-action primary"
+              (click)="viewBusiness(business); $event.stopPropagation()"
+            >
+              View Business
+            </button>
+            <button
+              class="card-action icon-only"
+              *ngIf="business.businessContactDto?.mobile"
+              (click)="
+                callBusiness($event, business.businessContactDto?.mobile)
+              "
+              title="Call"
+              type="button"
+            >
+              <span class="material-icons-outlined">call</span>
+            </button>
+            <button
+              class="card-action icon-only whatsapp"
+              *ngIf="business.businessContactDto?.whatsApp"
+              (click)="
+                whatsappBusiness($event, business.businessContactDto?.whatsApp)
+              "
+              title="WhatsApp"
+              type="button"
+            >
+              <span class="material-icons-outlined">chat</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

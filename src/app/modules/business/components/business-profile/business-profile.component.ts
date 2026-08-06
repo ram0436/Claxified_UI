@@ -123,6 +123,13 @@ export class BusinessProfileComponent implements OnInit {
     );
   }
 
+  get isOwner(): boolean {
+    if (!this.business) return false;
+    const loggedInUserId = Number(localStorage.getItem("id"));
+    const ownerUserId = Number((this.business as any).userId);
+    return !!loggedInUserId && !!ownerUserId && loggedInUserId === ownerUserId;
+  }
+
   openBusiness(item: BusinessListItem) {
     this.router.navigate(["/business/profile", item.businessId]);
   }

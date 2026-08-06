@@ -6,11 +6,25 @@ import { UserService } from "../../../user/service/user.service";
 import { BusinessService } from "../../service/business.service";
 import { BusinessRegisterRequest } from "../../model/Business";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { CommonService } from "src/app/shared/service/common.service";
+import { Overlay } from "@angular/cdk/overlay";
+import { MAT_SELECT_SCROLL_STRATEGY } from "@angular/material/select";
+
+export function selectRepositionScrollStrategy(overlay: Overlay) {
+  return () => overlay.scrollStrategies.reposition();
+}
 
 @Component({
   selector: "app-business-login",
   templateUrl: "./business-login.component.html",
   styleUrls: ["./business-login.component.css"],
+  providers: [
+    {
+      provide: MAT_SELECT_SCROLL_STRATEGY,
+      useFactory: selectRepositionScrollStrategy,
+      deps: [Overlay],
+    },
+  ],
 })
 export class BusinessLoginComponent implements OnInit, OnDestroy {
   businessName: string = "";
@@ -38,12 +52,40 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
   disableSendOTPButton: boolean = false;
 
   userName: string = "";
-  loggedInUserId: number = 0; // numeric localStorage "id" — used everywhere EXCEPT users.userId
+  loggedInUserId: number = 0;
+
+  businessCategoryId: number = 0;
+  businessSubCategoryId: number = 0;
+  businessTypeId: number = 0;
+  sellerTypeId: number = 0;
+  pincode: string = "";
+  state: string = "";
+  city: string = "";
+  nearBy: string = "";
+  country: string = "India";
+
+  businessCategoryErrorMessage: boolean = false;
+  businessSubCategoryErrorMessage: boolean = false;
+  businessTypeErrorMessage: boolean = false;
+  sellerTypeErrorMessage: boolean = false;
+  pincodeErrorMessage: boolean = false;
+  stateErrorMessage: boolean = false;
+  cityErrorMessage: boolean = false;
+  nearByErrorMessage: boolean = false;
+
+  businessCategories: any[] = [];
+  businessSubCategories: any[] = [];
+  businessTypes: any[] = [];
+  sellerTypes: any[] = [];
+  dropdownDataLoading: boolean = true;
+
+  postOffices: any[] = [];
 
   constructor(
     private httpClient: HttpClient,
     private userService: UserService,
     private businessService: BusinessService,
+    private commonService: CommonService,
     private router: Router,
     private snackBar: MatSnackBar,
     private dialogRef: MatDialogRef<BusinessLoginComponent>
@@ -52,6 +94,28 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.userName = localStorage.getItem("firstName") || "";
     this.loggedInUserId = Number(localStorage.getItem("id")) || 0;
+    this.loadDropdownData();
+  }
+
+  loadDropdownData() {
+    this.dropdownDataLoading = true;
+    let pending = 3;
+    const done = () => {
+      pending--;
+      if (pending === 0) this.dropdownDataLoading = false;
+    };
+    this.businessService.getBusinessCategories().subscribe((data: any) => {
+      this.businessCategories = data;
+      done();
+    });
+    this.businessService.getBusinessTypes().subscribe((data: any) => {
+      this.businessTypes = data;
+      done();
+    });
+    this.businessService.getSellerTypes().subscribe((data: any) => {
+      this.sellerTypes = data;
+      done();
+    });
   }
 
   ngOnDestroy() {
@@ -86,6 +150,51 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
     return isValid;
   }
 
+  allowOnlyNumbersPincode(event: any) {
+    event.target.value = event.target.value.replace(/[^0-9]/g, "");
+    this.pincode = event.target.value;
+  }
+
+  getAddress(event: any) {
+    const pincode = event.target.value;
+    if (pincode.length === 6) {
+      this.commonService.getAddress(pincode).subscribe((data: any) => {
+        if (data[0].PostOffice != null) {
+          const address = data[0].PostOffice[0];
+          this.state = address.State;
+          this.city = address.District;
+          this.country = address.Country || "India";
+          this.postOffices = data[0].PostOffice;
+          if (this.postOffices.length > 1) {
+            this.nearBy = this.postOffices[0].Name;
+          } else {
+            this.nearBy = address.Name;
+          }
+        } else {
+          this.state = "";
+          this.city = "";
+          this.postOffices = [];
+          this.nearBy = "";
+        }
+      });
+    }
+  }
+
+  onBusinessCategoryChange() {
+    this.businessSubCategoryId = 0;
+    this.businessSubCategories = [];
+
+    if (!this.businessCategoryId) {
+      return;
+    }
+
+    this.businessService
+      .getBusinessSubCategories(this.businessCategoryId)
+      .subscribe((data: any) => {
+        this.businessSubCategories = data;
+      });
+  }
+
   generateGuid(): string {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
       const r = (Math.random() * 16) | 0;
@@ -97,6 +206,14 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
   sendOTP() {
     this.phoneNumberErrorMessage = false;
     this.businessNameErrorMessage = false;
+    this.businessCategoryErrorMessage = false;
+    this.businessSubCategoryErrorMessage = false;
+    this.businessTypeErrorMessage = false;
+    this.sellerTypeErrorMessage = false;
+    this.pincodeErrorMessage = false;
+    this.stateErrorMessage = false;
+    this.cityErrorMessage = false;
+    this.nearByErrorMessage = false;
 
     if (!this.businessName || this.businessName.trim().length < 2) {
       this.businessNameErrorMessage = true;
@@ -106,6 +223,47 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
     const phoneNumberRegex = /^[0-9]{10}$/;
     if (!phoneNumberRegex.test(this.phoneNumber)) {
       this.phoneNumberErrorMessage = true;
+      return;
+    }
+
+    if (!this.businessCategoryId) {
+      this.businessCategoryErrorMessage = true;
+      return;
+    }
+
+    if (!this.businessSubCategoryId) {
+      this.businessSubCategoryErrorMessage = true;
+      return;
+    }
+
+    if (!this.businessTypeId) {
+      this.businessTypeErrorMessage = true;
+      return;
+    }
+
+    if (!this.sellerTypeId) {
+      this.sellerTypeErrorMessage = true;
+      return;
+    }
+
+    const pincodeRegex = /^[0-9]{6}$/;
+    if (!pincodeRegex.test(this.pincode)) {
+      this.pincodeErrorMessage = true;
+      return;
+    }
+
+    if (!this.state || this.state.trim().length < 2) {
+      this.stateErrorMessage = true;
+      return;
+    }
+
+    if (!this.city || this.city.trim().length < 2) {
+      this.cityErrorMessage = true;
+      return;
+    }
+
+    if (!this.nearBy) {
+      this.nearByErrorMessage = true;
       return;
     }
 
@@ -157,13 +315,18 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
     // ---------- business (top-level) ----------
     payload.business.businessName = this.businessName;
     payload.business.tabRefGUID = this.generateGuid();
-    payload.business.userId = this.loggedInUserId; // numeric id from localStorage
+    payload.business.userId = this.loggedInUserId;
     payload.business.createdBy = this.loggedInUserId;
     payload.business.createdOn = nowShort;
     payload.business.modifiedBy = this.loggedInUserId;
     payload.business.modifiedOn = nowShort;
     payload.business.isDeleted = false;
     payload.business.deletedBy = 0;
+
+    payload.business.businessCategoryId = this.businessCategoryId;
+    payload.business.businessSubCategoryId = this.businessSubCategoryId;
+    payload.business.businessTypeId = this.businessTypeId;
+    payload.business.sellerTypeId = this.sellerTypeId;
 
     // ---------- businessContact ----------
     payload.business.businessContact.contactPerson =
@@ -199,6 +362,12 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
     payload.business.businessAddress.modifiedOn = nowShort;
     payload.business.businessAddress.isDeleted = false;
     payload.business.businessAddress.deletedBy = 0;
+
+    payload.business.businessAddress.pincode = this.pincode;
+    payload.business.businessAddress.state = this.state;
+    payload.business.businessAddress.city = this.city;
+    payload.business.businessAddress.country = this.country;
+    payload.business.businessAddress.area = this.nearBy;
 
     // ---------- businessWorkingHoursList----------
     const days = [1, 2, 3, 4, 5, 6, 7];

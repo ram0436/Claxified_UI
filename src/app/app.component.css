@@ -10,6 +10,13 @@
   z-index: 2000 !important;
 }
 
+::ng-deep .mat-dialog-container {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  max-height: 90vh;
+}
+
 /* .bg-mat-app-background{
     background-color: #fafafa;
 } */

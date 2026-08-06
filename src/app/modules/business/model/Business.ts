@@ -197,3 +197,97 @@ export interface BusinessViewDto {
   businessWorkingHoursDtoList?: BusinessWorkingHoursDto[];
   businessGalleryDtoList?: BusinessGalleryDto[];
 }
+
+export interface BusinessDirectoryVerification {
+  id: number;
+  businessId: number;
+  isGSTVerified: number;
+  isPANVerified: number;
+  isAadhaarVerified: number;
+  isEmailVerified: number;
+  isMobileVerified: number;
+  isBusinessVerified: boolean;
+  verificationDate: string;
+  verificationRemarks: string;
+  verifiedBy: number;
+}
+
+export interface BusinessDirectoryContact {
+  id: number;
+  businessId: number;
+  contactPerson: string;
+  mobile: string;
+  alternateMobile: string;
+  email: string;
+  whatsApp: string;
+}
+
+export interface BusinessDirectoryAddress {
+  id: number;
+  businessId: number;
+  country: string;
+  state: string;
+  city: string;
+  area: string;
+  address: string;
+  pincode: string;
+  isPrimary: boolean;
+  googleMapURL: string;
+}
+
+export interface BusinessDirectorySocialMedia {
+  id: number;
+  businessId: number;
+  facebook: string;
+  instagram: string;
+  linkedIn: string;
+  youTube: string;
+  twitter: string;
+}
+
+export interface BusinessDirectoryWorkingHours {
+  id: number;
+  businessId: number;
+  /** 0 = Sunday ... 6 = Saturday — matches JS Date.getDay() */
+  dayOfWeek: number;
+  openTime: string;
+  closeTime: string;
+  isClosed: boolean;
+}
+
+export interface BusinessDirectoryGallery {
+  id: number;
+  businessId: number;
+  imageUrl: string;
+  thumbnailUrl: string;
+  caption: string;
+  displayOrder: number;
+}
+
+/** Single item returned by GET Business/List */
+export interface BusinessDirectoryItem {
+  id: number;
+  userId: number;
+  businessName: string;
+  businessCategoryId: number;
+  businessCategory: string;
+  businessSubCategoryId: number;
+  businessSubCategory: string;
+  businessTypeId: number;
+  businessType: string;
+  sellerTypeId: number;
+  sellerType: string;
+  tabRefGUID: string;
+  description: string;
+  logoUrl: string;
+  coverImageUrl: string;
+  establishedYear: number;
+  website: string;
+  status: number;
+  businessVerificationDto?: BusinessDirectoryVerification;
+  businessContactDto?: BusinessDirectoryContact;
+  businessAddressDto?: BusinessDirectoryAddress;
+  businessSocialMediaDto?: BusinessDirectorySocialMedia;
+  businessWorkingHoursDtoList?: BusinessDirectoryWorkingHours[];
+  businessGalleryDtoList?: BusinessDirectoryGallery[];
+}
