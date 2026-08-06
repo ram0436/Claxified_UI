@@ -77,7 +77,7 @@
   cursor: pointer;
 }
 
-::ng-deep .cdk-global-overlay-wrapper {
+/* ::ng-deep .cdk-global-overlay-wrapper {
   align-items: initial !important;
   height: auto;
 }
@@ -93,7 +93,7 @@
   display: flex;
   align-items: center !important;
   justify-content: center !important;
-}
+} */
 
 @media (max-width: 750px) {
   .business-nav-container {

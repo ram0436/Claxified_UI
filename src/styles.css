@@ -1,4 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined");
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.cdk-overlay-container {
+  z-index: 2000;
+}
+
+.cdk-global-overlay-wrapper {
+  align-items: initial !important;
+  height: auto;
+}
+
+.cdk-global-overlay-wrapper:has(.business-login-dialog-container) {
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+}
+
+.mat-mdc-dialog-container {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  max-height: 90vh;
+}
+
+.cdk-overlay-container .cdk-overlay-connected-position-bounding-box {
+  z-index: 2001;
+}

@@ -1,11 +1,10 @@
 .business-login-wrapper {
   display: flex;
-  width: 800px;
   max-width: 90vw;
-  min-height: 500px;
+  height: clamp(500px, 90vh, 90vh);
   border-radius: 12px;
-  overflow: hidden;
   position: relative;
+  overflow-y: auto;
   background: #fff;
 }
 
@@ -15,7 +14,7 @@
   position: absolute;
   top: 15px;
   right: 15px;
-  color: #fff;
+  color: #000;
   z-index: 5;
 }
 
@@ -26,8 +25,13 @@
   padding: 40px 30px;
   display: flex;
   flex-direction: column;
+  justify-self: center;
   align-items: center;
+  justify-content: center;
   text-align: center;
+  overflow-y: auto;
+  height: 100%;
+  border-radius: 12px 0 0 12px;
 }
 
 .brand-logo {
@@ -57,10 +61,35 @@
 
 .business-login-form-panel {
   width: 55%;
-  padding: 50px 40px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  height: 100%;
+  min-height: 0;
+  border-radius: 0 12px 12px 0;
+  overflow: hidden; /* clip only THIS panel, not the whole wrapper */
+}
+
+/* HIGH SPECIFICITY + !important to beat Material's own theme CSS */
+mat-dialog-content.business-login-form-scroll,
+.business-login-form-panel .business-login-form-scroll.mat-mdc-dialog-content,
+.business-login-form-panel .business-login-form-scroll.mat-dialog-content {
+  overflow-y: auto !important;
+  padding: 50px 40px !important;
+  margin: 0 !important;
+  max-height: none !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  display: block !important;
+  box-sizing: border-box;
+}
+
+.business-login-form-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.business-login-form-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
 }
 
 .form-heading {
@@ -87,6 +116,23 @@
   width: 100%;
   display: block;
   margin-bottom: 4px;
+}
+
+.field-row {
+  display: flex;
+  gap: 12px;
+}
+
+.field-half {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 750px) {
+  .field-row {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 
 .country-code {
@@ -151,6 +197,7 @@
   .business-login-wrapper {
     flex-direction: column;
     width: 95vw;
+    max-height: 95vh;
   }
   .business-login-brand-panel,
   .business-login-form-panel {
@@ -158,5 +205,15 @@
   }
   .business-login-brand-panel {
     padding: 30px 20px;
+    flex: 0 0 auto;
+    border-radius: 12px 12px 0 0;
+  }
+  .business-login-form-panel {
+    flex: 1;
+    min-height: 0;
+    border-radius: 0 0 12px 12px;
+  }
+  mat-dialog-content.business-login-form-scroll {
+    padding: 30px 20px !important;
   }
 }

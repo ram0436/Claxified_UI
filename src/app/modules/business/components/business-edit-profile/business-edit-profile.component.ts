@@ -198,6 +198,10 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
   }
 
   onCategoryChange() {
+    // Category changed — the previously selected sub-category id no longer
+    // belongs to this category, so clear it to avoid sending a stale/mismatched
+    // sub-category id + name pair in the update payload.
+    this.business.businessSubCategoryId = 0;
     this.businessSubCategories = [];
     if (this.business.businessCategoryId) {
       this.businessService
@@ -523,7 +527,7 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
 
     const now = new Date().toISOString();
 
-    // ---------- Resolve dropdown IDs back to names (API wants names, not IDs) ----------
+    // ---------- Resolve dropdown IDs to names too (API wants BOTH id and name) ----------
     const categoryName =
       this.businessCategories.find(
         (c) => c.id === this.business.businessCategoryId
@@ -570,9 +574,13 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
       id: this.business.id || 0,
       userId: this.userId,
       businessName: this.business.businessName || "",
+      businessCategoryId: this.business.businessCategoryId || 0,
       businessCategory: categoryName,
+      businessSubCategoryId: this.business.businessSubCategoryId || 0,
       businessSubCategory: subCategoryName,
+      businessTypeId: this.business.businessTypeId || 0,
       businessType: typeName,
+      sellerTypeId: this.business.sellerTypeId || 0,
       sellerType: sellerTypeName,
       tabRefGUID: this.tabRefGuid || this.business.tabRefGUID || "",
       description: this.business.description || "",
@@ -649,6 +657,8 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
     };
 
     this.saving = true;
+
+    // console.log("Business Update Payload:", JSON.stringify(payload, null, 2));
 
     this.businessService.updateBusiness(payload).subscribe(
       () => {

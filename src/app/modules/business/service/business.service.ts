@@ -2,7 +2,11 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
-import { BusinessListItem, BusinessViewDto } from "../model/Business";
+import {
+  BusinessDirectoryItem,
+  BusinessListItem,
+  BusinessViewDto,
+} from "../model/Business";
 
 @Injectable({
   providedIn: "root",
@@ -20,6 +24,12 @@ export class BusinessService {
   businessUpdated$ = this.businessUpdatedSource.asObservable();
 
   constructor(private http: HttpClient) {}
+
+  getBusinessList(): Observable<BusinessDirectoryItem[]> {
+    return this.http.get<BusinessDirectoryItem[]>(
+      `${this.baseUrl}Business/List`
+    );
+  }
 
   getBusinessCategories() {
     return this.http.get(`${this.baseUrl}Business/business-categories`);
