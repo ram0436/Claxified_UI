@@ -64,9 +64,28 @@
 
 <!-- ============ DETAIL MODE ============ -->
 <div class="profile-wrapper" *ngIf="mode === 'detail' && !loading && business">
-  <button class="back-link" *ngIf="isOwner" (click)="backToList()">
-    <span class="material-icons-outlined">arrow_back</span> All Businesses
-  </button>
+  <div class="top-action-row" *ngIf="isOwner">
+    <button class="back-link" (click)="backToList()" *ngIf="!viewingAsPublic">
+      <span class="material-icons-outlined">arrow_back</span> All Businesses
+    </button>
+
+    <button
+      class="view-public-btn"
+      *ngIf="!viewingAsPublic"
+      (click)="toggleViewAsPublic()"
+    >
+      <span class="material-icons-outlined">visibility</span> View as Public
+      Profile
+    </button>
+    <button
+      class="view-public-btn exit"
+      *ngIf="viewingAsPublic"
+      (click)="toggleViewAsPublic()"
+    >
+      <span class="material-icons-outlined">visibility_off</span> Exit Public
+      View
+    </button>
+  </div>
 
   <!-- Cover + logo only. Name/actions live below so they never sit on top of the image. -->
   <div class="hero-banner">
@@ -117,12 +136,29 @@
     </div>
 
     <div class="profile-header-actions">
-      <button class="btn-outline" (click)="shareProfile()">
-        <span class="material-icons-outlined">share</span> Share
-      </button>
-      <button class="btn-primary" *ngIf="isOwner" (click)="editProfile()">
-        <span class="material-icons-outlined">edit</span> Edit Profile
-      </button>
+      <ng-container *ngIf="!viewingAsPublic">
+        <button class="btn-outline" (click)="shareProfile()">
+          <span class="material-icons-outlined">share</span> Share
+        </button>
+        <button
+          class="btn-outline"
+          *ngIf="isOwner"
+          (click)="advertiseProfile()"
+        >
+          <span class="material-icons-outlined">campaign</span> Advertise
+        </button>
+        <button
+          class="btn-outline"
+          *ngIf="isOwner"
+          (click)="openBusinessDashboard()"
+        >
+          <span class="material-icons-outlined">space_dashboard</span> Business
+          Dashboard
+        </button>
+        <button class="btn-primary" *ngIf="isOwner" (click)="editProfile()">
+          <span class="material-icons-outlined">edit</span> Edit Profile
+        </button>
+      </ng-container>
     </div>
   </div>
 

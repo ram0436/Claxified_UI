@@ -48,6 +48,8 @@ export class BusinessProfileComponent implements OnInit {
   lightboxSrc: string = "";
   lightboxCaption: string = "";
 
+  viewingAsPublic: boolean = false;
+
   openLightbox(src?: string, caption?: string) {
     if (!src) return;
     this.lightboxSrc = src;
@@ -88,6 +90,10 @@ export class BusinessProfileComponent implements OnInit {
         this.loadUserBusinesses();
       }
     });
+  }
+
+  toggleViewAsPublic(): void {
+    this.viewingAsPublic = !this.viewingAsPublic;
   }
 
   registerNewBusiness() {
@@ -164,6 +170,10 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   shareProfile(): void {}
+
+  advertiseProfile(): void {}
+
+  openBusinessDashboard(): void {}
 
   backToList() {
     this.router.navigateByUrl("/business/profile");
