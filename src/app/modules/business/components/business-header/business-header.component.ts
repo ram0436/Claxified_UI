@@ -42,7 +42,6 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
 
     this.businessUpdatedSub = this.businessService.businessUpdated$.subscribe(
       (update) => {
-        // Update the matching entry in the businesses list
         const match = this.businesses.find(
           (b) =>
             b.businessId === update.businessId ||
@@ -100,6 +99,42 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
 
   toggleExpandIcon(): void {
     this.expandIconVisible = !this.expandIconVisible;
+  }
+
+  getInitials(name: string): string {
+    if (!name) return "?";
+    const words = name.trim().split(/\s+/);
+    const initials =
+      words.length === 1 ? words[0].substring(0, 2) : words[0][0] + words[1][0];
+    return initials.toUpperCase();
+  }
+
+  avatarGradient(name: string): string {
+    const gradients = [
+      "linear-gradient(135deg, #0d475c 0%, #1f9254 100%)",
+      "linear-gradient(135deg, #e75462 0%, #f4a261 100%)",
+      "linear-gradient(135deg, #6c5ce7 0%, #0065ff 100%)",
+      "linear-gradient(135deg, #00b894 0%, #0d475c 100%)",
+      "linear-gradient(135deg, #e75462 0%, #6c5ce7 100%)",
+    ];
+    let hash = 0;
+    for (let i = 0; i < (name || "").length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % gradients.length;
+    return gradients[index];
+  }
+
+  switchBusiness(biz: BusinessListItem): void {
+    const tabRefGuid = biz.businessId;
+    if (!tabRefGuid) {
+      return;
+    }
+    this.currentBusinessName = biz.businessName;
+    if (biz.logoUrl && biz.logoUrl.trim() !== "") {
+      this.currentBusinessLogo = biz.logoUrl;
+    }
+    this.router.navigate(["/business/profile", tabRefGuid]);
   }
 
   openLoginModal() {

@@ -4,7 +4,7 @@
 .page-loading {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 30px 24px 60px 24px;
+  padding: 15px 24px 60px 24px;
 }
 
 button {
@@ -152,7 +152,7 @@ button {
 }
 
 .avatar-initials-lg {
-  font-size: 26px;
+  font-size: 29px;
 }
 
 .business-card-name {
@@ -211,6 +211,76 @@ button {
   gap: 8px;
 }
 
+.top-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  /* margin-bottom: 15px; */
+  flex-wrap: wrap;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px solid #e3e7e9;
+  color: #0d475c;
+  font-weight: 600;
+  font-size: 13.5px;
+  border-radius: 20px;
+  padding: 8px 16px 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.back-link .material-icons-outlined {
+  font-size: 18px;
+}
+
+.back-link:hover {
+  background-color: #eef4f6;
+  border-color: #0d475c;
+  transform: translateX(-2px);
+}
+
+.view-public-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px solid #0d475c;
+  color: #0d475c;
+  font-weight: 600;
+  font-size: 13.5px;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.view-public-btn:hover {
+  background-color: #eef4f6;
+  transform: translateY(-1px);
+}
+
+.view-public-btn.exit {
+  border-color: #e75462;
+  color: #e75462;
+  margin-bottom: 10px;
+}
+
+.view-public-btn.exit:hover {
+  background-color: #fdecec;
+}
+
+.view-public-btn .material-icons-outlined {
+  font-size: 18px;
+}
+
 .hero-banner {
   position: relative;
   border-radius: 12px;
@@ -219,7 +289,7 @@ button {
 
 .cover-image {
   width: 100%;
-  height: 280px;
+  height: 330px;
   object-fit: cover;
   border-radius: 12px;
   display: block;
@@ -232,10 +302,10 @@ button {
 
 .logo-box {
   position: absolute;
-  bottom: -35px;
+  bottom: -43px;
   left: 25px;
-  width: 90px;
-  height: 90px;
+  width: 99px;
+  height: 99px;
   border-radius: 14px;
   background: #0d475c;
   border: 4px solid #fff;
@@ -257,10 +327,10 @@ button {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  margin-top: 15px;
-  padding-left: 130px;
+  margin-top: 60px;
   min-height: 40px;
   flex-wrap: wrap;
+  padding-left: 10px;
 }
 
 .name-line {
@@ -303,6 +373,8 @@ button {
   display: flex;
   gap: 10px;
   flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .tab-strip {
@@ -613,7 +685,7 @@ button {
 
 .skeleton-cover {
   width: 100%;
-  height: 280px;
+  height: 330px;
   border-radius: 12px;
 }
 
@@ -815,23 +887,27 @@ button {
   .cover-image,
   .cover-placeholder,
   .skeleton-cover {
-    height: 180px;
+    height: 198px;
   }
   .logo-box {
-    width: 70px;
-    height: 70px;
+    width: 77px;
+    height: 77px;
   }
   .profile-header-row {
     padding-left: 0;
-    margin-top: 15px;
+    margin-top: 50px;
     flex-direction: column;
   }
   .profile-header-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
     width: 100%;
   }
+
   .btn-primary,
   .btn-outline {
-    flex: 1;
+    flex: none;
     justify-content: center;
   }
 }

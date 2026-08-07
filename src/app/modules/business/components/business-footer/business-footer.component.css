@@ -124,6 +124,25 @@
   padding: 50px 0;
 }
 
+/* 5-column layout used for the expanded footer sitemap (2 rows of 5) */
+.business-footer-grid-5 {
+  grid-template-columns: repeat(5, 1fr);
+  column-gap: 28px;
+  padding: 40px 0 0 0;
+}
+
+.business-footer-grid-5:first-of-type {
+  padding-top: 50px;
+}
+
+.business-footer-grid-row2 {
+  padding-top: 0;
+  padding-bottom: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 10px;
+  padding-top: 40px;
+}
+
 .business-footer-col {
   display: flex;
   flex-direction: column;
@@ -151,6 +170,29 @@
 .business-footer-link:hover {
   color: #ffffff;
   transform: translateX(4px);
+}
+
+/* Indented sub-links, e.g. items nested under "Featured Listings" */
+.business-footer-sublink {
+  font-size: 13px;
+  padding-left: 14px;
+  position: relative;
+  color: #9fbac6;
+}
+
+.business-footer-sublink::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: #6f97a5;
+}
+
+/* Slim contact strip, sits between the sitemap grid and the bottom bar */
+.business-footer-contact-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  padding: 0 0 40px;
 }
 
 .business-footer-contact {
@@ -216,6 +258,13 @@
 }
 
 /* ===== RESPONSIVE ===== */
+@media (max-width: 1200px) {
+  .business-footer-grid-5 {
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 32px;
+  }
+}
+
 @media (max-width: 992px) {
   .business-footer-top {
     grid-template-columns: 1fr;
@@ -227,6 +276,9 @@
   .business-footer-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+  .business-footer-grid-5 {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 560px) {
@@ -236,6 +288,14 @@
   .business-footer-grid {
     grid-template-columns: 1fr;
     row-gap: 32px;
+  }
+  .business-footer-grid-5 {
+    grid-template-columns: 1fr;
+    row-gap: 28px;
+  }
+  .business-footer-contact-bar {
+    flex-direction: column;
+    gap: 10px;
   }
   .business-footer-bottom {
     flex-direction: column;
