@@ -11,7 +11,6 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { UserModule } from "./modules/user/user.module";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { JwtInterceptor } from "./modules/auth/interceptor/JwtInterceptor";
-import { HashLocationStrategy, LocationStrategy } from "@angular/common";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { PagesModule } from "./pages/pages.module";
 
@@ -28,9 +27,7 @@ import { PagesModule } from "./pages/pages.module";
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
   ],
-
   bootstrap: [AppComponent],
 })
 export class AppModule {}

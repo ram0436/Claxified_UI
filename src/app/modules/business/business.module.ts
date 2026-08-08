@@ -26,6 +26,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { BusinessFooterComponent } from "./components/business-footer/business-footer.component";
 import { BusinessDirectoriesComponent } from "./components/business-directories/business-directories.component";
 import { MatMenuModule } from "@angular/material/menu";
+import { BusinessPageComponent } from './components/business-page/business-page.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { MatMenuModule } from "@angular/material/menu";
     BusinessProfileComponent,
     BusinessFooterComponent,
     BusinessDirectoriesComponent,
+    BusinessPageComponent,
   ],
   imports: [
     CommonModule,

@@ -40,325 +40,41 @@
       </div>
     </div>
 
-    <!-- LINK GRID - ROW 1 -->
+    <!-- LINK GRID - ROW 1 (sections 0-4) -->
     <div class="business-footer-grid business-footer-grid-5">
-      <div class="business-footer-col">
-        <h3 class="business-footer-heading">Promote Your Business</h3>
-        <a routerLink="/business/featured-listings" class="business-footer-link"
-          >Featured Listings</a
-        >
+      <div
+        class="business-footer-col"
+        *ngFor="let section of footerSections | slice : 0 : 5"
+      >
+        <h3 class="business-footer-heading">{{ section.title }}</h3>
         <a
-          routerLink="/business/banner-ads"
-          class="business-footer-link business-footer-sublink"
-          >Banner Ads</a
-        >
-        <a
-          routerLink="/business/ai-marketing-tools"
-          class="business-footer-link business-footer-sublink"
-          >AI Marketing Tools</a
-        >
-        <a
-          routerLink="/business/lead-management"
-          class="business-footer-link business-footer-sublink"
-          >Lead Management</a
-        >
-        <a
-          routerLink="/business/analytics"
-          class="business-footer-link business-footer-sublink"
-          >Analytics</a
-        >
-        <a routerLink="/business/featured-business" class="business-footer-link"
-          >Featured Business</a
-        >
-        <a
-          routerLink="/business/premium-membership"
+          *ngFor="let link of section.links"
+          [routerLink]="['/business/page', link.slug]"
           class="business-footer-link"
-          >Premium Membership</a
+          [ngClass]="{ 'business-footer-sublink': link.indent }"
         >
-        <a routerLink="/business/boost-listing" class="business-footer-link"
-          >Boost Listing</a
-        >
-        <a routerLink="/business/seo-services" class="business-footer-link"
-          >SEO Services</a
-        >
-        <a
-          routerLink="/business/sms-whatsapp-campaigns"
-          class="business-footer-link"
-          >SMS &amp; WhatsApp Campaigns</a
-        >
-      </div>
-
-      <div class="business-footer-col">
-        <h3 class="business-footer-heading">Business</h3>
-        <a routerLink="/business/register" class="business-footer-link"
-          >Register Business</a
-        >
-        <a routerLink="/business/your-businesses" class="business-footer-link"
-          >Your Businesses</a
-        >
-        <a routerLink="/business/dashboard" class="business-footer-link"
-          >Business Dashboard</a
-        >
-        <a routerLink="/business/profile" class="business-footer-link"
-          >Business Profile</a
-        >
-        <a routerLink="/business/reviews" class="business-footer-link"
-          >Business Reviews</a
-        >
-        <a routerLink="/business/leads" class="business-footer-link"
-          >Business Leads</a
-        >
-        <a routerLink="/business/settings" class="business-footer-link"
-          >Business Settings</a
-        >
-        <a routerLink="/business/team-members" class="business-footer-link"
-          >Team Members</a
-        >
-        <a routerLink="/business/subscription" class="business-footer-link"
-          >Subscription</a
-        >
-        <a routerLink="/business/billing-invoices" class="business-footer-link"
-          >Billing &amp; Invoices</a
-        >
-        <a routerLink="/business/pricing-plans" class="business-footer-link"
-          >Pricing Plans</a
-        >
-        <a routerLink="/business/notifications" class="business-footer-link"
-          >Notifications</a
-        >
-      </div>
-
-      <div class="business-footer-col">
-        <h3 class="business-footer-heading">Business Resources</h3>
-        <a routerLink="/business/marketing-tips" class="business-footer-link"
-          >Marketing Tips</a
-        >
-        <a routerLink="/business/seo-ai-guide" class="business-footer-link"
-          >SEO &amp; AI Guide</a
-        >
-        <a routerLink="/business/guides" class="business-footer-link"
-          >Business Guides</a
-        >
-        <a routerLink="/business/templates" class="business-footer-link"
-          >Business Templates</a
-        >
-        <a routerLink="/business/calculator" class="business-footer-link"
-          >Business Calculator</a
-        >
-        <a routerLink="/business/blog" class="business-footer-link"
-          >Business Blog</a
-        >
-        <a routerLink="/business/success-stories" class="business-footer-link"
-          >Success Stories</a
-        >
-        <a routerLink="/business/faq" class="business-footer-link">FAQ</a>
-        <a routerLink="/business/seller-policy" class="business-footer-link"
-          >Seller Policy</a
-        >
-      </div>
-
-      <div class="business-footer-col">
-        <h3 class="business-footer-heading">Verification &amp; Trust</h3>
-        <a routerLink="/business/verify" class="business-footer-link"
-          >Verify Your Business</a
-        >
-        <a
-          routerLink="/business/verification-status"
-          class="business-footer-link"
-          >Verification Status</a
-        >
-        <a routerLink="/business/verified-badge" class="business-footer-link"
-          >Verified Badge</a
-        >
-        <a
-          routerLink="/business/identity-verification"
-          class="business-footer-link"
-          >Identity Verification</a
-        >
-        <a routerLink="/business/gst-verification" class="business-footer-link"
-          >GST Verification</a
-        >
-        <a
-          routerLink="/business/company-verification"
-          class="business-footer-link"
-          >Company Verification</a
-        >
-        <a
-          routerLink="/business/verification-benefits"
-          class="business-footer-link"
-          >Benefits of Verification</a
-        >
-      </div>
-
-      <div class="business-footer-col">
-        <h3 class="business-footer-heading">AI &amp; Business Tools</h3>
-        <a
-          routerLink="/business/ai-tools/listing-generator"
-          class="business-footer-link"
-          >AI Listing Generator</a
-        >
-        <a
-          routerLink="/business/ai-tools/description-generator"
-          class="business-footer-link"
-          >AI Description Generator</a
-        >
-        <a
-          routerLink="/business/ai-tools/title-generator"
-          class="business-footer-link"
-          >AI Title Generator</a
-        >
-        <a
-          routerLink="/business/ai-tools/keyword-generator"
-          class="business-footer-link"
-          >AI Keyword Generator</a
-        >
-        <a
-          routerLink="/business/ai-tools/image-enhancer"
-          class="business-footer-link"
-          >AI Image Enhancer</a
-        >
-        <a
-          routerLink="/business/ai-tools/review-reply-generator"
-          class="business-footer-link"
-          >AI Review Reply Generator</a
-        >
-        <a
-          routerLink="/business/ai-tools/chat-assistant"
-          class="business-footer-link"
-          >AI Chat Assistant</a
-        >
-        <a
-          routerLink="/business/ai-tools/analytics"
-          class="business-footer-link"
-          >Business Analytics</a
-        >
-        <a
-          routerLink="/business/ai-tools/bulk-upload"
-          class="business-footer-link"
-          >Bulk Upload</a
-        >
-        <a
-          routerLink="/business/ai-tools/developer-api"
-          class="business-footer-link"
-          >Developer API</a
-        >
+          {{ link.label }}
+        </a>
       </div>
     </div>
 
-    <!-- LINK GRID - ROW 2 -->
+    <!-- LINK GRID - ROW 2 (sections 5-9) -->
     <div
       class="business-footer-grid business-footer-grid-5 business-footer-grid-row2"
     >
-      <div class="business-footer-col">
-        <h3 class="business-footer-heading">For Buyers</h3>
-        <a routerLink="/find-businesses" class="business-footer-link"
-          >Find Businesses</a
-        >
-        <a routerLink="/saved-businesses" class="business-footer-link"
-          >Saved Businesses</a
-        >
-        <a routerLink="/recent-searches" class="business-footer-link"
-          >Recent Searches</a
-        >
-        <a routerLink="/reviews" class="business-footer-link">Reviews</a>
-        <a routerLink="/favorites" class="business-footer-link">Favorites</a>
-        <a routerLink="/buyer-dashboard" class="business-footer-link"
-          >Buyer Dashboard</a
-        >
-      </div>
-
-      <div class="business-footer-col">
-        <h3 class="business-footer-heading">Support</h3>
-        <a routerLink="/business/contact-support" class="business-footer-link"
-          >Contact Support</a
-        >
-        <a routerLink="/business/raise-ticket" class="business-footer-link"
-          >Raise a Ticket</a
-        >
-        <a routerLink="/business/help-center" class="business-footer-link"
-          >Help Center</a
-        >
-        <a routerLink="/business/community-forum" class="business-footer-link"
-          >Community Forum</a
-        >
-        <a routerLink="/business/live-chat" class="business-footer-link"
-          >Live Chat</a
-        >
-        <a routerLink="/business/report-bug" class="business-footer-link"
-          >Report Bug</a
-        >
-        <a routerLink="/business/feature-request" class="business-footer-link"
-          >Feature Request</a
-        >
-      </div>
-
-      <div class="business-footer-col">
-        <h3 class="business-footer-heading">Company</h3>
-        <a routerLink="/company/about" class="business-footer-link">About Us</a>
-        <a routerLink="/company/careers" class="business-footer-link"
-          >Careers</a
-        >
-        <a routerLink="/company/press" class="business-footer-link">Press</a>
-        <a routerLink="/company/media-kit" class="business-footer-link"
-          >Media Kit</a
-        >
-        <a routerLink="/company/contact" class="business-footer-link"
-          >Contact Us</a
-        >
-        <a routerLink="/company/partners" class="business-footer-link"
-          >Partners</a
-        >
-        <a routerLink="/company/investors" class="business-footer-link"
-          >Investors</a
-        >
-      </div>
-
-      <div class="business-footer-col">
-        <h3 class="business-footer-heading">Legal</h3>
-        <a routerLink="/legal/privacy-policy" class="business-footer-link"
-          >Privacy Policy</a
-        >
-        <a routerLink="/legal/terms-of-service" class="business-footer-link"
-          >Terms of Service</a
-        >
-        <a routerLink="/legal/cookie-policy" class="business-footer-link"
-          >Cookie Policy</a
-        >
-        <a routerLink="/legal/refund-policy" class="business-footer-link"
-          >Refund Policy</a
-        >
-        <a routerLink="/legal/cancellation-policy" class="business-footer-link"
-          >Cancellation Policy</a
-        >
-        <a routerLink="/legal/copyright-policy" class="business-footer-link"
-          >Copyright Policy</a
-        >
-      </div>
-
-      <div class="business-footer-col">
-        <h3 class="business-footer-heading">Trust &amp; Safety</h3>
-        <a routerLink="/trust-safety/safety-tips" class="business-footer-link"
-          >Safety Tips</a
-        >
-        <a routerLink="/trust-safety/avoid-fraud" class="business-footer-link"
-          >Avoid Fraud</a
-        >
-        <a routerLink="/trust-safety/report-fraud" class="business-footer-link"
-          >Report Fraud</a
-        >
-        <a routerLink="/trust-safety/trust-center" class="business-footer-link"
-          >Trust Center</a
-        >
+      <div
+        class="business-footer-col"
+        *ngFor="let section of footerSections | slice : 5 : 10"
+      >
+        <h3 class="business-footer-heading">{{ section.title }}</h3>
         <a
-          routerLink="/trust-safety/verified-sellers"
+          *ngFor="let link of section.links"
+          [routerLink]="['/business/page', link.slug]"
           class="business-footer-link"
-          >Verified Sellers</a
+          [ngClass]="{ 'business-footer-sublink': link.indent }"
         >
-        <a
-          routerLink="/trust-safety/community-guidelines"
-          class="business-footer-link"
-          >Community Guidelines</a
-        >
+          {{ link.label }}
+        </a>
       </div>
     </div>
 
