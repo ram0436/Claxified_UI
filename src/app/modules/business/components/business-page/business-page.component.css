@@ -1,0 +1,100 @@
+/* ================= PAGE CONTAINER ================= */
+.page-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* ================= TITLE ================= */
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #111;
+}
+
+/* ================= PARAGRAPHS ================= */
+.page-paragraphs p {
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+  color: #444;
+}
+
+/* ================= SECTIONS GRID ================= */
+.page-sections {
+  margin-top: 30px;
+  display: grid;
+  gap: 20px;
+}
+
+/* ================= SECTION CARD ================= */
+.section-card {
+  padding: 22px;
+  border-radius: 12px;
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.section-card:hover {
+  background: #eef2f7;
+  transform: translateY(-3px);
+}
+
+/* ================= SECTION HEADING ================= */
+.section-card h3 {
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* ================= SECTION TEXT ================= */
+.section-card p {
+  margin-bottom: 10px;
+  color: #555;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ================= BULLET LIST ================= */
+.section-list {
+  margin-top: 10px;
+  padding-left: 22px;
+}
+
+.section-list li {
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.section-list li::marker {
+  color: #007bff;
+  font-size: 14px;
+}
+
+/* ================= OPTIONAL: HIGHLIGHT IMPORTANT SECTIONS ================= */
+.section-card.danger {
+  border-left: 4px solid #dc3545;
+  background: #fff5f5;
+}
+
+/* ================= 404 PAGE ================= */
+.not-found {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.not-found h1 {
+  font-size: 60px;
+  margin-bottom: 10px;
+}
+
+.not-found p {
+  font-size: 18px;
+  color: #666;
+}

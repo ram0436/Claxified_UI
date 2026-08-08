@@ -1,3 +1,9 @@
+const placeholder = (title: string, note: string) => ({
+  title,
+  paragraphs: [note],
+  sections: [],
+});
+
 export const PAGE_DATA: any = {
   // ================= ABOUT =================
   about: {
@@ -4017,4 +4023,251 @@ export const PAGE_DATA: any = {
       },
     ],
   },
+  // ---- Promote Your Business ----
+  "featured-listings": placeholder(
+    "Featured Listings",
+    "Content coming soon. This page explains how Featured Listings boost visibility for your ads."
+  ),
+  "banner-ads": placeholder(
+    "Banner Ads",
+    "Content coming soon. Details on running banner ad campaigns on Claxified."
+  ),
+  "ai-marketing-tools": placeholder(
+    "AI Marketing Tools",
+    "Content coming soon. Overview of AI-powered marketing tools for businesses."
+  ),
+  "lead-management": placeholder(
+    "Lead Management",
+    "Content coming soon. How to manage and track leads from your listings."
+  ),
+  "promote-analytics": placeholder(
+    "Analytics",
+    "Content coming soon. Analytics available to businesses promoting listings."
+  ),
+  "featured-business": placeholder(
+    "Featured Business",
+    "Content coming soon. How to get your business featured on Claxified."
+  ),
+  "premium-membership": placeholder(
+    "Premium Membership",
+    "Content coming soon. Benefits and pricing of Premium Membership."
+  ),
+  "boost-listing": placeholder(
+    "Boost Listing",
+    "Content coming soon. How listing boosts work and how to apply one."
+  ),
+  "seo-services": placeholder(
+    "SEO Services",
+    "Content coming soon. SEO services offered to Claxified businesses."
+  ),
+  "sms-whatsapp-campaigns": placeholder(
+    "SMS & WhatsApp Campaigns",
+    "Content coming soon. Running SMS and WhatsApp marketing campaigns."
+  ),
+
+  // ---- Business ----
+  "register-business": placeholder(
+    "Register Business",
+    "Content coming soon. Steps to register your business on Claxified."
+  ),
+  "your-businesses": placeholder(
+    "Your Businesses",
+    "Content coming soon. Manage all businesses linked to your account."
+  ),
+  "business-dashboard": placeholder(
+    "Business Dashboard",
+    "Placeholder — should eventually route to the real dashboard feature, not a static page."
+  ),
+  "business-profile": placeholder(
+    "Business Profile",
+    "Content coming soon. Managing your public business profile."
+  ),
+  "business-reviews": placeholder(
+    "Business Reviews",
+    "Content coming soon. How reviews work for business listings."
+  ),
+  "business-leads": placeholder(
+    "Business Leads",
+    "Content coming soon. Viewing and managing leads for your business."
+  ),
+  "business-settings": placeholder(
+    "Business Settings",
+    "Placeholder — should eventually route to the real settings feature, not a static page."
+  ),
+  "team-members": placeholder(
+    "Team Members",
+    "Content coming soon. Adding and managing team member access."
+  ),
+  subscription: placeholder(
+    "Subscription",
+    "Placeholder — should eventually route to the real subscription/billing feature."
+  ),
+  "billing-invoices": placeholder(
+    "Billing & Invoices",
+    "Placeholder — should eventually route to the real billing feature."
+  ),
+  "pricing-plans": placeholder(
+    "Pricing Plans",
+    "Content coming soon. Comparison of available business pricing plans."
+  ),
+  notifications: placeholder(
+    "Notifications",
+    "Placeholder — should eventually route to the real notifications feature."
+  ),
+
+  // ---- Business Resources ----
+  "marketing-tips": placeholder(
+    "Marketing Tips",
+    "Content coming soon. Tips for marketing your business on Claxified."
+  ),
+  "seo-ai-guide": placeholder(
+    "SEO & AI Guide",
+    "Content coming soon. Guide to using SEO and AI tools effectively."
+  ),
+  "business-guides": placeholder(
+    "Business Guides",
+    "Content coming soon. Step-by-step guides for growing your business."
+  ),
+  "business-templates": placeholder(
+    "Business Templates",
+    "Content coming soon. Ready-made templates for listings and ads."
+  ),
+  "business-calculator": placeholder(
+    "Business Calculator",
+    "Content coming soon. Tools to estimate pricing, ROI, and fees."
+  ),
+  "business-blog": placeholder(
+    "Business Blog",
+    "Content coming soon. Articles and updates for Claxified businesses."
+  ),
+  "seller-policy": placeholder(
+    "Seller Policy",
+    "Content coming soon. Policies sellers must follow on Claxified."
+  ),
+
+  // ---- Verification & Trust ----
+  "verify-your-business": placeholder(
+    "Verify Your Business",
+    "Placeholder — should eventually route to the real verification flow."
+  ),
+  "verification-status": placeholder(
+    "Verification Status",
+    "Content coming soon. How to check your business verification status."
+  ),
+  "verified-badge": placeholder(
+    "Verified Badge",
+    "Content coming soon. What the verified badge means and how to earn it."
+  ),
+  "identity-verification": placeholder(
+    "Identity Verification",
+    "Content coming soon. Identity verification requirements and process."
+  ),
+  "gst-verification": placeholder(
+    "GST Verification",
+    "Content coming soon. How GST verification works for Indian businesses."
+  ),
+  "company-verification": placeholder(
+    "Company Verification",
+    "Content coming soon. Verifying registered company details."
+  ),
+  "verification-benefits": placeholder(
+    "Benefits of Verification",
+    "Content coming soon. Why verification helps your business."
+  ),
+
+  // ---- AI & Business Tools ----
+  "ai-listing-generator": placeholder(
+    "AI Listing Generator",
+    "Content coming soon. Generate full listings automatically with AI."
+  ),
+  "ai-description-generator": placeholder(
+    "AI Description Generator",
+    "Content coming soon. Generate product/service descriptions with AI."
+  ),
+  "ai-title-generator": placeholder(
+    "AI Title Generator",
+    "Content coming soon. Generate optimized listing titles with AI."
+  ),
+  "ai-keyword-generator": placeholder(
+    "AI Keyword Generator",
+    "Content coming soon. Generate SEO keywords for your listings."
+  ),
+  "ai-image-enhancer": placeholder(
+    "AI Image Enhancer",
+    "Content coming soon. Improve listing photos automatically with AI."
+  ),
+  "ai-review-reply-generator": placeholder(
+    "AI Review Reply Generator",
+    "Content coming soon. Generate reply drafts for customer reviews."
+  ),
+  "ai-chat-assistant": placeholder(
+    "AI Chat Assistant",
+    "Content coming soon. Overview of the AI chat assistant for businesses."
+  ),
+  "business-analytics": placeholder(
+    "Business Analytics",
+    "Content coming soon. Analytics dashboard for business performance."
+  ),
+  "bulk-upload": placeholder(
+    "Bulk Upload",
+    "Content coming soon. Uploading multiple listings at once."
+  ),
+  "developer-api": placeholder(
+    "Developer API",
+    "Content coming soon. API documentation for developers."
+  ),
+
+  // ---- For Buyers ----
+  "find-businesses": placeholder(
+    "Find Businesses",
+    "Content coming soon. How to search and discover businesses."
+  ),
+  "saved-businesses": placeholder(
+    "Saved Businesses",
+    "Content coming soon. Managing businesses you've saved."
+  ),
+  "recent-searches": placeholder(
+    "Recent Searches",
+    "Content coming soon. Viewing and managing your recent searches."
+  ),
+  reviews: placeholder(
+    "Reviews",
+    "Content coming soon. How reviews work for buyers on Claxified."
+  ),
+  favorites: placeholder(
+    "Favorites",
+    "Content coming soon. Managing your favorited listings and businesses."
+  ),
+  "buyer-dashboard": placeholder(
+    "Buyer Dashboard",
+    "Placeholder — should eventually route to the real buyer dashboard feature."
+  ),
+
+  // ---- Support ----
+  "contact-support": placeholder(
+    "Contact Support",
+    "Content coming soon. Ways to reach business support."
+  ),
+  "raise-a-ticket": placeholder(
+    "Raise a Ticket",
+    "Placeholder — should eventually route to the real support-ticket flow."
+  ),
+  "live-chat": placeholder(
+    "Live Chat",
+    "Placeholder — should eventually open the real live chat widget, not a static page."
+  ),
+  "report-bug": placeholder(
+    "Report Bug",
+    "Content coming soon. How to report a bug or technical issue."
+  ),
+  "feature-request": placeholder(
+    "Feature Request",
+    "Content coming soon. How to submit a feature request."
+  ),
+
+  // ---- Trust & Safety ----
+  "verified-sellers": placeholder(
+    "Verified Sellers",
+    "Content coming soon. What it means to be a verified seller."
+  ),
 };

@@ -8,6 +8,7 @@ import { BusinessEditProfileComponent } from "./components/business-edit-profile
 import { BusinessPublicProfileComponent } from "./components/business-public-profile/business-public-profile.component";
 import { BusinessProfileComponent } from "./components/business-profile/business-profile.component";
 import { BusinessDirectoriesComponent } from "./components/business-directories/business-directories.component";
+import { BusinessPageComponent } from "./components/business-page/business-page.component";
 
 const routes: Routes = [
   {
@@ -20,6 +21,8 @@ const routes: Routes = [
       { path: "profile", component: BusinessProfileComponent },
       { path: "profile/edit", component: BusinessEditProfileComponent },
       { path: "profile/:tabRefGuid", component: BusinessProfileComponent },
+
+      { path: "page/:slug", component: BusinessPageComponent },
 
       {
         path: ":location/:businessName",
