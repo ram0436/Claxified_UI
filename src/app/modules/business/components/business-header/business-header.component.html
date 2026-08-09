@@ -10,20 +10,10 @@
 
     <ul class="business-nav-links">
       <li><a routerLink="/">Marketplace</a></li>
-      <!-- <li >
-        <a
-          routerLink="/business"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          Explore
-        </a>
-      </li> -->
       <li *ngIf="!isUserLogedIn">
         <a (click)="openLoginModal()">Login</a>
       </li>
 
-      <!-- Business switcher dropdown, replaces "My Businesses" -->
       <li class="business-dropdown" *ngIf="isUserLogedIn">
         <button
           class="business-profile-btn"
@@ -53,7 +43,9 @@
     <button
       mat-menu-item
       class="business-menu-header business-list-item"
-      *ngFor="let biz of businesses"
+      *ngFor="
+        let biz of showAllBusinesses ? businesses : (businesses | slice : 0 : 3)
+      "
       (click)="switchBusiness(biz)"
     >
       <div
@@ -70,6 +62,20 @@
       <div class="mt-10">
         <p class="mt-0 pl-10">{{ biz.businessName }}</p>
       </div>
+    </button>
+
+    <button
+      mat-menu-item
+      class="button-item show-more-item"
+      *ngIf="businesses.length > 3"
+      (click)="toggleShowAllBusinesses($event)"
+    >
+      <span class="material-icons-outlined">{{
+        showAllBusinesses ? "expand_less" : "expand_more"
+      }}</span>
+      <span class="btn-txt">{{
+        showAllBusinesses ? "Show less" : "Show more"
+      }}</span>
     </button>
 
     <div class="empty-business-list" *ngIf="businesses.length === 0">
@@ -98,52 +104,4 @@
       <span class="btn-txt">Logout</span>
     </button>
   </mat-menu>
-  <!-- <mat-menu
-    #businessMenu="matMenu"
-    xPosition="before"
-    class="business-menu-panel"
-  >
-    <button mat-menu-item class="business-menu-header" disabled>
-      <img [src]="currentBusinessLogo" alt="" class="business-avatar-lg" />
-      <div class="mt-10">
-        <p class="mt-0">{{ currentBusinessName }}</p>
-      </div>
-    </button>
-    <hr class="profile-hr" />
-
-    <button mat-menu-item class="button-item" (click)="goToBusinessDashboard()">
-      <span class="material-icons-outlined">dashboard</span>
-      <span class="btn-txt">Dashboard</span>
-    </button>
-    <button mat-menu-item class="button-item" (click)="goToBusinessProfile()">
-      <span class="material-icons-outlined">storefront</span>
-      <span class="btn-txt">Business Profile</span>
-    </button>
-    <button mat-menu-item class="button-item" (click)="goToListing()">
-      <span class="material-icons-outlined">list_alt</span>
-      <span class="btn-txt">Listing</span>
-    </button>
-
-    <hr class="profile-hr" />
-
-    <button mat-menu-item class="button-item" (click)="goToOwnerProfile()">
-      <span class="material-icons-outlined">person_outline</span>
-      <span class="btn-txt">Owner Profile</span>
-    </button>
-    <button mat-menu-item class="button-item" (click)="goToMyBusiness()">
-      <span class="material-icons-outlined">business_center</span>
-      <span class="btn-txt">My Business</span>
-    </button>
-    <button mat-menu-item class="button-item" (click)="goToAccountSettings()">
-      <span class="material-icons">settings</span>
-      <span class="btn-txt">Account Setting</span>
-    </button>
-
-    <hr class="profile-hr" />
-
-    <button mat-menu-item class="button-item" (click)="logout()">
-      <span class="material-icons">logout</span>
-      <span class="btn-txt">Logout</span>
-    </button>
-  </mat-menu> -->
 </header>

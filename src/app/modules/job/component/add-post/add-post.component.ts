@@ -109,6 +109,10 @@ export class AddPostComponent {
   isInputDisabledCity: boolean = false;
   isInputDisabledNearBy: boolean = false;
 
+  loadingAIDetails: boolean = false;
+
+  canUseAIDetails: boolean = false;
+
   mode: any;
   constructor(
     private jobService: JobService,
@@ -125,6 +129,7 @@ export class AddPostComponent {
     var role = localStorage.getItem("role");
     if (role != null && role == "AppSupport") this.isAppSupport = true;
     else this.isAppSupport = false;
+    this.canUseAIDetails = role === "Admin" || role === "AppSupport";
     this.commonService.getCountry().subscribe((data: any) => {
       this.country = data[0];
       this.getAllStates();
@@ -162,6 +167,54 @@ export class AddPostComponent {
     });
   }
 
+  getAIDetails() {
+    const city =
+      this.locationConfirmationType === "manual"
+        ? this.selectedCity?.name || this.commonPayload.city
+        : this.commonPayload.city;
+
+    const nearBy =
+      this.locationConfirmationType === "manual"
+        ? this.selectedNearBy?.name || this.commonPayload.nearBy
+        : this.commonPayload.nearBy;
+
+    const selectedPositionType = this.positionTypes.find(
+      (p) => p.id === this.jobData.positionType
+    );
+
+    if (!this.jobData.salaryFrom || !city || !nearBy || !selectedPositionType) {
+      this.showNotification(
+        "Please fill Position Type, Salary and Location before generating AI details"
+      );
+      return;
+    }
+
+    const payload: any = {
+      category: `${this.mainCategory}/${this.subCategory}`,
+      positionType: selectedPositionType.label,
+      salary: Number(this.jobData.salaryFrom),
+      city: city,
+      nearBy: nearBy,
+    };
+
+    this.loadingAIDetails = true;
+    this.commonService.getGenPrompt(payload).subscribe({
+      next: (res: any) => {
+        this.loadingAIDetails = false;
+        this.commonPayload.title = res.title;
+        this.commonPayload.discription = res.description;
+        this.showNotification(
+          "AI details generated. Review and edit if needed."
+        );
+      },
+      error: () => {
+        this.loadingAIDetails = false;
+        this.showNotification(
+          "Failed to generate AI details, please try again"
+        );
+      },
+    });
+  }
   clearSearchText(formControl: FormControl, fieldName: string): void {
     formControl.setValue("");
 

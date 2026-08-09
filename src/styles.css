@@ -35,3 +35,12 @@ body {
 .cdk-overlay-container .cdk-overlay-connected-position-bounding-box {
   z-index: 2001;
 }
+
+a {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a:focus {
+  outline: none;
+}

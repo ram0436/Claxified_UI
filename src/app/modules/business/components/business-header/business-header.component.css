@@ -190,6 +190,20 @@
   padding-left: 10px;
 }
 
+::ng-deep .business-menu-panel .show-more-item {
+  color: #0065ff;
+  font-weight: 600;
+  justify-content: flex-start;
+}
+
+::ng-deep .business-menu-panel .show-more-item .material-icons-outlined {
+  color: #0065ff;
+}
+
+::ng-deep .business-menu-panel .show-more-item:hover {
+  background: #f2f2f2;
+}
+
 @media (max-width: 750px) {
   .business-nav-container {
     padding: 0 15px;

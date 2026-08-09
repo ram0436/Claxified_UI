@@ -132,6 +132,10 @@ export class AddPostComponent {
   isInputDisabledCity: boolean = false;
   isInputDisabledNearBy: boolean = false;
 
+  loadingAIDetails: boolean = false;
+
+  canUseAIDetails: boolean = false;
+
   constructor(
     private vehicleService: VehicleService,
     private commonService: CommonService,
@@ -148,6 +152,7 @@ export class AddPostComponent {
     var role = localStorage.getItem("role");
     if (role != null && role == "AppSupport") this.isAppSupport = true;
     else this.isAppSupport = false;
+    this.canUseAIDetails = role === "Admin" || role === "AppSupport";
     this.commonService.getCountry().subscribe((data: any) => {
       this.country = data[0];
       this.getAllStates();
@@ -219,6 +224,76 @@ export class AddPostComponent {
     });
     this.filterFuelTypes();
     this.filterTransmissionTypes();
+  }
+
+  getAIDetails() {
+    const city =
+      this.locationConfirmationType === "manual"
+        ? this.selectedCity?.name || this.commonPayload.city
+        : this.commonPayload.city;
+
+    const nearBy =
+      this.locationConfirmationType === "manual"
+        ? this.selectedNearBy?.name || this.commonPayload.nearBy
+        : this.commonPayload.nearBy;
+
+    const brandObj: any = this.brandControl.value;
+    const brandName = brandObj?.brandName || "";
+
+    const selectedFuelType = this.fuelTypes.find(
+      (f) => f.id === this.vehicleData.fuelType
+    );
+    const selectedTransmission = this.transmissionTypes.find(
+      (t) => t.id === this.vehicleData.transmissionType
+    );
+
+    if (
+      !this.commonPayload.price ||
+      !city ||
+      !nearBy ||
+      !brandName ||
+      !this.vehicleData.year ||
+      !this.vehicleData.kmDriven ||
+      !selectedFuelType ||
+      !selectedTransmission ||
+      !this.vehicleData.noOfOwner
+    ) {
+      this.showNotification(
+        "Please fill Brand, Year, KM Driven, Fuel Type, Transmission, Owners, Price and Location before generating AI details"
+      );
+      return;
+    }
+
+    const payload: any = {
+      brand: brandName,
+      category: `${this.mainCategory}/${this.subCategory}`,
+      year: Number(this.vehicleData.year),
+      kilometerDriven: Number(this.vehicleData.kmDriven),
+      fuelType: selectedFuelType.label,
+      transmission: selectedTransmission.label,
+      numberOfOwners: Number(this.vehicleData.noOfOwner),
+      price: Number(this.commonPayload.price),
+      city: city,
+      nearBy: nearBy,
+    };
+
+    this.loadingAIDetails = true;
+    this.commonService.getGenPrompt(payload).subscribe({
+      next: (res: any) => {
+        this.loadingAIDetails = false;
+        this.commonPayload.title = res.title;
+        this.commonPayload.discription = res.description;
+        this.showNotification(
+          "AI details generated. Review and edit if needed."
+        );
+      },
+      error: () => {
+        this.loadingAIDetails = false;
+        this.showNotification(
+          "Failed to generate AI details, please try again"
+        );
+      },
+    });
   }
 
   filterFuelTypes() {

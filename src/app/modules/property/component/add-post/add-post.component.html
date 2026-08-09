@@ -557,11 +557,12 @@
         </div>
       </div>
     </div>
-    <div>
+    <div class="button-row">
       <button
         class="post"
         mat-raised-button
         color="primary"
+        [class.full-width]="!canUseAIDetails"
         (click)="postAdd()"
         *ngIf="!isFromAdmin"
       >
@@ -571,10 +572,22 @@
         class="post"
         mat-raised-button
         color="primary"
+        [class.full-width]="!canUseAIDetails"
         (click)="verifyAdd()"
         *ngIf="isFromAdmin"
       >
         Approve Now
+      </button>
+      <button
+        class="ai-details"
+        mat-stroked-button
+        color="primary"
+        (click)="getAIDetails()"
+        [disabled]="loadingAIDetails"
+        *ngIf="canUseAIDetails"
+      >
+        <span *ngIf="!loadingAIDetails">Get AI Details</span>
+        <span *ngIf="loadingAIDetails">Generating...</span>
       </button>
     </div>
   </div>
