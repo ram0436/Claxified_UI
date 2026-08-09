@@ -64,6 +64,10 @@ export class AddPostComponent {
 
   filterObj = new Filter();
 
+  loadingAIDetails: boolean = false;
+
+  canUseAIDetails: boolean = false;
+
   @ViewChild("stateMatAutocomplete") stateAutocomplete!: MatAutocomplete;
   @ViewChild("cityMatAutocomplete") cityAutocomplete!: MatAutocomplete;
   @ViewChild("nearByMatAutocomplete") nearByAutocomplete!: MatAutocomplete;
@@ -108,6 +112,7 @@ export class AddPostComponent {
     var role = localStorage.getItem("role");
     if (role != null && role == "AppSupport") this.isAppSupport = true;
     else this.isAppSupport = false;
+    this.canUseAIDetails = role === "Admin" || role === "AppSupport";
     this.commonService.getCountry().subscribe((data: any) => {
       this.country = data[0];
       this.getAllStates();
@@ -133,6 +138,50 @@ export class AddPostComponent {
           });
         });
       }
+    });
+  }
+
+  getAIDetails() {
+    const city =
+      this.locationConfirmationType === "manual"
+        ? this.selectedCity?.name || this.commonPayload.city
+        : this.commonPayload.city;
+
+    const nearBy =
+      this.locationConfirmationType === "manual"
+        ? this.selectedNearBy?.name || this.commonPayload.nearBy
+        : this.commonPayload.nearBy;
+
+    if (!this.commonPayload.price || !city || !nearBy) {
+      this.showNotification(
+        "Please fill Price and Location before generating AI details"
+      );
+      return;
+    }
+
+    const payload: any = {
+      category: `${this.mainCategory}/${this.subCategory}`,
+      price: Number(this.commonPayload.price),
+      city: city,
+      nearBy: nearBy,
+    };
+
+    this.loadingAIDetails = true;
+    this.commonService.getGenPrompt(payload).subscribe({
+      next: (res: any) => {
+        this.loadingAIDetails = false;
+        this.commonPayload.title = res.title;
+        this.commonPayload.discription = res.description;
+        this.showNotification(
+          "AI details generated. Review and edit if needed."
+        );
+      },
+      error: () => {
+        this.loadingAIDetails = false;
+        this.showNotification(
+          "Failed to generate AI details, please try again"
+        );
+      },
     });
   }
 

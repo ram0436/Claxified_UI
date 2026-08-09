@@ -26,6 +26,8 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
   currentBusinessLogo: string =
     "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
 
+  showAllBusinesses: boolean = false;
+
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -54,7 +56,6 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
           }
         }
 
-        // If it's the currently displayed business, update the header UI immediately
         const isCurrentlyShown =
           this.businesses.length > 0 &&
           (this.businesses[0].businessId === update.businessId ||
@@ -83,6 +84,8 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
     this.businessService.getUserBusinesses(userId).subscribe(
       (businesses: BusinessListItem[]) => {
         this.businesses = businesses || [];
+        // reset expansion state whenever the list is (re)loaded
+        this.showAllBusinesses = false;
         if (this.businesses.length > 0) {
           this.currentBusinessName = this.businesses[0].businessName;
           if (
@@ -99,6 +102,12 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
 
   toggleExpandIcon(): void {
     this.expandIconVisible = !this.expandIconVisible;
+  }
+
+  // NEW: toggles between showing 3 businesses and showing all of them
+  toggleShowAllBusinesses(event: Event): void {
+    event.stopPropagation(); // prevent the mat-menu-item click from closing the menu
+    this.showAllBusinesses = !this.showAllBusinesses;
   }
 
   getInitials(name: string): string {
@@ -208,6 +217,7 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
       localStorage.removeItem("userId");
       this.isUserLogedIn = false;
       this.businesses = [];
+      this.showAllBusinesses = false;
       this.router.navigate(["/"]);
     }
   }

@@ -245,6 +245,10 @@ export class AddPostComponent {
   isInputDisabledCity: boolean = false;
   isInputDisabledNearBy: boolean = false;
 
+  loadingAIDetails: boolean = false;
+
+  canUseAIDetails: boolean = false;
+
   constructor(
     private propertyService: PropertyService,
     private commonService: CommonService,
@@ -260,6 +264,7 @@ export class AddPostComponent {
     var role = localStorage.getItem("role");
     if (role != null && role == "AppSupport") this.isAppSupport = true;
     else this.isAppSupport = false;
+    this.canUseAIDetails = role === "Admin" || role === "AppSupport";
     this.commonService.getCountry().subscribe((data: any) => {
       this.country = data[0];
       this.getAllStates();
@@ -325,6 +330,71 @@ export class AddPostComponent {
           });
         });
       }
+    });
+  }
+
+  getAIDetails() {
+    const city =
+      this.locationConfirmationType === "manual"
+        ? this.selectedCity?.name || this.commonPayload.city
+        : this.commonPayload.city;
+
+    const nearBy =
+      this.locationConfirmationType === "manual"
+        ? this.selectedNearBy?.name || this.commonPayload.nearBy
+        : this.commonPayload.nearBy;
+
+    const selectedFurnishing = this.furnishingStatus.find(
+      (f) => f.id === this.propertyData.furnishingStatus
+    );
+
+    if (
+      !this.commonPayload.price ||
+      !city ||
+      !nearBy ||
+      !selectedFurnishing ||
+      !this.propertyData.bedrooms ||
+      !this.propertyData.bathrooms ||
+      !this.propertyData.superBuildUpArea ||
+      !this.propertyData.floorNumber ||
+      !this.propertyData.carParking
+    ) {
+      this.showNotification(
+        "Please fill Furnishing, Bedrooms, Bathrooms, Area, Floor No, Car Parking, Price and Location before generating AI details"
+      );
+      return;
+    }
+
+    const payload: any = {
+      category: `${this.mainCategory}/${this.subCategory}`,
+      furnishing: selectedFurnishing.label,
+      bedrooms: Number(this.propertyData.bedrooms),
+      bathrooms: Number(this.propertyData.bathrooms),
+      buildupArea: `${this.propertyData.superBuildUpArea} Square Feet`,
+      floorNo: Number(this.propertyData.floorNumber),
+      carParking: Number(this.propertyData.carParking),
+      projectName: this.propertyData.projectName || "",
+      price: Number(this.commonPayload.price),
+      city: city,
+      nearBy: nearBy,
+    };
+
+    this.loadingAIDetails = true;
+    this.commonService.getGenPrompt(payload).subscribe({
+      next: (res: any) => {
+        this.loadingAIDetails = false;
+        this.commonPayload.title = res.title;
+        this.commonPayload.discription = res.description;
+        this.showNotification(
+          "AI details generated. Review and edit if needed."
+        );
+      },
+      error: () => {
+        this.loadingAIDetails = false;
+        this.showNotification(
+          "Failed to generate AI details, please try again"
+        );
+      },
     });
   }
 
