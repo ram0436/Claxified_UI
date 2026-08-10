@@ -2,7 +2,8 @@
   id="unique-component"
   class="mat-app-background"
   *ngIf="!isLoading"
-  [style.margin-left.px]="increaseMargin ? '30' : '0'"
+  [style.--grid-cols]="columns"
+  [class.increase-margin]="increaseMargin"
 >
   <button
     class="back-to-top-btn"
@@ -15,7 +16,7 @@
   <mat-card
     class="example-card"
     *ngFor="let card of paginatedCards; let isFirst = first; let i = index"
-    [style.height.px]="increaseHeight ? 330 + 10 : 330"
+    [class.increase-height]="increaseHeight"
   >
     <a
       class="custom-link"
@@ -74,7 +75,6 @@
           {{ imagesList.length }}
         </div>
       </div>
-      <!-- <span>{{ card?.tableRefGuid }}</span> -->
       <mat-card-title class="title title-flex" *ngIf="!card?.salaryPeriodType"
         >₹<span class="text-blue">{{ formatPrice(card?.price) }}</span> |
         <span class="date-added">{{ formatDate(card?.createdOn) }}</span>
@@ -121,8 +121,6 @@
               )
             }}
           </p>
-          <!-- + "," + (card?.stateAbr || "") -->
-          <!-- <p class="date">{{ formatDate(card?.createdOn) }}</p> -->
         </div>
       </mat-card-content>
     </a>
@@ -138,8 +136,3 @@
     </button>
   </div>
 </div>
-
-<!-- <div>
-  <mat-paginator [length]="cards.length" [pageSize]="pageSize" [pageIndex]="currentPage"
-    (page)="onPageChange($event)"></mat-paginator>
-</div> -->

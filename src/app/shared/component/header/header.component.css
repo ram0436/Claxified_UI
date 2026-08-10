@@ -7,14 +7,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* position: relative; */
   padding: 10px 15px;
 }
 
 .login-flex span {
   color: #fff;
-  /* position: absolute;
-    top: -5px; */
 }
 
 .button-item {
@@ -37,7 +34,6 @@
 
 .dropdown-menu li {
   width: 20%;
-  /* Distributes items across 5 columns */
   box-sizing: border-box;
   padding: 10px;
 }
@@ -56,7 +52,6 @@
   top: 110.5px;
   padding: 2rem;
   margin-top: 62px;
-  /* display: flex; */
   box-shadow: none;
   border-top: none;
 }
@@ -67,16 +62,8 @@
   color: #007fb0;
 }
 
-nav ul li:hover {
-  /* background-color: #fff; */
-}
-
 .dropdown .li-item:hover a {
   text-decoration: none !important;
-}
-
-.link-item:hover > a {
-  /* text-decoration: underline !important; */
 }
 
 .navbar-nav:hover {
@@ -97,24 +84,22 @@ nav ul li:hover {
   align-items: center;
 }
 
+/* FIX: logo block no longer takes a fixed %, keeps natural size,
+   doesn't fight the search bar / actions for space */
 .icon-text {
   display: flex;
   height: 65px;
   align-items: center;
-  width: 15%;
+  flex: 0 0 auto;
 }
 
 .icon-text1 {
   display: flex;
   height: 65px;
   align-items: center;
-  width: 10%;
   text-decoration: none;
-}
-
-.icon-text1 {
   outline: none;
-  -webkit-tap-highlight-color: transparent; /* removes gray flash on mobile tap */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .icon-text1:focus,
@@ -129,17 +114,21 @@ nav ul li:hover {
   border: none;
 }
 
+/* FIX: this row now properly shares space between logo / search / actions
+   instead of each child being a hardcoded % that can sum past 100% */
 .css-1pr0bng {
   display: flex;
   align-items: center;
-  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
+/* FIX: fluid instead of fixed %, and min-width: 0 lets it actually
+   shrink below the search input's natural content width */
 .search-bar-container {
   position: relative;
-  /* background-color: #003554; */
-  /* Changes made by Hamza */
-  width: 65%;
+  flex: 1 1 auto;
+  min-width: 0;
   padding-left: 20px;
 }
 
@@ -176,12 +165,15 @@ a {
   position: relative;
 }
 
+/* FIX: min-width: 0 so these inputs can actually shrink inside
+   the flex row instead of forcing overflow */
 .search-bar .inputs-wrapper .keyword-search-container input,
 .search-bar .inputs-wrapper .location-container input {
   border-radius: 45px;
   padding-left: 17px;
   border: none;
   width: 100%;
+  min-width: 0;
   height: 40px;
 }
 
@@ -204,6 +196,7 @@ a {
 .search-bar .inputs-wrapper .location-container {
   margin-top: 0;
   width: 35%;
+  min-width: 0;
   display: flex;
 }
 
@@ -211,6 +204,7 @@ a {
   border-radius: 50%;
   width: 46px;
   height: 42px;
+  flex: 0 0 auto;
   background: #e75462;
   border: none;
   color: #fff;
@@ -222,10 +216,12 @@ a {
   width: 100%;
   height: 100%;
   align-items: center;
+  min-width: 0;
 }
 
 .keyword-search-container {
   width: 65%;
+  min-width: 0;
 }
 
 .navbar-inverse {
@@ -236,7 +232,6 @@ a {
   overflow-x: auto;
   white-space: nowrap;
   max-width: 100%;
-  background-color: #f1f1f1;
   scrollbar-width: none !important;
 }
 
@@ -254,8 +249,6 @@ a {
 }
 
 .second-nav li {
-  /* padding: 0rem 3rem; */
-  /* margin: auto; */
   border-right: 1px solid #ddd;
 }
 
@@ -300,9 +293,6 @@ a {
   display: flex;
 }
 
-/* .nav>li{
-     width:100%;
- } */
 .sell {
   width: 30%;
   cursor: pointer;
@@ -351,9 +341,11 @@ a {
   margin-top: 150px;
 }
 
+/* FIX: removed float (doesn't work reliably as a flex child of
+   .header-actions' parent), let it participate in flex layout instead */
 .pull-right {
-  float: right !important;
-  width: 34%;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 ::ng-deep .mdc-list-item__primary-text {
@@ -431,9 +423,9 @@ a {
 .profile-btn .expand.rotated {
   transform: rotate(0deg);
 }
+
 ::ng-deep .cdk-overlay-pane {
   margin-top: 15px;
-  /* z-index: 1300 !important; */
 }
 
 ::ng-deep .custom-dialog-container {
@@ -448,13 +440,6 @@ a {
   max-height: 100%;
 }
 
-/* .arrow {
-  margin: 0px;
-  padding: 0px;
-  justify-content: flex-start;
-  min-width: 40px;
-} */
-
 .stick {
   position: fixed;
   top: 0;
@@ -468,7 +453,6 @@ a {
   gap: 10px;
 }
 
-/* Changes Made by hamza */
 .neon__button a {
   position: relative;
   display: inline-block;
@@ -516,7 +500,6 @@ a {
   0% {
     left: -100%;
   }
-
   50%,
   100% {
     left: 100%;
@@ -537,7 +520,6 @@ a {
   0% {
     top: -100%;
   }
-
   50%,
   100% {
     top: 100%;
@@ -558,7 +540,6 @@ a {
   0% {
     right: -100%;
   }
-
   50%,
   100% {
     right: 100%;
@@ -579,7 +560,6 @@ a {
   0% {
     bottom: -100%;
   }
-
   50%,
   100% {
     bottom: 100%;
@@ -627,9 +607,7 @@ a {
   top: 13px;
   right: 0;
   height: 50%;
-  /* Set the desired height for the border */
   border-right: 1px solid #ddd;
-  /* Example border style */
 }
 
 .li-item {
@@ -702,14 +680,6 @@ header {
   color: aliceblue;
 }
 
-/* .no-pointer-nav{
-    pointer-events: none;
-}
-
-.auto-pointer-events{
-    pointer-events: auto;
-} */
-
 .second-nav .navbar-nav {
   background-color: #f1f1f1;
 }
@@ -722,7 +692,6 @@ header {
 .second-nav .navbar-nav .dropdown:hover .li-item .menu-title,
 .second-nav .navbar-nav .dropdown:hover .li-item .material-icons-outlined {
   color: #007fb0;
-  /* text-decoration: none !important; */
 }
 
 .navbar-right:hover {
@@ -733,18 +702,8 @@ header {
   display: none;
 }
 
-/* .li-item-p-0{
-    padding: 15px 13.6px 15px 0;
-} */
-
 .menu-container-scrollable {
-  /* overflow-x: auto;
-    white-space: nowrap;
-    max-width: 100%;
-    background-color: #f1f1f1;
-    scrollbar-width: none;  */
   -ms-overflow-style: none;
-  /* padding: 0px 13.6px; */
 }
 
 .menu-container-scrollable::-webkit-scrollbar {
@@ -759,9 +718,6 @@ header {
   align-items: initial !important;
   height: auto;
 }
-/* .dropdown-menu li a:hover{
-    text-decoration: none !important;
-} */
 
 .menu-icon {
   display: none;
@@ -846,35 +802,16 @@ header {
   padding: 10px 15px;
   display: inline-block;
 }
-/* .business-link a:hover {
-  background-color: #03e9f4 !important;
-  color: #050801 !important;
-  box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4,
-    0 0 200px #03e9f4;
-  -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
-} */
 
-@media (max-width: 1220px) {
-  .icon-text {
-    width: 18%;
-  }
-
-  .search-bar .inputs-wrapper .location-container {
-    width: 40%;
-  }
-
-  .search-bar .inputs-wrapper .keyword-search-container {
-    width: 60%;
-  }
-
-  .pull-right {
-    width: 45%;
-  }
-
-  .search-bar-container {
-    width: 52%;
-  }
-}
+/* ===========================================================
+   RESPONSIVE — simplified.
+   The old 1220 / 1100 / 1000 / 950 / 860px breakpoints that
+   redeclared .icon-text / .search-bar-container / .pull-right
+   as fixed percentages have been removed. Flexbox (flex: 1 1 auto
+   + min-width: 0 above) now handles that shrinking automatically
+   at every width, so those rules are no longer needed and can't
+   drift out of sync with each other again.
+   =========================================================== */
 
 @media (max-width: 1100px) {
   .px-md-5 {
@@ -889,57 +826,11 @@ header {
   .profile_i {
     margin-right: 10px;
   }
-
-  .pull-right {
-    width: 45%;
-  }
-
-  .search-bar-container {
-    width: 52%;
-  }
 }
 
 @media (max-width: 1025px) {
-  /* .search-bar-container{
-        width: 70%;
-    } */
-
-  /* .pull-right{
-        width: 30%;
-    } */
-
   .navbar-right {
     justify-content: space-between;
-  }
-}
-
-@media (max-width: 1000px) {
-  .search-bar-container {
-    width: 62%;
-  }
-
-  .pull-right {
-    width: 35%;
-  }
-}
-
-@media (max-width: 950px) {
-  /* .search-bar-container{
-        padding-left: 90px;
-    } */
-
-  .icon-text {
-    width: 22%;
-  }
-}
-
-@media (max-width: 860px) {
-  .search-bar-container {
-    width: 50%;
-  }
-
-  .pull-right {
-    width: 55%;
   }
 }
 

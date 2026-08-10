@@ -33,6 +33,7 @@ export class PostCardComponent implements OnInit, OnChanges {
   @Input() cards: any;
   @Input() increaseHeight = false;
   @Input() increaseMargin = false;
+  @Input() columns: number = 4;
   currentDate: Date = new Date();
   math = Math;
 
@@ -259,7 +260,7 @@ export class PostCardComponent implements OnInit, OnChanges {
 
   handleDisabledClick() {}
 
-  truncateTitle(title: string, maxLength: number = 26): string {
+  truncateTitle(title: string, maxLength: number = 60): string {
     if (title.length <= maxLength) {
       return title;
     } else {

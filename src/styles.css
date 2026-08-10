@@ -3,10 +3,13 @@
 html,
 body {
   height: 100%;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f9f9f9;
 }
 
 .cdk-overlay-container {

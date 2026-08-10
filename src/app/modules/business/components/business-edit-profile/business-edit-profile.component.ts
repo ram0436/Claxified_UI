@@ -7,6 +7,8 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  ViewChild,
+  ElementRef,
 } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -45,6 +47,8 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<string>();
 
+  @ViewChild("aboutEditor") aboutEditorRef?: ElementRef<HTMLDivElement>;
+
   business: Business = new Business();
 
   businessCategories: any[] = [];
@@ -81,6 +85,8 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
   showDeleteConfirm: boolean = false;
   deleting: boolean = false;
 
+  timeOptions: { value: string; label: string }[] = [];
+
   sections: EditSection[] = [
     { id: "basic", label: "Basic Details", icon: "storefront", required: true },
     {
@@ -107,6 +113,8 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    this.timeOptions = this.generateTimeOptions();
+
     this.userId = Number(localStorage.getItem("id"));
 
     this.cardsCount = new Array(10).fill("");
@@ -121,6 +129,24 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
         this.loading = false;
       }
     });
+  }
+
+  generateTimeOptions(): { value: string; label: string }[] {
+    const options: { value: string; label: string }[] = [];
+    for (let h = 0; h < 24; h++) {
+      for (let m = 0; m < 60; m += 15) {
+        const hh = h.toString().padStart(2, "0");
+        const mm = m.toString().padStart(2, "0");
+        const value = `${hh}:${mm}:00`;
+
+        const period = h < 12 ? "AM" : "PM";
+        const hour12 = h % 12 === 0 ? 12 : h % 12;
+        const label = `${hour12}:${mm} ${period}`;
+
+        options.push({ value, label });
+      }
+    }
+    return options;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -160,6 +186,36 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
 
   setSection(id: SectionId) {
     this.activeSection = id;
+
+    // contenteditable divs are recreated by *ngIf, so re-hydrate content
+    // with the model value whenever the About tab is opened
+    if (id === "about") {
+      setTimeout(() => {
+        if (this.aboutEditorRef) {
+          this.aboutEditorRef.nativeElement.innerHTML =
+            this.business.description || "";
+        }
+      });
+    }
+  }
+
+  exec(command: string, value: string = ""): void {
+    document.execCommand(command, false, value);
+    this.aboutEditorRef?.nativeElement.focus();
+    if (this.aboutEditorRef) {
+      this.onAboutInput(this.aboutEditorRef.nativeElement);
+    }
+  }
+
+  insertLink(): void {
+    const url = window.prompt("Enter a URL");
+    if (url) {
+      this.exec("createLink", url);
+    }
+  }
+
+  onAboutInput(el: HTMLDivElement): void {
+    this.business.description = el.innerHTML;
   }
 
   dismiss() {

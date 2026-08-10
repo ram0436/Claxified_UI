@@ -2,9 +2,10 @@
 .profile-list-wrapper,
 .profile-wrapper,
 .page-loading {
-  max-width: 1400px;
+  max-width: 1260px;
   margin: 0 auto;
   padding: 15px 24px 60px 24px;
+  background-color: #fff;
 }
 
 button {

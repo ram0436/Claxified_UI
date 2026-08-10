@@ -93,7 +93,6 @@ export class AddPostComponent {
   isInputDisabledNearBy: boolean = false;
 
   loadingAIDetails: boolean = false;
-
   canUseAIDetails: boolean = false;
 
   constructor(

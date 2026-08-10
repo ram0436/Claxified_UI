@@ -356,12 +356,13 @@
       <div class="card-header">
         <h3>About Business</h3>
       </div>
-      <p class="about-text">
-        {{
+      <p
+        class="about-text"
+        [innerHTML]="
           business.description ||
-            "Tell us in detail about your company and services you offer"
-        }}
-      </p>
+          'Tell us in detail about your company and services you offer'
+        "
+      ></p>
     </div>
 
     <div class="content-card" *ngIf="socialLinks.length > 0">
