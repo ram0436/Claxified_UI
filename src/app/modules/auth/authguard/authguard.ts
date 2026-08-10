@@ -1,49 +1,68 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { Injectable } from "@angular/core";
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  RouterStateSnapshot,
+  UrlTree,
+  Router,
+} from "@angular/router";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
-    const userRole = localStorage.getItem('role');
-    const allowedAdminRoutes = ['admin-dashboard'];
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): boolean | UrlTree {
+    const userRole = localStorage.getItem("role");
+    const allowedAdminRoutes = ["admin-dashboard"];
     const allowedUserRoutes = [""];
     const commonRoutes = [
-      "post-menu","Gadgets", "add-post", "view-posts","post-details/:id",
-      "Vehicles",'Electronics & Appliances','Furniture','Sports & Hobbies','Fashion','Books',
-      "user","account","account/personal","account/myadds","account/security"]
+      "post-menu",
+      "Gadgets",
+      "add-post",
+      "view-posts",
+      "post-details/:id",
+      "Vehicles",
+      "Electronics & Appliances",
+      "Furniture",
+      "Sports & Hobbies",
+      "Fashion",
+      "Books",
+      "user",
+      "account",
+      "account/personal",
+      "account/myadds",
+      "account/security",
+    ];
     const requestedRoute = route.routeConfig?.path || "";
-    if (userRole == 'Admin') {
+    if (userRole == "Admin") {
       if (allowedAdminRoutes.includes(requestedRoute)) {
         return true;
-      } else if (commonRoutes.includes(requestedRoute))
-        return true;
+      } else if (commonRoutes.includes(requestedRoute)) return true;
       else {
-        this.router.navigate(['/']);
+        this.router.navigate(["/"]);
         return false;
       }
-    } else if (userRole == 'User') {
+    } else if (userRole == "User") {
       if (allowedUserRoutes.includes(requestedRoute)) {
         return true;
-      } else if (commonRoutes.includes(requestedRoute))
-        return true;
+      } else if (commonRoutes.includes(requestedRoute)) return true;
       else {
-        this.router.navigate(['/']);
+        this.router.navigate(["/"]);
         return false;
       }
-    } else if (userRole == 'AppSupport') {
+    } else if (userRole == "App Support") {
       if (allowedUserRoutes.includes(requestedRoute)) {
         return true;
-      } else if (commonRoutes.includes(requestedRoute))
-        return true;
+      } else if (commonRoutes.includes(requestedRoute)) return true;
       else {
-        this.router.navigate(['/']);
+        this.router.navigate(["/"]);
         return false;
       }
-    } 
-    else {
-      this.router.navigate(['/']);
+    } else {
+      this.router.navigate(["/"]);
       return false;
     }
   }
