@@ -211,16 +211,91 @@
       <!-- ---------- ABOUT ---------- -->
       <mat-card class="section-card" *ngIf="activeSection === 'about'">
         <h3 class="section-title">About Business</h3>
-        <mat-form-field appearance="outline">
-          <textarea
-            matInput
-            rows="8"
-            [(ngModel)]="business.description"
-            placeholder="Tell us in detail about your company and services you offer"
-          ></textarea>
-        </mat-form-field>
-      </mat-card>
 
+        <div class="rte-wrapper">
+          <div class="rte-toolbar">
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('bold')"
+              title="Bold"
+            >
+              <span class="material-icons-outlined">format_bold</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('italic')"
+              title="Italic"
+            >
+              <span class="material-icons-outlined">format_italic</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('underline')"
+              title="Underline"
+            >
+              <span class="material-icons-outlined">format_underlined</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('strikeThrough')"
+              title="Strikethrough"
+            >
+              <span class="material-icons-outlined">strikethrough_s</span>
+            </button>
+
+            <span class="rte-divider"></span>
+
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('insertUnorderedList')"
+              title="Bullet list"
+            >
+              <span class="material-icons-outlined">format_list_bulleted</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('insertOrderedList')"
+              title="Numbered list"
+            >
+              <span class="material-icons-outlined">format_list_numbered</span>
+            </button>
+
+            <span class="rte-divider"></span>
+
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="insertLink()"
+              title="Insert link"
+            >
+              <span class="material-icons-outlined">link</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('removeFormat')"
+              title="Clear formatting"
+            >
+              <span class="material-icons-outlined">format_clear</span>
+            </button>
+          </div>
+
+          <div
+            #aboutEditor
+            class="rte-content"
+            contenteditable="true"
+            (input)="onAboutInput(aboutEditor)"
+            (blur)="onAboutInput(aboutEditor)"
+            data-placeholder="Tell us in detail about your company and services you offer"
+          ></div>
+        </div>
+      </mat-card>
       <!-- ---------- CONTACT ---------- -->
       <mat-card class="section-card" *ngIf="activeSection === 'contact'">
         <h3 class="section-title">Contact Details</h3>
@@ -405,20 +480,31 @@
         >
           <span class="day-name">{{ dayNames[wh.dayOfWeek] }}</span>
           <mat-checkbox [(ngModel)]="wh.isClosed">Closed</mat-checkbox>
+
           <mat-form-field
             appearance="outline"
             class="time-field"
             *ngIf="!wh.isClosed"
           >
-            <input matInput type="time" [(ngModel)]="wh.openTime" />
+            <mat-select [(ngModel)]="wh.openTime" placeholder="Open">
+              <mat-option *ngFor="let t of timeOptions" [value]="t.value">
+                {{ t.label }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
+
           <span class="time-sep" *ngIf="!wh.isClosed">to</span>
+
           <mat-form-field
             appearance="outline"
             class="time-field"
             *ngIf="!wh.isClosed"
           >
-            <input matInput type="time" [(ngModel)]="wh.closeTime" />
+            <mat-select [(ngModel)]="wh.closeTime" placeholder="Close">
+              <mat-option *ngFor="let t of timeOptions" [value]="t.value">
+                {{ t.label }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
       </mat-card>
