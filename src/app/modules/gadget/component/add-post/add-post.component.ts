@@ -114,9 +114,9 @@ export class AddPostComponent {
 
   ngOnInit() {
     var role = localStorage.getItem("role");
-    if (role != null && role == "App Support") this.isAppSupport = true;
+    if (role != null && role == "AppSupport") this.isAppSupport = true;
     else this.isAppSupport = false;
-    this.canUseAIDetails = role === "Admin" || role === "App Support";
+    this.canUseAIDetails = role === "Admin" || role === "AppSupport";
     this.commonService.getCountry().subscribe((data: any) => {
       this.country = data[0];
       this.getAllStates();
