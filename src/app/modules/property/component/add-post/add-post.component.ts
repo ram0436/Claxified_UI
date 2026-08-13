@@ -348,36 +348,92 @@ export class AddPostComponent {
       (f) => f.id === this.propertyData.furnishingStatus
     );
 
-    if (
-      !this.commonPayload.price ||
-      !city ||
-      !nearBy ||
-      !selectedFurnishing ||
-      !this.propertyData.bedrooms ||
-      !this.propertyData.bathrooms ||
-      !this.propertyData.superBuildUpArea ||
-      !this.propertyData.floorNumber ||
-      !this.propertyData.carParking
-    ) {
+    const category = `${this.mainCategory}/${this.subCategory}`;
+
+    const isOthersCategory = category === "Properties/Others";
+    const isPGCategory = category === "Properties/PG & Guest Houses";
+    const isShopSaleCategory =
+      category === "Properties/For Sale: Shops & Offices";
+    const isShopRentCategory =
+      category === "Properties/For Rent: Shop & Offices";
+
+    // Base requirement, common to every category
+    if (!this.commonPayload.price || !city || !nearBy) {
       this.showNotification(
-        "Please fill Furnishing, Bedrooms, Bathrooms, Area, Floor No, Car Parking, Price and Location before generating AI details"
+        "Please fill Price and Location before generating AI details"
       );
       return;
     }
 
+    if (isOthersCategory) {
+      // Properties/Others: only price, city, nearBy required
+      // (already validated above, nothing else needed)
+    } else if (isPGCategory) {
+      // Properties/PG & Guest Houses: price, city, nearBy, furnishing, carParking required
+      if (!selectedFurnishing || !this.propertyData.carParking) {
+        this.showNotification(
+          "Please fill Furnishing, Car Parking, Price and Location before generating AI details"
+        );
+        return;
+      }
+    } else if (isShopSaleCategory || isShopRentCategory) {
+      // Properties/For Sale or Rent: Shops & Offices: price, city, nearBy, bathrooms, buildup area, carParking, furnishing required
+      if (
+        !selectedFurnishing ||
+        !this.propertyData.bathrooms ||
+        !this.propertyData.superBuildUpArea ||
+        !this.propertyData.carParking
+      ) {
+        this.showNotification(
+          "Please fill Furnishing, Bathrooms, Area, Car Parking, Price and Location before generating AI details"
+        );
+        return;
+      }
+    } else {
+      // All other categories: everything required
+      if (
+        !selectedFurnishing ||
+        !this.propertyData.bedrooms ||
+        !this.propertyData.bathrooms ||
+        !this.propertyData.superBuildUpArea ||
+        !this.propertyData.floorNumber ||
+        !this.propertyData.carParking
+      ) {
+        this.showNotification(
+          "Please fill Furnishing, Bedrooms, Bathrooms, Area, Floor No, Car Parking, Price and Location before generating AI details"
+        );
+        return;
+      }
+    }
+
     const payload: any = {
-      category: `${this.mainCategory}/${this.subCategory}`,
-      furnishing: selectedFurnishing.label,
-      bedrooms: Number(this.propertyData.bedrooms),
-      bathrooms: Number(this.propertyData.bathrooms),
-      buildupArea: `${this.propertyData.superBuildUpArea} Square Feet`,
-      floorNo: Number(this.propertyData.floorNumber),
-      carParking: Number(this.propertyData.carParking),
-      projectName: this.propertyData.projectName || "",
+      category: category,
       price: Number(this.commonPayload.price),
       city: city,
       nearBy: nearBy,
     };
+
+    if (selectedFurnishing) {
+      payload.furnishing = selectedFurnishing.label;
+    }
+    if (this.propertyData.bedrooms) {
+      payload.bedrooms = Number(this.propertyData.bedrooms);
+    }
+    if (this.propertyData.bathrooms) {
+      payload.bathrooms = Number(this.propertyData.bathrooms);
+    }
+    if (this.propertyData.superBuildUpArea) {
+      payload.buildupArea = `${this.propertyData.superBuildUpArea} Square Feet`;
+    }
+    if (this.propertyData.floorNumber) {
+      payload.floorNo = Number(this.propertyData.floorNumber);
+    }
+    if (this.propertyData.carParking) {
+      payload.carParking = Number(this.propertyData.carParking);
+    }
+    if (this.propertyData.projectName) {
+      payload.projectName = this.propertyData.projectName;
+    }
 
     this.loadingAIDetails = true;
     this.commonService.getGenPrompt(payload).subscribe({

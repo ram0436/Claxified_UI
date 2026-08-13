@@ -247,35 +247,71 @@ export class AddPostComponent {
       (t) => t.id === this.vehicleData.transmissionType
     );
 
-    if (
-      !this.commonPayload.price ||
-      !city ||
-      !nearBy ||
-      !brandName ||
-      !this.vehicleData.year ||
-      !this.vehicleData.kmDriven ||
-      !selectedFuelType ||
-      !selectedTransmission ||
-      !this.vehicleData.noOfOwner
-    ) {
+    const category = `${this.mainCategory}/${this.subCategory}`;
+
+    const isMinimalCategory =
+      category === "Vehicles/Others" || category === "Vehicles/Spare parts";
+    const isBicycleCategory = category === "Vehicles/Bicycle";
+
+    // Base requirement, common to every category
+    if (!this.commonPayload.price || !city || !nearBy) {
       this.showNotification(
-        "Please fill Brand, Year, KM Driven, Fuel Type, Transmission, Owners, Price and Location before generating AI details"
+        "Please fill Price and Location before generating AI details"
       );
       return;
     }
 
+    if (isMinimalCategory) {
+    } else if (isBicycleCategory) {
+      // Vehicles/Bicycle: price, city, nearBy, brand required
+      if (!brandName) {
+        this.showNotification(
+          "Please fill Brand, Price and Location before generating AI details"
+        );
+        return;
+      }
+    } else {
+      // All other categories: everything required
+      if (
+        !brandName ||
+        !this.vehicleData.year ||
+        !this.vehicleData.kmDriven ||
+        !selectedFuelType ||
+        !selectedTransmission ||
+        !this.vehicleData.noOfOwner
+      ) {
+        this.showNotification(
+          "Please fill Brand, Year, KM Driven, Fuel Type, Transmission, Owners, Price and Location before generating AI details"
+        );
+        return;
+      }
+    }
+
     const payload: any = {
-      brand: brandName,
-      category: `${this.mainCategory}/${this.subCategory}`,
-      year: Number(this.vehicleData.year),
-      kilometerDriven: Number(this.vehicleData.kmDriven),
-      fuelType: selectedFuelType.label,
-      transmission: selectedTransmission.label,
-      numberOfOwners: Number(this.vehicleData.noOfOwner),
+      category: category,
       price: Number(this.commonPayload.price),
       city: city,
       nearBy: nearBy,
     };
+
+    if (brandName) {
+      payload.brand = brandName;
+    }
+    if (this.vehicleData.year) {
+      payload.year = Number(this.vehicleData.year);
+    }
+    if (this.vehicleData.kmDriven) {
+      payload.kilometerDriven = Number(this.vehicleData.kmDriven);
+    }
+    if (selectedFuelType) {
+      payload.fuelType = selectedFuelType.label;
+    }
+    if (selectedTransmission) {
+      payload.transmission = selectedTransmission.label;
+    }
+    if (this.vehicleData.noOfOwner) {
+      payload.numberOfOwners = Number(this.vehicleData.noOfOwner);
+    }
 
     this.loadingAIDetails = true;
     this.commonService.getGenPrompt(payload).subscribe({
