@@ -1,11 +1,16 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
 import {
   BusinessDirectoryItem,
   BusinessListItem,
   BusinessViewDto,
+  BusinessProduct,
+  ProductCategoryDto,
+  ProductSubCategoryDto,
+  ProductAttributeMasterDto,
+  BusinessProductDto,
 } from "../model/Business";
 
 @Injectable({
@@ -38,6 +43,20 @@ export class BusinessService {
   getBusinessSubCategories(businessCategoryId: number) {
     return this.http.get(
       `${this.baseUrl}Business/business-subcategories?businessCategoryId=${businessCategoryId}`
+    );
+  }
+
+  getProductCategories(): Observable<ProductCategoryDto[]> {
+    return this.http.get<ProductCategoryDto[]>(
+      `${this.baseUrl}Business/business-categories`
+    );
+  }
+
+  getProductSubCategories(
+    productCategoryId: number
+  ): Observable<ProductSubCategoryDto[]> {
+    return this.http.get<ProductSubCategoryDto[]>(
+      `${this.baseUrl}Business/business-subcategories?businessCategoryId=${productCategoryId}`
     );
   }
 
@@ -84,6 +103,13 @@ export class BusinessService {
     );
   }
 
+  uploadProductImages(formData: FormData): Observable<string[]> {
+    return this.http.post<string[]>(
+      `${this.baseUrl}Business/UploadProductImages`,
+      formData
+    );
+  }
+
   saveBusiness(payload: any) {
     return this.http.post(`${this.baseUrl}Business/Register`, payload);
   }
@@ -96,11 +122,47 @@ export class BusinessService {
     return this.http.delete(`${this.baseUrl}Business/${id}`);
   }
 
+  // ---------- Products ----------
+
+  getBusinessProducts(businessId: number): Observable<BusinessProductDto[]> {
+    return this.http.get<BusinessProductDto[]>(
+      `${this.baseUrl}Business/products?businessId=${businessId}`
+    );
+  }
+
+  saveProduct(payload: BusinessProduct) {
+    return this.http.post(`${this.baseUrl}Business/Product`, payload);
+  }
+
   notifyBusinessUpdated(
     businessId: string,
     businessName: string,
     logoUrl: string
   ): void {
     this.businessUpdatedSource.next({ businessId, businessName, logoUrl });
+  }
+
+  // ---------- Attribute resolution (internal, silent) ----------
+
+  getProductAttributeMasterIds(
+    productSubCategoryId: number
+  ): Observable<number[]> {
+    return this.http.get<number[]>(
+      `${this.baseUrl}Business/product-attributes-masterid?productSubCategoryId=${productSubCategoryId}`
+    );
+  }
+
+  getProductAttributes(
+    masterIds: number[]
+  ): Observable<ProductAttributeMasterDto[]> {
+    let params = new HttpParams();
+    masterIds.forEach((id) => {
+      params = params.append("productAttributeMasterIds", id.toString());
+    });
+
+    return this.http.get<ProductAttributeMasterDto[]>(
+      `${this.baseUrl}Business/product-attributes`,
+      { params }
+    );
   }
 }

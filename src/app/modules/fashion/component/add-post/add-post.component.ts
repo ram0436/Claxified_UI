@@ -426,7 +426,6 @@ export class AddPostComponent {
     this.commonPayload.name = this.userData.firstName;
     this.commonPayload.mobile = this.userData.mobileNo;
     var payload = this.addSpecificPayload(this.commonPayload);
-    console.log(payload);
     if (payload.id) this.updateFashionPost(payload);
     else this.saveFashionPost(payload);
   }
