@@ -1,219 +1,566 @@
+/* =========================================================
+   MAIN WRAPPER
+   ========================================================= */
+
 .business-login-wrapper {
   display: flex;
   max-width: 90vw;
-  height: clamp(500px, 90vh, 90vh);
+  height: clamp(500px, 80vh, 80vh);
+
   border-radius: 12px;
+
   position: relative;
-  overflow-y: auto;
+
+  overflow: hidden;
+
   background: #fff;
 }
+
+/* =========================================================
+     CLOSE ICON
+     ========================================================= */
 
 .login-cancel-icon {
   cursor: pointer;
+
   font-size: 25px;
+
   position: absolute;
+
   top: 15px;
+
   right: 15px;
+
   color: #000;
-  z-index: 5;
+
+  z-index: 10;
 }
+
+/* =========================================================
+     BRAND PANEL
+     ========================================================= */
 
 .business-login-brand-panel {
   width: 45%;
+
   background: linear-gradient(160deg, #0d475c, #1a1030);
+
   color: #fff;
+
   padding: 40px 30px;
+
   display: flex;
+
   flex-direction: column;
-  justify-self: center;
-  align-items: center;
+
   justify-content: center;
+
+  align-items: center;
+
   text-align: center;
+
   overflow-y: auto;
+
   height: 100%;
+
+  box-sizing: border-box;
+
   border-radius: 12px 0 0 12px;
 }
 
+/* =========================================================
+     LOGO
+     ========================================================= */
+
 .brand-logo {
-  background: #fff;
-  border-radius: 30px;
-  padding: 10px 20px;
-  display: inline-flex;
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  position: relative;
+
+  margin-bottom: 15px;
+
+  /*
+     * This helps the dark rectangular area of the logo
+     * blend into the dark gradient background.
+     */
+  mix-blend-mode: screen;
 }
 
 .brand-logo img {
-  height: 40px;
+  height: 80px;
+
   width: auto;
+
+  max-width: 270px;
+
   object-fit: contain;
+
+  display: block;
+
+  /*
+     * Helps the logo's background blend with the
+     * brand panel background.
+     */
+  mix-blend-mode: screen;
 }
+
+/* =========================================================
+     BRAND HEADING
+     ========================================================= */
 
 .brand-heading {
   font-weight: 600;
+
   margin-bottom: 12px;
-  margin-top: 40px;
+
+  margin-top: 25px;
+
+  font-size: 30px;
+
+  line-height: 1.15;
+
+  max-width: 400px;
 }
 
+/* =========================================================
+     BRAND SUBTEXT
+     ========================================================= */
+
 .brand-subtext {
-  font-size: 14px;
+  font-size: 16px;
+
   color: #d9edf3;
-  line-height: 1.5;
+
+  line-height: 1.6;
+
+  max-width: 420px;
+
+  margin: 0;
 }
+
+/* =========================================================
+     FORM PANEL
+     ========================================================= */
 
 .business-login-form-panel {
   width: 55%;
+
   display: flex;
+
   flex-direction: column;
+
   height: 100%;
+
   min-height: 0;
+
   border-radius: 0 12px 12px 0;
-  overflow: hidden; /* clip only THIS panel, not the whole wrapper */
+
+  overflow: hidden;
+
+  background: #fff;
 }
 
-/* HIGH SPECIFICITY + !important to beat Material's own theme CSS */
+/* =========================================================
+     FORM SCROLL
+     ========================================================= */
+
 mat-dialog-content.business-login-form-scroll,
 .business-login-form-panel .business-login-form-scroll.mat-mdc-dialog-content,
 .business-login-form-panel .business-login-form-scroll.mat-dialog-content {
   overflow-y: auto !important;
+
   padding: 50px 40px !important;
+
   margin: 0 !important;
+
   max-height: none !important;
+
   flex: 1 1 auto !important;
+
   min-height: 0 !important;
+
   display: block !important;
+
   box-sizing: border-box;
 }
+
+/* =========================================================
+     SCROLLBAR
+     ========================================================= */
 
 .business-login-form-scroll::-webkit-scrollbar {
   width: 6px;
 }
 
+.business-login-form-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .business-login-form-scroll::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.2);
+
   border-radius: 3px;
 }
 
+/* =========================================================
+     FORM HEADING
+     ========================================================= */
+
 .form-heading {
   font-weight: 700;
+
   color: #3c3241;
+
+  margin-top: 0;
+
   margin-bottom: 6px;
+
+  font-size: 30px;
+
+  line-height: 1.2;
 }
+
+/* =========================================================
+     FORM SUBHEADING
+     ========================================================= */
 
 .form-subheading {
   color: #635b67;
+
   font-size: 14px;
+
+  margin-top: 0;
+
   margin-bottom: 25px;
+
+  line-height: 1.5;
 }
+
+/* =========================================================
+     FIELD LABEL
+     ========================================================= */
 
 .field-label {
   display: block;
+
   font-size: 13px;
+
   font-weight: 600;
+
   color: #3c3241;
+
   margin-bottom: 4px;
 }
+
+/* =========================================================
+     FORM FIELD
+     ========================================================= */
 
 .business-login-form mat-form-field {
   width: 100%;
+
   display: block;
+
   margin-bottom: 4px;
 }
 
+/* =========================================================
+     FIELD ROW
+     ========================================================= */
+
 .field-row {
   display: flex;
+
   gap: 12px;
+
+  width: 100%;
 }
 
 .field-half {
   flex: 1;
+
   min-width: 0;
 }
 
-@media (max-width: 750px) {
-  .field-row {
-    flex-direction: column;
-    gap: 0;
-  }
-}
+/* =========================================================
+     COUNTRY CODE
+     ========================================================= */
 
 .country-code {
   padding-left: 12px;
+
+  color: #635b67;
 }
+
+/* =========================================================
+     BACK BUTTON
+     ========================================================= */
+
+.back-button {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #635b67;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  padding: 0;
+
+  margin: 0 0 25px 0;
+
+  cursor: pointer;
+}
+
+.back-button mat-icon {
+  font-size: 20px;
+
+  width: 20px;
+
+  height: 20px;
+}
+
+.back-button:hover {
+  color: #e75462;
+}
+
+/* =========================================================
+     MAIN BUTTON
+     ========================================================= */
 
 .business-login-button {
   display: block;
+
   width: 100%;
+
   margin: 25px 0 0 0;
+
   color: #fff !important;
+
   background-color: #e75462 !important;
+
   height: 44px;
+
   font-weight: 600;
+
+  font-size: 15px;
+
+  border-radius: 5px;
 }
+
+.business-login-button:hover {
+  background-color: #d94857 !important;
+}
+
+/* =========================================================
+     ERROR MESSAGE
+     ========================================================= */
 
 .otp-failure-message {
   margin: -2px 0 10px 0;
+
   display: flex;
+
   align-items: center;
+
   gap: 5px;
+
   font-weight: 500;
+
   font-size: 13px;
+
   color: red;
+
+  line-height: 1.4;
 }
 
-.otp-send-message {
-  margin: 15px 0 0 0;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  justify-content: center;
-  font-weight: 500;
-  font-size: 13px;
-  color: #008c15;
-}
-
-.otp-send-message .material-icons-outlined,
 .otp-failure-message .material-icons-outlined {
   font-size: 20px;
 }
 
+/* =========================================================
+     OTP SUCCESS
+     ========================================================= */
+
+.otp-send-message {
+  margin: 15px 0 0 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  justify-content: center;
+
+  font-weight: 500;
+
+  font-size: 13px;
+
+  color: #008c15;
+}
+
+.otp-send-message .material-icons-outlined {
+  font-size: 20px;
+}
+
+/* =========================================================
+     RECEIVE OTP MESSAGE
+     ========================================================= */
+
 .receive-message {
   margin: 0 0 15px 0;
+
   color: #9e9798;
+
   font-weight: 500;
+
   font-size: 13px;
 }
+
+/* =========================================================
+     COUNTDOWN
+     ========================================================= */
 
 .countdown-message {
   color: #172b4d;
 }
 
+/* =========================================================
+     RESEND
+     ========================================================= */
+
 .resend-link {
   color: #0065ff;
+
   cursor: pointer;
+
   text-decoration: underline;
+
   margin-left: 5px;
 }
+
+/* =========================================================
+     MOBILE
+     ========================================================= */
 
 @media (max-width: 750px) {
   .business-login-wrapper {
     flex-direction: column;
+
     width: 95vw;
+
+    max-width: 95vw;
+
+    height: 95vh;
+
     max-height: 95vh;
+
+    overflow: hidden;
   }
+
   .business-login-brand-panel,
   .business-login-form-panel {
     width: 100%;
   }
+
   .business-login-brand-panel {
     padding: 30px 20px;
+
     flex: 0 0 auto;
+
+    height: auto;
+
+    min-height: 250px;
+
     border-radius: 12px 12px 0 0;
   }
+
+  .brand-logo img {
+    height: 65px;
+
+    max-width: 230px;
+  }
+
+  .brand-heading {
+    font-size: 23px;
+
+    margin-top: 15px;
+  }
+
+  .brand-subtext {
+    font-size: 14px;
+
+    max-width: 350px;
+  }
+
   .business-login-form-panel {
     flex: 1;
+
     min-height: 0;
+
+    height: auto;
+
     border-radius: 0 0 12px 12px;
   }
+
   mat-dialog-content.business-login-form-scroll {
     padding: 30px 20px !important;
+  }
+
+  .form-heading {
+    font-size: 25px;
+  }
+
+  .field-row {
+    flex-direction: column;
+
+    gap: 0;
+  }
+
+  .field-half {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+     SMALL MOBILE
+     ========================================================= */
+
+@media (max-width: 450px) {
+  .business-login-brand-panel {
+    min-height: 220px;
+
+    padding: 25px 15px;
+  }
+
+  .brand-logo img {
+    height: 55px;
+
+    max-width: 200px;
+  }
+
+  .brand-heading {
+    font-size: 20px;
+  }
+
+  .brand-subtext {
+    font-size: 13px;
+  }
+
+  mat-dialog-content.business-login-form-scroll {
+    padding: 25px 16px !important;
   }
 }

@@ -11,7 +11,7 @@ import { BusinessDashboardComponent } from "./components/business-dashboard/busi
 import { BusinessEditProfileComponent } from "./components/business-edit-profile/business-edit-profile.component";
 import { BusinessPublicProfileComponent } from "./components/business-public-profile/business-public-profile.component";
 import { BusinessLoginComponent } from "./components/business-login/business-login.component";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -26,7 +26,8 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { BusinessFooterComponent } from "./components/business-footer/business-footer.component";
 import { BusinessDirectoriesComponent } from "./components/business-directories/business-directories.component";
 import { MatMenuModule } from "@angular/material/menu";
-import { BusinessPageComponent } from './components/business-page/business-page.component';
+import { BusinessPageComponent } from "./components/business-page/business-page.component";
+import { AddBusinessProductComponent } from "./components/add-business-product/add-business-product.component";
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { BusinessPageComponent } from './components/business-page/business-page.
     BusinessFooterComponent,
     BusinessDirectoriesComponent,
     BusinessPageComponent,
+    AddBusinessProductComponent,
   ],
   imports: [
     CommonModule,
@@ -59,6 +61,7 @@ import { BusinessPageComponent } from './components/business-page/business-page.
     MatCardModule,
     MatSnackBarModule,
     MatMenuModule,
+    ReactiveFormsModule,
   ],
 })
 export class BusinessModule {}

@@ -22,6 +22,10 @@ export class BusinessDirectoriesComponent implements OnInit {
     this.fetchBusinesses();
   }
 
+  getYearsInBusiness(establishedYear: number): number {
+    return Math.max(1, new Date().getFullYear() - establishedYear);
+  }
+
   fetchBusinesses(): void {
     this.loading = true;
     this.loadError = false;

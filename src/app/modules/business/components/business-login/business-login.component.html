@@ -1,4 +1,8 @@
 <div class="business-login-wrapper mat-elevation-z12">
+  <!-- ===================================================== -->
+  <!-- CLOSE BUTTON -->
+  <!-- ===================================================== -->
+
   <span
     class="material-icons-outlined login-cancel-icon"
     (click)="closeDialog()"
@@ -6,319 +10,472 @@
     cancel
   </span>
 
+  <!-- ===================================================== -->
+  <!-- BRAND PANEL -->
+  <!-- ===================================================== -->
+
   <div class="business-login-brand-panel">
     <div class="brand-logo">
       <img
-        src="https://cfdblob.blob.core.windows.net/logo/CFD_Logo.png"
-        alt="Logo"
+        src="https://cfdblob.blob.core.windows.net/claxified-business/business-logo/Claxified622785.png"
+        alt="Claxified Business Logo"
       />
     </div>
 
     <h3 class="brand-heading">Interact directly with customers</h3>
+
     <p class="brand-subtext">
       When your business receives an enquiry, you'll be notified right away so
       you can connect with them instantly.
     </p>
   </div>
 
+  <!-- ===================================================== -->
+  <!-- FORM PANEL -->
+  <!-- ===================================================== -->
+
   <div class="business-login-form-panel">
     <mat-dialog-content class="business-login-form-scroll">
-      <h2 class="form-heading">Grow with us!</h2>
+      <!-- ================================================= -->
+      <!-- HEADING -->
+      <!-- ================================================= -->
+
+      <h2 class="form-heading">
+        {{
+          otpSent
+            ? "Verify your number"
+            : showAdditionalFields
+            ? "Almost there!"
+            : "Grow with us!"
+        }}
+      </h2>
+
       <p class="form-subheading">
-        Register your business and sign in with your mobile number.
+        {{
+          otpSent
+            ? "Enter the OTP sent to your mobile number."
+            : showAdditionalFields
+            ? "Tell us a little more about your business."
+            : "Register your business and sign in with your mobile number."
+        }}
       </p>
 
+      <!-- ================================================= -->
+      <!-- FORM -->
+      <!-- ================================================= -->
+
       <form
-        (ngSubmit)="otpSent ? registerBusiness() : sendOTP()"
+        (ngSubmit)="
+          otpSent
+            ? registerBusiness()
+            : showAdditionalFields
+            ? sendOTP()
+            : goToAdditionalFields()
+        "
         class="business-login-form"
       >
-        <label class="field-label">Business Name</label>
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            placeholder="Enter your business name"
-            name="businessName"
-            [(ngModel)]="businessName"
-            [disabled]="otpSent"
-            (input)="validBusinessNameMessage = !validateBusinessName()"
-          />
-          <mat-icon matSuffix>storefront</mat-icon>
-        </mat-form-field>
-        <p class="otp-failure-message" *ngIf="validBusinessNameMessage">
-          <span class="material-icons-outlined">report</span>
-          Business name looks invalid*
-        </p>
-        <p class="otp-failure-message" *ngIf="businessNameErrorMessage">
-          <span class="material-icons-outlined">report</span>
-          Please enter your business name (min 2 characters)*
-        </p>
+        <!-- ================================================= -->
+        <!-- STEP 1 -->
+        <!-- BASIC DETAILS -->
+        <!-- ================================================= -->
 
-        <label class="field-label">Owner Name</label>
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            placeholder="Enter your name"
-            [disabled]="userName || otpSent"
-            name="userName"
-            [(ngModel)]="userName"
-            (input)="validateUserName()"
-          />
-          <mat-icon matSuffix>person</mat-icon>
-        </mat-form-field>
+        <ng-container *ngIf="!showAdditionalFields && !otpSent">
+          <!-- ================= BUSINESS NAME ================= -->
 
-        <label class="field-label">Mobile Number</label>
-        <mat-form-field appearance="outline">
-          <span matPrefix class="country-code">+91-</span>
-          <input
-            matInput
-            placeholder="Enter 10-digit number"
-            name="phoneNumber"
-            [(ngModel)]="phoneNumber"
-            [disabled]="otpSent"
-            (input)="validPhoneNumberMessage = !validatePhoneNumber()"
-          />
-          <mat-icon matSuffix>phone</mat-icon>
-        </mat-form-field>
-        <p class="otp-failure-message" *ngIf="validPhoneNumberMessage">
-          <span class="material-icons-outlined">report</span>
-          Phone number should consist of only numbers*
-        </p>
-        <p class="otp-failure-message" *ngIf="phoneNumberErrorMessage">
-          <span class="material-icons-outlined">report</span>
-          Please enter a valid 10-digit mobile number*
-        </p>
+          <label class="field-label"> Business Name </label>
 
-        <!-- ===== Business classification & location fields ===== -->
-
-        <label class="field-label">Business Category</label>
-        <mat-form-field appearance="outline">
-          <mat-select
-            placeholder="{{
-              dropdownDataLoading
-                ? 'Loading categories...'
-                : 'Select business category'
-            }}"
-            name="businessCategoryId"
-            [(ngModel)]="businessCategoryId"
-            [disabled]="otpSent || dropdownDataLoading"
-            (selectionChange)="onBusinessCategoryChange()"
-          >
-            <mat-option
-              *ngFor="let category of businessCategories"
-              [value]="category.id"
-            >
-              {{ category.name }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matSuffix>category</mat-icon>
-        </mat-form-field>
-        <p class="otp-failure-message" *ngIf="businessCategoryErrorMessage">
-          <span class="material-icons-outlined">report</span>
-          Please select a business category*
-        </p>
-
-        <label class="field-label">Business Sub Category</label>
-        <mat-form-field appearance="outline">
-          <mat-select
-            placeholder="Select business sub category"
-            name="businessSubCategoryId"
-            [(ngModel)]="businessSubCategoryId"
-            [disabled]="otpSent || !businessCategoryId"
-          >
-            <mat-option
-              *ngFor="let subCategory of businessSubCategories"
-              [value]="subCategory.id"
-            >
-              {{ subCategory.name }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matSuffix>label</mat-icon>
-        </mat-form-field>
-        <p class="otp-failure-message" *ngIf="businessSubCategoryErrorMessage">
-          <span class="material-icons-outlined">report</span>
-          Please select a business sub category*
-        </p>
-
-        <label class="field-label">Business Type</label>
-        <mat-form-field appearance="outline">
-          <mat-select
-            placeholder="{{
-              dropdownDataLoading ? 'Loading...' : 'Select business type'
-            }}"
-            name="businessTypeId"
-            [(ngModel)]="businessTypeId"
-            [disabled]="otpSent || dropdownDataLoading"
-          >
-            <mat-option *ngFor="let type of businessTypes" [value]="type.id">
-              {{ type.name }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matSuffix>business</mat-icon>
-        </mat-form-field>
-        <p class="otp-failure-message" *ngIf="businessTypeErrorMessage">
-          <span class="material-icons-outlined">report</span>
-          Please select a business type*
-        </p>
-
-        <label class="field-label">Seller Type</label>
-        <mat-form-field appearance="outline">
-          <mat-select
-            placeholder="{{
-              dropdownDataLoading ? 'Loading...' : 'Select seller type'
-            }}"
-            name="sellerTypeId"
-            [(ngModel)]="sellerTypeId"
-            [disabled]="otpSent || dropdownDataLoading"
-          >
-            <mat-option *ngFor="let type of sellerTypes" [value]="type.id">
-              {{ type.name }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matSuffix>sell</mat-icon>
-        </mat-form-field>
-        <p class="otp-failure-message" *ngIf="sellerTypeErrorMessage">
-          <span class="material-icons-outlined">report</span>
-          Please select a seller type*
-        </p>
-
-        <div class="field-row">
-          <div class="field-half">
-            <label class="field-label">Pincode</label>
-            <mat-form-field appearance="outline">
-              <input
-                matInput
-                placeholder="Enter 6-digit pincode"
-                name="pincode"
-                [(ngModel)]="pincode"
-                [disabled]="otpSent"
-                (input)="getAddress($event); allowOnlyNumbersPincode($event)"
-                maxlength="6"
-              />
-              <mat-icon matSuffix>pin_drop</mat-icon>
-            </mat-form-field>
-          </div>
-          <div class="field-half">
-            <label class="field-label">Country</label>
-            <mat-form-field appearance="outline">
-              <input
-                matInput
-                name="country"
-                [(ngModel)]="country"
-                [disabled]="otpSent"
-              />
-              <mat-icon matSuffix>public</mat-icon>
-            </mat-form-field>
-          </div>
-        </div>
-        <p class="otp-failure-message" *ngIf="pincodeErrorMessage">
-          <span class="material-icons-outlined">report</span>
-          Please enter a valid 6-digit pincode*
-        </p>
-
-        <div class="field-row" *ngIf="state">
-          <div class="field-half">
-            <label class="field-label">State</label>
-            <mat-form-field appearance="outline">
-              <input matInput name="state" [(ngModel)]="state" readonly />
-              <mat-icon matSuffix>map</mat-icon>
-            </mat-form-field>
-          </div>
-          <div class="field-half">
-            <label class="field-label">City</label>
-            <mat-form-field appearance="outline">
-              <input matInput name="city" [(ngModel)]="city" readonly />
-              <mat-icon matSuffix>location_city</mat-icon>
-            </mat-form-field>
-          </div>
-        </div>
-        <p
-          class="otp-failure-message"
-          *ngIf="stateErrorMessage || cityErrorMessage"
-        >
-          <span class="material-icons-outlined">report</span>
-          Please enter a valid pincode so we can look up your state and city*
-        </p>
-
-        <ng-container *ngIf="state">
-          <label class="field-label">Near By</label>
           <mat-form-field appearance="outline">
-            <mat-select name="nearBy" [(ngModel)]="nearBy" [disabled]="otpSent">
-              <mat-option
-                *ngFor="let postOffice of postOffices"
-                [value]="postOffice.Name"
-              >
-                {{ postOffice.Name }}
-              </mat-option>
-            </mat-select>
-            <mat-icon matSuffix>near_me</mat-icon>
+            <input
+              matInput
+              placeholder="Enter your business name"
+              name="businessName"
+              [(ngModel)]="businessName"
+              (input)="validBusinessNameMessage = !validateBusinessName()"
+            />
+
+            <mat-icon matSuffix> storefront </mat-icon>
           </mat-form-field>
-          <p class="otp-failure-message" *ngIf="nearByErrorMessage">
-            <span class="material-icons-outlined">report</span>
-            Please select the nearest area*
+
+          <p class="otp-failure-message" *ngIf="validBusinessNameMessage">
+            <span class="material-icons-outlined"> report </span>
+
+            Business name looks invalid*
           </p>
+
+          <p class="otp-failure-message" *ngIf="businessNameErrorMessage">
+            <span class="material-icons-outlined"> report </span>
+
+            Please enter your business name (min 2 characters)*
+          </p>
+
+          <!-- ================= OWNER NAME ================= -->
+
+          <label class="field-label"> Owner Name </label>
+
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              placeholder="Enter your name"
+              name="userName"
+              [(ngModel)]="userName"
+              (input)="validUserNameMessage = !validateUserName()"
+            />
+
+            <mat-icon matSuffix> person </mat-icon>
+          </mat-form-field>
+
+          <p class="otp-failure-message" *ngIf="validUserNameMessage">
+            <span class="material-icons-outlined"> report </span>
+
+            Please enter a valid owner name*
+          </p>
+
+          <!-- ================= MOBILE NUMBER ================= -->
+
+          <label class="field-label"> Mobile Number </label>
+
+          <mat-form-field appearance="outline">
+            <span matPrefix class="country-code"> +91- </span>
+
+            <input
+              matInput
+              placeholder="Enter 10-digit number"
+              name="phoneNumber"
+              [(ngModel)]="phoneNumber"
+              maxlength="10"
+              (input)="validPhoneNumberMessage = !validatePhoneNumber()"
+            />
+
+            <mat-icon matSuffix> phone </mat-icon>
+          </mat-form-field>
+
+          <p class="otp-failure-message" *ngIf="validPhoneNumberMessage">
+            <span class="material-icons-outlined"> report </span>
+
+            Phone number should consist of only numbers*
+          </p>
+
+          <p class="otp-failure-message" *ngIf="phoneNumberErrorMessage">
+            <span class="material-icons-outlined"> report </span>
+
+            Please enter a valid 10-digit mobile number*
+          </p>
+
+          <!-- ================= NEXT BUTTON ================= -->
+
+          <button
+            mat-raised-button
+            color="primary"
+            class="business-login-button"
+            type="submit"
+          >
+            Next
+          </button>
         </ng-container>
 
-        <!-- ===== End fields ===== -->
+        <!-- ================================================= -->
+        <!-- STEP 2 -->
+        <!-- BUSINESS DETAILS -->
+        <!-- ================================================= -->
 
-        <p *ngIf="otpSent" class="receive-message">
-          Didn't receive the OTP yet?
-          <span *ngIf="!resendEnabled" class="countdown-message">
-            Resend in {{ resendCountdown }}s
-          </span>
-          <span *ngIf="resendEnabled" class="resend-link" (click)="resendOTP()">
-            Resend
-          </span>
-        </p>
-        <p class="otp-failure-message" *ngIf="otpFailed">
-          <span class="material-icons-outlined">report</span> Error sending OTP
-        </p>
+        <ng-container *ngIf="showAdditionalFields && !otpSent">
+          <!-- ================= BACK BUTTON ================= -->
+
+          <button
+            type="button"
+            class="back-button"
+            (click)="goBackToBasicDetails()"
+          >
+            <mat-icon> arrow_back </mat-icon>
+
+            Back
+          </button>
+
+          <!-- ================= BUSINESS CATEGORY ================= -->
+
+          <label class="field-label"> Business Category </label>
+
+          <mat-form-field appearance="outline">
+            <mat-select
+              placeholder="{{
+                dropdownDataLoading
+                  ? 'Loading categories...'
+                  : 'Select business category'
+              }}"
+              name="businessCategoryId"
+              [(ngModel)]="businessCategoryId"
+              [disabled]="dropdownDataLoading"
+              (selectionChange)="onBusinessCategoryChange()"
+            >
+              <mat-option
+                *ngFor="let category of businessCategories"
+                [value]="category.id"
+              >
+                {{ category.name }}
+              </mat-option>
+            </mat-select>
+
+            <mat-icon matSuffix> category </mat-icon>
+          </mat-form-field>
+
+          <p class="otp-failure-message" *ngIf="businessCategoryErrorMessage">
+            <span class="material-icons-outlined"> report </span>
+
+            Please select a business category*
+          </p>
+
+          <!-- ================= BUSINESS SUB CATEGORY ================= -->
+
+          <label class="field-label"> Business Sub Category </label>
+
+          <mat-form-field appearance="outline">
+            <mat-select
+              placeholder="Select business sub category"
+              name="businessSubCategoryId"
+              [(ngModel)]="businessSubCategoryId"
+              [disabled]="!businessCategoryId"
+            >
+              <mat-option
+                *ngFor="let subCategory of businessSubCategories"
+                [value]="subCategory.id"
+              >
+                {{ subCategory.name }}
+              </mat-option>
+            </mat-select>
+
+            <mat-icon matSuffix> label </mat-icon>
+          </mat-form-field>
+
+          <p
+            class="otp-failure-message"
+            *ngIf="businessSubCategoryErrorMessage"
+          >
+            <span class="material-icons-outlined"> report </span>
+
+            Please select a business sub category*
+          </p>
+
+          <!-- ================================================= -->
+          <!-- PINCODE + COUNTRY -->
+          <!-- ================================================= -->
+
+          <div class="field-row">
+            <!-- PINCODE -->
+
+            <div class="field-half">
+              <label class="field-label"> Pincode </label>
+
+              <mat-form-field appearance="outline">
+                <input
+                  matInput
+                  placeholder="Enter 6-digit pincode"
+                  name="pincode"
+                  [(ngModel)]="pincode"
+                  maxlength="6"
+                  (input)="allowOnlyNumbersPincode($event); getAddress($event)"
+                />
+
+                <mat-icon matSuffix> pin_drop </mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- COUNTRY -->
+
+            <div class="field-half">
+              <label class="field-label"> Country </label>
+
+              <mat-form-field appearance="outline">
+                <input matInput name="country" [(ngModel)]="country" />
+
+                <mat-icon matSuffix> public </mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- PINCODE ERROR -->
+
+          <p class="otp-failure-message" *ngIf="pincodeErrorMessage">
+            <span class="material-icons-outlined"> report </span>
+
+            Please enter a valid 6-digit pincode*
+          </p>
+
+          <!-- ================================================= -->
+          <!-- STATE + CITY -->
+          <!-- ================================================= -->
+
+          <div class="field-row" *ngIf="state">
+            <!-- STATE -->
+
+            <div class="field-half">
+              <label class="field-label"> State </label>
+
+              <mat-form-field appearance="outline">
+                <input matInput name="state" [(ngModel)]="state" readonly />
+
+                <mat-icon matSuffix> map </mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- CITY -->
+
+            <div class="field-half">
+              <label class="field-label"> City </label>
+
+              <mat-form-field appearance="outline">
+                <input matInput name="city" [(ngModel)]="city" readonly />
+
+                <mat-icon matSuffix> location_city </mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- STATE / CITY ERROR -->
+
+          <p
+            class="otp-failure-message"
+            *ngIf="stateErrorMessage || cityErrorMessage"
+          >
+            <span class="material-icons-outlined"> report </span>
+
+            Please enter a valid pincode so we can look up your state and city*
+          </p>
+
+          <!-- ================================================= -->
+          <!-- NEAR BY -->
+          <!-- ================================================= -->
+
+          <ng-container *ngIf="state">
+            <label class="field-label"> Near By </label>
+
+            <mat-form-field appearance="outline">
+              <mat-select name="nearBy" [(ngModel)]="nearBy">
+                <mat-option
+                  *ngFor="let postOffice of postOffices"
+                  [value]="postOffice.Name"
+                >
+                  {{ postOffice.Name }}
+                </mat-option>
+              </mat-select>
+
+              <mat-icon matSuffix> near_me </mat-icon>
+            </mat-form-field>
+
+            <p class="otp-failure-message" *ngIf="nearByErrorMessage">
+              <span class="material-icons-outlined"> report </span>
+
+              Please select the nearest area*
+            </p>
+          </ng-container>
+
+          <!-- ================================================= -->
+          <!-- SEND OTP -->
+          <!-- ================================================= -->
+
+          <button
+            mat-raised-button
+            color="primary"
+            class="business-login-button"
+            type="submit"
+            [disabled]="registering"
+          >
+            Send OTP
+          </button>
+        </ng-container>
+
+        <!-- ================================================= -->
+        <!-- STEP 3 -->
+        <!-- OTP -->
+        <!-- ================================================= -->
 
         <ng-container *ngIf="otpSent">
-          <label class="field-label">Enter OTP</label>
+          <!-- ================= RESEND ================= -->
+
+          <p class="receive-message">
+            Didn't receive the OTP yet?
+
+            <span *ngIf="!resendEnabled" class="countdown-message">
+              Resend in {{ resendCountdown }}s
+            </span>
+
+            <span
+              *ngIf="resendEnabled"
+              class="resend-link"
+              (click)="resendOTP()"
+            >
+              Resend
+            </span>
+          </p>
+
+          <!-- ================= OTP ERROR ================= -->
+
+          <p class="otp-failure-message" *ngIf="otpFailed">
+            <span class="material-icons-outlined"> report </span>
+
+            Error sending OTP
+          </p>
+
+          <!-- ================= OTP INPUT ================= -->
+
+          <label class="field-label"> Enter OTP </label>
+
           <mat-form-field appearance="outline">
             <input
               matInput
               placeholder="Enter OTP"
               name="otp"
               [(ngModel)]="otp"
+              maxlength="6"
               (input)="validOTPMessage = !validateOTP()"
             />
-            <mat-icon matSuffix>shield</mat-icon>
+
+            <mat-icon matSuffix> shield </mat-icon>
           </mat-form-field>
+
+          <!-- OTP FORMAT ERROR -->
+
           <p class="otp-failure-message" *ngIf="validOTPMessage">
-            <span class="material-icons-outlined">report</span>
+            <span class="material-icons-outlined"> report </span>
+
             OTP should consist of only numbers*
           </p>
+
+          <!-- OTP VALIDATION ERROR -->
+
           <p class="otp-failure-message" *ngIf="otpErrorMessage">
-            <span class="material-icons-outlined">report</span>
+            <span class="material-icons-outlined"> report </span>
+
             Please enter a valid OTP*
           </p>
+
+          <!-- UNAUTHORIZED -->
+
+          <p class="otp-failure-message" *ngIf="unauthorizedUser">
+            <span class="material-icons-outlined"> report </span>
+
+            Unauthorized user*
+          </p>
+
+          <!-- ================= REGISTER BUTTON ================= -->
+
+          <button
+            mat-raised-button
+            color="primary"
+            class="business-login-button"
+            type="submit"
+            [disabled]="!otp || registering"
+          >
+            {{ registering ? "Registering..." : "Register Business" }}
+          </button>
+
+          <!-- OTP SENT MESSAGE -->
+
+          <p class="otp-send-message" *ngIf="otpMessage">
+            <span class="material-icons-outlined"> verified </span>
+
+            OTP has been sent successfully
+          </p>
         </ng-container>
-
-        <p class="otp-failure-message" *ngIf="unauthorizedUser">
-          <span class="material-icons-outlined">report</span> Unauthorized user*
-        </p>
-
-        <button
-          mat-raised-button
-          color="primary"
-          class="business-login-button"
-          type="submit"
-          [disabled]="(otpSent && !otp) || disableSendOTPButton || registering"
-        >
-          {{
-            registering
-              ? "Registering..."
-              : otpSent
-              ? "Register Business"
-              : "Send OTP"
-          }}
-        </button>
-
-        <p class="otp-send-message" *ngIf="otpMessage">
-          <span class="material-icons-outlined">verified</span> OTP has been
-          sent successfully
-        </p>
       </form>
     </mat-dialog-content>
   </div>

@@ -104,7 +104,8 @@
           </p>
 
           <p class="card-established" *ngIf="business.establishedYear">
-            Est. {{ business.establishedYear }}
+            In business for
+            {{ getYearsInBusiness(business.establishedYear) }} years
           </p>
 
           <div class="card-actions">

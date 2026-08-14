@@ -181,6 +181,8 @@ export interface BusinessViewDto {
   businessName: string;
   businessCategory: string;
   businessSubCategory: string;
+  businessCategoryId: number;
+  businessSubCategoryId: number;
   businessType: string;
   sellerType: string;
   tabRefGUID: string;
@@ -248,7 +250,6 @@ export interface BusinessDirectorySocialMedia {
 export interface BusinessDirectoryWorkingHours {
   id: number;
   businessId: number;
-  /** 0 = Sunday ... 6 = Saturday — matches JS Date.getDay() */
   dayOfWeek: number;
   openTime: string;
   closeTime: string;
@@ -264,7 +265,6 @@ export interface BusinessDirectoryGallery {
   displayOrder: number;
 }
 
-/** Single item returned by GET Business/List */
 export interface BusinessDirectoryItem {
   id: number;
   userId: number;
@@ -290,4 +290,127 @@ export interface BusinessDirectoryItem {
   businessSocialMediaDto?: BusinessDirectorySocialMedia;
   businessWorkingHoursDtoList?: BusinessDirectoryWorkingHours[];
   businessGalleryDtoList?: BusinessDirectoryGallery[];
+}
+
+export class BusinessProductAttribute {
+  id: number = 0;
+  businessProductId: number = 0;
+  productSubCategoryAttributeId: number = 0;
+  value: string = "";
+}
+
+export class BusinessProductImage {
+  id: number = 0;
+  businessProductId: number = 0;
+  imageUrl: string = "";
+  isPrimary: boolean = true;
+  sortOrder: number = 0;
+}
+
+export class BusinessProduct {
+  id: number = 0;
+  businessId: number = 0;
+  name: string = "";
+  productCategoryId: number = 0;
+  productSubCategoryId: number = 0;
+  shortDescription: string = "";
+  about: string = "";
+  price: number = 0;
+  discountPercentage: number = 0;
+  priceOnRequest: boolean = true;
+  gst: number = 0;
+  priceUnit: number = 1;
+  condition: number = 1;
+  availabilityStatus: number = 1;
+  deliveryAvailable: boolean = true;
+  shippingCharges: number = 0;
+  freeShipping: boolean = true;
+  warrantyAvailable: boolean = true;
+  warrantyDuration: number = 0;
+  warrantyPeriodUnit: number = 1;
+  warrantyDescription: string = "";
+  returnPolicy: string = "";
+  attributes: BusinessProductAttribute[] = [];
+  images: BusinessProductImage[] = [];
+}
+
+export interface BusinessProductImageDto {
+  id?: number;
+  businessProductId?: number;
+  imageUrl: string;
+  isPrimary: boolean;
+  sortOrder: number;
+}
+
+export interface BusinessProductAttributeDto {
+  id?: number;
+  businessProductId?: number;
+  productAttributeMasterId: number;
+  value: string;
+}
+
+export interface BusinessProductDto {
+  id: number;
+  businessId: number;
+  name: string;
+  productCategoryId: number;
+  productSubCategoryId: number;
+  shortDescription: string;
+  about: string;
+  price: number;
+  discountPercentage: number;
+  priceOnRequest: "Yes" | "No";
+  gst: number;
+  priceUnit: string; // e.g. "Piece"
+  condition: string; // e.g. "New"
+  availabilityStatus: string; // e.g. "InStock"
+  deliveryAvailable: "Yes" | "No";
+  shippingCharges: number;
+  freeShipping: "Yes" | "No";
+  warrantyAvailable: "Yes" | "No";
+  warrantyDuration: number;
+  warrantyPeriodUnit: string; // e.g. "Month"
+  warrantyDescription: string;
+  returnPolicy: string;
+  attributes: BusinessProductAttributeDto[];
+  images: BusinessProductImageDto[];
+}
+
+export interface ProductCategoryDto {
+  id: number;
+  name: string;
+}
+
+export interface ProductSubCategoryDto {
+  id: number;
+  productCategoryId: number;
+  name: string;
+}
+
+export interface ProductSubCategoryAttributeDto {
+  id: number;
+  productSubCategoryId: number;
+  name: string; // attribute label, e.g. "Brand", "Warranty Support"
+}
+
+// ---------- Product attribute master lookups (internal, not user-facing) ----------
+
+export interface ProductAttributeMasterDto {
+  productAttributeMasterId: number;
+  name: string;
+  dataType: string; // "string" | "number" | etc.
+  unit: string | null;
+}
+
+// ---------- Product category / sub-category ----------
+
+export interface ProductCategoryDto {
+  id: number;
+  name: string;
+}
+
+export interface ProductSubCategoryDto {
+  id: number;
+  productCategoryId: number;
+  name: string;
 }

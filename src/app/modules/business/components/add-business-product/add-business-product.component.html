@@ -1,0 +1,374 @@
+<div class="edit-panel-backdrop" (click)="dismiss()"></div>
+
+<div class="edit-panel-drawer">
+  <div class="edit-panel-header">
+    <button class="icon-btn" (click)="dismiss()">
+      <span class="material-icons-outlined">arrow_back</span>
+    </button>
+    <h2 class="page-title">
+      {{ isEditMode ? "Edit Product" : "Add Product" }}
+    </h2>
+  </div>
+
+  <div class="edit-panel-body" *ngIf="!loading; else panelLoading">
+    <!-- LEFT: section nav -->
+    <nav class="edit-tabs-nav">
+      <div
+        class="edit-tab-item"
+        *ngFor="let s of sections"
+        [class.active]="activeSection === s.id"
+        (click)="setSection(s.id)"
+      >
+        <span class="material-icons-outlined">{{ s.icon }}</span>
+        <span class="edit-tab-label">{{ s.label }}</span>
+        <span class="required-chip" *ngIf="s.required">Required</span>
+      </div>
+    </nav>
+
+    <!-- RIGHT: active section content -->
+    <div class="edit-tabs-content">
+      <form [formGroup]="form">
+        <!-- ---------- BASIC DETAILS ---------- -->
+        <mat-card class="section-card" *ngIf="activeSection === 'basic'">
+          <h3 class="section-title">Basic Details</h3>
+
+          <label class="field-label">Product Name</label>
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              formControlName="name"
+              placeholder="e.g. Premium Bed Mattress"
+            />
+          </mat-form-field>
+
+          <label class="field-label">Short Description</label>
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              formControlName="shortDescription"
+              maxlength="250"
+              placeholder="One line summary"
+            />
+          </mat-form-field>
+
+          <label class="field-label">About Product</label>
+          <mat-form-field appearance="outline">
+            <textarea
+              matInput
+              rows="4"
+              formControlName="about"
+              placeholder="Detailed description"
+            ></textarea>
+          </mat-form-field>
+        </mat-card>
+
+        <!-- ---------- ATTRIBUTES (dynamic, silently resolved) ---------- -->
+        <mat-card class="section-card" *ngIf="activeSection === 'attributes'">
+          <h3 class="section-title">Attributes</h3>
+
+          <div *ngIf="loadingAttributes" class="attr-loading">
+            Loading attributes…
+          </div>
+
+          <div
+            *ngIf="!loadingAttributes && attributeDefs.length === 0"
+            class="attr-empty"
+          >
+            No Attributes Available
+          </div>
+
+          <div formArrayName="attributes" *ngIf="!loadingAttributes">
+            <div
+              class="field-row"
+              *ngFor="let attr of attributesArray.controls; let i = index"
+              [formGroupName]="i"
+            >
+              <div class="field-half full-width">
+                <label class="field-label">
+                  {{ attributeDefs[i].name }}
+                  <span *ngIf="attributeDefs[i]?.unit">
+                    ({{ attributeDefs[i].unit }})</span
+                  >
+                </label>
+                <mat-form-field appearance="outline">
+                  <input
+                    matInput
+                    formControlName="value"
+                    [type]="
+                      attributeDefs[i].dataType === 'number' ? 'number' : 'text'
+                    "
+                  />
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- ---------- PRICING ---------- -->
+        <mat-card class="section-card" *ngIf="activeSection === 'pricing'">
+          <h3 class="section-title">Pricing</h3>
+
+          <mat-checkbox formControlName="priceOnRequest"
+            >Price on Request</mat-checkbox
+          >
+
+          <div
+            class="field-row"
+            style="margin-top: 16px"
+            *ngIf="!form.get('priceOnRequest')?.value"
+          >
+            <div class="field-half">
+              <label class="field-label">Price (₹)</label>
+              <mat-form-field appearance="outline">
+                <input matInput type="number" formControlName="price" min="0" />
+              </mat-form-field>
+            </div>
+            <div class="field-half">
+              <label class="field-label">Discount (%)</label>
+              <mat-form-field appearance="outline">
+                <input
+                  matInput
+                  type="number"
+                  formControlName="discountPercentage"
+                  min="0"
+                  max="100"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-half">
+              <label class="field-label">GST (%)</label>
+              <mat-form-field appearance="outline">
+                <input
+                  matInput
+                  type="number"
+                  formControlName="gst"
+                  min="0"
+                  max="100"
+                />
+              </mat-form-field>
+            </div>
+            <div class="field-half">
+              <label class="field-label">Price Unit</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="priceUnit">
+                  <mat-option
+                    *ngFor="let o of priceUnitOptions"
+                    [value]="o.value"
+                  >
+                    {{ o.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-half">
+              <label class="field-label">Condition</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="condition">
+                  <mat-option
+                    *ngFor="let o of conditionOptions"
+                    [value]="o.value"
+                  >
+                    {{ o.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="field-half">
+              <label class="field-label">Availability</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="availabilityStatus">
+                  <mat-option
+                    *ngFor="let o of availabilityOptions"
+                    [value]="o.value"
+                  >
+                    {{ o.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- ---------- DELIVERY & WARRANTY ---------- -->
+        <mat-card class="section-card" *ngIf="activeSection === 'delivery'">
+          <h3 class="section-title">Delivery</h3>
+
+          <mat-checkbox formControlName="deliveryAvailable"
+            >Delivery Available</mat-checkbox
+          >
+
+          <div
+            class="field-row"
+            style="margin-top: 16px"
+            *ngIf="form.get('deliveryAvailable')?.value"
+          >
+            <div class="field-half">
+              <label class="field-label">Shipping Charges (₹)</label>
+              <mat-form-field appearance="outline">
+                <input
+                  matInput
+                  type="number"
+                  formControlName="shippingCharges"
+                  min="0"
+                />
+              </mat-form-field>
+            </div>
+            <div class="field-half checkbox-align">
+              <mat-checkbox formControlName="freeShipping"
+                >Free Shipping</mat-checkbox
+              >
+            </div>
+          </div>
+
+          <h3 class="section-title" style="margin-top: 25px">Warranty</h3>
+
+          <mat-checkbox formControlName="warrantyAvailable"
+            >Warranty Available</mat-checkbox
+          >
+
+          <ng-container *ngIf="form.get('warrantyAvailable')?.value">
+            <div class="field-row" style="margin-top: 16px">
+              <div class="field-half">
+                <label class="field-label">Duration</label>
+                <mat-form-field appearance="outline">
+                  <input
+                    matInput
+                    type="number"
+                    formControlName="warrantyDuration"
+                    min="0"
+                  />
+                </mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Period Unit</label>
+                <mat-form-field appearance="outline">
+                  <mat-select formControlName="warrantyPeriodUnit">
+                    <mat-option
+                      *ngFor="let o of warrantyPeriodOptions"
+                      [value]="o.value"
+                    >
+                      {{ o.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <label class="field-label">Warranty Description</label>
+            <mat-form-field appearance="outline">
+              <input matInput formControlName="warrantyDescription" />
+            </mat-form-field>
+          </ng-container>
+
+          <h3 class="section-title" style="margin-top: 25px">Return Policy</h3>
+          <mat-form-field appearance="outline">
+            <textarea
+              matInput
+              rows="2"
+              formControlName="returnPolicy"
+              placeholder="e.g. 7 days replacement for manufacturing defects."
+            ></textarea>
+          </mat-form-field>
+        </mat-card>
+
+        <!-- ---------- IMAGES ---------- -->
+        <mat-card class="section-card" *ngIf="activeSection === 'images'">
+          <div class="uplod-sectin h-365">
+            <h4>UPLOAD UP TO 10 PHOTOS</h4>
+            <div class="cards-cont">
+              <ul class="upld">
+                <li class="upload-card" *ngFor="let img of images">
+                  <div class="upload-card-brd">
+                    <div class="preview">
+                      <button
+                        class="delete-button"
+                        type="button"
+                        (click)="removeImage(img.localId)"
+                      >
+                        <span class="delete-icon">&#10006;</span>
+                      </button>
+                      <button
+                        class="primary-toggle"
+                        type="button"
+                        *ngIf="!img.isPrimary"
+                        (click)="setPrimaryImage(img.localId)"
+                        title="Set as primary"
+                      >
+                        <span class="material-icons-outlined"
+                          >star_outline</span
+                        >
+                      </button>
+                      <div class="first-image" *ngIf="img.isPrimary">
+                        <div class="cover-tag">Primary</div>
+                      </div>
+                      <img
+                        [src]="img.previewUrl"
+                        height="100px"
+                        width="100px"
+                        alt=""
+                      />
+                      <div class="uploading-overlay" *ngIf="img.uploading">
+                        <mat-progress-bar
+                          mode="indeterminate"
+                        ></mat-progress-bar>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+
+                <li class="upload-card" *ngIf="images.length < 10">
+                  <div class="upload-card-brd" (click)="selectFile()">
+                    <input
+                      type="file"
+                      id="productImageUpload"
+                      style="display: none"
+                      accept="image/*"
+                      multiple
+                      (change)="onImagesSelected($event)"
+                    />
+                    <div>
+                      <button class="camera" type="button">
+                        <span class="material-icons-outlined"
+                          >photo_camera</span
+                        >
+                      </button>
+                      <span class="add">Add photo</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </mat-card>
+
+        <p class="error-text" *ngIf="errorMessage">{{ errorMessage }}</p>
+      </form>
+    </div>
+  </div>
+
+  <ng-template #panelLoading>
+    <div class="edit-panel-loading">Loading product details…</div>
+  </ng-template>
+
+  <div class="edit-panel-footer" style="justify-content: flex-end">
+    <button mat-stroked-button (click)="dismiss()" [disabled]="saving">
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      class="save-button"
+      style="width: auto; min-width: 200px"
+      (click)="onSave()"
+      [disabled]="saving"
+    >
+      {{ saving ? "Saving..." : isEditMode ? "Save Changes" : "Add Product" }}
+    </button>
+  </div>
+</div>

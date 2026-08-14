@@ -130,8 +130,9 @@
           &middot; {{ business.businessType }}</span
         >
         <span *ngIf="business.establishedYear">
-          &middot; Est. {{ business.establishedYear }}</span
-        >
+          &middot; In business for
+          {{ getYearsInBusiness(business.establishedYear) }} years
+        </span>
       </p>
     </div>
 
@@ -172,6 +173,13 @@
     </span>
     <span
       class="tab-item"
+      [class.active]="activeTab === 'products'"
+      (click)="setTab('products')"
+    >
+      Products &amp; Services
+    </span>
+    <span
+      class="tab-item"
       [class.active]="activeTab === 'hours'"
       (click)="setTab('hours')"
     >
@@ -183,13 +191,6 @@
       (click)="setTab('gallery')"
     >
       Gallery
-    </span>
-    <span
-      class="tab-item"
-      [class.active]="activeTab === 'services'"
-      (click)="setTab('services')"
-    >
-      Services
     </span>
   </div>
 
@@ -384,6 +385,138 @@
     </div>
   </ng-container>
 
+  <!-- ---------- PRODUCTS & SERVICES ---------- -->
+  <div class="content-card products-card" *ngIf="activeTab === 'products'">
+    <div class="products-toolbar">
+      <div class="products-toolbar-left">
+        <h3>Products &amp; Services</h3>
+        <div class="filter-pills">
+          <button
+            class="filter-pill"
+            [class.active]="catalogFilter === 'all'"
+            (click)="setCatalogFilter('all')"
+          >
+            All
+          </button>
+          <button
+            class="filter-pill"
+            [class.active]="catalogFilter === 'products'"
+            (click)="setCatalogFilter('products')"
+          >
+            Products
+          </button>
+          <button
+            class="filter-pill"
+            [class.active]="catalogFilter === 'services'"
+            (click)="setCatalogFilter('services')"
+          >
+            Services
+          </button>
+        </div>
+      </div>
+
+      <div class="products-toolbar-right">
+        <div class="search-box">
+          <span class="material-icons-outlined">search</span>
+          <input
+            type="text"
+            placeholder="Search products & services"
+            [(ngModel)]="catalogSearch"
+          />
+        </div>
+
+        <ng-container *ngIf="isOwner">
+          <button class="btn-outline btn-sm" (click)="addProduct()">
+            <span class="material-icons-outlined">add</span> Add Product
+          </button>
+          <!-- <button class="btn-outline btn-sm" (click)="addService()">
+            <span class="material-icons-outlined">add</span> Add Service
+          </button> -->
+        </ng-container>
+      </div>
+    </div>
+
+    <div
+      class="catalog-grid"
+      *ngIf="filteredCatalogItems.length > 0; else noCatalogItems"
+    >
+      <div
+        class="catalog-card"
+        *ngFor="let item of filteredCatalogItems"
+        (click)="viewCatalogItem(item)"
+        tabindex="0"
+        (keyup.enter)="viewCatalogItem(item)"
+      >
+        <div class="catalog-card-image">
+          <img *ngIf="item.imageUrl" [src]="item.imageUrl" [alt]="item.name" />
+          <span
+            *ngIf="!item.imageUrl"
+            class="material-icons-outlined catalog-placeholder-icon"
+          >
+            {{ item.type === "service" ? "design_services" : "inventory_2" }}
+          </span>
+          <span
+            class="catalog-type-badge"
+            [class.badge-service]="item.type === 'service'"
+          >
+            {{ item.type === "service" ? "Service" : "Product" }}
+          </span>
+        </div>
+
+        <div class="catalog-card-body">
+          <p class="catalog-card-name">{{ item.name }}</p>
+          <p class="catalog-card-category" *ngIf="item.category">
+            {{ item.category }}
+          </p>
+          <p class="catalog-card-price">
+            <ng-container *ngIf="!item.priceOnRequest">
+              <span class="price-current"
+                >₹{{ discountedPrice(item) | number }}</span
+              >
+              <span class="price-original" *ngIf="item.discountPercentage">
+                ₹{{ item.price | number }}
+              </span>
+              <span class="price-unit" *ngIf="item.priceUnit">
+                / {{ item.priceUnit }}
+              </span>
+            </ng-container>
+            <ng-container *ngIf="item.priceOnRequest"
+              >Price on request</ng-container
+            >
+          </p>
+          <a
+            class="catalog-view-link"
+            (click)="viewCatalogItem(item); $event.stopPropagation()"
+          >
+            View Details
+            <span class="material-icons-outlined">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noCatalogItems>
+      <div class="empty-services">
+        <span class="material-icons-outlined empty-icon">storefront</span>
+        <p class="about-text">
+          {{
+            catalogSearch
+              ? "No results match your search."
+              : "No products or services listed yet."
+          }}
+        </p>
+        <button
+          class="btn-primary"
+          *ngIf="isOwner && !catalogSearch"
+          (click)="addProduct()"
+        >
+          <span class="material-icons-outlined">add</span> Add Your First
+          Product
+        </button>
+      </div>
+    </ng-template>
+  </div>
+
   <!-- ---------- WORKING HOURS ---------- -->
   <div class="content-card" *ngIf="activeTab === 'hours'">
     <h3>Working Hours</h3>
@@ -432,19 +565,20 @@
     </ng-template>
   </div>
 
-  <!-- ---------- SERVICES ---------- -->
-  <div class="content-card" *ngIf="activeTab === 'services'">
-    <h3>Services</h3>
-    <div class="empty-services">
-      <span class="material-icons-outlined empty-icon">design_services</span>
-      <p class="about-text">No services listed yet.</p>
-    </div>
-  </div>
-
   <app-business-edit-profile
     *ngIf="editPanelOpen"
     [tabRefGuid]="tabRefGuid"
     (close)="closeEditPanel()"
     (saved)="onProfileSaved()"
   ></app-business-edit-profile>
+
+  <app-add-business-product
+    *ngIf="addProductPanelOpen && business"
+    [businessId]="business.id"
+    [businessCategoryId]="business.businessCategoryId"
+    [businessSubCategoryId]="business.businessSubCategoryId"
+    [product]="editingProduct"
+    (close)="closeAddProductPanel()"
+    (saved)="onProductSaved()"
+  ></app-add-business-product>
 </div>

@@ -1,9 +1,25 @@
 import { Component, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BusinessService } from "../../service/business.service";
-import { BusinessListItem, BusinessViewDto } from "../../model/Business";
+import {
+  BusinessListItem,
+  BusinessViewDto,
+  BusinessProductDto,
+} from "../../model/Business";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { BusinessLoginComponent } from "../business-login/business-login.component";
+
+interface CatalogItem {
+  id: number;
+  type: "product" | "service";
+  name: string;
+  category?: string;
+  price: number;
+  discountPercentage: number;
+  priceOnRequest: boolean;
+  priceUnit: string;
+  imageUrl: string;
+}
 
 @Component({
   selector: "app-business-profile",
@@ -18,10 +34,16 @@ export class BusinessProfileComponent implements OnInit {
   businesses: BusinessListItem[] = [];
   business: BusinessViewDto | null = null;
 
-  activeTab: "overview" | "hours" | "gallery" | "services" = "overview";
+  activeTab: "overview" | "products" | "hours" | "gallery" = "overview";
   tabRefGuid: string = "";
 
   skeletonItems = [1, 2, 3, 4, 5, 6];
+
+  // Products & Services state
+  catalogFilter: "all" | "products" | "services" = "all";
+  catalogSearch: string = "";
+  catalogLoading: boolean = false;
+  private catalogItems: CatalogItem[] = [];
 
   private readonly avatarPalette: string[] = [
     "#0d475c",
@@ -50,6 +72,9 @@ export class BusinessProfileComponent implements OnInit {
 
   viewingAsPublic: boolean = false;
 
+  addProductPanelOpen: boolean = false;
+  editingProduct: BusinessProductDto | null = null;
+
   openLightbox(src?: string, caption?: string) {
     if (!src) return;
     this.lightboxSrc = src;
@@ -70,12 +95,18 @@ export class BusinessProfileComponent implements OnInit {
     }
   }
 
+  private rawProducts: BusinessProductDto[] = [];
+
   constructor(
     private businessService: BusinessService,
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog
   ) {}
+
+  getYearsInBusiness(establishedYear: number): number {
+    return Math.max(1, new Date().getFullYear() - establishedYear);
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -147,12 +178,13 @@ export class BusinessProfileComponent implements OnInit {
       (data) => {
         this.business = data;
         this.loading = false;
+        this.loadCatalogItems();
       },
       () => (this.loading = false)
     );
   }
 
-  setTab(tab: "overview" | "hours" | "gallery" | "services") {
+  setTab(tab: "overview" | "products" | "hours" | "gallery") {
     this.activeTab = tab;
   }
 
@@ -281,7 +313,7 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   deleteBusiness(item: BusinessListItem, event: Event) {
-    event.stopPropagation(); // 🚫 prevent card click
+    event.stopPropagation();
 
     const confirmDelete = confirm(
       `Are you sure you want to delete "${item.businessName}"?`
@@ -291,7 +323,6 @@ export class BusinessProfileComponent implements OnInit {
 
     this.businessService.deleteBusiness(Number(item.businessId)).subscribe(
       () => {
-        // remove from UI instantly
         this.businesses = this.businesses.filter(
           (b) => b.businessId !== item.businessId
         );
@@ -301,5 +332,104 @@ export class BusinessProfileComponent implements OnInit {
         alert("Failed to delete business");
       }
     );
+  }
+
+  // ---------- Products & Services ----------
+
+  loadCatalogItems(): void {
+    if (!this.business?.id) return;
+    this.catalogLoading = true;
+
+    this.businessService.getBusinessProducts(this.business.id).subscribe(
+      (products) => {
+        this.rawProducts = products || [];
+        this.catalogItems = this.rawProducts.map((p) =>
+          this.mapProductToCatalogItem(p)
+        );
+        this.catalogLoading = false;
+      },
+      () => {
+        this.catalogItems = [];
+        this.catalogLoading = false;
+      }
+    );
+  }
+
+  private mapProductToCatalogItem(p: BusinessProductDto): CatalogItem {
+    const primaryImage =
+      p.images?.find((img) => img.isPrimary) || p.images?.[0];
+
+    return {
+      id: p.id,
+      // The API only distinguishes products for now; flip this once a
+      // service flag/endpoint exists (e.g. based on a `type` field).
+      type: "product",
+      name: p.name,
+      category: "", // map productCategoryId -> name once a category lookup is available
+      price: p.price,
+      discountPercentage: p.discountPercentage || 0,
+      priceOnRequest: p.priceOnRequest === "Yes",
+      priceUnit: p.priceUnit || "",
+      imageUrl: primaryImage?.imageUrl || "",
+    };
+  }
+
+  setCatalogFilter(filter: "all" | "products" | "services") {
+    this.catalogFilter = filter;
+  }
+
+  get filteredCatalogItems(): CatalogItem[] {
+    const term = this.catalogSearch.trim().toLowerCase();
+
+    return this.catalogItems.filter((item) => {
+      const matchesFilter =
+        this.catalogFilter === "all" ||
+        (this.catalogFilter === "products" && item.type === "product") ||
+        (this.catalogFilter === "services" && item.type === "service");
+
+      const matchesSearch =
+        !term ||
+        item.name.toLowerCase().includes(term) ||
+        (item.category || "").toLowerCase().includes(term);
+
+      return matchesFilter && matchesSearch;
+    });
+  }
+
+  discountedPrice(item: CatalogItem): number {
+    if (!item.discountPercentage) return item.price;
+    return Math.round(
+      item.price - (item.price * item.discountPercentage) / 100
+    );
+  }
+
+  addProduct(): void {
+    this.editingProduct = null;
+    this.addProductPanelOpen = true;
+  }
+
+  addService(): void {
+    // TODO: open add/edit service panel once a services API exists
+  }
+
+  editProduct(item: CatalogItem): void {
+    // const found = this.rawProducts.find((p) => p.id === item.id) || null;
+    // this.editingProduct = found;
+    // this.addProductPanelOpen = true;
+  }
+
+  closeAddProductPanel(): void {
+    this.addProductPanelOpen = false;
+    this.editingProduct = null;
+  }
+
+  onProductSaved(): void {
+    this.closeAddProductPanel();
+    this.loadCatalogItems();
+  }
+
+  viewCatalogItem(item: CatalogItem): void {
+    // TODO: navigate to product/service detail, e.g.
+    // this.router.navigate(["/business/product", item.id]);
   }
 }
