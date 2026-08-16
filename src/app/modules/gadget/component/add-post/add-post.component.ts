@@ -1,5 +1,12 @@
 import { DOCUMENT } from "@angular/common";
-import { ChangeDetectorRef, Component, Inject, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Inject,
+  ViewChild,
+} from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "src/app/modules/user/service/user.service";
@@ -25,7 +32,9 @@ import { FormControl } from "@angular/forms";
     "../../../moduleaddpost.component.css",
   ],
 })
-export class AddPostComponent {
+export class AddPostComponent implements AfterViewInit {
+  @ViewChild("descriptionEditor")
+  descriptionEditorRef?: ElementRef<HTMLDivElement>;
   myControl = new FormControl({});
   filteredBrands!: Observable<{ id: number; brandName: string }[]>;
   cardsCount: any[] = new Array(10);
@@ -161,6 +170,45 @@ export class AddPostComponent {
         });
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.hydrateDescriptionEditor();
+  }
+
+  private hydrateDescriptionEditor(): void {
+    setTimeout(() => {
+      if (this.descriptionEditorRef) {
+        this.descriptionEditorRef.nativeElement.innerHTML = String(
+          this.commonPayload.discription || ""
+        );
+      }
+    });
+  }
+
+  exec(command: string, value: string = ""): void {
+    document.execCommand(command, false, value);
+    this.descriptionEditorRef?.nativeElement.focus();
+    if (this.descriptionEditorRef) {
+      this.onDescriptionInput(this.descriptionEditorRef.nativeElement);
+    }
+  }
+
+  insertLink(): void {
+    const url = window.prompt("Enter a URL");
+    if (url) {
+      this.exec("createLink", url);
+    }
+  }
+
+  onDescriptionInput(el: HTMLDivElement): void {
+    this.commonPayload.discription = el.innerHTML;
+  }
+
+  private stripHtml(html: string): string {
+    const tmp = this.document.createElement("div");
+    tmp.innerHTML = html || "";
+    return tmp.textContent || tmp.innerText || "";
   }
 
   getAIDetails() {

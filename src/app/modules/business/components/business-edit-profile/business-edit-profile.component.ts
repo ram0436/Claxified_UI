@@ -120,6 +120,8 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
     this.cardsCount = new Array(10).fill("");
     this.galleryIds = new Array(10).fill(0);
 
+    this.activeSection = "basic";
+
     this.loading = true;
     this.loadDropdownData(() => {
       if (this.tabRefGuid) {
@@ -131,10 +133,14 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * Generates time-of-day options in 30-minute increments
+   * (00:00, 00:30, 01:00, 01:30, ... 23:30).
+   */
   generateTimeOptions(): { value: string; label: string }[] {
     const options: { value: string; label: string }[] = [];
     for (let h = 0; h < 24; h++) {
-      for (let m = 0; m < 60; m += 15) {
+      for (let m = 0; m < 60; m += 30) {
         const hh = h.toString().padStart(2, "0");
         const mm = m.toString().padStart(2, "0");
         const value = `${hh}:${mm}:00`;
@@ -568,6 +574,103 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
     }
     this.cardsCount[this.cardsCount.length - 1] = "";
     this.galleryIds[this.galleryIds.length - 1] = 0;
+  }
+
+  // ---------- Working Hours: Apply first day's hours to every day ----------
+  applyToAllDays(source: BusinessWorkingHours): void {
+    this.business.businessWorkingHoursList.forEach((wh) => {
+      wh.isClosed = source.isClosed;
+      wh.openTime = source.openTime;
+      wh.closeTime = source.closeTime;
+    });
+    this.showNotification("Applied to all days");
+  }
+
+  // ---------- Section navigation (Save & Continue) ----------
+  get isLastSection(): boolean {
+    return (
+      this.sections.length > 0 &&
+      this.activeSection === this.sections[this.sections.length - 1].id
+    );
+  }
+
+  goToNextSection(): void {
+    const current = this.sections.find((s) => s.id === this.activeSection);
+
+    if (current?.required && !this.isSectionFilled(this.activeSection)) {
+      this.showNotification(`Please complete the ${current.label} section`);
+      return;
+    }
+
+    const idx = this.sections.findIndex((s) => s.id === this.activeSection);
+    if (idx > -1 && idx < this.sections.length - 1) {
+      this.setSection(this.sections[idx + 1].id);
+    }
+  }
+
+  goToPreviousSection(): void {
+    const idx = this.sections.findIndex((s) => s.id === this.activeSection);
+    if (idx > 0) {
+      this.setSection(this.sections[idx - 1].id);
+    }
+  }
+
+  // ---------- Tab completion status (used for the green tick / pending icon) ----------
+  isSectionFilled(id: SectionId): boolean {
+    switch (id) {
+      case "basic":
+        return !!(
+          this.business.businessName &&
+          this.business.businessName.trim().length > 0 &&
+          this.business.businessCategoryId &&
+          this.business.businessTypeId
+        );
+
+      case "about":
+        return (
+          this.stripHtml(this.business.description || "").trim().length > 0
+        );
+
+      case "contact":
+        return !!(
+          this.business.businessContact.contactPerson &&
+          this.business.businessContact.mobile &&
+          this.business.businessContact.email
+        );
+
+      case "address":
+        return !!(
+          this.business.businessAddress.pincode &&
+          this.business.businessAddress.address &&
+          this.business.businessAddress.city
+        );
+
+      case "social":
+        return !!(
+          this.business.businessSocialMedia.facebook ||
+          this.business.businessSocialMedia.instagram ||
+          this.business.businessSocialMedia.linkedIn ||
+          this.business.businessSocialMedia.youTube ||
+          this.business.businessSocialMedia.twitter
+        );
+
+      case "hours":
+        return (this.business.businessWorkingHoursList || []).some(
+          (wh) => !wh.isClosed
+        );
+
+      case "gallery":
+        return this.cardsCount.some((c) => c !== "");
+
+      default:
+        return false;
+    }
+  }
+
+  private stripHtml(html: string): string {
+    const tmp = this.document.createElement("div");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
   }
 
   // ---------- Save (always PUT / update) ----------

@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { of } from "rxjs";
 import { switchMap } from "rxjs/operators";
@@ -35,13 +44,15 @@ type SectionId = "basic" | "attributes" | "pricing" | "delivery" | "images";
   templateUrl: "./add-business-product.component.html",
   styleUrls: ["./add-business-product.component.css"],
 })
-export class AddBusinessProductComponent implements OnInit {
+export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   @Input() businessId!: number;
   @Input() businessCategoryId!: number;
   @Input() businessSubCategoryId!: number;
   @Input() product: BusinessProductDto | null = null;
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<void>();
+
+  @ViewChild("aboutEditor") aboutEditorRef?: ElementRef<HTMLDivElement>;
 
   form!: FormGroup;
   loading = false;
@@ -89,6 +100,7 @@ export class AddBusinessProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
+    this.activeSection = "basic";
 
     if (this.product) {
       this.patchFromProduct(this.product);
@@ -97,8 +109,50 @@ export class AddBusinessProductComponent implements OnInit {
     }
   }
 
+  ngAfterViewInit(): void {
+    // "About Product" lives on the default ("basic") section, so it's
+    // already in the DOM on first render — hydrate it once the view
+    // (and any synchronous form patch from ngOnInit) is ready.
+    this.hydrateAboutEditor();
+  }
+
   setSection(id: SectionId): void {
     this.activeSection = id;
+
+    // contenteditable divs are recreated by *ngIf, so re-hydrate content
+    // with the form value whenever the Basic Details tab (which hosts the
+    // About Product editor) is opened
+    if (id === "basic") {
+      this.hydrateAboutEditor();
+    }
+  }
+
+  private hydrateAboutEditor(): void {
+    setTimeout(() => {
+      if (this.aboutEditorRef) {
+        this.aboutEditorRef.nativeElement.innerHTML =
+          this.form.get("about")?.value || "";
+      }
+    });
+  }
+
+  exec(command: string, value: string = ""): void {
+    document.execCommand(command, false, value);
+    this.aboutEditorRef?.nativeElement.focus();
+    if (this.aboutEditorRef) {
+      this.onAboutInput(this.aboutEditorRef.nativeElement);
+    }
+  }
+
+  insertLink(): void {
+    const url = window.prompt("Enter a URL");
+    if (url) {
+      this.exec("createLink", url);
+    }
+  }
+
+  onAboutInput(el: HTMLDivElement): void {
+    this.form.get("about")?.setValue(el.innerHTML);
   }
 
   private defaultValue() {
@@ -179,7 +233,7 @@ export class AddBusinessProductComponent implements OnInit {
    */
   private resolveAttributesForSubCategory(
     subCategoryId: number,
-    presetValues?: Map<number, string>
+    presetValues?: Map<string, string>
   ): void {
     this.loadingAttributes = true;
     this.businessService
@@ -206,14 +260,13 @@ export class AddBusinessProductComponent implements OnInit {
 
   private setAttributeDefs(
     defs: ProductAttributeMasterDto[],
-    presetValues?: Map<number, string>
+    presetValues?: Map<string, string>
   ): void {
     this.attributeDefs = defs;
     this.attributesArray.clear();
 
     for (const def of defs) {
-      const existingValue =
-        presetValues?.get(def.productAttributeMasterId) || "";
+      const existingValue = presetValues?.get(def.name) || "";
       this.attributesArray.push(
         this.fb.group({
           id: [0],
@@ -359,8 +412,8 @@ export class AddBusinessProductComponent implements OnInit {
       uploading: false,
     }));
 
-    const presetValues = new Map<number, string>(
-      (p.attributes || []).map((a) => [a.productAttributeMasterId, a.value])
+    const presetValues = new Map<string, string>(
+      (p.attributes || []).map((a) => [a.name, a.value])
     );
 
     this.resolveAttributesForSubCategory(
@@ -368,6 +421,76 @@ export class AddBusinessProductComponent implements OnInit {
       presetValues
     );
     this.loading = false;
+    this.hydrateAboutEditor();
+  }
+
+  // ---------- Section navigation (Save & Continue) ----------
+
+  get isLastSection(): boolean {
+    return (
+      this.sections.length > 0 &&
+      this.activeSection === this.sections[this.sections.length - 1].id
+    );
+  }
+
+  goToNextSection(): void {
+    const current = this.sections.find((s) => s.id === this.activeSection);
+
+    if (current?.required && !this.isSectionFilled(this.activeSection)) {
+      this.errorMessage = `Please complete the ${current.label} section`;
+      return;
+    }
+
+    this.errorMessage = "";
+    const idx = this.sections.findIndex((s) => s.id === this.activeSection);
+    if (idx > -1 && idx < this.sections.length - 1) {
+      this.setSection(this.sections[idx + 1].id);
+    }
+  }
+
+  goToPreviousSection(): void {
+    const idx = this.sections.findIndex((s) => s.id === this.activeSection);
+    if (idx > 0) {
+      this.setSection(this.sections[idx - 1].id);
+    }
+  }
+
+  // ---------- Tab completion status (used for the green tick / pending icon) ----------
+
+  isSectionFilled(id: SectionId): boolean {
+    switch (id) {
+      case "basic":
+        return !!this.form.get("name")?.valid;
+
+      case "attributes":
+        return this.attributesArray.controls.some(
+          (c) => !!c.get("value")?.value
+        );
+
+      case "pricing": {
+        const priceOnRequest = this.form.get("priceOnRequest")?.value;
+        const priceCtrl = this.form.get("price");
+        return !!(
+          priceOnRequest ||
+          (priceCtrl?.valid &&
+            priceCtrl?.value !== null &&
+            priceCtrl?.value !== "")
+        );
+      }
+
+      case "delivery":
+        return !!(
+          this.form.get("deliveryAvailable")?.value ||
+          this.form.get("warrantyAvailable")?.value ||
+          this.form.get("returnPolicy")?.value
+        );
+
+      case "images":
+        return this.images.length > 0;
+
+      default:
+        return false;
+    }
   }
 
   // ---------- Save ----------

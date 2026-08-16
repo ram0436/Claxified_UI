@@ -313,6 +313,7 @@ mat-form-field {
 
 .time-field {
   width: 130px !important;
+  margin-bottom: -15px;
 }
 
 .time-sep {
@@ -806,6 +807,22 @@ mat-form-field {
 .confirm-delete-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.tab-status-icon {
+  margin-left: auto;
+  font-size: 18px;
+}
+.tab-status-icon.tab-complete {
+  color: #2e7d32 !important; /* green */
+}
+.tab-status-icon.tab-pending {
+  color: #f57c00 !important; /* amber/orange */
+}
+
+.apply-all-btn {
+  margin-left: 12px;
+  white-space: nowrap;
 }
 
 /* =========================================================

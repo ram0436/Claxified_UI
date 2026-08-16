@@ -19,6 +19,16 @@
         [class.active]="activeSection === s.id"
         (click)="setSection(s.id)"
       >
+        <span
+          class="material-icons-outlined tab-status-icon"
+          [class.tab-complete]="isSectionFilled(s.id)"
+          [class.tab-pending]="!isSectionFilled(s.id)"
+          [title]="
+            isSectionFilled(s.id) ? 'Section complete' : 'Details pending'
+          "
+        >
+          {{ isSectionFilled(s.id) ? "check_circle" : "error_outline" }}
+        </span>
         <span class="material-icons-outlined">{{ s.icon }}</span>
         <span class="edit-tab-label">{{ s.label }}</span>
         <span class="required-chip" *ngIf="s.required">Required</span>
@@ -52,14 +62,93 @@
           </mat-form-field>
 
           <label class="field-label">About Product</label>
-          <mat-form-field appearance="outline">
-            <textarea
-              matInput
-              rows="4"
-              formControlName="about"
-              placeholder="Detailed description"
-            ></textarea>
-          </mat-form-field>
+          <div class="rte-wrapper">
+            <div class="rte-toolbar">
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('bold')"
+                title="Bold"
+              >
+                <span class="material-icons-outlined">format_bold</span>
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('italic')"
+                title="Italic"
+              >
+                <span class="material-icons-outlined">format_italic</span>
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('underline')"
+                title="Underline"
+              >
+                <span class="material-icons-outlined">format_underlined</span>
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('strikeThrough')"
+                title="Strikethrough"
+              >
+                <span class="material-icons-outlined">strikethrough_s</span>
+              </button>
+
+              <span class="rte-divider"></span>
+
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('insertUnorderedList')"
+                title="Bullet list"
+              >
+                <span class="material-icons-outlined"
+                  >format_list_bulleted</span
+                >
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('insertOrderedList')"
+                title="Numbered list"
+              >
+                <span class="material-icons-outlined"
+                  >format_list_numbered</span
+                >
+              </button>
+
+              <span class="rte-divider"></span>
+
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="insertLink()"
+                title="Insert link"
+              >
+                <span class="material-icons-outlined">link</span>
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('removeFormat')"
+                title="Clear formatting"
+              >
+                <span class="material-icons-outlined">format_clear</span>
+              </button>
+            </div>
+
+            <div
+              #aboutEditor
+              class="rte-content"
+              contenteditable="true"
+              (input)="onAboutInput(aboutEditor)"
+              (blur)="onAboutInput(aboutEditor)"
+              data-placeholder="Detailed description"
+            ></div>
+          </div>
         </mat-card>
 
         <!-- ---------- ATTRIBUTES (dynamic, silently resolved) ---------- -->
@@ -360,11 +449,28 @@
     <button mat-stroked-button (click)="dismiss()" [disabled]="saving">
       Cancel
     </button>
+
+    <!-- Every section except the last one advances the wizard instead of
+         calling the API -->
+    <button
+      mat-raised-button
+      color="primary"
+      class="save-button"
+      type="button"
+      *ngIf="!isLastSection"
+      (click)="goToNextSection()"
+    >
+      Save &amp; Continue
+    </button>
+
+    <!-- Only the final section (Images) actually saves the product -->
     <button
       mat-raised-button
       color="primary"
       class="save-button"
       style="width: auto; min-width: 200px"
+      type="button"
+      *ngIf="isLastSection"
       (click)="onSave()"
       [disabled]="saving"
     >
