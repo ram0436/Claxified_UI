@@ -429,9 +429,9 @@
           <button class="btn-outline btn-sm" (click)="addProduct()">
             <span class="material-icons-outlined">add</span> Add Product
           </button>
-          <!-- <button class="btn-outline btn-sm" (click)="addService()">
+          <button class="btn-outline btn-sm" (click)="addService()">
             <span class="material-icons-outlined">add</span> Add Service
-          </button> -->
+          </button>
         </ng-container>
       </div>
     </div>
@@ -581,4 +581,11 @@
     (close)="closeAddProductPanel()"
     (saved)="onProductSaved()"
   ></app-add-business-product>
+
+  <app-business-product-quickview
+    *ngIf="quickViewOpen && quickViewProduct"
+    [product]="quickViewProduct"
+    (close)="closeQuickView()"
+    (viewFullDetails)="viewFullProductDetails()"
+  ></app-business-product-quickview>
 </div>

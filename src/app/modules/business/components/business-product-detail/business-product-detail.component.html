@@ -1,0 +1,201 @@
+<div class="pd-loading" *ngIf="loading">
+  <div class="pd-skeleton">
+    <div class="skeleton-block shimmer"></div>
+    <div class="skeleton-line shimmer w-60"></div>
+    <div class="skeleton-line shimmer w-40"></div>
+  </div>
+</div>
+
+<div class="pd-wrapper" *ngIf="!loading && product">
+  <button class="back-link" (click)="goBack()">
+    <span class="material-icons-outlined">arrow_back</span> Back
+  </button>
+
+  <div class="pd-layout">
+    <!-- ---------- LEFT: gallery + content ---------- -->
+    <div class="pd-main">
+      <div class="pd-gallery" *ngIf="sortedImages.length > 0">
+        <div class="pd-gallery-main-wrap">
+          <img
+            class="pd-gallery-main"
+            [src]="activeImage?.imageUrl"
+            [alt]="product.name"
+          />
+        </div>
+        <div class="pd-gallery-thumbs" *ngIf="sortedImages.length > 1">
+          <img
+            *ngFor="let img of sortedImages; let i = index"
+            [src]="img.imageUrl"
+            [class.active]="i === activeImageIndex"
+            (click)="setActiveImage(i)"
+            [alt]="product.name"
+          />
+        </div>
+      </div>
+
+      <!-- Mobile-only header (desktop header lives in the sidebar) -->
+      <div class="pd-mobile-header">
+        <h1>{{ product.name }}</h1>
+        <p class="pd-price">
+          <ng-container *ngIf="product.priceOnRequest === 'No'; else porTplM">
+            <span class="price-current">₹{{ discountedPrice | number }}</span>
+            <span class="price-original" *ngIf="product.discountPercentage"
+              >₹{{ product.price | number }}</span
+            >
+            <span class="price-unit" *ngIf="product.priceUnit"
+              >/ {{ product.priceUnit }}</span
+            >
+          </ng-container>
+          <ng-template #porTplM>Price on request</ng-template>
+        </p>
+      </div>
+
+      <div class="content-card">
+        <h3>About Product</h3>
+        <p
+          [innerHTML]="
+            product.about ||
+            product.shortDescription ||
+            'No description provided.'
+          "
+        ></p>
+      </div>
+
+      <div class="content-card" *ngIf="product.attributes?.length">
+        <h3>Specifications</h3>
+        <div class="attr-grid">
+          <div class="attr-row" *ngFor="let attr of product.attributes">
+            <span class="attr-label">{{ attr.name }}</span>
+            <span class="attr-value">{{ attr.value }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h3>Pricing &amp; Tax</h3>
+        <div class="attr-grid">
+          <div class="attr-row">
+            <span class="attr-label">GST</span>
+            <span class="attr-value">{{ product.gst }}%</span>
+          </div>
+          <div class="attr-row">
+            <span class="attr-label">Condition</span>
+            <span class="attr-value">{{ product.condition }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card" *ngIf="product.returnPolicy">
+        <h3>Return Policy</h3>
+        <p>{{ product.returnPolicy }}</p>
+      </div>
+
+      <div class="content-card" *ngIf="sortedImages.length > 1">
+        <h3>Image Gallery</h3>
+        <div class="pd-full-gallery">
+          <img
+            *ngFor="let img of sortedImages"
+            [src]="img.imageUrl"
+            [alt]="product.name"
+            (click)="setActiveImage(sortedImages.indexOf(img))"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- RIGHT: sticky summary ---------- -->
+    <aside class="pd-sidebar">
+      <div class="pd-summary-card">
+        <span
+          class="availability-chip"
+          [class.in-stock]="product.availabilityStatus === 'InStock'"
+        >
+          <span class="dot"></span>
+          {{
+            product.availabilityStatus === "InStock"
+              ? "In Stock"
+              : product.availabilityStatus
+          }}
+        </span>
+
+        <h1 class="pd-title">{{ product.name }}</h1>
+        <p class="pd-short-desc" *ngIf="product.shortDescription">
+          {{ product.shortDescription }}
+        </p>
+
+        <div class="pd-price-block">
+          <ng-container *ngIf="product.priceOnRequest === 'No'; else porTpl">
+            <span class="price-current">₹{{ discountedPrice | number }}</span>
+            <span class="price-unit" *ngIf="product.priceUnit"
+              >/ {{ product.priceUnit }}</span
+            >
+            <div class="price-savings" *ngIf="product.discountPercentage">
+              <span class="price-original">₹{{ product.price | number }}</span>
+              <span class="discount-badge"
+                >{{ product.discountPercentage }}% off</span
+              >
+            </div>
+          </ng-container>
+          <ng-template #porTpl
+            ><span class="price-current">Price on request</span></ng-template
+          >
+        </div>
+
+        <div class="pd-perks">
+          <div class="perk-row" *ngIf="product.deliveryAvailable === 'Yes'">
+            <span class="material-icons-outlined">local_shipping</span>
+            <div>
+              <p class="perk-title">Delivery available</p>
+              <p class="perk-sub">
+                {{
+                  product.freeShipping === "Yes"
+                    ? "Free shipping"
+                    : "₹" +
+                      (product.shippingCharges | number) +
+                      " shipping charge"
+                }}
+              </p>
+            </div>
+          </div>
+
+          <div class="perk-row" *ngIf="product.warrantyAvailable === 'Yes'">
+            <span class="material-icons-outlined">verified_user</span>
+            <div>
+              <p class="perk-title">
+                {{ product.warrantyDuration }}
+                {{ product.warrantyPeriodUnit }} warranty
+              </p>
+              <p class="perk-sub" *ngIf="product.warrantyDescription">
+                {{ product.warrantyDescription }}
+              </p>
+            </div>
+          </div>
+
+          <div class="perk-row" *ngIf="product.returnPolicy">
+            <span class="material-icons-outlined">replay</span>
+            <div>
+              <p class="perk-title">Returns</p>
+              <p class="perk-sub">{{ product.returnPolicy }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pd-sidebar-actions">
+          <button
+            class="btn-primary btn-block"
+            *ngIf="isOwner"
+            (click)="editProduct()"
+          >
+            <span class="material-icons-outlined">edit</span> Edit Product
+          </button>
+          <button class="btn-outline btn-block" (click)="onContactBusiness()">
+            <span class="material-icons-outlined">call</span> Contact Business
+          </button>
+          <button class="btn-outline btn-block" (click)="onShare()">
+            <span class="material-icons-outlined">share</span> Share
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

@@ -379,6 +379,92 @@ mat-form-field {
   min-height: 200px;
 }
 
+.tab-status-icon {
+  margin-left: auto;
+  font-size: 18px;
+}
+.tab-status-icon.tab-complete {
+  color: #2e7d32 !important; /* green */
+}
+.tab-status-icon.tab-pending {
+  color: #f57c00 !important; /* amber/orange */
+}
+
+.rte-wrapper {
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.rte-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background: #f9fafb;
+  border-bottom: 1px solid #d0d5dd;
+  flex-wrap: wrap;
+}
+
+.rte-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #344054;
+}
+
+.rte-btn:hover {
+  background: #eaecf0;
+}
+
+.rte-btn .material-icons-outlined {
+  font-size: 20px;
+}
+
+.rte-divider {
+  width: 1px;
+  height: 20px;
+  background: #d0d5dd;
+  margin: 0 4px;
+}
+
+.rte-content {
+  min-height: 150px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #101828;
+  outline: none;
+  background: #fff;
+}
+
+/* Placeholder text shown when the editor is empty */
+.rte-content:empty:before {
+  content: attr(data-placeholder);
+  color: #98a2b3;
+  pointer-events: none;
+}
+
+.rte-content ul,
+.rte-content ol {
+  padding-left: 24px;
+  margin: 8px 0;
+}
+
+.rte-content a {
+  color: #1570ef;
+  text-decoration: underline;
+}
+
 @media (max-width: 900px) {
   .edit-panel-drawer {
     width: 100vw;

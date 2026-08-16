@@ -1,5 +1,11 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, Inject, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  ViewChild,
+} from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -32,7 +38,9 @@ import { Filter } from "src/app/shared/model/Filter";
     "../../../moduleaddpost.component.css",
   ],
 })
-export class AddPostComponent {
+export class AddPostComponent implements AfterViewInit {
+  @ViewChild("descriptionEditor")
+  descriptionEditorRef?: ElementRef<HTMLDivElement>;
   brandControl = new FormControl("");
   modelControl = new FormControl("");
   filteredBrands!: Observable<{ id: number; brandName: string }[]>;
@@ -331,6 +339,45 @@ export class AddPostComponent {
         });
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.hydrateDescriptionEditor();
+  }
+
+  private hydrateDescriptionEditor(): void {
+    setTimeout(() => {
+      if (this.descriptionEditorRef) {
+        this.descriptionEditorRef.nativeElement.innerHTML = String(
+          this.commonPayload.discription || ""
+        );
+      }
+    });
+  }
+
+  exec(command: string, value: string = ""): void {
+    document.execCommand(command, false, value);
+    this.descriptionEditorRef?.nativeElement.focus();
+    if (this.descriptionEditorRef) {
+      this.onDescriptionInput(this.descriptionEditorRef.nativeElement);
+    }
+  }
+
+  insertLink(): void {
+    const url = window.prompt("Enter a URL");
+    if (url) {
+      this.exec("createLink", url);
+    }
+  }
+
+  onDescriptionInput(el: HTMLDivElement): void {
+    this.commonPayload.discription = el.innerHTML;
+  }
+
+  private stripHtml(html: string): string {
+    const tmp = this.document.createElement("div");
+    tmp.innerHTML = html || "";
+    return tmp.textContent || tmp.innerText || "";
   }
 
   getAIDetails() {

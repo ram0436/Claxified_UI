@@ -178,6 +178,7 @@ export interface BusinessGalleryDto {
 
 export interface BusinessViewDto {
   id: number;
+  userId: number;
   businessName: string;
   businessCategory: string;
   businessSubCategory: string;
@@ -342,6 +343,11 @@ export interface BusinessProductImageDto {
   sortOrder: number;
 }
 
+export interface BusinessProductAttributeViewDto {
+  name: string;
+  value: string;
+}
+
 export interface BusinessProductAttributeDto {
   id?: number;
   businessProductId?: number;
@@ -372,7 +378,7 @@ export interface BusinessProductDto {
   warrantyPeriodUnit: string; // e.g. "Month"
   warrantyDescription: string;
   returnPolicy: string;
-  attributes: BusinessProductAttributeDto[];
+  attributes: BusinessProductAttributeViewDto[];
   images: BusinessProductImageDto[];
 }
 

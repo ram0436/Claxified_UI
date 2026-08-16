@@ -75,6 +75,9 @@ export class BusinessProfileComponent implements OnInit {
   addProductPanelOpen: boolean = false;
   editingProduct: BusinessProductDto | null = null;
 
+  quickViewOpen: boolean = false;
+  quickViewProduct: BusinessProductDto | null = null;
+
   openLightbox(src?: string, caption?: string) {
     if (!src) return;
     this.lightboxSrc = src;
@@ -429,7 +432,24 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   viewCatalogItem(item: CatalogItem): void {
-    // TODO: navigate to product/service detail, e.g.
-    // this.router.navigate(["/business/product", item.id]);
+    const product = this.rawProducts.find((p) => p.id === item.id);
+    if (!product) return;
+    this.quickViewProduct = product;
+    this.quickViewOpen = true;
+  }
+
+  closeQuickView(): void {
+    this.quickViewOpen = false;
+    this.quickViewProduct = null;
+  }
+
+  viewFullProductDetails(): void {
+    if (!this.quickViewProduct) return;
+    const id = this.quickViewProduct.id;
+    const isOwner = this.isOwner;
+    this.closeQuickView();
+    this.router.navigate(["/business/product", id], {
+      state: { isOwner },
+    });
   }
 }

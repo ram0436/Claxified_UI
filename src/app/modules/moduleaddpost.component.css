@@ -443,6 +443,93 @@ button {
   white-space: nowrap;
 }
 
+.rte-wrapper {
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px 4px 0 0;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+  overflow: hidden;
+  margin-bottom: 16px;
+  transition: background-color 0.2s ease, border-bottom-color 0.2s ease;
+}
+
+.rte-wrapper:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.rte-wrapper:focus-within {
+  background: rgba(0, 0, 0, 0.06);
+  border-bottom: 2px solid #3f51b5;
+  margin-bottom: 15px;
+}
+
+.rte-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  flex-wrap: wrap;
+}
+
+.rte-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.rte-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.rte-btn .material-icons-outlined {
+  font-size: 20px;
+}
+
+.rte-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.12);
+  margin: 0 4px;
+}
+
+.rte-content {
+  min-height: 120px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 16px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.87);
+  outline: none;
+  background: transparent;
+}
+
+.rte-content:empty:before {
+  content: attr(data-placeholder);
+  color: rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.rte-content ul,
+.rte-content ol {
+  padding-left: 24px;
+  margin: 8px 0;
+}
+
+.rte-content a {
+  color: #1570ef;
+  text-decoration: underline;
+}
+
 @media (max-width: 1384px) {
   .cards-cont {
     max-width: 90%;

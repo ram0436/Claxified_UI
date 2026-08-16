@@ -28,6 +28,8 @@ import { BusinessDirectoriesComponent } from "./components/business-directories/
 import { MatMenuModule } from "@angular/material/menu";
 import { BusinessPageComponent } from "./components/business-page/business-page.component";
 import { AddBusinessProductComponent } from "./components/add-business-product/add-business-product.component";
+import { BusinessProductQuickviewComponent } from './components/business-product-quickview/business-product-quickview.component';
+import { BusinessProductDetailComponent } from './components/business-product-detail/business-product-detail.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import { AddBusinessProductComponent } from "./components/add-business-product/a
     BusinessDirectoriesComponent,
     BusinessPageComponent,
     AddBusinessProductComponent,
+    BusinessProductQuickviewComponent,
+    BusinessProductDetailComponent,
   ],
   imports: [
     CommonModule,

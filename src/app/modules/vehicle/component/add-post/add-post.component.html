@@ -156,16 +156,90 @@
           [(ngModel)]="commonPayload.title"
         />
       </mat-form-field>
-      <mat-form-field>
-        <mat-label>Description</mat-label>
-        <textarea
-          matInput
-          placeholder="Enter Description"
-          name="textareaInput"
-          [(ngModel)]="commonPayload.discription"
-          rows="3"
-        ></textarea>
-      </mat-form-field>
+      <label class="field-label">Description</label>
+      <div class="rte-wrapper">
+        <div class="rte-toolbar">
+          <button
+            type="button"
+            class="rte-btn"
+            (click)="exec('bold')"
+            title="Bold"
+          >
+            <span class="material-icons-outlined">format_bold</span>
+          </button>
+          <button
+            type="button"
+            class="rte-btn"
+            (click)="exec('italic')"
+            title="Italic"
+          >
+            <span class="material-icons-outlined">format_italic</span>
+          </button>
+          <button
+            type="button"
+            class="rte-btn"
+            (click)="exec('underline')"
+            title="Underline"
+          >
+            <span class="material-icons-outlined">format_underlined</span>
+          </button>
+          <button
+            type="button"
+            class="rte-btn"
+            (click)="exec('strikeThrough')"
+            title="Strikethrough"
+          >
+            <span class="material-icons-outlined">strikethrough_s</span>
+          </button>
+
+          <span class="rte-divider"></span>
+
+          <button
+            type="button"
+            class="rte-btn"
+            (click)="exec('insertUnorderedList')"
+            title="Bullet list"
+          >
+            <span class="material-icons-outlined">format_list_bulleted</span>
+          </button>
+          <button
+            type="button"
+            class="rte-btn"
+            (click)="exec('insertOrderedList')"
+            title="Numbered list"
+          >
+            <span class="material-icons-outlined">format_list_numbered</span>
+          </button>
+
+          <span class="rte-divider"></span>
+
+          <button
+            type="button"
+            class="rte-btn"
+            (click)="insertLink()"
+            title="Insert link"
+          >
+            <span class="material-icons-outlined">link</span>
+          </button>
+          <button
+            type="button"
+            class="rte-btn"
+            (click)="exec('removeFormat')"
+            title="Clear formatting"
+          >
+            <span class="material-icons-outlined">format_clear</span>
+          </button>
+        </div>
+
+        <div
+          #descriptionEditor
+          class="rte-content"
+          contenteditable="true"
+          (input)="onDescriptionInput(descriptionEditor)"
+          (blur)="onDescriptionInput(descriptionEditor)"
+          data-placeholder="Enter Description"
+        ></div>
+      </div>
     </div>
 
     <div class="price-section">

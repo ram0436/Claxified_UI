@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { Observable, Subject } from "rxjs";
+import { map, Observable, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
 import {
   BusinessDirectoryItem,
@@ -140,6 +140,12 @@ export class BusinessService {
     logoUrl: string
   ): void {
     this.businessUpdatedSource.next({ businessId, businessName, logoUrl });
+  }
+
+  getBusinessProductDetails(productId: number): Observable<BusinessProductDto> {
+    return this.http
+      .get<BusinessProductDto[]>(`${this.baseUrl}Business/product/${productId}`)
+      .pipe(map((res) => res[0]));
   }
 
   // ---------- Attribute resolution (internal, silent) ----------

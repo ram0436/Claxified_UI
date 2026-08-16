@@ -26,8 +26,19 @@
         [class.active]="activeSection === s.id"
         (click)="setSection(s.id)"
       >
+        <span
+          class="material-icons-outlined tab-status-icon"
+          [class.tab-complete]="isSectionFilled(s.id)"
+          [class.tab-pending]="!isSectionFilled(s.id)"
+          [title]="
+            isSectionFilled(s.id) ? 'Section complete' : 'Details pending'
+          "
+        >
+          {{ isSectionFilled(s.id) ? "check_circle" : "error_outline" }}
+        </span>
         <span class="material-icons-outlined">{{ s.icon }}</span>
         <span class="edit-tab-label">{{ s.label }}</span>
+
         <span class="required-chip" *ngIf="s.required">Required</span>
       </div>
     </nav>
@@ -476,7 +487,7 @@
         <h3 class="section-title">Working Hours</h3>
         <div
           class="working-hours-row"
-          *ngFor="let wh of business.businessWorkingHoursList"
+          *ngFor="let wh of business.businessWorkingHoursList; let i = index"
         >
           <span class="day-name">{{ dayNames[wh.dayOfWeek] }}</span>
           <mat-checkbox [(ngModel)]="wh.isClosed">Closed</mat-checkbox>
@@ -506,6 +517,16 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+
+          <button
+            mat-stroked-button
+            type="button"
+            class="apply-all-btn"
+            *ngIf="wh.dayOfWeek === 1"
+            (click)="applyToAllDays(wh)"
+          >
+            Apply to All
+          </button>
         </div>
       </mat-card>
 
@@ -589,10 +610,27 @@
     <button mat-stroked-button (click)="dismiss()" [disabled]="saving">
       Cancel
     </button>
+
+    <!-- Every section except the last one advances the wizard instead of
+         calling the API -->
     <button
       mat-raised-button
       color="primary"
       class="save-button"
+      type="button"
+      *ngIf="!isLastSection"
+      (click)="goToNextSection()"
+    >
+      Save &amp; Continue
+    </button>
+
+    <!-- Only the final section (Gallery) actually persists the profile -->
+    <button
+      mat-raised-button
+      color="primary"
+      class="save-button"
+      type="button"
+      *ngIf="isLastSection"
       (click)="saveBusinessProfile()"
       [disabled]="saving"
     >
