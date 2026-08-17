@@ -1,0 +1,220 @@
+<div class="pd-loading" *ngIf="loading">
+  <div class="pd-skeleton">
+    <div class="skeleton-block shimmer"></div>
+    <div class="skeleton-line shimmer w-60"></div>
+    <div class="skeleton-line shimmer w-40"></div>
+  </div>
+</div>
+
+<div class="pd-wrapper" *ngIf="!loading && service">
+  <button class="back-link" (click)="goBack()">
+    <span class="material-icons-outlined">arrow_back</span> Back
+  </button>
+
+  <div class="pd-layout">
+    <!-- ---------- LEFT: gallery + content ---------- -->
+    <div class="pd-main">
+      <div class="pd-gallery" *ngIf="sortedImages.length > 0">
+        <div class="pd-gallery-main-wrap">
+          <img
+            class="pd-gallery-main"
+            [src]="activeImage?.imageUrl"
+            [alt]="service.serviceName"
+          />
+        </div>
+        <div class="pd-gallery-thumbs" *ngIf="sortedImages.length > 1">
+          <img
+            *ngFor="let img of sortedImages; let i = index"
+            [src]="img.imageUrl"
+            [class.active]="i === activeImageIndex"
+            (click)="setActiveImage(i)"
+            [alt]="service.serviceName"
+          />
+        </div>
+      </div>
+
+      <!-- Mobile-only header (desktop header lives in the sidebar) -->
+      <div class="pd-mobile-header">
+        <h1>{{ service.serviceName }}</h1>
+        <p class="pd-price">
+          <ng-container *ngIf="!isPriceOnRequest; else porTplM">
+            <span class="price-current">{{ priceDisplay }}</span>
+            <span class="price-unit" *ngIf="service.pricingType">
+              {{ pricingTypeDisplay }}
+            </span>
+          </ng-container>
+          <ng-template #porTplM>Price on request</ng-template>
+        </p>
+      </div>
+
+      <!-- About Service -->
+      <div class="content-card">
+        <h3>About Service</h3>
+        <p
+          [innerHTML]="
+            service.about ||
+            service.shortDescription ||
+            'No description provided.'
+          "
+        ></p>
+      </div>
+
+      <!-- Attributes -->
+      <div class="content-card" *ngIf="service.attributes?.length">
+        <h3>Service Specifications</h3>
+        <div class="attr-grid">
+          <div class="attr-row" *ngFor="let attr of service.attributes">
+            <span class="attr-label">{{ attr.name }}</span>
+            <span class="attr-value">{{ attr.value }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service Details -->
+      <div class="content-card">
+        <h3>Service Details</h3>
+        <div class="attr-grid">
+          <div class="attr-row">
+            <span class="attr-label">Service Mode</span>
+            <span class="attr-value">{{ serviceModeDisplay }}</span>
+          </div>
+          <div class="attr-row" *ngIf="service.serviceArea">
+            <span class="attr-label">Service Area</span>
+            <span class="attr-value">{{ service.serviceArea }}</span>
+          </div>
+          <div class="attr-row" *ngIf="service.duration">
+            <span class="attr-label">Duration</span>
+            <span class="attr-value">{{ durationDisplay }}</span>
+          </div>
+          <div class="attr-row">
+            <span class="attr-label">Availability</span>
+            <span class="attr-value" [class.in-stock]="isAvailable">
+              {{ availabilityDisplay }}
+            </span>
+          </div>
+          <div class="attr-row">
+            <span class="attr-label">Booking Required</span>
+            <span class="attr-value">{{ bookingRequiredDisplay }}</span>
+          </div>
+          <div class="attr-row">
+            <span class="attr-label">GST</span>
+            <span class="attr-value">{{ gstIncludedDisplay }}</span>
+          </div>
+          <div class="attr-row">
+            <span class="attr-label">Status</span>
+            <span class="attr-value" [class.in-stock]="service.isActive">
+              {{ service.isActive ? "Active" : "Inactive" }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Gallery -->
+      <div class="content-card" *ngIf="sortedImages.length > 1">
+        <h3>Image Gallery</h3>
+        <div class="pd-full-gallery">
+          <img
+            *ngFor="let img of sortedImages"
+            [src]="img.imageUrl"
+            [alt]="service.serviceName"
+            (click)="setActiveImage(sortedImages.indexOf(img))"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- RIGHT: sticky summary ---------- -->
+    <aside class="pd-sidebar">
+      <div class="pd-summary-card">
+        <span class="availability-chip" [class.in-stock]="isAvailable">
+          <span class="dot"></span>
+          {{ availabilityDisplay }}
+        </span>
+
+        <h1 class="pd-title">{{ service.serviceName }}</h1>
+        <p class="pd-short-desc" *ngIf="service.shortDescription">
+          {{ service.shortDescription }}
+        </p>
+
+        <div class="pd-price-block">
+          <ng-container *ngIf="!isPriceOnRequest; else porTpl">
+            <span class="price-current">{{ priceDisplay }}</span>
+            <span class="price-unit" *ngIf="service.pricingType">
+              {{ pricingTypeDisplay }}
+            </span>
+          </ng-container>
+          <ng-template #porTpl>
+            <span class="price-current">Price on request</span>
+          </ng-template>
+        </div>
+
+        <div class="pd-perks">
+          <div class="perk-row" *ngIf="service.serviceMode">
+            <span class="material-icons-outlined">location_on</span>
+            <div>
+              <p class="perk-title">Service Mode</p>
+              <p class="perk-sub">{{ serviceModeDisplay }}</p>
+            </div>
+          </div>
+
+          <div class="perk-row" *ngIf="service.duration">
+            <span class="material-icons-outlined">schedule</span>
+            <div>
+              <p class="perk-title">Duration</p>
+              <p class="perk-sub">{{ durationDisplay }}</p>
+            </div>
+          </div>
+
+          <div class="perk-row" *ngIf="service.serviceArea">
+            <span class="material-icons-outlined">place</span>
+            <div>
+              <p class="perk-title">Service Area</p>
+              <p class="perk-sub">{{ service.serviceArea }}</p>
+            </div>
+          </div>
+
+          <div class="perk-row" *ngIf="service.isBookingRequired === 'Yes'">
+            <span class="material-icons-outlined">event_available</span>
+            <div>
+              <p class="perk-title">Booking Required</p>
+              <p class="perk-sub">
+                Advance booking is required for this service
+              </p>
+            </div>
+          </div>
+
+          <div class="perk-row">
+            <span class="material-icons-outlined">gpp_good</span>
+            <div>
+              <p class="perk-title">GST</p>
+              <p class="perk-sub">{{ gstIncludedDisplay }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pd-sidebar-actions">
+          <button
+            class="btn-primary btn-block"
+            *ngIf="isOwner"
+            (click)="editService()"
+          >
+            <span class="material-icons-outlined">edit</span> Edit Service
+          </button>
+          <button class="btn-outline btn-block" (click)="onContactBusiness()">
+            <span class="material-icons-outlined">call</span> Contact Business
+          </button>
+          <button class="btn-outline btn-block" (click)="onShare()">
+            <span class="material-icons-outlined">share</span> Share
+          </button>
+          <button
+            class="btn-primary btn-block"
+            *ngIf="service.isBookingRequired === 'Yes' && isAvailable"
+            (click)="onBookService()"
+          >
+            <span class="material-icons-outlined">event</span> Book Now
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

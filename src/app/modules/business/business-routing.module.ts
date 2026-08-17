@@ -10,6 +10,7 @@ import { BusinessProfileComponent } from "./components/business-profile/business
 import { BusinessDirectoriesComponent } from "./components/business-directories/business-directories.component";
 import { BusinessPageComponent } from "./components/business-page/business-page.component";
 import { BusinessProductDetailComponent } from "./components/business-product-detail/business-product-detail.component";
+import { BusinessServiceDetailComponent } from "./components/business-service-detail/business-service-detail.component";
 
 const routes: Routes = [
   {
@@ -17,7 +18,6 @@ const routes: Routes = [
     component: BusinessLayoutComponent,
     children: [
       { path: "", component: BusinessLandingComponent },
-      // { path: "register", component: BusinessRegisterComponent },
       { path: "directories", component: BusinessDirectoriesComponent },
       { path: "profile", component: BusinessProfileComponent },
       { path: "profile/edit", component: BusinessEditProfileComponent },
@@ -25,6 +25,10 @@ const routes: Routes = [
       {
         path: "product/:productId",
         component: BusinessProductDetailComponent,
+      },
+      {
+        path: "service/:serviceId",
+        component: BusinessServiceDetailComponent,
       },
       { path: "page/:slug", component: BusinessPageComponent },
 

@@ -11,6 +11,13 @@ import {
   ProductSubCategoryDto,
   ProductAttributeMasterDto,
   BusinessProductDto,
+  BusinessOffer,
+  BusinessOfferDto,
+  BusinessReview,
+  BusinessReviewDto,
+  BusinessServicePayload,
+  BusinessServiceDto,
+  ServiceAttributeMasterDto,
 } from "../model/Business";
 
 @Injectable({
@@ -168,6 +175,79 @@ export class BusinessService {
 
     return this.http.get<ProductAttributeMasterDto[]>(
       `${this.baseUrl}Business/product-attributes`,
+      { params }
+    );
+  }
+
+  // ---------- Offers ----------
+
+  getBusinessOffers(businessId: number): Observable<BusinessOfferDto[]> {
+    return this.http.get<BusinessOfferDto[]>(
+      `${this.baseUrl}Business/offers?businessId=${businessId}`
+    );
+  }
+
+  saveOffer(payload: BusinessOffer) {
+    return this.http.post(`${this.baseUrl}Business/offer`, payload);
+  }
+
+  // ---------- Reviews ----------
+
+  getBusinessReviews(businessId: number): Observable<BusinessReviewDto[]> {
+    return this.http.get<BusinessReviewDto[]>(
+      `${this.baseUrl}Business/reviews?businessId=${businessId}`
+    );
+  }
+
+  saveReview(payload: BusinessReview) {
+    return this.http.post(`${this.baseUrl}Business/review`, payload);
+  }
+
+  // ---------- Services ----------
+
+  getBusinessServices(businessId: number): Observable<BusinessServiceDto[]> {
+    return this.http.get<BusinessServiceDto[]>(
+      `${this.baseUrl}Business/services?businessId=${businessId}`
+    );
+  }
+
+  getBusinessServiceDetails(serviceId: number): Observable<BusinessServiceDto> {
+    return this.http
+      .get<BusinessServiceDto[]>(
+        `${this.baseUrl}Business/services/${serviceId}`
+      )
+      .pipe(map((res) => res[0]));
+  }
+
+  saveService(payload: BusinessServicePayload) {
+    return this.http.post(`${this.baseUrl}Business/service`, payload);
+  }
+
+  uploadServiceImages(formData: FormData): Observable<string[]> {
+    return this.http.post<string[]>(
+      `${this.baseUrl}Business/UploadServiceImages`,
+      formData
+    );
+  }
+
+  getServiceAttributeMasterIds(
+    serviceSubCategoryId: number
+  ): Observable<number[]> {
+    return this.http.get<number[]>(
+      `${this.baseUrl}Business/services-attributes-masterid?serviceSubCategoryId=${serviceSubCategoryId}`
+    );
+  }
+
+  getServiceAttributes(
+    masterIds: number[]
+  ): Observable<ServiceAttributeMasterDto[]> {
+    let params = new HttpParams();
+    masterIds.forEach((id) => {
+      params = params.append("serviceAttributeMasterIds", id.toString());
+    });
+
+    return this.http.get<ServiceAttributeMasterDto[]>(
+      `${this.baseUrl}Business/service-attributes`,
       { params }
     );
   }
