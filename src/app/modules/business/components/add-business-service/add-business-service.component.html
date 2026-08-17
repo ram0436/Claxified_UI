@@ -1,0 +1,448 @@
+<div class="edit-panel-backdrop" (click)="dismiss()"></div>
+
+<div class="edit-panel-drawer">
+  <div class="edit-panel-header">
+    <button class="icon-btn" (click)="dismiss()">
+      <span class="material-icons-outlined">arrow_back</span>
+    </button>
+    <h2 class="page-title">
+      {{ isEditMode ? "Edit Service" : "Add Service" }}
+    </h2>
+  </div>
+
+  <div class="edit-panel-body" *ngIf="!loading; else panelLoading">
+    <!-- LEFT: section nav -->
+    <nav class="edit-tabs-nav">
+      <div
+        class="edit-tab-item"
+        *ngFor="let s of sections"
+        [class.active]="activeSection === s.id"
+        (click)="setSection(s.id)"
+      >
+        <span
+          class="material-icons-outlined tab-status-icon"
+          [class.tab-complete]="isSectionFilled(s.id)"
+          [class.tab-pending]="!isSectionFilled(s.id)"
+          [title]="
+            isSectionFilled(s.id) ? 'Section complete' : 'Details pending'
+          "
+        >
+          {{ isSectionFilled(s.id) ? "check_circle" : "error_outline" }}
+        </span>
+        <span class="material-icons-outlined">{{ s.icon }}</span>
+        <span class="edit-tab-label">{{ s.label }}</span>
+        <span class="required-chip" *ngIf="s.required">Required</span>
+      </div>
+    </nav>
+
+    <!-- RIGHT: active section content -->
+    <div class="edit-tabs-content">
+      <form [formGroup]="form">
+        <!-- ---------- BASIC DETAILS ---------- -->
+        <mat-card class="section-card" *ngIf="activeSection === 'basic'">
+          <h3 class="section-title">Basic Details</h3>
+
+          <label class="field-label">Service Name</label>
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              formControlName="serviceName"
+              placeholder="e.g. Home Deep Cleaning"
+            />
+          </mat-form-field>
+
+          <label class="field-label">Short Description</label>
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              formControlName="shortDescription"
+              maxlength="250"
+              placeholder="One line summary"
+            />
+          </mat-form-field>
+
+          <label class="field-label">About Service</label>
+          <div class="rte-wrapper">
+            <div class="rte-toolbar">
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('bold')"
+                title="Bold"
+              >
+                <span class="material-icons-outlined">format_bold</span>
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('italic')"
+                title="Italic"
+              >
+                <span class="material-icons-outlined">format_italic</span>
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('underline')"
+                title="Underline"
+              >
+                <span class="material-icons-outlined">format_underlined</span>
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('strikeThrough')"
+                title="Strikethrough"
+              >
+                <span class="material-icons-outlined">strikethrough_s</span>
+              </button>
+
+              <span class="rte-divider"></span>
+
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('insertUnorderedList')"
+                title="Bullet list"
+              >
+                <span class="material-icons-outlined"
+                  >format_list_bulleted</span
+                >
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('insertOrderedList')"
+                title="Numbered list"
+              >
+                <span class="material-icons-outlined"
+                  >format_list_numbered</span
+                >
+              </button>
+
+              <span class="rte-divider"></span>
+
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="insertLink()"
+                title="Insert link"
+              >
+                <span class="material-icons-outlined">link</span>
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('removeFormat')"
+                title="Clear formatting"
+              >
+                <span class="material-icons-outlined">format_clear</span>
+              </button>
+            </div>
+
+            <div
+              #aboutEditor
+              class="rte-content"
+              contenteditable="true"
+              (input)="onAboutInput(aboutEditor)"
+              (blur)="onAboutInput(aboutEditor)"
+              data-placeholder="Detailed description"
+            ></div>
+          </div>
+        </mat-card>
+
+        <!-- ---------- ATTRIBUTES (dynamic, silently resolved) ---------- -->
+        <mat-card class="section-card" *ngIf="activeSection === 'attributes'">
+          <h3 class="section-title">Attributes</h3>
+
+          <div *ngIf="loadingAttributes" class="attr-loading">
+            Loading attributes…
+          </div>
+
+          <div
+            *ngIf="!loadingAttributes && attributeDefs.length === 0"
+            class="attr-empty"
+          >
+            No Attributes Available
+          </div>
+
+          <div formArrayName="attributes" *ngIf="!loadingAttributes">
+            <div
+              class="field-row"
+              *ngFor="let attr of attributesArray.controls; let i = index"
+              [formGroupName]="i"
+            >
+              <div class="field-half full-width">
+                <label class="field-label">
+                  {{ attributeDefs[i].name }}
+                  <span *ngIf="attributeDefs[i]?.unit">
+                    ({{ attributeDefs[i].unit }})</span
+                  >
+                </label>
+                <mat-form-field appearance="outline">
+                  <input
+                    matInput
+                    formControlName="value"
+                    [type]="
+                      attributeDefs[i].dataType === 'number' ? 'number' : 'text'
+                    "
+                  />
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- ---------- PRICING ---------- -->
+        <mat-card class="section-card" *ngIf="activeSection === 'pricing'">
+          <h3 class="section-title">Pricing</h3>
+
+          <div class="field-row">
+            <div class="field-half">
+              <label class="field-label">Pricing Type</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="pricingType">
+                  <mat-option
+                    *ngFor="let o of pricingTypeOptions"
+                    [value]="o.value"
+                  >
+                    {{ o.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="field-half checkbox-align">
+              <mat-checkbox formControlName="gstIncluded"
+                >GST Included</mat-checkbox
+              >
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-half">
+              <label class="field-label">
+                {{
+                  form.get("pricingType")?.value === 2
+                    ? "Starting Price (₹)"
+                    : "Minimum Price (₹)"
+                }}
+              </label>
+              <mat-form-field appearance="outline">
+                <input
+                  matInput
+                  type="number"
+                  formControlName="minimumPrice"
+                  min="0"
+                />
+              </mat-form-field>
+            </div>
+            <div
+              class="field-half"
+              *ngIf="form.get('pricingType')?.value === 3"
+            >
+              <label class="field-label">Maximum Price (₹)</label>
+              <mat-form-field appearance="outline">
+                <input
+                  matInput
+                  type="number"
+                  formControlName="maximumPrice"
+                  min="0"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- ---------- SERVICE DETAILS ---------- -->
+        <mat-card class="section-card" *ngIf="activeSection === 'details'">
+          <h3 class="section-title">Service Details</h3>
+
+          <div class="field-row">
+            <div class="field-half">
+              <label class="field-label">Service Mode</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="serviceMode">
+                  <mat-option
+                    *ngFor="let o of serviceModeOptions"
+                    [value]="o.value"
+                  >
+                    {{ o.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="field-half">
+              <label class="field-label">Availability</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="availability">
+                  <mat-option
+                    *ngFor="let o of availabilityOptions"
+                    [value]="o.value"
+                  >
+                    {{ o.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <label class="field-label">Service Area</label>
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              formControlName="serviceArea"
+              placeholder="e.g. Within 10km of the business location"
+            />
+          </mat-form-field>
+
+          <div class="field-row">
+            <div class="field-half">
+              <label class="field-label">Duration</label>
+              <mat-form-field appearance="outline">
+                <input
+                  matInput
+                  type="number"
+                  formControlName="duration"
+                  min="0"
+                />
+              </mat-form-field>
+            </div>
+            <div class="field-half">
+              <label class="field-label">Duration Unit</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="durationUnit">
+                  <mat-option
+                    *ngFor="let o of durationUnitOptions"
+                    [value]="o.value"
+                  >
+                    {{ o.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="field-row" style="margin-top: 8px">
+            <div class="field-half checkbox-align">
+              <mat-checkbox formControlName="isBookingRequired"
+                >Booking Required</mat-checkbox
+              >
+            </div>
+            <div class="field-half checkbox-align">
+              <mat-checkbox formControlName="isActive">Active</mat-checkbox>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- ---------- IMAGES ---------- -->
+        <mat-card class="section-card" *ngIf="activeSection === 'images'">
+          <div class="uplod-sectin h-365">
+            <h4>UPLOAD UP TO 10 PHOTOS</h4>
+            <div class="cards-cont">
+              <ul class="upld">
+                <li class="upload-card" *ngFor="let img of images">
+                  <div class="upload-card-brd">
+                    <div class="preview">
+                      <button
+                        class="delete-button"
+                        type="button"
+                        (click)="removeImage(img.localId)"
+                      >
+                        <span class="delete-icon">&#10006;</span>
+                      </button>
+                      <button
+                        class="primary-toggle"
+                        type="button"
+                        *ngIf="!img.isPrimary"
+                        (click)="setPrimaryImage(img.localId)"
+                        title="Set as primary"
+                      >
+                        <span class="material-icons-outlined"
+                          >star_outline</span
+                        >
+                      </button>
+                      <div class="first-image" *ngIf="img.isPrimary">
+                        <div class="cover-tag">Primary</div>
+                      </div>
+                      <img
+                        [src]="img.previewUrl"
+                        height="100px"
+                        width="100px"
+                        alt=""
+                      />
+                      <div class="uploading-overlay" *ngIf="img.uploading">
+                        <mat-progress-bar
+                          mode="indeterminate"
+                        ></mat-progress-bar>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+
+                <li class="upload-card" *ngIf="images.length < 10">
+                  <div class="upload-card-brd" (click)="selectFile()">
+                    <input
+                      type="file"
+                      id="serviceImageUpload"
+                      style="display: none"
+                      accept="image/*"
+                      multiple
+                      (change)="onImagesSelected($event)"
+                    />
+                    <div>
+                      <button class="camera" type="button">
+                        <span class="material-icons-outlined"
+                          >photo_camera</span
+                        >
+                      </button>
+                      <span class="add">Add photo</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </mat-card>
+
+        <p class="error-text" *ngIf="errorMessage">{{ errorMessage }}</p>
+      </form>
+    </div>
+  </div>
+
+  <ng-template #panelLoading>
+    <div class="edit-panel-loading">Loading service details…</div>
+  </ng-template>
+
+  <div class="edit-panel-footer" style="justify-content: flex-end">
+    <button mat-stroked-button (click)="dismiss()" [disabled]="saving">
+      Cancel
+    </button>
+
+    <!-- Every section except the last one advances the wizard instead of
+         calling the API -->
+    <button
+      mat-raised-button
+      color="primary"
+      class="save-button"
+      type="button"
+      *ngIf="!isLastSection"
+      (click)="goToNextSection()"
+    >
+      Save &amp; Continue
+    </button>
+
+    <!-- Only the final section (Images) actually saves the service -->
+    <button
+      mat-raised-button
+      color="primary"
+      class="save-button"
+      style="width: auto; min-width: 200px"
+      type="button"
+      *ngIf="isLastSection"
+      (click)="onSave()"
+      [disabled]="saving"
+    >
+      {{ saving ? "Saving..." : isEditMode ? "Save Changes" : "Add Service" }}
+    </button>
+  </div>
+</div>

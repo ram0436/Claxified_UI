@@ -5,9 +5,11 @@ import {
   BusinessListItem,
   BusinessViewDto,
   BusinessProductDto,
+  BusinessServiceDto,
 } from "../../model/Business";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { BusinessLoginComponent } from "../business-login/business-login.component";
+import { forkJoin } from "rxjs";
 
 interface CatalogItem {
   id: number;
@@ -19,6 +21,11 @@ interface CatalogItem {
   priceOnRequest: boolean;
   priceUnit: string;
   imageUrl: string;
+  // Additional fields for services
+  minimumPrice?: number;
+  maximumPrice?: number;
+  pricingType?: string;
+  pricingTypeDisplay?: string; // Added this property
 }
 
 @Component({
@@ -75,8 +82,38 @@ export class BusinessProfileComponent implements OnInit {
   addProductPanelOpen: boolean = false;
   editingProduct: BusinessProductDto | null = null;
 
+  addServicePanelOpen: boolean = false;
+  editingService: BusinessServiceDto | null = null;
+
   quickViewOpen: boolean = false;
   quickViewProduct: BusinessProductDto | null = null;
+
+  // Store raw data for both products and services
+  private rawProducts: BusinessProductDto[] = [];
+  private rawServices: BusinessServiceDto[] = [];
+
+  // Service quick view
+  quickViewServiceOpen: boolean = false;
+  quickViewService: BusinessServiceDto | null = null;
+
+  // Pricing type display mapping
+  private readonly pricingTypeDisplayMap: { [key: string]: string } = {
+    FixedPrice: "Fixed Price",
+    StartingFrom: "Starting From",
+    PriceRange: "Price Range",
+    Hourly: "Hourly",
+    Daily: "Daily",
+    CustomQuote: "Custom Quote",
+  };
+
+  private readonly priceUnitMap: { [key: string]: string } = {
+    FixedPrice: "",
+    StartingFrom: "Starting",
+    PriceRange: "Range",
+    Hourly: "/hr",
+    Daily: "/day",
+    CustomQuote: "Quote",
+  };
 
   openLightbox(src?: string, caption?: string) {
     if (!src) return;
@@ -97,8 +134,6 @@ export class BusinessProfileComponent implements OnInit {
       this.closeLightbox();
     }
   }
-
-  private rawProducts: BusinessProductDto[] = [];
 
   constructor(
     private businessService: BusinessService,
@@ -342,16 +377,40 @@ export class BusinessProfileComponent implements OnInit {
   loadCatalogItems(): void {
     if (!this.business?.id) return;
     this.catalogLoading = true;
+    this.catalogItems = [];
 
-    this.businessService.getBusinessProducts(this.business.id).subscribe(
-      (products) => {
-        this.rawProducts = products || [];
-        this.catalogItems = this.rawProducts.map((p) =>
+    // Load products and services in parallel
+    const products$ = this.businessService.getBusinessProducts(
+      this.business.id
+    );
+    const services$ = this.businessService.getBusinessServices(
+      this.business.id
+    );
+
+    forkJoin({
+      products: products$,
+      services: services$,
+    }).subscribe(
+      (result) => {
+        this.rawProducts = result.products || [];
+        this.rawServices = result.services || [];
+
+        // Map products to catalog items
+        const productItems = this.rawProducts.map((p) =>
           this.mapProductToCatalogItem(p)
         );
+
+        // Map services to catalog items
+        const serviceItems = this.rawServices.map((s) =>
+          this.mapServiceToCatalogItem(s)
+        );
+
+        // Combine both
+        this.catalogItems = [...productItems, ...serviceItems];
         this.catalogLoading = false;
       },
-      () => {
+      (error) => {
+        console.error("Error loading catalog items:", error);
         this.catalogItems = [];
         this.catalogLoading = false;
       }
@@ -364,17 +423,45 @@ export class BusinessProfileComponent implements OnInit {
 
     return {
       id: p.id,
-      // The API only distinguishes products for now; flip this once a
-      // service flag/endpoint exists (e.g. based on a `type` field).
       type: "product",
       name: p.name,
-      category: "", // map productCategoryId -> name once a category lookup is available
+      category: "",
       price: p.price,
       discountPercentage: p.discountPercentage || 0,
       priceOnRequest: p.priceOnRequest === "Yes",
       priceUnit: p.priceUnit || "",
       imageUrl: primaryImage?.imageUrl || "",
     };
+  }
+
+  private mapServiceToCatalogItem(s: BusinessServiceDto): CatalogItem {
+    const primaryImage =
+      s.images?.find((img) => img.isPrimary) || s.images?.[0];
+
+    const displayPrice = s.minimumPrice || 0;
+
+    const priceOnRequest = s.pricingType === "CustomQuote" || false;
+
+    return {
+      id: s.id,
+      type: "service",
+      name: s.serviceName,
+      category: "",
+      price: displayPrice,
+      discountPercentage: 0,
+      priceOnRequest: priceOnRequest,
+      priceUnit: this.getServicePriceUnit(s.pricingType),
+      imageUrl: primaryImage?.imageUrl || "",
+      minimumPrice: s.minimumPrice,
+      maximumPrice: s.maximumPrice,
+      pricingType: s.pricingType,
+      pricingTypeDisplay:
+        this.pricingTypeDisplayMap[s.pricingType] || s.pricingType,
+    };
+  }
+
+  private getServicePriceUnit(pricingType: string): string {
+    return this.priceUnitMap[pricingType] || "";
   }
 
   setCatalogFilter(filter: "all" | "products" | "services") {
@@ -412,18 +499,20 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   addService(): void {
-    // TODO: open add/edit service panel once a services API exists
+    this.editingService = null;
+    this.addServicePanelOpen = true;
   }
 
-  editProduct(item: CatalogItem): void {
-    // const found = this.rawProducts.find((p) => p.id === item.id) || null;
-    // this.editingProduct = found;
-    // this.addProductPanelOpen = true;
-  }
+  editProduct(item: CatalogItem): void {}
 
   closeAddProductPanel(): void {
     this.addProductPanelOpen = false;
     this.editingProduct = null;
+  }
+
+  closeAddServicePanel(): void {
+    this.addServicePanelOpen = false;
+    this.editingService = null;
   }
 
   onProductSaved(): void {
@@ -431,16 +520,35 @@ export class BusinessProfileComponent implements OnInit {
     this.loadCatalogItems();
   }
 
+  onServiceSaved(): void {
+    this.closeAddServicePanel();
+    this.loadCatalogItems();
+  }
+
   viewCatalogItem(item: CatalogItem): void {
-    const product = this.rawProducts.find((p) => p.id === item.id);
-    if (!product) return;
-    this.quickViewProduct = product;
-    this.quickViewOpen = true;
+    if (item.type === "product") {
+      const product = this.rawProducts.find((p) => p.id === item.id);
+      if (product) {
+        this.quickViewProduct = product;
+        this.quickViewOpen = true;
+      }
+    } else {
+      const service = this.rawServices.find((s) => s.id === item.id);
+      if (service) {
+        this.quickViewService = service;
+        this.quickViewServiceOpen = true;
+      }
+    }
   }
 
   closeQuickView(): void {
     this.quickViewOpen = false;
     this.quickViewProduct = null;
+  }
+
+  closeServiceQuickView(): void {
+    this.quickViewServiceOpen = false;
+    this.quickViewService = null;
   }
 
   viewFullProductDetails(): void {
@@ -449,6 +557,16 @@ export class BusinessProfileComponent implements OnInit {
     const isOwner = this.isOwner;
     this.closeQuickView();
     this.router.navigate(["/business/product", id], {
+      state: { isOwner },
+    });
+  }
+
+  viewFullServiceDetails(): void {
+    if (!this.quickViewService) return;
+    const id = this.quickViewService.id;
+    const isOwner = this.isOwner;
+    this.closeServiceQuickView();
+    this.router.navigate(["/business/service", id], {
       state: { isOwner },
     });
   }

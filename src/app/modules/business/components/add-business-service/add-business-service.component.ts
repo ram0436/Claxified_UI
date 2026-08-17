@@ -13,22 +13,20 @@ import { of } from "rxjs";
 import { switchMap } from "rxjs/operators";
 import { BusinessService } from "../../service/business.service";
 import {
-  ProductAttributeMasterDto,
-  BusinessProductDto,
+  ServiceAttributeMasterDto,
+  BusinessServiceDto,
+  ServicePricingType,
+  ServiceMode,
+  ServiceAvailabilityStatus,
+  ServiceDurationUnit,
+  SERVICE_PRICING_TYPE_OPTIONS,
+  SERVICE_MODE_OPTIONS,
+  SERVICE_AVAILABILITY_STATUS_OPTIONS,
+  SERVICE_DURATION_UNIT_OPTIONS,
 } from "../../model/Business";
-import {
-  PRICE_UNIT_OPTIONS,
-  PRODUCT_CONDITION_OPTIONS,
-  AVAILABILITY_STATUS_OPTIONS,
-  WARRANTY_PERIOD_UNIT_OPTIONS,
-  PriceUnit,
-  ProductCondition,
-  ProductAvailabilityStatus,
-  WarrantyPeriodUnit,
-} from "./../../enum/business-product.enum";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
-interface ProductImagePreview {
+interface ServiceImagePreview {
   localId: number;
   file?: File;
   previewUrl: string;
@@ -38,18 +36,18 @@ interface ProductImagePreview {
   uploading: boolean;
 }
 
-type SectionId = "basic" | "attributes" | "pricing" | "delivery" | "images";
+type SectionId = "basic" | "attributes" | "pricing" | "details" | "images";
 
 @Component({
-  selector: "app-add-business-product",
-  templateUrl: "./add-business-product.component.html",
-  styleUrls: ["./add-business-product.component.css"],
+  selector: "app-add-business-service",
+  templateUrl: "./add-business-service.component.html",
+  styleUrls: ["./add-business-service.component.css"],
 })
-export class AddBusinessProductComponent implements OnInit, AfterViewInit {
+export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
   @Input() businessId!: number;
   @Input() businessCategoryId!: number;
   @Input() businessSubCategoryId!: number;
-  @Input() product: BusinessProductDto | null = null;
+  @Input() service: BusinessServiceDto | null = null;
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<void>();
 
@@ -70,24 +68,24 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     { id: "basic", label: "Basic Details", icon: "storefront", required: true },
     { id: "attributes", label: "Attributes", icon: "tune" },
     { id: "pricing", label: "Pricing", icon: "sell", required: true },
-    { id: "delivery", label: "Delivery & Warranty", icon: "local_shipping" },
+    { id: "details", label: "Service Details", icon: "design_services" },
     { id: "images", label: "Images", icon: "photo_library", required: true },
   ];
 
-  attributeDefs: ProductAttributeMasterDto[] = [];
+  attributeDefs: ServiceAttributeMasterDto[] = [];
 
-  priceUnitOptions = PRICE_UNIT_OPTIONS;
-  conditionOptions = PRODUCT_CONDITION_OPTIONS;
-  availabilityOptions = AVAILABILITY_STATUS_OPTIONS;
-  warrantyPeriodOptions = WARRANTY_PERIOD_UNIT_OPTIONS;
+  pricingTypeOptions = SERVICE_PRICING_TYPE_OPTIONS;
+  serviceModeOptions = SERVICE_MODE_OPTIONS;
+  availabilityOptions = SERVICE_AVAILABILITY_STATUS_OPTIONS;
+  durationUnitOptions = SERVICE_DURATION_UNIT_OPTIONS;
 
-  images: ProductImagePreview[] = [];
+  images: ServiceImagePreview[] = [];
   private imgCounter = 0;
 
   loadingAttributes = false;
 
   get isEditMode(): boolean {
-    return !!this.product?.id;
+    return !!this.service?.id;
   }
 
   get attributesArray(): FormArray {
@@ -104,20 +102,26 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     this.buildForm();
     this.activeSection = "basic";
 
-    if (this.product) {
-      this.patchFromProduct(this.product);
+    if (this.service) {
+      this.patchFromService(this.service);
     } else {
       this.resolveAttributesForSubCategory(this.businessSubCategoryId);
     }
   }
 
   ngAfterViewInit(): void {
+    // "About Service" lives on the default ("basic") section, so it's
+    // already in the DOM on first render — hydrate it once the view
+    // (and any synchronous form patch from ngOnInit) is ready.
     this.hydrateAboutEditor();
   }
 
   setSection(id: SectionId): void {
     this.activeSection = id;
 
+    // contenteditable divs are recreated by *ngIf, so re-hydrate content
+    // with the form value whenever the Basic Details tab (which hosts the
+    // About Service editor) is opened
     if (id === "basic") {
       this.hydrateAboutEditor();
     }
@@ -154,24 +158,20 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   private defaultValue() {
     return {
       id: 0,
-      name: "",
+      serviceName: "",
       shortDescription: "",
       about: "",
-      price: null,
-      discountPercentage: 0,
-      priceOnRequest: false,
-      gst: 0,
-      priceUnit: PriceUnit.Piece,
-      condition: ProductCondition.New,
-      availabilityStatus: ProductAvailabilityStatus.InStock,
-      deliveryAvailable: false,
-      shippingCharges: 0,
-      freeShipping: false,
-      warrantyAvailable: false,
-      warrantyDuration: 0,
-      warrantyPeriodUnit: WarrantyPeriodUnit.Month,
-      warrantyDescription: "",
-      returnPolicy: "",
+      minimumPrice: null,
+      maximumPrice: null,
+      pricingType: ServicePricingType.FixedPrice,
+      gstIncluded: false,
+      serviceMode: ServiceMode.AtBusiness,
+      serviceArea: "",
+      duration: 0,
+      durationUnit: ServiceDurationUnit.Hour,
+      isBookingRequired: false,
+      availability: ServiceAvailabilityStatus.Available,
+      isActive: true,
     };
   }
 
@@ -180,42 +180,40 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
 
     this.form = this.fb.group({
       id: [v.id],
-      name: [v.name, [Validators.required, Validators.maxLength(150)]],
-      productCategoryId: [this.businessCategoryId, Validators.required],
-      productSubCategoryId: [this.businessSubCategoryId, Validators.required],
+      serviceName: [
+        v.serviceName,
+        [Validators.required, Validators.maxLength(150)],
+      ],
+      // Set once from the parent-supplied business category/sub-category.
+      // No longer user-editable, so no cascading valueChanges needed.
+      serviceCategoryId: [this.businessCategoryId, Validators.required],
+      serviceSubCategoryId: [this.businessSubCategoryId, Validators.required],
       shortDescription: [v.shortDescription, Validators.maxLength(250)],
       about: [v.about],
-      price: [v.price],
-      discountPercentage: [
-        v.discountPercentage,
-        [Validators.min(0), Validators.max(100)],
-      ],
-      priceOnRequest: [v.priceOnRequest],
-      gst: [v.gst, [Validators.min(0), Validators.max(100)]],
-      priceUnit: [v.priceUnit, Validators.required],
-      condition: [v.condition, Validators.required],
-      availabilityStatus: [v.availabilityStatus, Validators.required],
-      deliveryAvailable: [v.deliveryAvailable],
-      shippingCharges: [v.shippingCharges, Validators.min(0)],
-      freeShipping: [v.freeShipping],
-      warrantyAvailable: [v.warrantyAvailable],
-      warrantyDuration: [v.warrantyDuration, Validators.min(0)],
-      warrantyPeriodUnit: [v.warrantyPeriodUnit],
-      warrantyDescription: [v.warrantyDescription],
-      returnPolicy: [v.returnPolicy],
+      minimumPrice: [v.minimumPrice, [Validators.required, Validators.min(0)]],
+      maximumPrice: [v.maximumPrice, Validators.min(0)],
+      pricingType: [v.pricingType, Validators.required],
+      gstIncluded: [v.gstIncluded],
+      serviceMode: [v.serviceMode, Validators.required],
+      serviceArea: [v.serviceArea],
+      duration: [v.duration, Validators.min(0)],
+      durationUnit: [v.durationUnit],
+      isBookingRequired: [v.isBookingRequired],
+      availability: [v.availability, Validators.required],
+      isActive: [v.isActive],
       attributes: this.fb.array([]),
     });
 
     this.form
-      .get("priceOnRequest")!
-      .valueChanges.subscribe((onRequest: boolean) => {
-        const priceCtrl = this.form.get("price")!;
-        if (onRequest) {
-          priceCtrl.clearValidators();
+      .get("pricingType")!
+      .valueChanges.subscribe((type: ServicePricingType) => {
+        const maxCtrl = this.form.get("maximumPrice")!;
+        if (type === ServicePricingType.PriceRange) {
+          maxCtrl.setValidators([Validators.required, Validators.min(0)]);
         } else {
-          priceCtrl.setValidators([Validators.required, Validators.min(0)]);
+          maxCtrl.setValidators([Validators.min(0)]);
         }
-        priceCtrl.updateValueAndValidity();
+        maxCtrl.updateValueAndValidity();
       });
   }
 
@@ -225,13 +223,13 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   ): void {
     this.loadingAttributes = true;
     this.businessService
-      .getProductAttributeMasterIds(subCategoryId)
+      .getServiceAttributeMasterIds(subCategoryId)
       .pipe(
         switchMap((masterIds) => {
           if (!masterIds || masterIds.length === 0) {
-            return of([] as ProductAttributeMasterDto[]);
+            return of([] as ServiceAttributeMasterDto[]);
           }
-          return this.businessService.getProductAttributes(masterIds);
+          return this.businessService.getServiceAttributes(masterIds);
         })
       )
       .subscribe(
@@ -247,7 +245,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   }
 
   private setAttributeDefs(
-    defs: ProductAttributeMasterDto[],
+    defs: ServiceAttributeMasterDto[],
     presetValues?: Map<string, string>
   ): void {
     this.attributeDefs = defs;
@@ -258,15 +256,17 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
       this.attributesArray.push(
         this.fb.group({
           id: [0],
-          productAttributeMasterId: [def.productAttributeMasterId],
+          serviceAttributeMasterId: [def.serviceAttributeMasterId],
           value: [existingValue],
         })
       );
     }
   }
 
+  // ---------- Images (mirrors the product image upload UX) ----------
+
   selectFile(): void {
-    document.getElementById("productImageUpload")?.click();
+    document.getElementById("serviceImageUpload")?.click();
   }
 
   onImagesSelected(event: Event): void {
@@ -321,7 +321,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
         img.uploading = true;
       });
 
-      this.businessService.uploadProductImages(formData).subscribe(
+      this.businessService.uploadServiceImages(formData).subscribe(
         (urls: string[]) => {
           pending.forEach((img, idx) => {
             img.uploadedUrl = urls[idx];
@@ -337,57 +337,55 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private patchFromProduct(p: BusinessProductDto): void {
+  // ---------- Edit mode ----------
+
+  private patchFromService(s: BusinessServiceDto): void {
     this.loading = true;
 
     this.form.patchValue({
-      id: p.id,
-      name: p.name,
-      productCategoryId: this.businessCategoryId,
-      productSubCategoryId: this.businessSubCategoryId,
-      shortDescription: p.shortDescription,
-      about: p.about,
-      price: p.price,
-      discountPercentage: p.discountPercentage,
-      priceOnRequest: p.priceOnRequest === "Yes",
-      gst: p.gst,
-      deliveryAvailable: p.deliveryAvailable === "Yes",
-      shippingCharges: p.shippingCharges,
-      freeShipping: p.freeShipping === "Yes",
-      warrantyAvailable: p.warrantyAvailable === "Yes",
-      warrantyDuration: p.warrantyDuration,
-      warrantyDescription: p.warrantyDescription,
-      returnPolicy: p.returnPolicy,
+      id: s.id,
+      serviceName: s.serviceName,
+      serviceCategoryId: this.businessCategoryId,
+      serviceSubCategoryId: this.businessSubCategoryId,
+      shortDescription: s.shortDescription,
+      about: s.about,
+      minimumPrice: s.minimumPrice,
+      maximumPrice: s.maximumPrice,
+      gstIncluded: s.gstIncluded === "Yes",
+      serviceArea: s.serviceArea,
+      duration: s.duration,
+      isBookingRequired: s.isBookingRequired === "Yes",
+      isActive: s.isActive,
     });
 
     this.form
-      .get("priceUnit")!
+      .get("pricingType")!
       .setValue(
-        this.priceUnitOptions.find((o) => o.label === p.priceUnit)?.value ||
-          PriceUnit.Piece
+        this.pricingTypeOptions.find((o) => o.label === s.pricingType)?.value ||
+          ServicePricingType.FixedPrice
       );
     this.form
-      .get("condition")!
+      .get("serviceMode")!
       .setValue(
-        this.conditionOptions.find((o) => o.label === p.condition)?.value ||
-          ProductCondition.New
+        this.serviceModeOptions.find(
+          (o) => o.label.replace(/\s/g, "") === s.serviceMode
+        )?.value || ServiceMode.AtBusiness
       );
     this.form
-      .get("availabilityStatus")!
+      .get("availability")!
       .setValue(
         this.availabilityOptions.find(
-          (o) => o.label.replace(/\s/g, "") === p.availabilityStatus
-        )?.value || ProductAvailabilityStatus.InStock
+          (o) => o.label.replace(/\s/g, "") === s.availabilityStatus
+        )?.value || ServiceAvailabilityStatus.Available
       );
     this.form
-      .get("warrantyPeriodUnit")!
+      .get("durationUnit")!
       .setValue(
-        this.warrantyPeriodOptions.find((o) =>
-          o.label.startsWith(p.warrantyPeriodUnit)
-        )?.value || WarrantyPeriodUnit.Month
+        this.durationUnitOptions.find((o) => o.label.startsWith(s.durationUnit))
+          ?.value || ServiceDurationUnit.Hour
       );
 
-    this.images = (p.images || []).map((img, idx) => ({
+    this.images = (s.images || []).map((img, idx) => ({
       localId: ++this.imgCounter,
       previewUrl: img.imageUrl,
       uploadedUrl: img.imageUrl,
@@ -397,7 +395,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     }));
 
     const presetValues = new Map<string, string>(
-      (p.attributes || []).map((a) => [a.name, a.value])
+      (s.attributes || []).map((a) => [a.name, a.value])
     );
 
     this.resolveAttributesForSubCategory(
@@ -407,6 +405,8 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     this.loading = false;
     this.hydrateAboutEditor();
   }
+
+  // ---------- Section navigation (Save & Continue) ----------
 
   get isLastSection(): boolean {
     return (
@@ -437,10 +437,12 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // ---------- Tab completion status (used for the green tick / pending icon) ----------
+
   isSectionFilled(id: SectionId): boolean {
     switch (id) {
       case "basic":
-        return !!this.form.get("name")?.valid;
+        return !!this.form.get("serviceName")?.valid;
 
       case "attributes":
         return this.attributesArray.controls.some(
@@ -448,21 +450,19 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
         );
 
       case "pricing": {
-        const priceOnRequest = this.form.get("priceOnRequest")?.value;
-        const priceCtrl = this.form.get("price");
+        const priceCtrl = this.form.get("minimumPrice");
         return !!(
-          priceOnRequest ||
-          (priceCtrl?.valid &&
-            priceCtrl?.value !== null &&
-            priceCtrl?.value !== "")
+          priceCtrl?.valid &&
+          priceCtrl?.value !== null &&
+          priceCtrl?.value !== ""
         );
       }
 
-      case "delivery":
+      case "details":
         return !!(
-          this.form.get("deliveryAvailable")?.value ||
-          this.form.get("warrantyAvailable")?.value ||
-          this.form.get("returnPolicy")?.value
+          this.form.get("serviceArea")?.value ||
+          this.form.get("duration")?.value ||
+          this.form.get("isBookingRequired")?.value
         );
 
       case "images":
@@ -472,6 +472,8 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
         return false;
     }
   }
+
+  // ---------- Save ----------
 
   async onSave(): Promise<void> {
     this.errorMessage = "";
@@ -483,7 +485,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     }
 
     if (this.images.length === 0) {
-      this.errorMessage = "Please add at least one product image.";
+      this.errorMessage = "Please add at least one service image.";
       this.activeSection = "images";
       return;
     }
@@ -504,51 +506,47 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     const payload = {
       id: raw.id,
       businessId: this.businessId,
-      name: raw.name,
-      productCategoryId: raw.productCategoryId,
-      productSubCategoryId: raw.productSubCategoryId,
+      serviceCategoryId: raw.serviceCategoryId,
+      serviceSubCategoryId: raw.serviceSubCategoryId,
+      serviceName: raw.serviceName,
       shortDescription: raw.shortDescription,
       about: raw.about,
-      price: raw.priceOnRequest ? 0 : raw.price,
-      discountPercentage: raw.discountPercentage,
-      priceOnRequest: raw.priceOnRequest,
-      gst: raw.gst,
-      priceUnit: raw.priceUnit,
-      condition: raw.condition,
-      availabilityStatus: raw.availabilityStatus,
-      deliveryAvailable: raw.deliveryAvailable,
-      shippingCharges: raw.shippingCharges,
-      freeShipping: raw.freeShipping,
-      warrantyAvailable: raw.warrantyAvailable,
-      warrantyDuration: raw.warrantyDuration,
-      warrantyPeriodUnit: raw.warrantyPeriodUnit,
-      warrantyDescription: raw.warrantyDescription,
-      returnPolicy: raw.returnPolicy,
+      minimumPrice: raw.minimumPrice,
+      maximumPrice: raw.maximumPrice,
+      pricingType: raw.pricingType,
+      gstIncluded: raw.gstIncluded,
+      serviceMode: raw.serviceMode,
+      serviceArea: raw.serviceArea,
+      duration: raw.duration,
+      durationUnit: raw.durationUnit,
+      isBookingRequired: raw.isBookingRequired,
+      availability: raw.availability,
+      isActive: raw.isActive,
       attributes: raw.attributes.map((a: any) => ({
         id: a.id,
-        businessProductId: raw.id,
-        productAttributeMasterId: a.productAttributeMasterId,
+        businessServiceId: raw.id,
+        serviceAttributeMasterId: a.serviceAttributeMasterId,
         value: a.value,
       })),
       images: this.images.map((img) => ({
         id: 0,
-        businessProductId: raw.id,
+        businessServiceId: raw.id,
         imageUrl: img.uploadedUrl,
         isPrimary: img.isPrimary,
         sortOrder: img.sortOrder,
       })),
     };
 
-    this.businessService.saveProduct(payload as any).subscribe(
+    this.businessService.saveService(payload as any).subscribe(
       () => {
         this.saving = false;
-        this.showNotification("Product Added Successfully");
+        this.showNotification("Service Added Successfully");
         this.saved.emit();
       },
       () => {
         this.saving = false;
-        this.showNotification("Failed to save product. Please try again.");
-        this.errorMessage = "Failed to save product. Please try again.";
+        this.showNotification("Failed to save service. Please try again.");
+        this.errorMessage = "Failed to save service. Please try again.";
       }
     );
   }

@@ -408,15 +408,273 @@ export interface ProductAttributeMasterDto {
   unit: string | null;
 }
 
-// ---------- Product category / sub-category ----------
+// =====================================================================
+// ---------------------------- OFFERS --------------------------------
+// =====================================================================
 
-export interface ProductCategoryDto {
-  id: number;
-  name: string;
+/** Used for creating/updating an offer (POST Business/offer) */
+export class BusinessOffer {
+  id: number = 0;
+  businessId: number = 0;
+  title: string = "";
+  description: string = "";
+  offerType: number = 1;
+  discountValue: number = 0;
+  couponCode: string = "";
+  minimumPurchaseAmount: number = 0;
+  maximumDiscountAmount: number = 0;
+  startDate: string = new Date().toISOString();
+  endDate: string = new Date().toISOString();
+  usageLimit: number = 0;
+  usagePerUser: number = 0;
+  termsAndConditions: string = "";
+  isFeatured: boolean = true;
+  isActive: boolean = true;
+  createdDate: string = new Date().toISOString();
 }
 
-export interface ProductSubCategoryDto {
+/** Response shape for GET Business/offers?businessId= */
+export interface BusinessOfferDto {
   id: number;
-  productCategoryId: number;
+  businessId: number;
+  title: string;
+  description: string;
+  offerType: number;
+  discountValue: number;
+  couponCode: string;
+  minimumPurchaseAmount: number;
+  maximumDiscountAmount: number;
+  startDate: string;
+  endDate: string;
+  usageLimit: number;
+  usagePerUser: number;
+  termsAndConditions: string;
+  isFeatured: boolean;
+  isActive: boolean;
+  createdDate: string;
+}
+
+// =====================================================================
+// ---------------------------- REVIEWS -------------------------------
+// =====================================================================
+
+/** Used for creating/updating a review (POST Business/review) */
+export class BusinessReview {
+  id: number = 0;
+  businessId: number = 0;
+  userId: number = 0;
+  rating: number = 0;
+  title: string = "";
+  comment: string = "";
+  isVerified: boolean = true;
+  businessReply: string = "";
+  businessReplyDate: string = new Date().toISOString();
+  isPublished: boolean = true;
+  createdDate: string = new Date().toISOString();
+  updatedDate: string = new Date().toISOString();
+}
+
+/** Response shape for GET Business/reviews?businessId= */
+export interface BusinessReviewDto {
+  id: number;
+  businessId: number;
+  userId: number;
+  rating: number;
+  title: string;
+  comment: string;
+  isVerified: boolean;
+  businessReply: string;
+  businessReplyDate: string;
+  isPublished: boolean;
+  createdDate: string;
+  updatedDate: string;
+}
+
+// =====================================================================
+// ---------------------------- SERVICES ------------------------------
+// =====================================================================
+
+export enum ServicePricingType {
+  FixedPrice = 1,
+  StartingFrom = 2,
+  PriceRange = 3,
+  Hourly = 4,
+  Daily = 5,
+  CustomQuote = 6,
+}
+
+export enum ServiceMode {
+  AtBusiness = 1,
+  AtCustomerLocation = 2,
+  Remote = 3,
+}
+
+export enum ServiceAvailabilityStatus {
+  Available = 1,
+  TemporarilyUnavailable = 2,
+  NotAvailable = 3,
+}
+
+export enum ServiceDurationUnit {
+  Minute = 1,
+  Hour = 2,
+  Day = 3,
+  Week = 4,
+  Month = 5,
+}
+
+export const SERVICE_PRICING_TYPE_OPTIONS: {
+  value: ServicePricingType;
+  label: string;
+}[] = [
+  { value: ServicePricingType.FixedPrice, label: "Fixed Price" },
+  { value: ServicePricingType.StartingFrom, label: "Starting From" },
+  { value: ServicePricingType.PriceRange, label: "Price Range" },
+  { value: ServicePricingType.Hourly, label: "Hourly" },
+  { value: ServicePricingType.Daily, label: "Daily" },
+  { value: ServicePricingType.CustomQuote, label: "Custom Quote" },
+];
+
+export const SERVICE_MODE_OPTIONS: { value: ServiceMode; label: string }[] = [
+  { value: ServiceMode.AtBusiness, label: "At Business" },
+  { value: ServiceMode.AtCustomerLocation, label: "At Customer Location" },
+  { value: ServiceMode.Remote, label: "Remote" },
+];
+
+export const SERVICE_AVAILABILITY_STATUS_OPTIONS: {
+  value: ServiceAvailabilityStatus;
+  label: string;
+}[] = [
+  { value: ServiceAvailabilityStatus.Available, label: "Available" },
+  {
+    value: ServiceAvailabilityStatus.TemporarilyUnavailable,
+    label: "Temporarily Unavailable",
+  },
+  { value: ServiceAvailabilityStatus.NotAvailable, label: "Not Available" },
+];
+
+export const SERVICE_DURATION_UNIT_OPTIONS: {
+  value: ServiceDurationUnit;
+  label: string;
+}[] = [
+  { value: ServiceDurationUnit.Minute, label: "Minute(s)" },
+  { value: ServiceDurationUnit.Hour, label: "Hour(s)" },
+  { value: ServiceDurationUnit.Day, label: "Day(s)" },
+  { value: ServiceDurationUnit.Week, label: "Week(s)" },
+  { value: ServiceDurationUnit.Month, label: "Month(s)" },
+];
+
+export class BusinessServiceAttribute {
+  id: number = 0;
+  businessServiceId: number = 0;
+  serviceAttributeMasterId: number = 0;
+  value: string = "";
+}
+
+export class BusinessServiceImage {
+  id: number = 0;
+  businessServiceId: number = 0;
+  imageUrl: string = "";
+  isPrimary: boolean = true;
+  sortOrder: number = 0;
+}
+
+/** Used for creating/updating a service (POST Business/service) */
+export class BusinessServicePayload {
+  id: number = 0;
+  businessId: number = 0;
+  serviceCategoryId: number = 0;
+  serviceSubCategoryId: number = 0;
+  serviceName: string = "";
+  shortDescription: string = "";
+  about: string = "";
+  minimumPrice: number = 0;
+  maximumPrice: number = 0;
+  pricingType: ServicePricingType = ServicePricingType.FixedPrice;
+  gstIncluded: boolean = true;
+  serviceMode: ServiceMode = ServiceMode.AtBusiness;
+  serviceArea: string = "";
+  duration: number = 0;
+  durationUnit: ServiceDurationUnit = ServiceDurationUnit.Hour;
+  isBookingRequired: boolean = true;
+  availability: ServiceAvailabilityStatus = ServiceAvailabilityStatus.Available;
+  isActive: boolean = true;
+  attributes: BusinessServiceAttribute[] = [];
+  images: BusinessServiceImage[] = [];
+}
+
+export interface BusinessServiceAttributeViewDto {
   name: string;
+  value: string;
+}
+
+export interface BusinessServiceImageDto {
+  imageUrl: string;
+  isPrimary: boolean;
+  sortOrder: number;
+}
+
+/** Response shape for GET Business/services?businessId= and GET Business/services/{id} */
+export interface BusinessServiceDto {
+  id: number;
+  businessId: number;
+  serviceCategoryId: number;
+  serviceSubCategoryId: number;
+  serviceName: string;
+  shortDescription: string;
+  about: string;
+  minimumPrice: number;
+  maximumPrice: number;
+  pricingType: string; // e.g. "StartingFrom"
+  gstIncluded: string; // "Yes" | "No"
+  serviceMode: string; // e.g. "AtCustomerLocation"
+  serviceArea: string;
+  duration: number;
+  durationUnit: string; // e.g. "Hour"
+  isBookingRequired: string; // "Yes" | "No"
+  availabilityStatus: string; // e.g. "Available"
+  isActive: boolean;
+  attributes: BusinessServiceAttributeViewDto[];
+  images: BusinessServiceImageDto[];
+}
+
+export interface ServiceAttributeMasterDto {
+  serviceAttributeMasterId: number;
+  name: string;
+  dataType: string; // "string" | "number" | etc.
+  unit: string | null;
+}
+
+export interface ServiceAttributeMasterIdsDto {
+  serviceAttributeMasterIds: number[];
+}
+
+export interface ServiceAttributeMasterDto {
+  serviceAttributeMasterId: number;
+  name: string;
+  dataType: string; // "string" | "number" | etc.
+  unit: string | null;
+}
+
+export interface ServiceAttributeDetailDto {
+  serviceAttributeMasterId: number;
+  name: string;
+  dataType: string;
+  unit: string | null;
+}
+
+export interface CatalogItem {
+  id: number;
+  type: "product" | "service";
+  name: string;
+  category?: string;
+  price: number;
+  discountPercentage: number;
+  priceOnRequest: boolean;
+  priceUnit: string;
+  imageUrl: string;
+  minimumPrice?: number;
+  maximumPrice?: number;
+  pricingType?: string;
+  pricingTypeDisplay?: string;
 }

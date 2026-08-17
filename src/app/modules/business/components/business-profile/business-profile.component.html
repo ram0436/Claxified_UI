@@ -438,7 +438,10 @@
 
     <div
       class="catalog-grid"
-      *ngIf="filteredCatalogItems.length > 0; else noCatalogItems"
+      *ngIf="
+        !catalogLoading && filteredCatalogItems.length > 0;
+        else noCatalogItems
+      "
     >
       <div
         class="catalog-card"
@@ -468,7 +471,9 @@
           <p class="catalog-card-category" *ngIf="item.category">
             {{ item.category }}
           </p>
-          <p class="catalog-card-price">
+
+          <!-- Product Pricing -->
+          <p class="catalog-card-price" *ngIf="item.type === 'product'">
             <ng-container *ngIf="!item.priceOnRequest">
               <span class="price-current"
                 >₹{{ discountedPrice(item) | number }}</span
@@ -484,6 +489,33 @@
               >Price on request</ng-container
             >
           </p>
+
+          <!-- Service Pricing -->
+          <!-- Service Pricing -->
+          <p class="catalog-card-price" *ngIf="item.type === 'service'">
+            <ng-container *ngIf="!item.priceOnRequest">
+              <span class="price-current">
+                <ng-container *ngIf="item.pricingType === 'PriceRange'">
+                  ₹{{ item.minimumPrice | number }} - ₹{{
+                    item.maximumPrice | number
+                  }}
+                </ng-container>
+                <ng-container *ngIf="item.pricingType !== 'PriceRange'">
+                  ₹{{ item.price | number }}
+                </ng-container>
+              </span>
+              <span class="price-unit" *ngIf="item.priceUnit">
+                {{ item.priceUnit }}
+              </span>
+            </ng-container>
+            <ng-container *ngIf="item.priceOnRequest"
+              >Price on request</ng-container
+            >
+            <!-- <span class="service-pricing-type" *ngIf="item.pricingTypeDisplay">
+              {{ item.pricingTypeDisplay }}
+            </span> -->
+          </p>
+
           <a
             class="catalog-view-link"
             (click)="viewCatalogItem(item); $event.stopPropagation()"
@@ -495,6 +527,7 @@
       </div>
     </div>
 
+    <!-- No Items Message -->
     <ng-template #noCatalogItems>
       <div class="empty-services">
         <span class="material-icons-outlined empty-icon">storefront</span>
@@ -536,7 +569,6 @@
     </ng-template>
   </div>
 
-  <!-- ---------- GALLERY ---------- -->
   <!-- ---------- GALLERY ---------- -->
   <div class="content-card" *ngIf="activeTab === 'gallery'">
     <h3>Gallery</h3>
@@ -588,4 +620,21 @@
     (close)="closeQuickView()"
     (viewFullDetails)="viewFullProductDetails()"
   ></app-business-product-quickview>
+
+  <app-add-business-service
+    *ngIf="addServicePanelOpen && business"
+    [businessId]="business.id"
+    [businessCategoryId]="business.businessCategoryId"
+    [businessSubCategoryId]="business.businessSubCategoryId"
+    [service]="editingService"
+    (close)="closeAddServicePanel()"
+    (saved)="onServiceSaved()"
+  ></app-add-business-service>
+
+  <app-business-service-quickview
+    *ngIf="quickViewServiceOpen && quickViewService"
+    [service]="quickViewService"
+    (close)="closeServiceQuickView()"
+    (viewFullDetails)="viewFullServiceDetails()"
+  ></app-business-service-quickview>
 </div>

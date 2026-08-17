@@ -30,6 +30,9 @@ import { BusinessPageComponent } from "./components/business-page/business-page.
 import { AddBusinessProductComponent } from "./components/add-business-product/add-business-product.component";
 import { BusinessProductQuickviewComponent } from './components/business-product-quickview/business-product-quickview.component';
 import { BusinessProductDetailComponent } from './components/business-product-detail/business-product-detail.component';
+import { AddBusinessServiceComponent } from './components/add-business-service/add-business-service.component';
+import { BusinessServiceQuickviewComponent } from './components/business-service-quickview/business-service-quickview.component';
+import { BusinessServiceDetailComponent } from './components/business-service-detail/business-service-detail.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +51,9 @@ import { BusinessProductDetailComponent } from './components/business-product-de
     AddBusinessProductComponent,
     BusinessProductQuickviewComponent,
     BusinessProductDetailComponent,
+    AddBusinessServiceComponent,
+    BusinessServiceQuickviewComponent,
+    BusinessServiceDetailComponent,
   ],
   imports: [
     CommonModule,
