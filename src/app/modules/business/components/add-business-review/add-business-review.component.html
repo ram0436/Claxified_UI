@@ -1,0 +1,83 @@
+<div class="review-overlay" (click)="close.emit()">
+  <div class="review-panel" (click)="$event.stopPropagation()">
+    <button class="review-close" (click)="close.emit()">
+      <span class="material-icons-outlined">close</span>
+    </button>
+
+    <h2 class="review-title">{{ review ? "Edit" : "Write a" }} Review</h2>
+    <p class="review-subtitle" *ngIf="!review">
+      Share your experience with this business
+    </p>
+
+    <form (ngSubmit)="saveReview()" #reviewForm="ngForm">
+      <!-- Star Rating -->
+      <div class="review-form-group">
+        <label class="review-label">Rating *</label>
+        <div class="review-stars">
+          <span
+            class="material-icons-outlined review-star"
+            *ngFor="let s of [1, 2, 3, 4, 5]"
+            [class.filled]="s <= formData.rating"
+            (click)="setRating(s)"
+            (mouseenter)="hoverRating = s"
+            (mouseleave)="hoverRating = 0"
+          >
+            {{ s <= (hoverRating || formData.rating) ? "star" : "star_border" }}
+          </span>
+          <span class="review-rating-label">{{
+            getRatingLabel(formData.rating)
+          }}</span>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div class="review-form-group">
+        <label class="review-label">Title</label>
+        <input
+          type="text"
+          class="review-input"
+          [(ngModel)]="formData.title"
+          name="title"
+          placeholder="Summarize your experience"
+        />
+      </div>
+
+      <!-- Comment -->
+      <div class="review-form-group">
+        <label class="review-label">Comment *</label>
+        <textarea
+          class="review-textarea"
+          [(ngModel)]="formData.comment"
+          name="comment"
+          rows="4"
+          required
+          placeholder="Share your experience with this business"
+        ></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="review-actions">
+        <button
+          type="button"
+          class="review-btn review-btn-outline"
+          (click)="close.emit()"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="review-btn review-btn-primary"
+          [disabled]="saving || formData.rating === 0 || !reviewForm.valid"
+        >
+          {{
+            saving
+              ? "Submitting..."
+              : review
+              ? "Update Review"
+              : "Submit Review"
+          }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

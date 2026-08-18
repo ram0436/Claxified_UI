@@ -194,7 +194,7 @@ export class PostCardComponent implements OnInit, OnChanges {
     this.UserService.AddWishList(wishlistItem).subscribe(
       (response: any) => {},
       (error: any) => {
-        console.error("Error adding to Wishlist:", error);
+        // console.error("Error adding to Wishlist:", error);
       }
     );
   }

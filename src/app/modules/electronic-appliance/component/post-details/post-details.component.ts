@@ -287,7 +287,7 @@ export class PostDetailsComponent {
         // Handle success response, if needed
       },
       (error: any) => {
-        console.error("Error adding to Wishlist:", error);
+        // console.error("Error adding to Wishlist:", error);
       }
     );
   }

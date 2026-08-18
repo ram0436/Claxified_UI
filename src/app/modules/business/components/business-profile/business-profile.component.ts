@@ -1,3 +1,4 @@
+// business-profile.component.ts
 import { Component, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BusinessService } from "../../service/business.service";
@@ -6,6 +7,8 @@ import {
   BusinessViewDto,
   BusinessProductDto,
   BusinessServiceDto,
+  BusinessOfferDto,
+  BusinessReviewDto,
 } from "../../model/Business";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { BusinessLoginComponent } from "../business-login/business-login.component";
@@ -21,11 +24,10 @@ interface CatalogItem {
   priceOnRequest: boolean;
   priceUnit: string;
   imageUrl: string;
-  // Additional fields for services
   minimumPrice?: number;
   maximumPrice?: number;
   pricingType?: string;
-  pricingTypeDisplay?: string; // Added this property
+  pricingTypeDisplay?: string;
 }
 
 @Component({
@@ -41,7 +43,13 @@ export class BusinessProfileComponent implements OnInit {
   businesses: BusinessListItem[] = [];
   business: BusinessViewDto | null = null;
 
-  activeTab: "overview" | "products" | "hours" | "gallery" = "overview";
+  activeTab:
+    | "overview"
+    | "products"
+    | "hours"
+    | "gallery"
+    | "offers"
+    | "reviews" = "overview";
   tabRefGuid: string = "";
 
   skeletonItems = [1, 2, 3, 4, 5, 6];
@@ -51,6 +59,24 @@ export class BusinessProfileComponent implements OnInit {
   catalogSearch: string = "";
   catalogLoading: boolean = false;
   private catalogItems: CatalogItem[] = [];
+
+  // Offers & Reviews state
+  offers: BusinessOfferDto[] = [];
+  reviews: BusinessReviewDto[] = [];
+  offersLoading: boolean = false;
+  reviewsLoading: boolean = false;
+
+  // Add offer state
+  addOfferPanelOpen: boolean = false;
+  editingOffer: BusinessOfferDto | null = null;
+
+  // Add review state
+  addReviewPanelOpen: boolean = false;
+  editingReview: BusinessReviewDto | null = null;
+
+  // Reply to review state
+  replyingToReview: BusinessReviewDto | null = null;
+  replyText: string = "";
 
   private readonly avatarPalette: string[] = [
     "#0d475c",
@@ -217,12 +243,16 @@ export class BusinessProfileComponent implements OnInit {
         this.business = data;
         this.loading = false;
         this.loadCatalogItems();
+        this.loadOffers();
+        this.loadReviews();
       },
       () => (this.loading = false)
     );
   }
 
-  setTab(tab: "overview" | "products" | "hours" | "gallery") {
+  setTab(
+    tab: "overview" | "products" | "hours" | "gallery" | "offers" | "reviews"
+  ) {
     this.activeTab = tab;
   }
 
@@ -366,7 +396,7 @@ export class BusinessProfileComponent implements OnInit {
         );
       },
       (error) => {
-        console.error("Delete failed", error);
+        // console.error("Delete failed", error);
         alert("Failed to delete business");
       }
     );
@@ -379,7 +409,6 @@ export class BusinessProfileComponent implements OnInit {
     this.catalogLoading = true;
     this.catalogItems = [];
 
-    // Load products and services in parallel
     const products$ = this.businessService.getBusinessProducts(
       this.business.id
     );
@@ -395,22 +424,19 @@ export class BusinessProfileComponent implements OnInit {
         this.rawProducts = result.products || [];
         this.rawServices = result.services || [];
 
-        // Map products to catalog items
         const productItems = this.rawProducts.map((p) =>
           this.mapProductToCatalogItem(p)
         );
 
-        // Map services to catalog items
         const serviceItems = this.rawServices.map((s) =>
           this.mapServiceToCatalogItem(s)
         );
 
-        // Combine both
         this.catalogItems = [...productItems, ...serviceItems];
         this.catalogLoading = false;
       },
       (error) => {
-        console.error("Error loading catalog items:", error);
+        // console.error("Error loading catalog items:", error);
         this.catalogItems = [];
         this.catalogLoading = false;
       }
@@ -439,7 +465,6 @@ export class BusinessProfileComponent implements OnInit {
       s.images?.find((img) => img.isPrimary) || s.images?.[0];
 
     const displayPrice = s.minimumPrice || 0;
-
     const priceOnRequest = s.pricingType === "CustomQuote" || false;
 
     return {
@@ -569,5 +594,120 @@ export class BusinessProfileComponent implements OnInit {
     this.router.navigate(["/business/service", id], {
       state: { isOwner },
     });
+  }
+
+  // ---------- Offers ----------
+
+  loadOffers(): void {
+    if (!this.business?.id) return;
+    this.offersLoading = true;
+
+    this.businessService.getBusinessOffers(this.business.id).subscribe(
+      (data) => {
+        this.offers = data || [];
+        this.offersLoading = false;
+      },
+      (error) => {
+        // console.error("Error loading offers:", error);
+        this.offers = [];
+        this.offersLoading = false;
+      }
+    );
+  }
+
+  addOffer(): void {
+    this.editingOffer = null;
+    this.addOfferPanelOpen = true;
+  }
+
+  editOffer(offer: BusinessOfferDto): void {
+    this.editingOffer = { ...offer };
+    this.addOfferPanelOpen = true;
+  }
+
+  closeAddOfferPanel(): void {
+    this.addOfferPanelOpen = false;
+    this.editingOffer = null;
+  }
+
+  onOfferSaved(): void {
+    this.closeAddOfferPanel();
+    this.loadOffers();
+  }
+
+  deleteOffer(offerId: number, event: Event): void {
+    event.stopPropagation();
+    if (confirm("Are you sure you want to delete this offer?")) {
+      this.loadOffers();
+    }
+  }
+
+  isOfferActive(offer: BusinessOfferDto): boolean {
+    if (!offer.isActive) return false;
+    const now = new Date();
+    const startDate = new Date(offer.startDate);
+    const endDate = new Date(offer.endDate);
+    return now >= startDate && now <= endDate;
+  }
+
+  getDaysLeft(offer: BusinessOfferDto): number {
+    const now = new Date();
+    const endDate = new Date(offer.endDate);
+    const diffTime = endDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return Math.max(0, diffDays);
+  }
+
+  // ---------- Reviews ----------
+
+  loadReviews(): void {
+    if (!this.business?.id) return;
+    this.reviewsLoading = true;
+
+    this.businessService.getBusinessReviews(this.business.id).subscribe(
+      (data) => {
+        this.reviews = data || [];
+        this.reviewsLoading = false;
+      },
+      (error) => {
+        // console.error("Error loading reviews:", error);
+        this.reviews = [];
+        this.reviewsLoading = false;
+      }
+    );
+  }
+
+  addReview(): void {
+    this.editingReview = null;
+    this.addReviewPanelOpen = true;
+  }
+
+  closeAddReviewPanel(): void {
+    this.addReviewPanelOpen = false;
+    this.editingReview = null;
+  }
+
+  onReviewSaved(): void {
+    this.closeAddReviewPanel();
+    this.loadReviews();
+  }
+
+  replyToReview(review: BusinessReviewDto): void {
+    this.replyingToReview = review;
+    this.replyText = review.businessReply || "";
+    const reply = prompt("Enter your reply:", review.businessReply || "");
+    if (reply !== null) {
+      review.businessReply = reply;
+      review.businessReplyDate = new Date().toISOString();
+      this.loadReviews();
+    }
+  }
+
+  getStarArray(rating: number): number[] {
+    return Array(Math.min(5, Math.floor(rating))).fill(0);
+  }
+
+  getEmptyStarArray(rating: number): number[] {
+    return Array(Math.min(5, 5 - Math.floor(rating))).fill(0);
   }
 }
