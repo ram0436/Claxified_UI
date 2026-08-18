@@ -1,0 +1,193 @@
+<div class="offer-overlay" (click)="close.emit()">
+  <div class="offer-panel" (click)="$event.stopPropagation()">
+    <button class="offer-close" (click)="close.emit()">
+      <span class="material-icons-outlined">close</span>
+    </button>
+
+    <h2 class="offer-title">{{ offer ? "Edit" : "Create New" }} Offer</h2>
+    <p class="offer-subtitle" *ngIf="!offer">
+      Create a special offer to attract customers
+    </p>
+
+    <form (ngSubmit)="saveOffer()" #offerForm="ngForm">
+      <!-- Title -->
+      <div class="offer-form-group">
+        <label class="offer-label">Title *</label>
+        <input
+          type="text"
+          class="offer-input"
+          [(ngModel)]="formData.title"
+          name="title"
+          required
+          placeholder="e.g. Summer Sale - 20% Off"
+        />
+      </div>
+
+      <!-- Description -->
+      <div class="offer-form-group">
+        <label class="offer-label">Description</label>
+        <textarea
+          class="offer-textarea"
+          [(ngModel)]="formData.description"
+          name="description"
+          rows="3"
+          placeholder="Describe your offer in detail"
+        ></textarea>
+      </div>
+
+      <!-- Discount & Coupon Code -->
+      <div class="offer-form-row">
+        <div class="offer-form-group">
+          <label class="offer-label">Discount %</label>
+          <input
+            type="number"
+            class="offer-input"
+            [(ngModel)]="formData.discountValue"
+            name="discountValue"
+            min="0"
+            max="100"
+            placeholder="e.g. 20"
+          />
+        </div>
+        <div class="offer-form-group">
+          <label class="offer-label">Coupon Code</label>
+          <input
+            type="text"
+            class="offer-input"
+            [(ngModel)]="formData.couponCode"
+            name="couponCode"
+            placeholder="e.g. SUMMER20"
+          />
+        </div>
+      </div>
+
+      <!-- Min Purchase & Max Discount -->
+      <div class="offer-form-row">
+        <div class="offer-form-group">
+          <label class="offer-label">Min. Purchase (₹)</label>
+          <input
+            type="number"
+            class="offer-input"
+            [(ngModel)]="formData.minimumPurchaseAmount"
+            name="minimumPurchaseAmount"
+            min="0"
+            placeholder="e.g. 500"
+          />
+        </div>
+        <div class="offer-form-group">
+          <label class="offer-label">Max. Discount (₹)</label>
+          <input
+            type="number"
+            class="offer-input"
+            [(ngModel)]="formData.maximumDiscountAmount"
+            name="maximumDiscountAmount"
+            min="0"
+            placeholder="e.g. 1000"
+          />
+        </div>
+      </div>
+
+      <!-- Date Range -->
+      <div class="offer-form-row">
+        <div class="offer-form-group">
+          <label class="offer-label">Start Date *</label>
+          <input
+            type="date"
+            class="offer-input"
+            [(ngModel)]="formData.startDate"
+            name="startDate"
+            required
+          />
+        </div>
+        <div class="offer-form-group">
+          <label class="offer-label">End Date *</label>
+          <input
+            type="date"
+            class="offer-input"
+            [(ngModel)]="formData.endDate"
+            name="endDate"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Usage Limits -->
+      <div class="offer-form-row">
+        <div class="offer-form-group">
+          <label class="offer-label">Usage Limit</label>
+          <input
+            type="number"
+            class="offer-input"
+            [(ngModel)]="formData.usageLimit"
+            name="usageLimit"
+            min="0"
+            placeholder="Total uses allowed"
+          />
+        </div>
+        <div class="offer-form-group">
+          <label class="offer-label">Usage Per User</label>
+          <input
+            type="number"
+            class="offer-input"
+            [(ngModel)]="formData.usagePerUser"
+            name="usagePerUser"
+            min="0"
+            placeholder="Uses per customer"
+          />
+        </div>
+      </div>
+
+      <!-- Terms & Conditions -->
+      <div class="offer-form-group">
+        <label class="offer-label">Terms & Conditions</label>
+        <textarea
+          class="offer-textarea"
+          [(ngModel)]="formData.termsAndConditions"
+          name="termsAndConditions"
+          rows="2"
+          placeholder="Add any terms and conditions"
+        ></textarea>
+      </div>
+
+      <!-- Toggle Switches -->
+      <div class="offer-toggle-group">
+        <label class="offer-toggle">
+          <input
+            type="checkbox"
+            [(ngModel)]="formData.isFeatured"
+            name="isFeatured"
+          />
+          <span class="offer-toggle-slider"></span>
+          <span class="offer-toggle-label">Featured Offer</span>
+        </label>
+        <label class="offer-toggle">
+          <input
+            type="checkbox"
+            [(ngModel)]="formData.isActive"
+            name="isActive"
+          />
+          <span class="offer-toggle-slider"></span>
+          <span class="offer-toggle-label">Active</span>
+        </label>
+      </div>
+
+      <!-- Actions -->
+      <div class="offer-actions">
+        <button
+          type="button"
+          class="offer-btn offer-btn-outline"
+          (click)="close.emit()"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="offer-btn offer-btn-primary"
+          [disabled]="saving || !offerForm.valid"
+        >
+          {{ saving ? "Saving..." : offer ? "Update Offer" : "Create Offer" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

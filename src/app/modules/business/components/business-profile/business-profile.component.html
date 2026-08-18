@@ -192,6 +192,20 @@
     >
       Gallery
     </span>
+    <span
+      class="tab-item"
+      [class.active]="activeTab === 'offers'"
+      (click)="setTab('offers')"
+    >
+      Offers
+    </span>
+    <span
+      class="tab-item"
+      [class.active]="activeTab === 'reviews'"
+      (click)="setTab('reviews')"
+    >
+      Reviews
+    </span>
   </div>
 
   <!-- ---------- OVERVIEW ---------- -->
@@ -425,7 +439,7 @@
           />
         </div>
 
-        <ng-container *ngIf="isOwner">
+        <ng-container *ngIf="isOwner && !viewingAsPublic">
           <button class="btn-outline btn-sm" (click)="addProduct()">
             <span class="material-icons-outlined">add</span> Add Product
           </button>
@@ -491,7 +505,6 @@
           </p>
 
           <!-- Service Pricing -->
-          <!-- Service Pricing -->
           <p class="catalog-card-price" *ngIf="item.type === 'service'">
             <ng-container *ngIf="!item.priceOnRequest">
               <span class="price-current">
@@ -511,9 +524,6 @@
             <ng-container *ngIf="item.priceOnRequest"
               >Price on request</ng-container
             >
-            <!-- <span class="service-pricing-type" *ngIf="item.pricingTypeDisplay">
-              {{ item.pricingTypeDisplay }}
-            </span> -->
           </p>
 
           <a
@@ -540,7 +550,7 @@
         </p>
         <button
           class="btn-primary"
-          *ngIf="isOwner && !catalogSearch"
+          *ngIf="isOwner && !viewingAsPublic && !catalogSearch"
           (click)="addProduct()"
         >
           <span class="material-icons-outlined">add</span> Add Your First
@@ -597,6 +607,236 @@
     </ng-template>
   </div>
 
+  <!-- ---------- OFFERS ---------- -->
+  <div class="content-card offers-card" *ngIf="activeTab === 'offers'">
+    <div class="offers-header">
+      <div class="offers-header-left">
+        <h3>Special Offers</h3>
+        <span class="offers-count" *ngIf="offers.length > 0"
+          >{{ offers.length }} offer{{
+            offers.length > 1 ? "s" : ""
+          }}
+          available</span
+        >
+      </div>
+      <div class="offers-header-right">
+        <ng-container *ngIf="isOwner && !viewingAsPublic">
+          <button class="btn-primary" (click)="addOffer()">
+            <span class="material-icons-outlined">add</span> Add Offer
+          </button>
+        </ng-container>
+      </div>
+    </div>
+
+    <div *ngIf="offersLoading" class="offers-loading">
+      <div class="skeleton-offer" *ngFor="let s of [1, 2, 3]">
+        <div class="skeleton-line shimmer w-60"></div>
+        <div class="skeleton-line shimmer w-40"></div>
+        <div class="skeleton-line shimmer w-80"></div>
+      </div>
+    </div>
+
+    <div *ngIf="!offersLoading && offers.length > 0; else noOffers">
+      <div class="offer-card" *ngFor="let offer of offers">
+        <div class="offer-card-header">
+          <div class="offer-title-section">
+            <h4 class="offer-title">{{ offer.title }}</h4>
+            <span
+              class="offer-type-badge"
+              [class.offer-featured]="offer.isFeatured"
+            >
+              {{ offer.isFeatured ? "Featured" : "Standard" }}
+            </span>
+            <span
+              class="offer-status-badge"
+              [class.offer-inactive]="!offer.isActive"
+            >
+              {{ offer.isActive ? "Active" : "Inactive" }}
+            </span>
+          </div>
+          <div class="offer-actions" *ngIf="isOwner && !viewingAsPublic">
+            <button class="btn-outline btn-sm" (click)="editOffer(offer)">
+              <span class="material-icons-outlined">edit</span>
+            </button>
+            <button
+              class="btn-outline btn-sm delete-btn-offer"
+              (click)="deleteOffer(offer.id, $event)"
+            >
+              <span class="material-icons-outlined">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="offer-card-body">
+          <p class="offer-description">{{ offer.description }}</p>
+
+          <div class="offer-details-grid">
+            <div class="offer-detail-item" *ngIf="offer.couponCode">
+              <span class="offer-detail-label">Coupon Code</span>
+              <span class="offer-detail-value coupon-code">{{
+                offer.couponCode
+              }}</span>
+            </div>
+            <div class="offer-detail-item" *ngIf="offer.discountValue">
+              <span class="offer-detail-label">Discount</span>
+              <span class="offer-detail-value">{{ offer.discountValue }}%</span>
+            </div>
+            <div class="offer-detail-item" *ngIf="offer.minimumPurchaseAmount">
+              <span class="offer-detail-label">Min. Purchase</span>
+              <span class="offer-detail-value"
+                >₹{{ offer.minimumPurchaseAmount }}</span
+              >
+            </div>
+            <div class="offer-detail-item" *ngIf="offer.maximumDiscountAmount">
+              <span class="offer-detail-label">Max. Discount</span>
+              <span class="offer-detail-value"
+                >₹{{ offer.maximumDiscountAmount }}</span
+              >
+            </div>
+          </div>
+
+          <div class="offer-date-range">
+            <span class="offer-date-label">Valid From</span>
+            <span class="offer-date-value">{{
+              offer.startDate | date : "dd MMM yyyy"
+            }}</span>
+            <span class="offer-date-arrow">→</span>
+            <span class="offer-date-value">{{
+              offer.endDate | date : "dd MMM yyyy"
+            }}</span>
+            <span class="offer-days-left" *ngIf="isOfferActive(offer)">
+              {{ getDaysLeft(offer) }} days left
+            </span>
+            <span class="offer-expired" *ngIf="!isOfferActive(offer)">
+              Expired
+            </span>
+          </div>
+
+          <div class="offer-terms" *ngIf="offer.termsAndConditions">
+            <span class="offer-terms-label">Terms & Conditions</span>
+            <p class="offer-terms-text">{{ offer.termsAndConditions }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noOffers>
+      <div class="empty-services">
+        <span class="material-icons-outlined empty-icon">local_offer</span>
+        <p class="about-text">No special offers available at the moment.</p>
+        <button
+          class="btn-primary"
+          *ngIf="isOwner && !viewingAsPublic"
+          (click)="addOffer()"
+        >
+          <span class="material-icons-outlined">add</span> Create Your First
+          Offer
+        </button>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- ---------- REVIEWS ---------- -->
+  <div class="content-card reviews-card" *ngIf="activeTab === 'reviews'">
+    <div class="reviews-header">
+      <div class="reviews-header-left">
+        <h3>Customer Reviews</h3>
+        <span class="reviews-count" *ngIf="reviews.length > 0"
+          >{{ reviews.length }} review{{ reviews.length > 1 ? "s" : "" }}</span
+        >
+      </div>
+      <div class="reviews-header-right">
+        <ng-container>
+          <button class="btn-primary" (click)="addReview()">
+            <span class="material-icons-outlined">rate_review</span> Write a
+            Review
+          </button>
+        </ng-container>
+      </div>
+    </div>
+
+    <div *ngIf="reviewsLoading" class="reviews-loading">
+      <div class="skeleton-review" *ngFor="let s of [1, 2, 3]">
+        <div class="skeleton-line shimmer w-30"></div>
+        <div class="skeleton-line shimmer w-60"></div>
+        <div class="skeleton-line shimmer w-90"></div>
+      </div>
+    </div>
+
+    <div *ngIf="!reviewsLoading && reviews.length > 0; else noReviews">
+      <div class="review-card" *ngFor="let review of reviews">
+        <div class="review-card-header">
+          <div class="review-user-info">
+            <div class="review-avatar">
+              {{ getInitials(review.title || "User") }}
+            </div>
+            <div>
+              <div class="review-user-name">
+                {{ review.title || "Anonymous" }}
+              </div>
+              <div class="review-rating-stars">
+                <span
+                  class="material-icons-outlined star-filled"
+                  *ngFor="let s of getStarArray(review.rating)"
+                >
+                  star
+                </span>
+                <span
+                  class="material-icons-outlined star-empty"
+                  *ngFor="let s of getEmptyStarArray(review.rating)"
+                >
+                  star
+                </span>
+                <span class="review-date">{{
+                  review.createdDate | date : "dd MMM yyyy"
+                }}</span>
+              </div>
+            </div>
+          </div>
+          <span class="review-verified-badge" *ngIf="review.isVerified">
+            <span class="material-icons-outlined">verified</span> Verified
+          </span>
+        </div>
+
+        <div class="review-card-body">
+          <p class="review-comment">{{ review.comment }}</p>
+
+          <div class="review-business-reply" *ngIf="review.businessReply">
+            <div class="reply-header">
+              <span class="material-icons-outlined">reply</span>
+              <span class="reply-label">Business Reply</span>
+              <span class="reply-date">{{
+                review.businessReplyDate | date : "dd MMM yyyy"
+              }}</span>
+            </div>
+            <p class="reply-text">{{ review.businessReply }}</p>
+          </div>
+        </div>
+
+        <div
+          class="review-card-footer"
+          *ngIf="isOwner && !viewingAsPublic && !review.businessReply"
+        >
+          <button class="btn-outline btn-sm" (click)="replyToReview(review)">
+            <span class="material-icons-outlined">reply</span> Reply
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noReviews>
+      <div class="empty-services">
+        <span class="material-icons-outlined empty-icon">rate_review</span>
+        <p class="about-text">No reviews yet. Be the first to review!</p>
+        <button class="btn-primary" (click)="addReview()">
+          <span class="material-icons-outlined">rate_review</span> Write a
+          Review
+        </button>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Existing components -->
   <app-business-edit-profile
     *ngIf="editPanelOpen"
     [tabRefGuid]="tabRefGuid"
@@ -637,4 +877,22 @@
     (close)="closeServiceQuickView()"
     (viewFullDetails)="viewFullServiceDetails()"
   ></app-business-service-quickview>
+
+  <!-- Add Offer Component -->
+  <app-add-business-offer
+    *ngIf="addOfferPanelOpen && business"
+    [businessId]="business.id"
+    [offer]="editingOffer"
+    (close)="closeAddOfferPanel()"
+    (saved)="onOfferSaved()"
+  ></app-add-business-offer>
+
+  <!-- Add Review Component -->
+  <app-add-business-review
+    *ngIf="addReviewPanelOpen && business"
+    [businessId]="business.id"
+    [review]="editingReview"
+    (close)="closeAddReviewPanel()"
+    (saved)="onReviewSaved()"
+  ></app-add-business-review>
 </div>
