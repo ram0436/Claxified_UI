@@ -396,7 +396,7 @@ export class BusinessProfileComponent implements OnInit {
         );
       },
       (error) => {
-        console.error("Delete failed", error);
+        // console.error("Delete failed", error);
         alert("Failed to delete business");
       }
     );
@@ -436,7 +436,7 @@ export class BusinessProfileComponent implements OnInit {
         this.catalogLoading = false;
       },
       (error) => {
-        console.error("Error loading catalog items:", error);
+        // console.error("Error loading catalog items:", error);
         this.catalogItems = [];
         this.catalogLoading = false;
       }
@@ -608,7 +608,7 @@ export class BusinessProfileComponent implements OnInit {
         this.offersLoading = false;
       },
       (error) => {
-        console.error("Error loading offers:", error);
+        // console.error("Error loading offers:", error);
         this.offers = [];
         this.offersLoading = false;
       }
@@ -670,7 +670,7 @@ export class BusinessProfileComponent implements OnInit {
         this.reviewsLoading = false;
       },
       (error) => {
-        console.error("Error loading reviews:", error);
+        // console.error("Error loading reviews:", error);
         this.reviews = [];
         this.reviewsLoading = false;
       }
