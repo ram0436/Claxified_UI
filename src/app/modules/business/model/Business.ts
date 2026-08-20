@@ -1,3 +1,5 @@
+import { EntityType } from "../enum/business-product.enum";
+
 export class AuditFields {
   createdBy: number = 0;
   createdOn: string = new Date().toISOString().slice(0, 23);
@@ -677,4 +679,19 @@ export interface CatalogItem {
   maximumPrice?: number;
   pricingType?: string;
   pricingTypeDisplay?: string;
+}
+
+/** Response shape for GET Business/attribute-masterids?businessSubCategoryId= */
+export interface AttributeMasterIdDto {
+  attributeMasterId: number;
+  entityType: EntityType;
+  isActive: boolean;
+}
+
+/** Response shape for GET Business/attributes-detail?attributeMasterIds=... */
+export interface AttributeMasterDto {
+  attributeMasterId: number;
+  name: string;
+  dataType: string; // "string" | "number" | "boolean" etc.
+  unit: string | null;
 }

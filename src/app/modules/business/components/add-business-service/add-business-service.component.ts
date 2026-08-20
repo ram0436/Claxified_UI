@@ -13,7 +13,6 @@ import { of } from "rxjs";
 import { switchMap } from "rxjs/operators";
 import { BusinessService } from "../../service/business.service";
 import {
-  ServiceAttributeMasterDto,
   BusinessServiceDto,
   ServicePricingType,
   ServiceMode,
@@ -23,8 +22,10 @@ import {
   SERVICE_MODE_OPTIONS,
   SERVICE_AVAILABILITY_STATUS_OPTIONS,
   SERVICE_DURATION_UNIT_OPTIONS,
+  AttributeMasterDto,
 } from "../../model/Business";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { EntityType } from "../../enum/business-product.enum";
 
 interface ServiceImagePreview {
   localId: number;
@@ -72,7 +73,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
     { id: "images", label: "Images", icon: "photo_library", required: true },
   ];
 
-  attributeDefs: ServiceAttributeMasterDto[] = [];
+  attributeDefs: AttributeMasterDto[] = [];
 
   pricingTypeOptions = SERVICE_PRICING_TYPE_OPTIONS;
   serviceModeOptions = SERVICE_MODE_OPTIONS;
@@ -217,19 +218,34 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
       });
   }
 
+  getAttributePlaceholder(attr: AttributeMasterDto): string {
+    const type = (attr.dataType || "").toLowerCase();
+
+    switch (type) {
+      case "number":
+        return attr.unit ? `Enter value in ${attr.unit}` : `Enter ${attr.name}`;
+      case "boolean":
+        return "Yes / No";
+      case "string":
+      default:
+        return `Enter ${attr.name}`;
+    }
+  }
+
   private resolveAttributesForSubCategory(
     subCategoryId: number,
     presetValues?: Map<string, string>
   ): void {
     this.loadingAttributes = true;
     this.businessService
-      .getServiceAttributeMasterIds(subCategoryId)
+      .getAttributeMasterIds(subCategoryId, EntityType.Service)
       .pipe(
-        switchMap((masterIds) => {
-          if (!masterIds || masterIds.length === 0) {
-            return of([] as ServiceAttributeMasterDto[]);
+        switchMap((idDefs) => {
+          const ids = (idDefs || []).map((d) => d.attributeMasterId);
+          if (ids.length === 0) {
+            return of([] as AttributeMasterDto[]);
           }
-          return this.businessService.getServiceAttributes(masterIds);
+          return this.businessService.getAttributeDetails(ids);
         })
       )
       .subscribe(
@@ -245,7 +261,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
   }
 
   private setAttributeDefs(
-    defs: ServiceAttributeMasterDto[],
+    defs: AttributeMasterDto[],
     presetValues?: Map<string, string>
   ): void {
     this.attributeDefs = defs;
@@ -256,13 +272,12 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
       this.attributesArray.push(
         this.fb.group({
           id: [0],
-          serviceAttributeMasterId: [def.serviceAttributeMasterId],
+          serviceAttributeMasterId: [def.attributeMasterId],
           value: [existingValue],
         })
       );
     }
   }
-
   // ---------- Images (mirrors the product image upload UX) ----------
 
   selectFile(): void {

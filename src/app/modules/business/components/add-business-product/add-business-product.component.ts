@@ -12,10 +12,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { of } from "rxjs";
 import { switchMap } from "rxjs/operators";
 import { BusinessService } from "../../service/business.service";
-import {
-  ProductAttributeMasterDto,
-  BusinessProductDto,
-} from "../../model/Business";
+import { BusinessProductDto, AttributeMasterDto } from "../../model/Business";
 import {
   PRICE_UNIT_OPTIONS,
   PRODUCT_CONDITION_OPTIONS,
@@ -25,6 +22,7 @@ import {
   ProductCondition,
   ProductAvailabilityStatus,
   WarrantyPeriodUnit,
+  EntityType,
 } from "./../../enum/business-product.enum";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
@@ -74,7 +72,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     { id: "images", label: "Images", icon: "photo_library", required: true },
   ];
 
-  attributeDefs: ProductAttributeMasterDto[] = [];
+  attributeDefs: AttributeMasterDto[] = [];
 
   priceUnitOptions = PRICE_UNIT_OPTIONS;
   conditionOptions = PRODUCT_CONDITION_OPTIONS;
@@ -219,19 +217,34 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
       });
   }
 
+  getAttributePlaceholder(attr: AttributeMasterDto): string {
+    const type = (attr.dataType || "").toLowerCase();
+
+    switch (type) {
+      case "number":
+        return attr.unit ? `Enter value in ${attr.unit}` : `Enter ${attr.name}`;
+      case "boolean":
+        return "Yes / No";
+      case "string":
+      default:
+        return `Enter ${attr.name}`;
+    }
+  }
+
   private resolveAttributesForSubCategory(
     subCategoryId: number,
     presetValues?: Map<string, string>
   ): void {
     this.loadingAttributes = true;
     this.businessService
-      .getProductAttributeMasterIds(subCategoryId)
+      .getAttributeMasterIds(subCategoryId, EntityType.Product)
       .pipe(
-        switchMap((masterIds) => {
-          if (!masterIds || masterIds.length === 0) {
-            return of([] as ProductAttributeMasterDto[]);
+        switchMap((idDefs) => {
+          const ids = (idDefs || []).map((d) => d.attributeMasterId);
+          if (ids.length === 0) {
+            return of([] as AttributeMasterDto[]);
           }
-          return this.businessService.getProductAttributes(masterIds);
+          return this.businessService.getAttributeDetails(ids);
         })
       )
       .subscribe(
@@ -247,7 +260,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   }
 
   private setAttributeDefs(
-    defs: ProductAttributeMasterDto[],
+    defs: AttributeMasterDto[],
     presetValues?: Map<string, string>
   ): void {
     this.attributeDefs = defs;
@@ -258,7 +271,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
       this.attributesArray.push(
         this.fb.group({
           id: [0],
-          productAttributeMasterId: [def.productAttributeMasterId],
+          productAttributeMasterId: [def.attributeMasterId],
           value: [existingValue],
         })
       );

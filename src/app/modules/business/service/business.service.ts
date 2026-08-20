@@ -18,7 +18,10 @@ import {
   BusinessServicePayload,
   BusinessServiceDto,
   ServiceAttributeMasterDto,
+  AttributeMasterDto,
+  AttributeMasterIdDto,
 } from "../model/Business";
+import { EntityType } from "../enum/business-product.enum";
 
 @Injectable({
   providedIn: "root",
@@ -155,30 +158,6 @@ export class BusinessService {
       .pipe(map((res) => res[0]));
   }
 
-  // ---------- Attribute resolution (internal, silent) ----------
-
-  getProductAttributeMasterIds(
-    productSubCategoryId: number
-  ): Observable<number[]> {
-    return this.http.get<number[]>(
-      `${this.baseUrl}Business/product-attributes-masterid?productSubCategoryId=${productSubCategoryId}`
-    );
-  }
-
-  getProductAttributes(
-    masterIds: number[]
-  ): Observable<ProductAttributeMasterDto[]> {
-    let params = new HttpParams();
-    masterIds.forEach((id) => {
-      params = params.append("productAttributeMasterIds", id.toString());
-    });
-
-    return this.http.get<ProductAttributeMasterDto[]>(
-      `${this.baseUrl}Business/product-attributes`,
-      { params }
-    );
-  }
-
   // ---------- Offers ----------
 
   getBusinessOffers(businessId: number): Observable<BusinessOfferDto[]> {
@@ -230,24 +209,33 @@ export class BusinessService {
     );
   }
 
-  getServiceAttributeMasterIds(
-    serviceSubCategoryId: number
-  ): Observable<number[]> {
-    return this.http.get<number[]>(
-      `${this.baseUrl}Business/services-attributes-masterid?serviceSubCategoryId=${serviceSubCategoryId}`
-    );
+  // ---------- Attribute resolution (internal, silent) ----------
+
+  getAttributeMasterIds(
+    businessSubCategoryId: number,
+    entityType: EntityType
+  ): Observable<AttributeMasterIdDto[]> {
+    return this.http
+      .get<AttributeMasterIdDto[]>(
+        `${this.baseUrl}Business/attribute-masterids?businessSubCategoryId=${businessSubCategoryId}`
+      )
+      .pipe(
+        map((res) =>
+          (res || []).filter((a) => a.entityType === entityType && a.isActive)
+        )
+      );
   }
 
-  getServiceAttributes(
-    masterIds: number[]
-  ): Observable<ServiceAttributeMasterDto[]> {
+  getAttributeDetails(
+    attributeMasterIds: number[]
+  ): Observable<AttributeMasterDto[]> {
     let params = new HttpParams();
-    masterIds.forEach((id) => {
-      params = params.append("serviceAttributeMasterIds", id.toString());
+    attributeMasterIds.forEach((id) => {
+      params = params.append("attributeMasterIds", id.toString());
     });
 
-    return this.http.get<ServiceAttributeMasterDto[]>(
-      `${this.baseUrl}Business/service-attributes`,
+    return this.http.get<AttributeMasterDto[]>(
+      `${this.baseUrl}Business/attributes-detail`,
       { params }
     );
   }

@@ -186,6 +186,7 @@
                     [type]="
                       attributeDefs[i].dataType === 'number' ? 'number' : 'text'
                     "
+                    [placeholder]="getAttributePlaceholder(attributeDefs[i])"
                   />
                 </mat-form-field>
               </div>
