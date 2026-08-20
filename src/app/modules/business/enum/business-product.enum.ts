@@ -76,3 +76,8 @@ export const WARRANTY_PERIOD_UNIT_OPTIONS: {
   { value: WarrantyPeriodUnit.Month, label: "Month(s)" },
   { value: WarrantyPeriodUnit.Year, label: "Year(s)" },
 ];
+
+export enum EntityType {
+  Product = 1,
+  Service = 2,
+}
