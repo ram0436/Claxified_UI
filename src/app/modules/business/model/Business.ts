@@ -695,3 +695,20 @@ export interface AttributeMasterDto {
   dataType: string; // "string" | "number" | "boolean" etc.
   unit: string | null;
 }
+
+export interface AttributeMasterListItem {
+  id: number;
+  name: string;
+}
+
+export interface CategoryAttributeMappingPayload {
+  subCategoryId: number;
+  attributeMasterIds: number[];
+  entityType: number;
+}
+
+export interface CategoryAttributeMappingDto {
+  subCategoryId: number;
+  entityType: number;
+  attributeMasterIds: number[];
+}

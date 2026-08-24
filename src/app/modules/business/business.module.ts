@@ -35,6 +35,7 @@ import { BusinessServiceQuickviewComponent } from './components/business-service
 import { BusinessServiceDetailComponent } from './components/business-service-detail/business-service-detail.component';
 import { AddBusinessOfferComponent } from './components/add-business-offer/add-business-offer.component';
 import { AddBusinessReviewComponent } from './components/add-business-review/add-business-review.component';
+import { BusinessAttributeMappingComponent } from './components/business-attribute-mapping/business-attribute-mapping.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { AddBusinessReviewComponent } from './components/add-business-review/add
     BusinessServiceDetailComponent,
     AddBusinessOfferComponent,
     AddBusinessReviewComponent,
+    BusinessAttributeMappingComponent,
   ],
   imports: [
     CommonModule,

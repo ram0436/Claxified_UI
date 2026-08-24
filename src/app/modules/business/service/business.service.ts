@@ -9,7 +9,6 @@ import {
   BusinessProduct,
   ProductCategoryDto,
   ProductSubCategoryDto,
-  ProductAttributeMasterDto,
   BusinessProductDto,
   BusinessOffer,
   BusinessOfferDto,
@@ -17,9 +16,11 @@ import {
   BusinessReviewDto,
   BusinessServicePayload,
   BusinessServiceDto,
-  ServiceAttributeMasterDto,
   AttributeMasterDto,
   AttributeMasterIdDto,
+  AttributeMasterListItem,
+  CategoryAttributeMappingPayload,
+  CategoryAttributeMappingDto,
 } from "../model/Business";
 import { EntityType } from "../enum/business-product.enum";
 
@@ -237,6 +238,32 @@ export class BusinessService {
     return this.http.get<AttributeMasterDto[]>(
       `${this.baseUrl}Business/attributes-detail`,
       { params }
+    );
+  }
+
+  // ---------- Admin: Attribute Master ----------
+
+  getAttributeMasterList(): Observable<AttributeMasterListItem[]> {
+    return this.http.get<AttributeMasterListItem[]>(
+      `${this.baseUrl}Business/attribute-master`
+    );
+  }
+
+  saveCategoryAttributeMapping(
+    payload: CategoryAttributeMappingPayload
+  ): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}Business/category-attribute-mapping`,
+      payload
+    );
+  }
+
+  getCategoryAttributeMapping(
+    subCategoryId: number,
+    entityType: EntityType
+  ): Observable<CategoryAttributeMappingDto> {
+    return this.http.get<CategoryAttributeMappingDto>(
+      `${this.baseUrl}Business/category-attribute-mapping?subCategoryId=${subCategoryId}&entityType=${entityType}`
     );
   }
 }
