@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): boolean | UrlTree {
     const userRole = localStorage.getItem("role");
-    const allowedAdminRoutes = ["admin-dashboard"];
+    const allowedAdminRoutes = ["admin-dashboard", "business"];
     const allowedUserRoutes = [""];
     const commonRoutes = [
       "post-menu",
@@ -37,8 +37,9 @@ export class AuthGuard implements CanActivate {
       "account/security",
     ];
     const requestedRoute = route.routeConfig?.path || "";
+    const isBusinessRoute = state.url.startsWith("/business");
     if (userRole == "Admin") {
-      if (allowedAdminRoutes.includes(requestedRoute)) {
+      if (allowedAdminRoutes.includes(requestedRoute) || isBusinessRoute) {
         return true;
       } else if (commonRoutes.includes(requestedRoute)) return true;
       else {

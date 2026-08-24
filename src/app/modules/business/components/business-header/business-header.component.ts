@@ -28,6 +28,8 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
 
   showAllBusinesses: boolean = false;
 
+  isAdmin: boolean = false;
+
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -39,6 +41,7 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (localStorage.getItem("authToken") != null) {
       this.isUserLogedIn = true;
+      this.isAdmin = localStorage.getItem("role") === "Admin";
       this.loadUserBusinesses();
     }
 
@@ -75,6 +78,10 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
     if (this.businessUpdatedSub) {
       this.businessUpdatedSub.unsubscribe();
     }
+  }
+
+  goToAttributeMapping(): void {
+    this.router.navigate(["/business/admin/attribute-mapping"]);
   }
 
   loadUserBusinesses(): void {

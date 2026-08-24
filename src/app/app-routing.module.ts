@@ -93,6 +93,7 @@ const routes: Routes = [
       import("./modules/business/business.module").then(
         (m) => m.BusinessModule
       ),
+    canActivate: [AuthGuard],
   },
 ];
 

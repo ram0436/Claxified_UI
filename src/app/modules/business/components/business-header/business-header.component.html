@@ -90,12 +90,22 @@
 
     <button mat-menu-item class="button-item" (click)="goToOwnerProfile()">
       <span class="material-icons-outlined">person_outline</span>
-      <span class="btn-txt">Profile</span>
+      <span class="btn-txt">My Profile</span>
     </button>
     <button mat-menu-item class="button-item" (click)="goToMyBusiness()">
       <span class="material-icons-outlined">business_center</span>
       <span class="btn-txt">All Businesses</span>
     </button>
+    <button
+      mat-menu-item
+      class="button-item"
+      *ngIf="isAdmin"
+      (click)="goToAttributeMapping()"
+    >
+      <span class="material-icons-outlined">tune</span>
+      <span class="btn-txt">Manage Attributes</span>
+    </button>
+
     <button mat-menu-item class="button-item" (click)="goToAccountSettings()">
       <span class="material-icons">settings</span>
       <span class="btn-txt">Account Setting</span>

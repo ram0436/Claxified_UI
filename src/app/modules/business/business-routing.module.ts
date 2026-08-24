@@ -11,6 +11,8 @@ import { BusinessDirectoriesComponent } from "./components/business-directories/
 import { BusinessPageComponent } from "./components/business-page/business-page.component";
 import { BusinessProductDetailComponent } from "./components/business-product-detail/business-product-detail.component";
 import { BusinessServiceDetailComponent } from "./components/business-service-detail/business-service-detail.component";
+import { BusinessAttributeMappingComponent } from "./components/business-attribute-mapping/business-attribute-mapping.component";
+import { AuthGuard } from "../auth/authguard/authguard";
 
 const routes: Routes = [
   {
@@ -31,7 +33,11 @@ const routes: Routes = [
         component: BusinessServiceDetailComponent,
       },
       { path: "page/:slug", component: BusinessPageComponent },
-
+      {
+        path: "admin/attribute-mapping",
+        component: BusinessAttributeMappingComponent,
+        canActivate: [AuthGuard],
+      },
       {
         path: ":location/:businessName",
         component: BusinessPublicProfileComponent,

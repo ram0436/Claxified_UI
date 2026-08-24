@@ -1,0 +1,121 @@
+<div class="attr-map-wrapper">
+  <div class="attr-map-header">
+    <h2>Manage Category Attributes</h2>
+    <p class="attr-map-subtitle">
+      Select a category and sub-category, then choose which attributes apply to
+      Products and Services under it.
+    </p>
+  </div>
+
+  <!-- Step 1 & 2: Category / SubCategory -->
+  <div class="content-card selector-card">
+    <div class="selector-row">
+      <div class="selector-field">
+        <label>Category</label>
+        <select
+          [disabled]="loadingCategories"
+          (change)="onCategoryChange($any($event.target).value)"
+        >
+          <option value="">Select category</option>
+          <option *ngFor="let c of categories" [value]="c.id">
+            {{ c.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="selector-field">
+        <label>Sub-Category</label>
+        <select
+          [disabled]="!selectedCategoryId || loadingSubCategories"
+          (change)="onSubCategoryChange($any($event.target).value)"
+        >
+          <option value="">Select sub-category</option>
+          <option *ngFor="let s of subCategories" [value]="s.id">
+            {{ s.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Entity type tabs + attribute checkboxes -->
+  <div class="content-card mapping-card" *ngIf="selectedSubCategoryId">
+    <div class="entity-tab-strip">
+      <button
+        class="entity-tab"
+        [class.active]="activeEntityTab === EntityType.Product"
+        (click)="setActiveTab(EntityType.Product)"
+      >
+        Product Attributes
+        <span class="tab-count">{{ productSelection.size }}</span>
+      </button>
+      <button
+        class="entity-tab"
+        [class.active]="activeEntityTab === EntityType.Service"
+        (click)="setActiveTab(EntityType.Service)"
+      >
+        Service Attributes
+        <span class="tab-count">{{ serviceSelection.size }}</span>
+      </button>
+    </div>
+
+    <div class="attr-toolbar">
+      <div class="attr-search-box">
+        <span class="material-icons-outlined">search</span>
+        <input
+          type="text"
+          placeholder="Search attributes"
+          [(ngModel)]="searchTerm"
+        />
+      </div>
+      <button
+        class="btn-primary"
+        [disabled]="saving || loadingMapping"
+        (click)="saveMapping()"
+      >
+        <span class="material-icons-outlined">save</span>
+        {{ saving ? "Saving..." : "Save Mapping" }}
+      </button>
+    </div>
+
+    <p class="save-message success" *ngIf="saveMessage">{{ saveMessage }}</p>
+    <p class="save-message error" *ngIf="saveError">{{ saveError }}</p>
+
+    <div class="attr-loading" *ngIf="loadingAttributes || loadingMapping">
+      Loading attributes...
+    </div>
+
+    <div
+      class="attr-grid"
+      *ngIf="
+        !loadingAttributes && !loadingMapping && displayedAttributes.length > 0
+      "
+    >
+      <label
+        class="attr-checkbox-item"
+        *ngFor="let attr of displayedAttributes; trackBy: trackByAttrId"
+        [class.checked]="isChecked(attr.id)"
+      >
+        <input
+          type="checkbox"
+          [checked]="isChecked(attr.id)"
+          (change)="toggleAttribute(attr.id)"
+        />
+        <span class="attr-name">{{ attr.name }}</span>
+        <span class="material-icons-outlined check-icon">check_circle</span>
+      </label>
+    </div>
+
+    <div
+      class="empty-attrs"
+      *ngIf="!loadingAttributes && displayedAttributes.length === 0"
+    >
+      No attributes match your search.
+    </div>
+  </div>
+
+  <div class="content-card empty-state-card" *ngIf="!selectedSubCategoryId">
+    <span class="material-icons-outlined empty-icon">tune</span>
+    <p>Select a category and sub-category to manage its attributes.</p>
+  </div>
+</div>
