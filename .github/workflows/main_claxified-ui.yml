@@ -34,11 +34,39 @@ jobs:
       - name: Build Angular application
         run: npm run build
 
+      - name: Find Angular build output
+        run: |
+          echo "Searching for Angular index.html..."
+
+          INDEX_FILE=$(find dist -type f -name "index.html" | head -n 1)
+
+          if [ -z "$INDEX_FILE" ]; then
+            echo "ERROR: Angular index.html was not found."
+            echo "Contents of dist:"
+            find dist -maxdepth 5 -type f | head -100
+            exit 1
+          fi
+
+          APP_DIR=$(dirname "$INDEX_FILE")
+
+          echo "Angular index.html found at:"
+          echo "$INDEX_FILE"
+
+          echo "Angular deployment directory:"
+          echo "$APP_DIR"
+
+          mkdir -p deploy
+          cp -R "$APP_DIR"/. deploy/
+
+          echo "Deployment files:"
+          find deploy -maxdepth 2 -type f | head -100
+
       - name: Upload Angular build artifact
         uses: actions/upload-artifact@v4
         with:
           name: angular-app
-          path: dist/claxified/browser
+          path: deploy
+          if-no-files-found: error
 
   deploy:
     runs-on: ubuntu-latest
@@ -50,6 +78,11 @@ jobs:
         with:
           name: angular-app
           path: ./deploy
+
+      - name: Show deployment files
+        run: |
+          echo "Files to deploy:"
+          find ./deploy -maxdepth 2 -type f | head -100
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
