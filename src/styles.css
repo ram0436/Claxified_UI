@@ -12,6 +12,14 @@ body {
   background-color: #f9f9f9;
 }
 
+:root {
+  --clx-purple: #4b2aad;
+  --clx-pink: #ee3f7b;
+  --clx-text: #1f1a2e;
+  --clx-muted: #635b76;
+  --clx-border: #e4e1ec;
+}
+
 .cdk-overlay-container {
   z-index: 2000;
 }

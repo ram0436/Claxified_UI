@@ -1,419 +1,348 @@
-<header class="stick stick-header">
-  <nav class="nav-bar">
-    <div class="container px-md-5">
-      <div class="icon-text">
-        <a
-          [routerLink]="['/']"
-          title="Claxified - Post Free Ads | Sell Anything Find Everything
-"
-          class="icon-text1"
-          (click)="getAllItems()"
+<header class="main-header">
+  <nav class="header-nav">
+    <div class="header-container">
+      <!-- Left Section: Logo & Menu Icon -->
+      <div class="header-left">
+        <!-- Menu Icon (Hamburger) -->
+        <button
+          class="menu-toggle"
+          (click)="toggleSlideVisibility()"
+          aria-label="Toggle menu"
         >
-          <div class="logo-img">
-            <img
-              src="https://cfdblob.blob.core.windows.net/logo/Claxified_Logo.png"
-              alt="Logo"
-            />
-            <!-- <div class="logo-text">
-              <span>CLAXIFIED</span>
-            </div> -->
-          </div>
+          <span class="material-icons-outlined">menu</span>
+        </button>
+
+        <!-- Logo -->
+        <a [routerLink]="['/']" class="header-logo" (click)="getAllItems()">
+          <img
+            src="https://cfdblob.blob.core.windows.net/image/Claxified129479.png"
+            alt="Claxified"
+            class="logo-img"
+          />
         </a>
       </div>
-      <div class="css-1pr0bng em7g81m0">
-        <div class="search-bar-container md-db-none">
-          <form action="/search" (ngSubmit)="search()">
-            <div class="search-bar">
-              <div class="inputs-wrapper">
-                <div class="keyword-search-container">
-                  <div class="keyword-search-field">
-                    <div class="form-element form-element--input type-ahead">
-                      <div class="form-element form-element--input">
-                        <input
-                          aria-label="Type search query"
-                          placeholder="eg. BMW 3 series, 3 seater sofa, lawnmower, dining table"
-                          maxlength="50"
-                          autocomplete="off"
-                          class="input input-text"
-                          type="text"
-                          id="q"
-                          name="q"
-                          value=""
-                          [(ngModel)]="searchQuery"
-                        />
-                        <span
-                          class="material-icons cross-icon"
-                          (click)="clearSearchText()"
-                          >clear</span
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <label
-                  class="search-location-label"
-                  for="header-search-location"
-                >
-                  <div class="dividing-line"></div>
-                </label>
-                <div class="location-container">
-                  <div class="form-element form-element--input type-ahead">
-                    <div class="form-element form-element--input">
-                      <input
-                        aria-label="Location"
-                        maxlength="50"
-                        placeholder="Add your postcode or location"
-                        autocomplete="off"
-                        class="input input-text"
-                        type="text"
-                        id="header-search-location"
-                        name="search_location"
-                        value=""
-                        [(ngModel)]="locationSearchQuery"
-                      />
-                      <span
-                        class="material-icons cross-icon"
-                        (click)="clearLocationSearchText()"
-                        >clear</span
-                      >
-                    </div>
-                  </div>
-                  <button
-                    class="button button--primary search-button"
-                    rel="noopener noreferrer"
-                    type="submit"
-                  >
-                    <span class="material-icons">search</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-        <mat-menu #beforeMenu="matMenu" xPosition="before">
-          <button mat-menu-item>
-            <img [src]="imageUrl" alt="" class="img_stl" />
-            <div class="mt-10">
-              <p class="mt-0">{{ userData?.firstName || "" }}</p>
-              <a routerLink="/user/account/personal">Go to Profile</a>
-            </div>
-          </button>
-          <hr class="profile-hr" />
-          <button
-            mat-menu-item
-            routerLink="/Admin/admin-dashboard"
-            class="button-item"
-            *ngIf="isAdmin"
-          >
-            <span class="material-icons-outlined"> admin_panel_settings </span>
-            <span>Admin Dashboard</span>
-          </button>
-          <button
-            mat-menu-item
-            routerLink="/user/account/myadds"
-            class="button-item"
-          >
-            <span class="material-icons"> upload_file </span>
-            <span>Manage Ads</span>
-          </button>
-          <button
-            mat-menu-item
-            class="button-item"
-            routerLink="/user/account/saved"
-          >
-            <span class="material-icons-outlined"> favorite_border </span>
-            <span>My Wishlist</span>
-          </button>
-          <button mat-menu-item class="button-item" routerLink="/help">
-            <span class="material-icons-outlined"> help_outline </span>
-            <span>Help Manual</span>
-          </button>
-          <button
-            mat-menu-item
-            class="button-item"
-            routerLink="/user/account/feedback"
-          >
-            <span class="material-icons-outlined"> reviews </span>
-            <span>Feedback</span>
-          </button>
-          <hr class="profile-hr" />
-          <button mat-menu-item routerLink="/user/account" class="button-item">
-            <span class="material-icons">settings</span>
-            <span>Account & Settings</span>
-          </button>
-          <hr class="profile-hr" />
-          <button mat-menu-item (click)="logout()" class="button-item">
-            <span class="material-icons">logout</span>
-            <span>Logout</span>
-          </button>
-        </mat-menu>
-        <div class="pull-right header-actions">
-          <ul class="nav navbar-nav navbar-right">
-            <li class="login" *ngIf="!isUserLogedIn">
-              <a class="login-flex" (click)="openLoginModal()">
-                <!-- <span class="material-icons"> person </span> -->
-                Login & Register</a
-              >
-            </li>
-            <li class="login" *ngIf="isUserLogedIn">
-              <button
-                class="arrow profile-btn"
-                mat-button
-                [matMenuTriggerFor]="beforeMenu"
-                (click)="toggleExpandIcons()"
-              >
-                <span class="profile-btn-label">My Profile</span>
-                <mat-icon class="expand" [class.rotated]="expandIconVisible"
-                  >expand_more</mat-icon
-                >
-              </button>
-            </li>
-            <li class="business-link sm-d-none" *ngIf="isAdmin">
-              <a routerLink="/business">FOR BUSINESS</a>
-            </li>
 
-            <li class="neon__button sm-d-none">
-              <a (click)="postAdd()">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                Post Free Ad
-              </a>
-            </li>
-            <li class="menu-icon" (click)="toggleSlideVisibility()">
-              <span class="material-icons-outlined"> menu </span>
-              <span class="menu-text">Menu</span>
-            </li>
-          </ul>
-          <div
-            *ngIf="isSlideVisible"
-            class="side-nav-box side-nav-box--right slide slide-enter-done"
+      <!-- Center Section: Navigation Links -->
+      <ul class="header-nav-links">
+        <li>
+          <a routerLink="/" class="nav-link" [class.active]="isActiveRoute('/')"
+            >Marketplace</a
           >
-            <nav class="side-menu">
-              <section class="side-meu-section">
-                <div class="side-menu-sublist">
-                  <li class="neon__button" (click)="toggleSlideVisibility()">
-                    <a
-                      (click)="postAdd()"
-                      class="side-menu-link app-download-button"
-                    >
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                      Post Free Ad
-                    </a>
-                  </li>
-                </div>
-              </section>
-              <section class="side-meu-section">
-                <div class="side-menu-sublist">
-                  <a
-                    (click)="toggleSlideVisibility()"
-                    class="side-menu-link"
-                    routerLink="/"
-                    *ngIf="!isUserLogedIn"
-                  >
-                    <span class="material-icons-outlined"> chevron_right </span>
-                    Home
-                  </a>
-                  <a
-                    (click)="toggleSlideVisibility()"
-                    routerLink="/user/account/personal"
-                    class="side-menu-link"
-                    *ngIf="isUserLogedIn"
-                  >
-                    <span class="material-icons-outlined"> chevron_right </span>
-                    Go to Profile
-                  </a>
-                  <a
-                    (click)="toggleSlideVisibility()"
-                    routerLink="/Admin/admin-dashboard"
-                    class="side-menu-link"
-                    *ngIf="isUserLogedIn && isAdmin"
-                  >
-                    <span class="material-icons-outlined"> chevron_right </span>
-                    Admin Dashboard
-                  </a>
-                  <a
-                    (click)="toggleSlideVisibility()"
-                    class="side-menu-link"
-                    *ngIf="isUserLogedIn"
-                    routerLink="/user/account/myadds"
-                  >
-                    <span class="material-icons-outlined"> chevron_right </span>
-                    Manage My Ads
-                  </a>
-                  <a
-                    (click)="toggleSlideVisibility()"
-                    class="side-menu-link"
-                    *ngIf="isUserLogedIn"
-                    routerLink="/user/account/saved"
-                  >
-                    <span class="material-icons-outlined"> chevron_right </span>
-                    My Wishlist
-                  </a>
-                  <a
-                    (click)="toggleSlideVisibility()"
-                    class="side-menu-link"
-                    routerLink="/business"
-                  >
-                    <span class="material-icons-outlined"> chevron_right </span>
-                    For Business
-                  </a>
-                  <a
-                    (click)="toggleSlideVisibility()"
-                    class="side-menu-link"
-                    *ngIf="isUserLogedIn"
-                    routerLink="/user/account/feedback"
-                  >
-                    <span class="material-icons-outlined"> chevron_right </span>
-                    Feedback
-                  </a>
-                  <a
-                    (click)="toggleSlideVisibility()"
-                    routerLink="/help"
-                    class="side-menu-link"
-                  >
-                    <span class="material-icons-outlined"> chevron_right </span>
-                    Help & Contact
-                  </a>
-                  <a
-                    (click)="toggleSlideVisibility()"
-                    class="side-menu-link border-enable"
-                    *ngIf="isUserLogedIn"
-                    routerLink="/user/account"
-                  >
-                    <span class="material-icons-outlined"> chevron_right </span>
-                    Acount & Settings
-                  </a>
-                  <a
-                    (click)="openLoginModal()"
-                    class="side-menu-link"
-                    *ngIf="!isUserLogedIn"
-                  >
-                    <span class="material-icons-outlined"> chevron_right </span>
-                    Login
-                  </a>
-                  <a
-                    (click)="logout()"
-                    class="side-menu-link"
-                    *ngIf="isUserLogedIn"
-                  >
-                    <span class="material-icons-outlined"> chevron_right </span>
-                    Logout
-                  </a>
-                </div>
-              </section>
-            </nav>
-          </div>
+        </li>
+        <li>
+          <a
+            routerLink="/classified-ads"
+            class="nav-link"
+            [class.active]="isActiveRoute('/classified-ads')"
+            >Claxified Ads</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/business"
+            class="nav-link"
+            [class.active]="isActiveRoute('/business')"
+            >Business</a
+          >
+        </li>
+      </ul>
+
+      <!-- Right Section: Login & Action Buttons -->
+      <div class="header-right">
+        <!-- Login/Register -->
+        <div class="header-auth" *ngIf="!isUserLogedIn">
+          <button class="auth-btn" (click)="openLoginModal()">
+            <span class="material-icons-outlined">person_outline</span>
+            <span class="auth-text">Login / Register</span>
+          </button>
+        </div>
+
+        <!-- User Profile (when logged in) -->
+        <div class="header-auth" *ngIf="isUserLogedIn">
+          <button
+            class="auth-btn profile-btn"
+            [matMenuTriggerFor]="userMenu"
+            #menuTrigger="matMenuTrigger"
+            (click)="toggleExpandIcons()"
+          >
+            <img
+              [src]="imageUrl"
+              alt="Profile"
+              class="profile-avatar"
+              *ngIf="imageUrl !== defaultAvatar"
+              (error)="onImageError($event)"
+            />
+            <span class="profile-initials" *ngIf="imageUrl === defaultAvatar">
+              {{ getUserInitials() }}
+            </span>
+            <span class="profile-name">{{
+              userData?.firstName || "My Profile"
+            }}</span>
+            <mat-icon class="expand" [class.rotated]="expandIconVisible">
+              expand_more
+            </mat-icon>
+          </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="header-actions">
+          <!-- List Business Button -->
+          <button
+            class="action-btn business-btn"
+            (click)="openBusinessLoginModal()"
+          >
+            <span class="material-icons-outlined">storefront</span>
+            <span class="btn-text">List Business</span>
+          </button>
+
+          <!-- Post Free Ad Button -->
+          <button class="action-btn post-ad-btn" (click)="postAdd()">
+            <span class="material-icons-outlined">add_circle_outline</span>
+            <span class="btn-text">Post Free Ad</span>
+          </button>
         </div>
       </div>
     </div>
-    <div class="search-bar-container md-db-block">
-      <form action="/search" (ngSubmit)="search()">
-        <div class="search-bar">
-          <div class="inputs-wrapper">
-            <div class="keyword-search-container">
-              <div class="keyword-search-field">
-                <div class="form-element form-element--input type-ahead">
-                  <div class="form-element form-element--input">
-                    <input
-                      aria-label="Type search query"
-                      placeholder="eg. BMW 3 series, 3 seater sofa, lawnmower, dining table"
-                      maxlength="50"
-                      autocomplete="off"
-                      class="input input-text"
-                      type="text"
-                      id="q"
-                      name="q"
-                      value=""
-                      [(ngModel)]="searchQuery"
-                    />
-                    <span
-                      class="material-icons cross-icon"
-                      (click)="clearSearchText()"
-                      >clear</span
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-            <label class="search-location-label" for="header-search-location">
-              <div class="dividing-line"></div>
-            </label>
-            <div class="location-container">
-              <div class="form-element form-element--input type-ahead">
-                <div class="form-element form-element--input">
-                  <input
-                    aria-label="Location"
-                    maxlength="50"
-                    placeholder="Add your postcode or location"
-                    autocomplete="off"
-                    class="input input-text"
-                    type="text"
-                    id="header-search-location"
-                    name="search_location"
-                    value=""
-                    [(ngModel)]="locationSearchQuery"
-                  />
-                  <span
-                    class="material-icons cross-icon"
-                    (click)="clearLocationSearchText()"
-                    >clear</span
-                  >
-                </div>
-              </div>
-              <button
-                class="button button--primary search-button"
-                rel="noopener noreferrer"
-                type="submit"
-              >
-                <span class="material-icons">search</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
   </nav>
-  <nav class="navbar navbar-inverse" [class.hide-second-nav]="hideSecondNav">
-    <div class="second-nav">
-      <div class="menu-container-scrollable">
-        <ul class="nav navbar-nav no-pointer-nav">
-          <li
-            *ngFor="let category of mainCategories"
-            class="dropdown auto-pointer-events"
-          >
-            <div class="li-item link-item li-item-p-0">
-              <span class="material-icons">{{
-                getMaterialIconForCategory(category.categoryName)
-              }}</span>
-              <a
-                class="menu-title"
-                (click)="getRouterLinkForCategory(category.categoryName)"
-                >{{ category.categoryName }}</a
-              >
-              <!-- [routerLink]="getRouterLinkForCategory(category)" -->
-            </div>
-            <ul class="dropdown-menu">
-              <li *ngFor="let subCategory of category.subCategories">
-                <a
-                  (click)="
-                    getRouterLinkForSubCategory(
-                      category.categoryName,
-                      subCategory.subCategoryName
-                    )
-                  "
-                >
-                  {{ subCategory.subCategoryName }}
-                </a>
-              </li>
-            </ul>
-          </li>
-        </ul>
+
+  <!-- ========================================================= -->
+  <!-- SIDE NAV (SLIDE MENU) -->
+  <!-- ========================================================= -->
+
+  <div
+    *ngIf="isSlideVisible"
+    class="side-nav-overlay"
+    (click)="toggleSlideVisibility()"
+  ></div>
+
+  <div
+    class="side-nav"
+    [class.side-nav--open]="isSlideVisible"
+    [class.side-nav--closed]="!isSlideVisible"
+  >
+    <div class="side-nav-header">
+      <span class="side-nav-title">Menu</span>
+      <button class="side-nav-close" (click)="toggleSlideVisibility()">
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </div>
+
+    <nav class="side-nav-menu">
+      <!-- Main Links -->
+      <a
+        (click)="toggleSlideVisibility()"
+        routerLink="/"
+        class="side-nav-link"
+        [class.active]="isActiveRoute('/')"
+      >
+        <span class="material-icons-outlined">home</span>
+        Home
+      </a>
+      <a
+        (click)="toggleSlideVisibility()"
+        routerLink="/classified-ads"
+        class="side-nav-link"
+        [class.active]="isActiveRoute('/classified-ads')"
+      >
+        <span class="material-icons-outlined">list_alt</span>
+        Claxified Ads
+      </a>
+      <a
+        (click)="toggleSlideVisibility()"
+        routerLink="/business"
+        class="side-nav-link"
+        [class.active]="isActiveRoute('/business')"
+      >
+        <span class="material-icons-outlined">storefront</span>
+        For Business
+      </a>
+
+      <div class="side-nav-divider"></div>
+
+      <!-- User Links -->
+      <ng-container *ngIf="isUserLogedIn">
+        <a
+          (click)="toggleSlideVisibility()"
+          routerLink="/user/account/personal"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">person_outline</span>
+          Go to Profile
+        </a>
+        <a
+          (click)="toggleSlideVisibility()"
+          routerLink="/user/account/myadds"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">upload_file</span>
+          Manage My Ads
+        </a>
+        <a
+          (click)="toggleSlideVisibility()"
+          routerLink="/user/account/saved"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">favorite_border</span>
+          My Wishlist
+        </a>
+        <a
+          (click)="toggleSlideVisibility()"
+          routerLink="/user/account/feedback"
+          class="side-nav-link"
+          *ngIf="isUserLogedIn"
+        >
+          <span class="material-icons-outlined">reviews</span>
+          Feedback
+        </a>
+        <a
+          (click)="toggleSlideVisibility()"
+          routerLink="/user/account"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">settings</span>
+          Account & Settings
+        </a>
+        <a
+          (click)="toggleSlideVisibility()"
+          routerLink="/help"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">help_outline</span>
+          Help & Contact
+        </a>
+
+        <div class="side-nav-divider"></div>
+
+        <a
+          (click)="logout(); toggleSlideVisibility()"
+          class="side-nav-link side-nav-logout"
+        >
+          <span class="material-icons-outlined">logout</span>
+          Logout
+        </a>
+      </ng-container>
+
+      <ng-container *ngIf="!isUserLogedIn">
+        <a
+          (click)="openLoginModal(); toggleSlideVisibility()"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">login</span>
+          Login
+        </a>
+        <a
+          (click)="openSignUpModal(); toggleSlideVisibility()"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">person_add</span>
+          Register
+        </a>
+        <a
+          (click)="toggleSlideVisibility()"
+          routerLink="/help"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">help_outline</span>
+          Help & Contact
+        </a>
+      </ng-container>
+
+      <div class="side-nav-divider"></div>
+
+      <!-- Action Buttons in Side Nav -->
+      <a
+        (click)="openBusinessLoginModal(); toggleSlideVisibility()"
+        class="side-nav-link side-nav-business"
+      >
+        <span class="material-icons-outlined">storefront</span>
+        List Business
+      </a>
+      <a
+        (click)="postAdd(); toggleSlideVisibility()"
+        class="side-nav-link side-nav-post"
+      >
+        <span class="material-icons-outlined">add_circle_outline</span>
+        Post Free Ad
+      </a>
+    </nav>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- USER MENU (MatMenu)  -->
+  <!-- ========================================================= -->
+
+  <mat-menu
+    #userMenu="matMenu"
+    xPosition="before"
+    yPosition="below"
+    overlapTrigger="false"
+    class="user-menu-panel"
+  >
+    <div class="menu-header">
+      <div class="menu-avatar-wrapper">
+        <img
+          [src]="imageUrl"
+          alt="Profile"
+          class="menu-avatar"
+          *ngIf="imageUrl !== defaultAvatar"
+          (error)="onImageError($event)"
+        />
+        <span class="menu-avatar-initials" *ngIf="imageUrl === defaultAvatar">
+          {{ getUserInitials() }}
+        </span>
+      </div>
+      <div class="menu-user-info">
+        <p class="menu-user-name">{{ userData?.firstName || "User" }}</p>
+        <a routerLink="/user/account/personal" class="menu-profile-link"
+          >Go to Profile</a
+        >
       </div>
     </div>
-  </nav>
+
+    <hr class="menu-divider" />
+
+    <button
+      mat-menu-item
+      class="menu-item"
+      routerLink="/Admin/admin-dashboard"
+      *ngIf="isAdmin"
+    >
+      <span class="material-icons-outlined">admin_panel_settings</span>
+      <span>Admin Dashboard</span>
+    </button>
+
+    <button mat-menu-item class="menu-item" routerLink="/user/account/myadds">
+      <span class="material-icons-outlined">upload_file</span>
+      <span>Manage Ads</span>
+    </button>
+
+    <button mat-menu-item class="menu-item" routerLink="/user/account/saved">
+      <span class="material-icons-outlined">favorite_border</span>
+      <span>My Wishlist</span>
+    </button>
+
+    <button mat-menu-item class="menu-item" routerLink="/help">
+      <span class="material-icons-outlined">help_outline</span>
+      <span>Help Manual</span>
+    </button>
+
+    <button mat-menu-item class="menu-item" routerLink="/user/account/feedback">
+      <span class="material-icons-outlined">reviews</span>
+      <span>Feedback</span>
+    </button>
+
+    <hr class="menu-divider" />
+
+    <button mat-menu-item class="menu-item" routerLink="/user/account">
+      <span class="material-icons-outlined">settings</span>
+      <span>Account & Settings</span>
+    </button>
+
+    <hr class="menu-divider" />
+
+    <button mat-menu-item class="menu-item menu-logout" (click)="logout()">
+      <span class="material-icons-outlined">logout</span>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
 </header>

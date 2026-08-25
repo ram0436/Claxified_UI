@@ -1,0 +1,431 @@
+<div class="marketplace-wrapper">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-glow"></div>
+
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          Discover.
+          <span class="hero-accent">Buy. Sell. Grow Locally.</span>
+        </h1>
+        <p class="hero-subtitle">
+          Find local businesses, discover great deals, buy and sell products,
+          and connect with people near you.
+        </p>
+
+        <div class="hero-action-row">
+          <!-- Search Bar -->
+          <div class="hero-search">
+            <div class="search-input-wrapper">
+              <span class="material-icons-outlined search-icon">search</span>
+              <input
+                type="text"
+                placeholder="Search products, services, businesses..."
+                class="search-input"
+                [value]="searchQuery"
+                (input)="onSearchInput($event)"
+                (keyup.enter)="performSearch()"
+              />
+              <div class="search-divider"></div>
+              <div class="location-inline">
+                <span class="material-icons-outlined">location_on</span>
+                <span>Bengaluru</span>
+                <span class="material-icons-outlined expand-more"
+                  >expand_more</span
+                >
+              </div>
+              <button class="search-btn" (click)="performSearch()">
+                Search
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Action Cards -->
+          <div class="quick-actions">
+            <div class="quick-action-card" (click)="postAdd()">
+              <span class="quick-icon icon-purple">
+                <span class="material-icons-outlined">campaign</span>
+              </span>
+              <div class="quick-text">
+                <span class="quick-title">Post Free Ad</span>
+                <span class="quick-sub">Reach more customers</span>
+              </div>
+            </div>
+
+            <div class="quick-action-card" (click)="openBusinessLoginModal()">
+              <span class="quick-icon icon-orange">
+                <span class="material-icons-outlined">storefront</span>
+              </span>
+              <div class="quick-text">
+                <span class="quick-title">List Your Business</span>
+                <span class="quick-sub">Grow your brand</span>
+              </div>
+            </div>
+
+            <div class="quick-action-card" (click)="navigateTo('/offers')">
+              <span class="quick-icon icon-pink">
+                <span class="material-icons-outlined">percent</span>
+              </span>
+              <div class="quick-text">
+                <span class="quick-title">Create Offers</span>
+                <span class="quick-sub">Attract more buyers</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Decorative illustration -->
+      <div class="hero-illustration" aria-hidden="true">
+        <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- skyline -->
+          <g opacity="0.35">
+            <rect x="10" y="90" width="30" height="150" fill="#c9b8f5" rx="2" />
+            <rect x="46" y="60" width="26" height="180" fill="#d8cbf7" rx="2" />
+            <rect
+              x="248"
+              y="70"
+              width="28"
+              height="170"
+              fill="#d8cbf7"
+              rx="2"
+            />
+            <rect
+              x="282"
+              y="100"
+              width="26"
+              height="140"
+              fill="#c9b8f5"
+              rx="2"
+            />
+          </g>
+          <!-- shop building -->
+          <g>
+            <rect
+              x="90"
+              y="120"
+              width="140"
+              height="110"
+              rx="6"
+              fill="#ffffff"
+              stroke="#e4d9fb"
+              stroke-width="2"
+            />
+            <!-- awning -->
+            <path d="M84 120 L236 120 L226 96 Q160 84 94 96 Z" fill="#6C4CE0" />
+            <path d="M84 120 L236 120 L230 132 L90 132 Z" fill="#8B6CF1" />
+            <rect x="90" y="120" width="19.4" height="12" fill="#ffffff" />
+            <rect x="128.8" y="120" width="19.4" height="12" fill="#ffffff" />
+            <rect x="167.6" y="120" width="19.4" height="12" fill="#ffffff" />
+            <rect x="206.4" y="120" width="19.4" height="12" fill="#ffffff" />
+            <!-- door + window -->
+            <rect
+              x="145"
+              y="170"
+              width="30"
+              height="60"
+              rx="2"
+              fill="#FCEFE3"
+              stroke="#F0954B"
+              stroke-width="2"
+            />
+            <rect
+              x="102"
+              y="150"
+              width="30"
+              height="30"
+              rx="2"
+              fill="#EAF1FB"
+              stroke="#8B6CF1"
+              stroke-width="2"
+            />
+            <rect
+              x="188"
+              y="150"
+              width="30"
+              height="30"
+              rx="2"
+              fill="#EAF1FB"
+              stroke="#8B6CF1"
+              stroke-width="2"
+            />
+            <!-- pin -->
+            <path
+              d="M160 30c-13 0-24 10-24 23 0 17 24 45 24 45s24-28 24-45c0-13-11-23-24-23z"
+              fill="#F0954B"
+            />
+            <circle cx="160" cy="53" r="9" fill="#ffffff" />
+          </g>
+          <!-- plant -->
+          <g>
+            <rect
+              x="252"
+              y="205"
+              width="18"
+              height="25"
+              rx="2"
+              fill="#8B6CF1"
+            />
+            <circle cx="261" cy="195" r="14" fill="#7CC576" />
+            <circle cx="250" cy="200" r="10" fill="#8FD689" />
+            <circle cx="272" cy="200" r="10" fill="#8FD689" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Businesses Section -->
+  <section class="section-wrapper">
+    <div class="section-header">
+      <h2 class="section-title">Popular Businesses Near You</h2>
+      <a routerLink="/business/directories" class="view-all-link">
+        View All Business
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Loading State -->
+    <div class="state-block" *ngIf="businessesLoading">
+      <div class="spinner"></div>
+      <p>Loading businesses…</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="state-block" *ngIf="!businessesLoading && businessesError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load the businesses right now.</p>
+      <button class="retry-button" (click)="fetchBusinesses()">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      class="state-block"
+      *ngIf="!businessesLoading && !businessesError && businesses.length === 0"
+    >
+      <span class="material-icons-outlined state-icon">storefront</span>
+      <p>No businesses have been listed yet.</p>
+    </div>
+
+    <!-- Business Grid -->
+    <div
+      class="business-grid"
+      *ngIf="!businessesLoading && !businessesError && businesses.length > 0"
+    >
+      <div
+        class="business-card"
+        *ngFor="
+          let business of businesses | slice : 0 : 5;
+          trackBy: trackByBusinessId
+        "
+        (click)="viewBusiness(business)"
+      >
+        <div class="card-image-wrapper">
+          <img
+            *ngIf="business.coverImageUrl"
+            [src]="business.coverImageUrl"
+            [alt]="business.businessName"
+            class="card-image"
+            loading="lazy"
+            (error)="onBusinessImageError($event)"
+          />
+          <div class="card-image-placeholder" *ngIf="!business.coverImageUrl">
+            <span class="material-icons-outlined">storefront</span>
+          </div>
+          <!-- <div
+            class="card-verified"
+            *ngIf="business.businessVerificationDto?.isBusinessVerified"
+          >
+            <span class="material-icons-outlined">verified</span>
+            Verified
+          </div> -->
+          <div
+            class="card-status"
+            [class.open]="isOpenNow(business)"
+            [class.closed]="!isOpenNow(business)"
+          >
+            {{ isOpenNow(business) ? "Open Now" : "Closed" }}
+          </div>
+        </div>
+        <div class="card-content">
+          <!-- Business Logo -->
+          <div class="business-logo-wrapper">
+            <div class="business-logo" *ngIf="business.logoUrl">
+              <img
+                [src]="business.logoUrl"
+                [alt]="business.businessName"
+                (error)="onLogoError($event)"
+              />
+            </div>
+            <div class="business-logo placeholder" *ngIf="!business.logoUrl">
+              <span class="logo-initials">{{
+                getInitials(business.businessName)
+              }}</span>
+            </div>
+          </div>
+          <h3 class="business-name">
+            {{ business.businessName || "Unnamed Business" }}
+          </h3>
+          <p class="business-category">
+            {{ business.businessCategory || "Business" }}
+          </p>
+          <div class="business-location">
+            <span class="material-icons-outlined">location_on</span>
+            {{ getLocationLabel(business) || "Location" }}
+          </div>
+          <div class="business-rating">
+            <!-- <span class="rating-stars">
+                <span class="material-icons-outlined">star</span>
+                {{ business.rating }}
+              </span> -->
+            <!-- <span class="rating-count">({{ business.reviewCount || 0 }})</span>
+                <span class="rating-divider">|</span> -->
+            <span class="business-years"
+              >{{ getYearsInBusiness(business.establishedYear) }}+ years in
+              business</span
+            >
+          </div>
+          <button
+            class="view-business-btn"
+            (click)="viewBusiness(business); $event.stopPropagation()"
+          >
+            View Business
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Classified Ads Section -->
+  <section class="section-wrapper featured-ads-section">
+    <div class="section-header">
+      <h2 class="section-title">Featured Classified Ads</h2>
+      <a routerLink="/classified-ads" class="view-all-link">
+        View All Ads
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Loading State -->
+    <div class="state-block" *ngIf="adsLoading">
+      <div class="spinner"></div>
+      <p>Loading ads…</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="state-block" *ngIf="!adsLoading && adsError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load the ads right now.</p>
+      <button class="retry-button" (click)="fetchAds()">Try Again</button>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      class="state-block"
+      *ngIf="!adsLoading && !adsError && featuredAds.length === 0"
+    >
+      <span class="material-icons-outlined state-icon">list_alt</span>
+      <p>No featured ads available.</p>
+    </div>
+
+    <!-- Ads Grid -->
+    <div
+      class="ads-grid"
+      *ngIf="!adsLoading && !adsError && featuredAds.length > 0"
+    >
+      <div
+        class="ad-card"
+        *ngFor="let ad of featuredAds | slice : 0 : 6; trackBy: trackByAdId"
+        (click)="viewAd(ad)"
+      >
+        <div class="ad-image-wrapper">
+          <img
+            [src]="getAdImage(ad)"
+            [alt]="ad.title"
+            class="ad-image"
+            loading="lazy"
+            (error)="onAdImageError($event)"
+          />
+          <div class="ad-location">
+            <span class="material-icons-outlined">location_on</span>
+            {{ ad.city || "Bengaluru" }}
+          </div>
+        </div>
+        <div class="ad-content">
+          <h4 class="ad-title">{{ truncateTitle(ad.title, 25) }}</h4>
+          <p class="ad-category">{{ getCategoryName(ad.categoryId) }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top Offers & Deals Section -->
+  <section class="section-wrapper offers-section">
+    <div class="section-header">
+      <h2 class="section-title">Top Offers & Deals</h2>
+      <a routerLink="/offers" class="view-all-link">
+        View All Offers
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="offers-grid">
+      <div class="offer-card" *ngFor="let offer of offers">
+        <div class="offer-icon">
+          <span class="material-icons-outlined">{{
+            offer.icon || "local_offer"
+          }}</span>
+        </div>
+        <div class="offer-content">
+          <h4 class="offer-title">{{ offer.title }}</h4>
+          <p class="offer-description">{{ offer.description }}</p>
+          <div class="offer-footer">
+            <span class="offer-validity" *ngIf="offer.validity"
+              >Valid till {{ offer.validity }}</span
+            >
+            <span class="offer-code" *ngIf="offer.code"
+              >Code: {{ offer.code }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Browse by Category Section -->
+  <section class="section-wrapper categories-section">
+    <div class="section-header">
+      <h2 class="section-title">Browse by Category</h2>
+      <a routerLink="/categories" class="view-all-link">
+        All Categories
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="categories-grid">
+      <div
+        class="category-card"
+        *ngFor="let category of categories"
+        (click)="navigateToCategory(category)"
+      >
+        <div class="category-icon">
+          <span class="material-icons-outlined">{{
+            getCategoryIcon(category.categoryName)
+          }}</span>
+        </div>
+        <div class="category-info">
+          <h4 class="category-name">{{ category.categoryName }}</h4>
+          <span class="category-count"
+            >{{ category.count || 0 }}+ Listings</span
+          >
+        </div>
+        <span class="category-arrow material-icons-outlined"
+          >chevron_right</span
+        >
+      </div>
+    </div>
+  </section>
+</div>

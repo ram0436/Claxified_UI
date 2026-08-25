@@ -6,6 +6,7 @@ import { AuthGuard } from "./modules/auth/authguard/authguard";
 import { VacancyOpeningComponent } from "./shared/component/vacancy-opening/vacancy-opening.component";
 import { HelpComponent } from "./modules/user/component/help/help.component";
 import { PageComponent } from "./pages/page/page.component";
+import { MarketplaceComponent } from "./modules/marketplace/marketplace.component";
 
 const routes: Routes = [
   {
@@ -77,7 +78,7 @@ const routes: Routes = [
         (m) => m.CommercialServiceModule
       ),
   },
-  { path: "", component: DashboardComponent },
+  { path: "", component: MarketplaceComponent },
   { path: "post-menu", component: PostMenuComponent, canActivate: [AuthGuard] },
   {
     path: "Admin",
@@ -94,6 +95,14 @@ const routes: Routes = [
         (m) => m.BusinessModule
       ),
     canActivate: [AuthGuard],
+  },
+  {
+    path: "ads",
+    loadChildren: () =>
+      import("./modules/classified-ads/classified-ads.module").then(
+        (m) => m.ClassifiedAdsModule
+      ),
+    // canActivate: [AuthGuard],
   },
 ];
 

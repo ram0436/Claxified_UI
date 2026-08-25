@@ -20,6 +20,7 @@ import { Location } from "@angular/common";
 import { AdminDashboardService } from "src/app/modules/admin/service/admin-dashboard.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { CommonService } from "../../service/common.service";
+import { BusinessLoginComponent } from "src/app/modules/business/components/business-login/business-login.component";
 
 @Component({
   selector: "app-header",
@@ -53,8 +54,11 @@ export class HeaderComponent implements OnInit {
   userData: any;
   imageUrl: string =
     "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
+  defaultAvatar: string =
+    "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
   dialogRef: MatDialogRef<any> | null = null;
   isAdmin: boolean = false;
+
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -105,6 +109,23 @@ export class HeaderComponent implements OnInit {
 
   toggleSlideVisibility() {
     this.isSlideVisible = !this.isSlideVisible;
+  }
+
+  onImageError(event: any) {
+    const img = event.target;
+    img.style.display = "none";
+    const parent = img.parentElement;
+    if (parent) {
+      let initials = parent.querySelector(".profile-initials");
+      if (!initials) {
+        initials = document.createElement("span");
+        initials.className = "profile-initials";
+        initials.textContent = this.getUserInitials();
+        parent.appendChild(initials);
+      } else {
+        initials.style.display = "flex";
+      }
+    }
   }
 
   generateGadgetsLink(subCategory?: GadgetType) {
@@ -531,6 +552,7 @@ export class HeaderComponent implements OnInit {
       if (localStorage.getItem("authToken") != null) this.isUserLogedIn = true;
     });
   }
+
   openSignUpModal() {
     if (this.dialogRef) {
       this.dialogRef.close();
@@ -542,6 +564,50 @@ export class HeaderComponent implements OnInit {
       this.isUserLogedIn = false;
     });
   }
+
+  // =========================================================
+  // BUSINESS LOGIN MODAL
+  // =========================================================
+
+  openBusinessLoginModal() {
+    if (this.isSlideVisible) {
+      this.isSlideVisible = false;
+    }
+
+    const dialogRef = this.dialog.open(BusinessLoginComponent, {
+      width: "800px",
+      maxWidth: "95vw",
+      panelClass: "business-login-dialog-container",
+      autoFocus: false,
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      // Refresh user data if needed
+    });
+  }
+
+  // =========================================================
+  // GET USER INITIALS
+  // =========================================================
+
+  getUserInitials(): string {
+    if (!this.userData?.firstName) return "U";
+    const name = this.userData.firstName;
+    const words = name.trim().split(/\s+/);
+    if (words.length === 1) {
+      return words[0].substring(0, 2).toUpperCase();
+    }
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+
+  // =========================================================
+  // CHECK ACTIVE ROUTE
+  // =========================================================
+
+  isActiveRoute(route: string): boolean {
+    return this.router.url === route || this.router.url.startsWith(route + "/");
+  }
+
   logout() {
     if (this.isSlideVisible) {
       this.isSlideVisible = !this.isSlideVisible;
@@ -555,6 +621,7 @@ export class HeaderComponent implements OnInit {
       this.router.navigate(["/"]);
     }
   }
+
   getUserData() {
     if (localStorage.getItem("id") != null) {
       this.userService
@@ -574,6 +641,7 @@ export class HeaderComponent implements OnInit {
   toggleExpandIcons(): void {
     this.expandIconVisible = !this.expandIconVisible;
   }
+
   postAdd() {
     if (localStorage.getItem("id") != null)
       this.router.navigate(["/post-menu"]);
