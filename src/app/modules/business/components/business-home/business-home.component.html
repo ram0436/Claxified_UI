@@ -1,0 +1,641 @@
+<div class="business-page-wrapper">
+  <!-- Hero Section -->
+  <section class="business-hero">
+    <div class="business-hero-inner">
+      <div class="business-hero-text">
+        <h1 class="business-hero-title">
+          Discover Trusted<br />
+          <span class="hero-accent">Local Businesses</span>
+        </h1>
+        <p class="business-hero-subtitle">
+          Find verified businesses, services, products and great offers near
+          you.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="business-search">
+          <div class="search-input-wrapper">
+            <span class="material-icons-outlined search-icon">search</span>
+            <input
+              type="text"
+              placeholder="Search businesses, services..."
+              class="search-input"
+              [value]="searchQuery"
+              (input)="onSearchInput($event)"
+              (keyup.enter)="performSearch()"
+            />
+            <div class="search-divider"></div>
+            <!-- <div class="location-inline">
+              <span class="material-icons-outlined">location_on</span>
+              <span>Bengaluru</span>
+              <span class="material-icons-outlined expand-more"
+                >expand_more</span
+              >
+            </div> -->
+            <button class="search-btn" (click)="performSearch()">Search</button>
+          </div>
+        </div>
+
+        <!-- Feature Cards -->
+        <div class="feature-cards">
+          <div class="feature-card">
+            <div class="feature-icon c-purple">
+              <span class="material-icons-outlined">verified</span>
+            </div>
+            <div class="feature-text">
+              <h4>Verified Businesses</h4>
+              <p>Authentic & trusted</p>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon c-orange">
+              <span class="material-icons-outlined">star_rate</span>
+            </div>
+            <div class="feature-text">
+              <h4>Rated & Reviewed</h4>
+              <p>By real customers</p>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon c-green">
+              <span class="material-icons-outlined">local_offer</span>
+            </div>
+            <div class="feature-text">
+              <h4>Best Offers</h4>
+              <p>Save more every day</p>
+            </div>
+          </div>
+          <!-- <div class="feature-card">
+            <div class="feature-icon c-indigo">
+              <span class="material-icons-outlined">shield</span>
+            </div>
+            <div class="feature-text">
+              <h4>Safe & Secure</h4>
+              <p>Your safety, our priority</p>
+            </div>
+          </div> -->
+        </div>
+      </div>
+
+      <!-- Decorative illustration -->
+      <div class="business-hero-illustration" aria-hidden="true">
+        <svg viewBox="0 0 420 320" xmlns="http://www.w3.org/2000/svg">
+          <g opacity="0.5">
+            <rect x="10" y="70" width="55" height="220" rx="4" fill="#c9b8f5" />
+            <rect
+              x="355"
+              y="50"
+              width="55"
+              height="240"
+              rx="4"
+              fill="#c9b8f5"
+            />
+          </g>
+          <g>
+            <rect x="80" y="90" width="90" height="200" rx="4" fill="#8B6CF1" />
+            <rect
+              x="250"
+              y="90"
+              width="90"
+              height="200"
+              rx="4"
+              fill="#8B6CF1"
+            />
+            <rect x="94" y="106" width="18" height="18" fill="#efe9fe" />
+            <rect x="122" y="106" width="18" height="18" fill="#efe9fe" />
+            <rect x="94" y="136" width="18" height="18" fill="#efe9fe" />
+            <rect x="122" y="136" width="18" height="18" fill="#efe9fe" />
+            <rect x="94" y="166" width="18" height="18" fill="#efe9fe" />
+            <rect x="122" y="166" width="18" height="18" fill="#efe9fe" />
+            <rect x="264" y="106" width="18" height="18" fill="#efe9fe" />
+            <rect x="292" y="106" width="18" height="18" fill="#efe9fe" />
+            <rect x="264" y="136" width="18" height="18" fill="#efe9fe" />
+            <rect x="292" y="136" width="18" height="18" fill="#efe9fe" />
+            <rect x="264" y="166" width="18" height="18" fill="#efe9fe" />
+            <rect x="292" y="166" width="18" height="18" fill="#efe9fe" />
+          </g>
+          <g>
+            <rect
+              x="150"
+              y="130"
+              width="120"
+              height="160"
+              rx="6"
+              fill="#ffffff"
+              stroke="#e4d9fb"
+              stroke-width="2"
+            />
+            <path
+              d="M142 130 L278 130 L266 98 Q210 84 154 98 Z"
+              fill="#6C4CE0"
+            />
+            <path d="M142 130 L278 130 L270 146 L150 146 Z" fill="#8B6CF1" />
+            <rect x="150" y="130" width="16" height="14" fill="#ffffff" />
+            <rect x="182" y="130" width="16" height="14" fill="#ffffff" />
+            <rect x="214" y="130" width="16" height="14" fill="#ffffff" />
+            <rect x="246" y="130" width="16" height="14" fill="#ffffff" />
+            <rect
+              x="180"
+              y="110"
+              width="60"
+              height="20"
+              rx="3"
+              fill="#1c1533"
+            />
+            <text
+              x="210"
+              y="124"
+              font-size="10"
+              fill="#ffffff"
+              text-anchor="middle"
+              font-family="Arial"
+              font-weight="700"
+            >
+              BUSINESS
+            </text>
+            <rect
+              x="192"
+              y="220"
+              width="36"
+              height="70"
+              rx="2"
+              fill="#FCEFE3"
+              stroke="#F0954B"
+              stroke-width="2"
+            />
+            <rect
+              x="160"
+              y="176"
+              width="30"
+              height="30"
+              rx="2"
+              fill="#EAF1FB"
+              stroke="#8B6CF1"
+              stroke-width="2"
+            />
+            <rect
+              x="230"
+              y="176"
+              width="30"
+              height="30"
+              rx="2"
+              fill="#EAF1FB"
+              stroke="#8B6CF1"
+              stroke-width="2"
+            />
+          </g>
+          <g>
+            <rect
+              x="300"
+              y="265"
+              width="16"
+              height="25"
+              rx="2"
+              fill="#8B6CF1"
+            />
+            <circle cx="308" cy="255" r="13" fill="#7CC576" />
+            <circle cx="298" cy="260" r="9" fill="#8FD689" />
+            <circle cx="318" cy="260" r="9" fill="#8FD689" />
+            <rect
+              x="104"
+              y="265"
+              width="16"
+              height="25"
+              rx="2"
+              fill="#8B6CF1"
+            />
+            <circle cx="112" cy="255" r="13" fill="#7CC576" />
+            <circle cx="102" cy="260" r="9" fill="#8FD689" />
+            <circle cx="122" cy="260" r="9" fill="#8FD689" />
+          </g>
+          <g>
+            <rect
+              x="278"
+              y="255"
+              width="34"
+              height="26"
+              rx="2"
+              fill="#ffffff"
+              stroke="#e4d9fb"
+              stroke-width="2"
+            />
+            <line
+              x1="278"
+              y1="255"
+              x2="312"
+              y2="281"
+              stroke="#e4d9fb"
+              stroke-width="1"
+            />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Business Categories -->
+  <section class="section-wrapper">
+    <div class="section-header">
+      <h2 class="section-title">Popular Business Categories</h2>
+      <a routerLink="/categories" class="view-all-link">
+        View all categories
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="categories-row">
+      <div
+        class="category-pill"
+        *ngFor="
+          let category of businessCategories | slice : 0 : categoryDisplayLimit
+        "
+        (click)="navigateToCategory(category)"
+      >
+        <div class="category-pill-icon">
+          <span class="material-icons-outlined">{{
+            getCategoryIcon(category.name)
+          }}</span>
+        </div>
+        <div class="category-pill-info">
+          <h4 class="category-name">{{ category.name }}</h4>
+          <!-- <span class="category-count">{{
+            getCategoryCountLabel(category)
+          }}</span> -->
+        </div>
+      </div>
+
+      <a routerLink="/categories" class="category-pill category-pill-more">
+        <div class="category-pill-icon c-neutral">
+          <span class="material-icons-outlined">apps</span>
+        </div>
+        <div class="category-pill-info">
+          <h4 class="category-name">More</h4>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Businesses Near You -->
+  <section class="section-wrapper">
+    <div class="section-header">
+      <div class="section-title-group">
+        <h2 class="section-title">Businesses Near You</h2>
+        <!-- <span class="section-title-chip">
+          <span class="material-icons-outlined">location_on</span>
+          Bengaluru
+        </span> -->
+      </div>
+      <a routerLink="/business/directories" class="view-all-link">
+        View all businesses
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Loading State -->
+    <div class="state-block" *ngIf="businessesLoading">
+      <div class="spinner"></div>
+      <p>Loading businesses…</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="state-block" *ngIf="!businessesLoading && businessesError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load the businesses right now.</p>
+      <button class="retry-button" (click)="fetchBusinesses()">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Business Row -->
+    <div
+      class="business-row-wrapper"
+      *ngIf="!businessesLoading && !businessesError && businesses.length > 0"
+    >
+      <button
+        class="scroll-arrow scroll-arrow-left"
+        (click)="businessScroll.scrollBy({ left: -280, behavior: 'smooth' })"
+        aria-label="Scroll left"
+      >
+        <span class="material-icons-outlined">chevron_left</span>
+      </button>
+
+      <div class="business-row" #businessScroll>
+        <div
+          class="business-card"
+          *ngFor="
+            let business of businesses | slice : 0 : 6;
+            trackBy: trackByBusinessId
+          "
+          (click)="viewBusiness(business)"
+        >
+          <div class="business-card-image-wrapper">
+            <img
+              *ngIf="business.coverImageUrl"
+              [src]="business.coverImageUrl"
+              [alt]="business.businessName"
+              class="business-card-image"
+              loading="lazy"
+            />
+            <div
+              class="business-card-image-placeholder"
+              *ngIf="!business.coverImageUrl"
+            >
+              <span class="material-icons-outlined">storefront</span>
+            </div>
+            <div
+              class="business-card-verified"
+              *ngIf="business.businessVerificationDto?.isBusinessVerified"
+            >
+              <span class="material-icons-outlined">verified</span>
+              Verified
+            </div>
+          </div>
+          <div class="business-card-logo">
+            <img
+              *ngIf="business.logoUrl"
+              [src]="business.logoUrl"
+              [alt]="business.businessName"
+            />
+            <span *ngIf="!business.logoUrl" class="business-card-initials">{{
+              getInitials(business.businessName)
+            }}</span>
+          </div>
+          <div class="business-card-body">
+            <h3 class="business-name">
+              {{ business.businessName || "Unnamed Business" }}
+            </h3>
+            <p class="business-category">
+              {{ business.businessCategory || "Business" }}
+            </p>
+            <div class="business-location">
+              <span class="material-icons-outlined">location_on</span>
+              {{ getLocationLabel(business) || "Location" }}
+            </div>
+            <div class="business-rating">
+              <!-- <span class="rating-stars">
+                <span class="material-icons-outlined">star</span>
+                {{ business.rating || "4.5" }}
+              </span>
+              <span class="rating-count"
+                >({{ business.reviewCount || 0 }})</span
+              >
+              <span class="rating-divider">|</span> -->
+              <span class="business-years"
+                >{{ getYearsInBusiness(business.establishedYear) }}+ years in
+                business</span
+              >
+            </div>
+
+            <div class="business-card-footer">
+              <button
+                class="view-details-btn"
+                (click)="viewBusiness(business); $event.stopPropagation()"
+              >
+                View Details
+              </button>
+              <a
+                *ngIf="getBusinessPhone(business)"
+                class="icon-btn"
+                [href]="'tel:' + getBusinessPhone(business)"
+                (click)="$event.stopPropagation()"
+                aria-label="Call business"
+              >
+                <span class="material-icons-outlined">call</span>
+              </a>
+              <a
+                *ngIf="getBusinessPhone(business)"
+                class="icon-btn whatsapp"
+                [href]="getWhatsAppLink(business)"
+                target="_blank"
+                rel="noopener"
+                (click)="$event.stopPropagation()"
+                aria-label="Message on WhatsApp"
+              >
+                <span class="material-icons-outlined">chat</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button
+        class="scroll-arrow scroll-arrow-right"
+        (click)="businessScroll.scrollBy({ left: 280, behavior: 'smooth' })"
+        aria-label="Scroll right"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Why List Your Business -->
+  <section class="section-wrapper why-list-section">
+    <div class="why-list-content">
+      <div class="why-list-left">
+        <h2 class="section-title">Why List Your Business on Claxified?</h2>
+        <div class="why-list-grid">
+          <div class="why-list-item">
+            <div class="why-icon c-purple">
+              <span class="material-icons-outlined">people</span>
+            </div>
+            <div>
+              <h4>Reach More Customers</h4>
+              <p>Get discovered by local buyers</p>
+            </div>
+          </div>
+          <div class="why-list-item">
+            <div class="why-icon c-indigo">
+              <span class="material-icons-outlined">verified</span>
+            </div>
+            <div>
+              <h4>Build Trust & Credibility</h4>
+              <p>Verified badge builds confidence</p>
+            </div>
+          </div>
+          <div class="why-list-item">
+            <div class="why-icon c-pink">
+              <span class="material-icons-outlined">trending_up</span>
+            </div>
+            <div>
+              <h4>Get More Leads</h4>
+              <p>Generate calls & inquiries</p>
+            </div>
+          </div>
+          <div class="why-list-item">
+            <div class="why-icon c-orange">
+              <span class="material-icons-outlined">rocket_launch</span>
+            </div>
+            <div>
+              <h4>Grow Your Business</h4>
+              <p>Expand your reach and sales</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="why-list-card">
+        <h3>Grow your business with Claxified</h3>
+        <p>
+          List your business in minutes and start getting noticed by thousands
+          of potential customers.
+        </p>
+        <button class="list-business-btn" (click)="openBusinessLoginModal()">
+          <span class="material-icons-outlined">add</span>
+          List Your Business
+        </button>
+        <div class="why-list-card-illustration" aria-hidden="true">
+          <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+            <rect
+              x="30"
+              y="40"
+              width="100"
+              height="80"
+              rx="4"
+              fill="#ffffff"
+              stroke="#e4d9fb"
+              stroke-width="2"
+            />
+            <path d="M24 40 L136 40 L124 16 Q80 6 36 16 Z" fill="#6C4CE0" />
+            <path d="M24 40 L136 40 L130 52 L30 52 Z" fill="#8B6CF1" />
+            <rect x="30" y="40" width="13" height="12" fill="#ffffff" />
+            <rect x="56" y="40" width="13" height="12" fill="#ffffff" />
+            <rect x="82" y="40" width="13" height="12" fill="#ffffff" />
+            <rect x="108" y="40" width="13" height="12" fill="#ffffff" />
+            <rect
+              x="70"
+              y="84"
+              width="20"
+              height="36"
+              rx="2"
+              fill="#FCEFE3"
+              stroke="#F0954B"
+              stroke-width="2"
+            />
+            <rect
+              x="42"
+              y="60"
+              width="18"
+              height="18"
+              rx="2"
+              fill="#EAF1FB"
+              stroke="#8B6CF1"
+              stroke-width="2"
+            />
+            <rect
+              x="100"
+              y="60"
+              width="18"
+              height="18"
+              rx="2"
+              fill="#EAF1FB"
+              stroke="#8B6CF1"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top Rated Businesses -->
+  <!-- <section class="section-wrapper">
+    <div class="section-header">
+      <h2 class="section-title">Top Rated Businesses</h2>
+      <a routerLink="/business/directories" class="view-all-link">
+        View all
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="top-rated-row-wrapper">
+      <div class="top-rated-row" #topRatedScroll>
+        <div class="top-rated-card" *ngFor="let business of topRatedBusinesses">
+          <div class="top-rated-logo">
+            <img
+              *ngIf="business.logoUrl"
+              [src]="business.logoUrl"
+              [alt]="business.businessName"
+            />
+            <span *ngIf="!business.logoUrl" class="top-rated-initials">{{
+              getInitials(business.businessName)
+            }}</span>
+          </div>
+          <div class="top-rated-info">
+            <h4 class="top-rated-name">{{ business.businessName }}</h4>
+            <p class="top-rated-category">{{ business.category }}</p>
+            <div class="top-rated-rating">
+              <span class="material-icons-outlined">star</span>
+              {{ business.rating || "4.5" }} ({{ business.reviewCount || 0 }})
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Offers & Deals from Local Businesses -->
+  <section class="section-wrapper offers-section">
+    <div class="section-header">
+      <h2 class="section-title">Offers & Deals from Local Businesses</h2>
+      <a routerLink="/offers" class="view-all-link">
+        View all offers
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Loading State -->
+    <div class="state-block" *ngIf="offersLoading">
+      <div class="spinner"></div>
+      <p>Loading offers…</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="state-block" *ngIf="!offersLoading && offersError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load offers right now.</p>
+      <button class="retry-button" (click)="fetchBusinesses()">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      class="state-block"
+      *ngIf="!offersLoading && !offersError && offers.length === 0"
+    >
+      <span class="material-icons-outlined state-icon">local_offer</span>
+      <p>No offers available right now.</p>
+    </div>
+
+    <div
+      class="offers-row"
+      *ngIf="!offersLoading && !offersError && offers.length > 0"
+    >
+      <div
+        class="offer-card"
+        *ngFor="let offer of offers; let i = index; trackBy: trackByOfferId"
+      >
+        <div
+          class="offer-badge"
+          [style.background]="getOfferBgColor(i)"
+          [style.color]="getOfferColor(i)"
+        >
+          <span class="offer-badge-value">{{
+            getOfferBadge(offer.title).value
+          }}</span>
+          <span
+            class="offer-badge-suffix"
+            *ngIf="getOfferBadge(offer.title).suffix"
+          >
+            {{ getOfferBadge(offer.title).suffix }}
+          </span>
+        </div>
+        <div class="offer-content">
+          <h4 class="offer-title">{{ offer.title }}</h4>
+          <p class="offer-description">{{ offer.businessName }}</p>
+        </div>
+        <span class="offer-arrow material-icons-outlined">chevron_right</span>
+      </div>
+    </div>
+  </section>
+</div>

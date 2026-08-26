@@ -97,7 +97,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: "ads",
+    path: "classified-ads",
     loadChildren: () =>
       import("./modules/classified-ads/classified-ads.module").then(
         (m) => m.ClassifiedAdsModule

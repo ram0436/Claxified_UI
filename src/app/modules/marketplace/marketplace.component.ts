@@ -2,12 +2,23 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import * as moment from "moment";
+import { forkJoin, of } from "rxjs";
+import { catchError } from "rxjs/operators";
 import { BusinessService } from "../../modules/business/service/business.service";
-import { BusinessDirectoryItem } from "../../modules/business/model/Business";
+import {
+  BusinessDirectoryItem,
+  BusinessOfferDto,
+} from "../../modules/business/model/Business";
 import { CommonService } from "../../shared/service/common.service";
 import { AdminDashboardService } from "../../modules/admin/service/admin-dashboard.service";
 import { BusinessLoginComponent } from "../../modules/business/components/business-login/business-login.component";
 import { LoginComponent } from "../../modules/user/component/login/login.component";
+
+// Local view-model so the template doesn't need to know about offerType numbers etc.
+interface OfferViewModel extends BusinessOfferDto {
+  businessName: string;
+  icon: string;
+}
 
 @Component({
   selector: "app-marketplace",
@@ -27,54 +38,26 @@ export class MarketplaceComponent implements OnInit {
   featuredAds: any[] = [];
   adsLoading: boolean = true;
   adsError: boolean = false;
+  private allAds: any[] = [];
 
   // Categories
   categories: any[] = [];
 
-  // Offers - Updated to match the image
-  offers = [
-    {
-      icon: "local_offer",
-      title: "20% OFF on Electronics",
-      description: "Min. purchase ₹5,000",
-      validity: "31 Aug 2026",
-    },
-    {
-      icon: "local_offer",
-      title: "20% OFF on Electronics",
-      description: "Min. purchase ₹5,000",
-      validity: "31 Aug 2026",
-    },
-    {
-      icon: "discount",
-      title: "Flat ₹2000 OFF",
-      description: "Min. purchase ₹500,000",
-      code: "CAR2000",
-    },
-    {
-      icon: "restaurant",
-      title: "15% OFF on All Orders",
-      description: "Min. purchase ₹500",
-    },
-    {
-      icon: "restaurant",
-      title: "15% OFF on All Orders",
-      description: "Udupi Food Hub",
-      code: "UDUPI15",
-    },
-    {
-      icon: "restaurant",
-      title: "10% OFF on Food",
-      description: "Hotel Shraddha",
-      code: "HOTEL10",
-    },
-    {
-      icon: "local_hospital",
-      title: "10% OFF on Food",
-      description: "Hotel Shraddha",
-      code: "HOSPITAL",
-    },
-  ];
+  // Offers
+  offers: OfferViewModel[] = [];
+  offersLoading: boolean = true;
+  offersError: boolean = false;
+
+  private readonly OFFER_SOURCE_BUSINESS_LIMIT = 100;
+  private readonly OFFER_DISPLAY_LIMIT = 8;
+
+  // Icon per offer type (see ServicePricingType-style enums on BusinessOffer.offerType)
+  private offerTypeIcons: { [key: number]: string } = {
+    1: "local_offer", // percentage off
+    2: "discount", // flat amount off
+    3: "card_giftcard", // bundled / gift
+    4: "restaurant", // category-specific (fallback used loosely)
+  };
 
   // Category icon mapping
   categoryIcons: { [key: string]: string } = {
@@ -174,22 +157,97 @@ export class MarketplaceComponent implements OnInit {
     this.businessesError = false;
     this.businessService.getBusinessList().subscribe(
       (data: BusinessDirectoryItem[]) => {
-        this.businesses = (data || [])
-          .filter((b) => b.status !== 0)
-          .slice(0, 5);
-        // Add mock data for demo
-        this.businesses.forEach((b, index) => {
+        const activeBusinesses = (data || []).filter((b) => b.status !== 0);
+
+        // Keep top 5 for the "Popular Businesses" grid
+        this.businesses = activeBusinesses.slice(0, 5);
+        this.businesses.forEach((b) => {
           (b as any).rating = (4 + Math.random() * 0.8).toFixed(1);
           (b as any).reviewCount = Math.floor(Math.random() * 200) + 20;
           (b as any).establishedYear = 2015 + Math.floor(Math.random() * 10);
         });
         this.businessesLoading = false;
+
+        this.fetchOffers(
+          activeBusinesses.slice(0, this.OFFER_SOURCE_BUSINESS_LIMIT)
+        );
       },
       () => {
         this.businessesError = true;
         this.businessesLoading = false;
+        this.offersLoading = false;
+        this.offersError = true;
       }
     );
+  }
+
+  // =========================================================
+  // FETCH OFFERS (via Business/offers per businessId)
+  // =========================================================
+
+  fetchOffers(businesses: BusinessDirectoryItem[]): void {
+    this.offersLoading = true;
+    this.offersError = false;
+
+    if (!businesses || businesses.length === 0) {
+      this.offers = [];
+      this.offersLoading = false;
+      return;
+    }
+
+    const offerRequests = businesses.map((business) =>
+      this.businessService
+        .getBusinessOffers(business.id)
+        .pipe(catchError(() => of([] as BusinessOfferDto[])))
+    );
+
+    forkJoin(offerRequests).subscribe(
+      (results: BusinessOfferDto[][]) => {
+        const flattened: OfferViewModel[] = [];
+
+        results.forEach((offerList, index) => {
+          const business = businesses[index];
+          (offerList || [])
+            .filter((offer) => offer.isActive && this.isOfferValid(offer))
+            .forEach((offer) => {
+              flattened.push({
+                ...offer,
+                businessName: business.businessName,
+                icon: this.getOfferIcon(offer.offerType),
+              });
+            });
+        });
+
+        // Featured offers first, then by soonest expiry
+        flattened.sort((a, b) => {
+          if (a.isFeatured !== b.isFeatured) {
+            return a.isFeatured ? -1 : 1;
+          }
+          return moment(a.endDate).diff(moment(b.endDate));
+        });
+
+        this.offers = flattened.slice(0, this.OFFER_DISPLAY_LIMIT);
+        this.offersLoading = false;
+      },
+      () => {
+        this.offersError = true;
+        this.offersLoading = false;
+      }
+    );
+  }
+
+  private isOfferValid(offer: BusinessOfferDto): boolean {
+    if (!offer.endDate) return true;
+    return moment(offer.endDate).isSameOrAfter(moment(), "day");
+  }
+
+  private getOfferIcon(offerType: number): string {
+    return this.offerTypeIcons[offerType] || "local_offer";
+  }
+
+  formatOfferValidity(endDate: string): string {
+    if (!endDate) return "";
+    return moment(endDate).format("DD MMM YYYY");
   }
 
   // =========================================================
@@ -217,6 +275,7 @@ export class MarketplaceComponent implements OnInit {
           ][Math.floor(Math.random() * 6)];
         });
         this.adsLoading = false;
+        this.updateCategoryCounts();
       },
       () => {
         this.adsError = true;
@@ -233,12 +292,36 @@ export class MarketplaceComponent implements OnInit {
     this.commonService.getAllCategory().subscribe(
       (data: any) => {
         this.categories = (data || []).slice(0, 8);
-        this.categories.forEach((category: any) => {
-          category.count = this.getCategoryCount(category.id);
-        });
+        this.updateCategoryCounts();
       },
       () => {}
     );
+  }
+
+  // =========================================================
+  // CATEGORY COUNT
+  // =========================================================
+
+  private updateCategoryCounts(): void {
+    if (!this.categories.length || !this.allAds.length) {
+      return;
+    }
+    this.categories.forEach((category: any) => {
+      category.count = this.allAds.filter(
+        (ad) => String(ad.categoryId) === String(category.id)
+      ).length;
+    });
+  }
+
+  getCategoryCountLabel(category: any): string {
+    const count = category?.count;
+    if (count === undefined || count === null) {
+      return "Loading…";
+    }
+    if (count === 0) {
+      return "New on Marketplace";
+    }
+    return `${count} ${count === 1 ? "Listing" : "Listings"}`;
   }
 
   // =========================================================
@@ -257,6 +340,10 @@ export class MarketplaceComponent implements OnInit {
 
   trackByBusinessId(_index: number, business: BusinessDirectoryItem): number {
     return business.id;
+  }
+
+  trackByOfferId(_index: number, offer: OfferViewModel): number {
+    return offer.id;
   }
 
   getLocationLabel(business: BusinessDirectoryItem): string {

@@ -47,6 +47,10 @@ body {
   z-index: 2001;
 }
 
+::ng-deep .custom-dialog-container {
+  margin-top: 100px;
+}
+
 a {
   outline: none;
   -webkit-tap-highlight-color: transparent;

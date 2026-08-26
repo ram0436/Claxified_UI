@@ -28,14 +28,16 @@ import { BusinessDirectoriesComponent } from "./components/business-directories/
 import { MatMenuModule } from "@angular/material/menu";
 import { BusinessPageComponent } from "./components/business-page/business-page.component";
 import { AddBusinessProductComponent } from "./components/add-business-product/add-business-product.component";
-import { BusinessProductQuickviewComponent } from './components/business-product-quickview/business-product-quickview.component';
-import { BusinessProductDetailComponent } from './components/business-product-detail/business-product-detail.component';
-import { AddBusinessServiceComponent } from './components/add-business-service/add-business-service.component';
-import { BusinessServiceQuickviewComponent } from './components/business-service-quickview/business-service-quickview.component';
-import { BusinessServiceDetailComponent } from './components/business-service-detail/business-service-detail.component';
-import { AddBusinessOfferComponent } from './components/add-business-offer/add-business-offer.component';
-import { AddBusinessReviewComponent } from './components/add-business-review/add-business-review.component';
-import { BusinessAttributeMappingComponent } from './components/business-attribute-mapping/business-attribute-mapping.component';
+import { BusinessProductQuickviewComponent } from "./components/business-product-quickview/business-product-quickview.component";
+import { BusinessProductDetailComponent } from "./components/business-product-detail/business-product-detail.component";
+import { AddBusinessServiceComponent } from "./components/add-business-service/add-business-service.component";
+import { BusinessServiceQuickviewComponent } from "./components/business-service-quickview/business-service-quickview.component";
+import { BusinessServiceDetailComponent } from "./components/business-service-detail/business-service-detail.component";
+import { AddBusinessOfferComponent } from "./components/add-business-offer/add-business-offer.component";
+import { AddBusinessReviewComponent } from "./components/add-business-review/add-business-review.component";
+import { BusinessAttributeMappingComponent } from "./components/business-attribute-mapping/business-attribute-mapping.component";
+import { BusinessHomeComponent } from "./components/business-home/business-home.component";
+import { HeaderComponent } from "src/app/shared/component/header/header.component";
 
 @NgModule({
   declarations: [
@@ -60,6 +62,7 @@ import { BusinessAttributeMappingComponent } from './components/business-attribu
     AddBusinessOfferComponent,
     AddBusinessReviewComponent,
     BusinessAttributeMappingComponent,
+    BusinessHomeComponent,
   ],
   imports: [
     CommonModule,
@@ -78,6 +81,7 @@ import { BusinessAttributeMappingComponent } from './components/business-attribu
     MatSnackBarModule,
     MatMenuModule,
     ReactiveFormsModule,
+    // HeaderComponent,
   ],
 })
 export class BusinessModule {}

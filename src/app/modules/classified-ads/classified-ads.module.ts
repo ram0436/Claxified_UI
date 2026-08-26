@@ -15,9 +15,10 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatMenuModule } from "@angular/material/menu";
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { ClassifiedAdsRoutingModule } from "./classified-ads-routing.module";
+import { ClassifiedAdsHomeComponent } from './components/classified-ads-home/classified-ads-home.component';
 
 @NgModule({
-  declarations: [DashboardComponent],
+  declarations: [DashboardComponent, ClassifiedAdsHomeComponent],
   imports: [
     CommonModule,
     ClassifiedAdsRoutingModule,

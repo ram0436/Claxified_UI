@@ -545,7 +545,7 @@ export class HeaderComponent implements OnInit {
 
     const dialogRefElement = document.querySelector(".custom-dialog-container");
     if (dialogRefElement) {
-      dialogRefElement.setAttribute("style", "margin-top: 50px");
+      dialogRefElement.setAttribute("style", "margin-top: 150px");
     }
 
     this.dialogRef.afterClosed().subscribe((result) => {

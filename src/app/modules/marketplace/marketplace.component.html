@@ -28,13 +28,13 @@
                 (keyup.enter)="performSearch()"
               />
               <div class="search-divider"></div>
-              <div class="location-inline">
+              <!-- <div class="location-inline">
                 <span class="material-icons-outlined">location_on</span>
                 <span>Bengaluru</span>
                 <span class="material-icons-outlined expand-more"
                   >expand_more</span
                 >
-              </div>
+              </div> -->
               <button class="search-btn" (click)="performSearch()">
                 Search
               </button>
@@ -372,23 +372,54 @@
       </a>
     </div>
 
-    <div class="offers-grid">
-      <div class="offer-card" *ngFor="let offer of offers">
+    <!-- Loading State -->
+    <div class="state-block" *ngIf="offersLoading">
+      <div class="spinner"></div>
+      <p>Loading offers…</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="state-block" *ngIf="!offersLoading && offersError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load offers right now.</p>
+      <button class="retry-button" (click)="fetchBusinesses()">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      class="state-block"
+      *ngIf="!offersLoading && !offersError && offers.length === 0"
+    >
+      <span class="material-icons-outlined state-icon">local_offer</span>
+      <p>No offers available right now.</p>
+    </div>
+
+    <!-- Offers Grid -->
+    <div
+      class="offers-grid"
+      *ngIf="!offersLoading && !offersError && offers.length > 0"
+    >
+      <div
+        class="offer-card"
+        *ngFor="let offer of offers; trackBy: trackByOfferId"
+      >
         <div class="offer-icon">
-          <span class="material-icons-outlined">{{
-            offer.icon || "local_offer"
-          }}</span>
+          <span class="material-icons-outlined">{{ offer.icon }}</span>
         </div>
         <div class="offer-content">
           <h4 class="offer-title">{{ offer.title }}</h4>
-          <p class="offer-description">{{ offer.description }}</p>
+          <p class="offer-description">
+            {{ offer.description || offer.businessName }}
+          </p>
           <div class="offer-footer">
-            <span class="offer-validity" *ngIf="offer.validity"
-              >Valid till {{ offer.validity }}</span
-            >
-            <span class="offer-code" *ngIf="offer.code"
-              >Code: {{ offer.code }}</span
-            >
+            <span class="offer-validity" *ngIf="offer.endDate">
+              Valid till {{ formatOfferValidity(offer.endDate) }}
+            </span>
+            <span class="offer-code" *ngIf="offer.couponCode">
+              Code: {{ offer.couponCode }}
+            </span>
           </div>
         </div>
       </div>
@@ -418,9 +449,9 @@
         </div>
         <div class="category-info">
           <h4 class="category-name">{{ category.categoryName }}</h4>
-          <span class="category-count"
+          <!-- <span class="category-count"
             >{{ category.count || 0 }}+ Listings</span
-          >
+          > -->
         </div>
         <span class="category-arrow material-icons-outlined"
           >chevron_right</span

@@ -13,13 +13,14 @@ import { BusinessProductDetailComponent } from "./components/business-product-de
 import { BusinessServiceDetailComponent } from "./components/business-service-detail/business-service-detail.component";
 import { BusinessAttributeMappingComponent } from "./components/business-attribute-mapping/business-attribute-mapping.component";
 import { AuthGuard } from "../auth/authguard/authguard";
+import { BusinessHomeComponent } from "./components/business-home/business-home.component";
 
 const routes: Routes = [
   {
     path: "",
     component: BusinessLayoutComponent,
     children: [
-      { path: "", component: BusinessLandingComponent },
+      { path: "", component: BusinessHomeComponent },
       { path: "directories", component: BusinessDirectoriesComponent },
       { path: "profile", component: BusinessProfileComponent },
       { path: "profile/edit", component: BusinessEditProfileComponent },
