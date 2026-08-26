@@ -61,7 +61,7 @@
 
 .hero-accent {
   display: inline;
-  background: linear-gradient(90deg, #6c4ce0 0%, #a855f7 55%, #ec4899 100%);
+  background: linear-gradient(90deg, #e75462 0%, #a855f7 55%, #ec4899 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -105,7 +105,7 @@
 }
 
 .search-input-wrapper:focus-within {
-  border-color: #6c4ce0;
+  border-color: #e75462;
   box-shadow: 0 4px 20px rgba(108, 76, 224, 0.18);
 }
 
@@ -152,7 +152,7 @@
 
 .location-inline .material-icons-outlined {
   font-size: 17px;
-  color: #6c4ce0;
+  color: #e75462;
 }
 
 .location-inline .expand-more {
@@ -161,7 +161,7 @@
 }
 
 .search-btn {
-  background: #6c4ce0;
+  background: #e75462;
   color: #fff;
   border: none;
   padding: 10px 24px;
@@ -222,7 +222,7 @@
 
 .quick-icon.icon-purple {
   background: #efe9fe;
-  color: #6c4ce0;
+  color: #e75462;
 }
 
 .quick-icon.icon-orange {
@@ -1048,5 +1048,122 @@
 
   .categories-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   SCROLLABLE BUSINESS ROW
+   ========================================================= */
+
+.business-row-wrapper {
+  position: relative;
+}
+
+.business-row {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 4px 2px 12px;
+  scrollbar-width: none;
+}
+
+.business-row::-webkit-scrollbar {
+  display: none;
+}
+
+.business-row .business-card {
+  flex: 0 0 240px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.business-row .business-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================================
+     SCROLLABLE ADS ROW
+     ========================================================= */
+
+.ads-row-wrapper {
+  position: relative;
+}
+
+.ads-row {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 4px 2px 12px;
+  scrollbar-width: none;
+}
+
+.ads-row::-webkit-scrollbar {
+  display: none;
+}
+
+.ads-row .ad-card {
+  flex: 0 0 220px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e8e8e8;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ads-row .ad-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================================
+     SCROLL ARROWS (shared)
+     ========================================================= */
+
+.scroll-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #eee6fa;
+  background: #fff;
+  color: #e75462;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  z-index: 2;
+  transition: background 0.2s ease;
+}
+
+.scroll-arrow:hover {
+  background: #efe9fe;
+}
+
+.scroll-arrow-left {
+  left: -17px;
+}
+
+.scroll-arrow-right {
+  right: -17px;
+}
+
+/* =========================================================
+     RESPONSIVE
+     ========================================================= */
+
+@media (max-width: 768px) {
+  .scroll-arrow {
+    display: none;
   }
 }

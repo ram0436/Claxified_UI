@@ -28,13 +28,6 @@
                 (keyup.enter)="performSearch()"
               />
               <div class="search-divider"></div>
-              <!-- <div class="location-inline">
-                <span class="material-icons-outlined">location_on</span>
-                <span>Bengaluru</span>
-                <span class="material-icons-outlined expand-more"
-                  >expand_more</span
-                >
-              </div> -->
               <button class="search-btn" (click)="performSearch()">
                 Search
               </button>
@@ -210,92 +203,97 @@
       <p>No businesses have been listed yet.</p>
     </div>
 
-    <!-- Business Grid -->
+    <!-- Business Row with Scroll -->
     <div
-      class="business-grid"
+      class="business-row-wrapper"
       *ngIf="!businessesLoading && !businessesError && businesses.length > 0"
     >
-      <div
-        class="business-card"
-        *ngFor="
-          let business of businesses | slice : 0 : 5;
-          trackBy: trackByBusinessId
-        "
-        (click)="viewBusiness(business)"
+      <button
+        class="scroll-arrow scroll-arrow-left"
+        (click)="businessScroll.scrollBy({ left: -300, behavior: 'smooth' })"
+        aria-label="Scroll left"
       >
-        <div class="card-image-wrapper">
-          <img
-            *ngIf="business.coverImageUrl"
-            [src]="business.coverImageUrl"
-            [alt]="business.businessName"
-            class="card-image"
-            loading="lazy"
-            (error)="onBusinessImageError($event)"
-          />
-          <div class="card-image-placeholder" *ngIf="!business.coverImageUrl">
-            <span class="material-icons-outlined">storefront</span>
-          </div>
-          <!-- <div
-            class="card-verified"
-            *ngIf="business.businessVerificationDto?.isBusinessVerified"
-          >
-            <span class="material-icons-outlined">verified</span>
-            Verified
-          </div> -->
-          <div
-            class="card-status"
-            [class.open]="isOpenNow(business)"
-            [class.closed]="!isOpenNow(business)"
-          >
-            {{ isOpenNow(business) ? "Open Now" : "Closed" }}
-          </div>
-        </div>
-        <div class="card-content">
-          <!-- Business Logo -->
-          <div class="business-logo-wrapper">
-            <div class="business-logo" *ngIf="business.logoUrl">
-              <img
-                [src]="business.logoUrl"
-                [alt]="business.businessName"
-                (error)="onLogoError($event)"
-              />
+        <span class="material-icons-outlined">chevron_left</span>
+      </button>
+
+      <div class="business-row" #businessScroll>
+        <div
+          class="business-card"
+          *ngFor="
+            let business of businesses | slice : 0 : 10;
+            trackBy: trackByBusinessId
+          "
+          (click)="viewBusiness(business)"
+        >
+          <div class="card-image-wrapper">
+            <img
+              *ngIf="business.coverImageUrl"
+              [src]="business.coverImageUrl"
+              [alt]="business.businessName"
+              class="card-image"
+              loading="lazy"
+              (error)="onBusinessImageError($event)"
+            />
+            <div class="card-image-placeholder" *ngIf="!business.coverImageUrl">
+              <span class="material-icons-outlined">storefront</span>
             </div>
-            <div class="business-logo placeholder" *ngIf="!business.logoUrl">
-              <span class="logo-initials">{{
-                getInitials(business.businessName)
-              }}</span>
-            </div>
-          </div>
-          <h3 class="business-name">
-            {{ business.businessName || "Unnamed Business" }}
-          </h3>
-          <p class="business-category">
-            {{ business.businessCategory || "Business" }}
-          </p>
-          <div class="business-location">
-            <span class="material-icons-outlined">location_on</span>
-            {{ getLocationLabel(business) || "Location" }}
-          </div>
-          <div class="business-rating">
-            <!-- <span class="rating-stars">
-                <span class="material-icons-outlined">star</span>
-                {{ business.rating }}
-              </span> -->
-            <!-- <span class="rating-count">({{ business.reviewCount || 0 }})</span>
-                <span class="rating-divider">|</span> -->
-            <span class="business-years"
-              >{{ getYearsInBusiness(business.establishedYear) }}+ years in
-              business</span
+            <div
+              class="card-status"
+              [class.open]="isOpenNow(business)"
+              [class.closed]="!isOpenNow(business)"
             >
+              {{ isOpenNow(business) ? "Open Now" : "Closed" }}
+            </div>
           </div>
-          <button
-            class="view-business-btn"
-            (click)="viewBusiness(business); $event.stopPropagation()"
-          >
-            View Business
-          </button>
+          <div class="card-content">
+            <!-- Business Logo -->
+            <div class="business-logo-wrapper">
+              <div class="business-logo" *ngIf="business.logoUrl">
+                <img
+                  [src]="business.logoUrl"
+                  [alt]="business.businessName"
+                  (error)="onLogoError($event)"
+                />
+              </div>
+              <div class="business-logo placeholder" *ngIf="!business.logoUrl">
+                <span class="logo-initials">{{
+                  getInitials(business.businessName)
+                }}</span>
+              </div>
+            </div>
+            <h3 class="business-name">
+              {{ business.businessName || "Unnamed Business" }}
+            </h3>
+            <p class="business-category">
+              {{ business.businessCategory || "Business" }}
+            </p>
+            <div class="business-location">
+              <span class="material-icons-outlined">location_on</span>
+              {{ getLocationLabel(business) || "Location" }}
+            </div>
+            <div class="business-rating">
+              <span class="business-years"
+                >{{ getYearsInBusiness(business.establishedYear) }}+ years in
+                business</span
+              >
+            </div>
+            <button
+              class="view-business-btn"
+              (click)="viewBusiness(business); $event.stopPropagation()"
+            >
+              View Business
+            </button>
+          </div>
         </div>
       </div>
+
+      <button
+        class="scroll-arrow scroll-arrow-right"
+        (click)="businessScroll.scrollBy({ left: 300, behavior: 'smooth' })"
+        aria-label="Scroll right"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </button>
     </div>
   </section>
 
@@ -331,34 +329,52 @@
       <p>No featured ads available.</p>
     </div>
 
-    <!-- Ads Grid -->
+    <!-- Ads Row with Scroll -->
     <div
-      class="ads-grid"
+      class="ads-row-wrapper"
       *ngIf="!adsLoading && !adsError && featuredAds.length > 0"
     >
-      <div
-        class="ad-card"
-        *ngFor="let ad of featuredAds | slice : 0 : 6; trackBy: trackByAdId"
-        (click)="viewAd(ad)"
+      <button
+        class="scroll-arrow scroll-arrow-left"
+        (click)="adsScroll.scrollBy({ left: -280, behavior: 'smooth' })"
+        aria-label="Scroll left"
       >
-        <div class="ad-image-wrapper">
-          <img
-            [src]="getAdImage(ad)"
-            [alt]="ad.title"
-            class="ad-image"
-            loading="lazy"
-            (error)="onAdImageError($event)"
-          />
-          <div class="ad-location">
-            <span class="material-icons-outlined">location_on</span>
-            {{ ad.city || "Bengaluru" }}
+        <span class="material-icons-outlined">chevron_left</span>
+      </button>
+
+      <div class="ads-row" #adsScroll>
+        <div
+          class="ad-card"
+          *ngFor="let ad of featuredAds | slice : 0 : 10; trackBy: trackByAdId"
+          (click)="viewAd(ad)"
+        >
+          <div class="ad-image-wrapper">
+            <img
+              [src]="getAdImage(ad)"
+              [alt]="ad.title"
+              class="ad-image"
+              loading="lazy"
+              (error)="onAdImageError($event)"
+            />
+            <div class="ad-location">
+              <span class="material-icons-outlined">location_on</span>
+              {{ ad.city || "Bengaluru" }}
+            </div>
+          </div>
+          <div class="ad-content">
+            <h4 class="ad-title">{{ truncateTitle(ad.title, 25) }}</h4>
+            <p class="ad-category">{{ getCategoryName(ad.categoryId) }}</p>
           </div>
         </div>
-        <div class="ad-content">
-          <h4 class="ad-title">{{ truncateTitle(ad.title, 25) }}</h4>
-          <p class="ad-category">{{ getCategoryName(ad.categoryId) }}</p>
-        </div>
       </div>
+
+      <button
+        class="scroll-arrow scroll-arrow-right"
+        (click)="adsScroll.scrollBy({ left: 280, behavior: 'smooth' })"
+        aria-label="Scroll right"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </button>
     </div>
   </section>
 
@@ -449,9 +465,6 @@
         </div>
         <div class="category-info">
           <h4 class="category-name">{{ category.categoryName }}</h4>
-          <!-- <span class="category-count"
-            >{{ category.count || 0 }}+ Listings</span
-          > -->
         </div>
         <span class="category-arrow material-icons-outlined"
           >chevron_right</span

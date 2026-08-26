@@ -159,8 +159,7 @@ export class MarketplaceComponent implements OnInit {
       (data: BusinessDirectoryItem[]) => {
         const activeBusinesses = (data || []).filter((b) => b.status !== 0);
 
-        // Keep top 5 for the "Popular Businesses" grid
-        this.businesses = activeBusinesses.slice(0, 5);
+        this.businesses = activeBusinesses.slice(0, 15);
         this.businesses.forEach((b) => {
           (b as any).rating = (4 + Math.random() * 0.8).toFixed(1);
           (b as any).reviewCount = Math.floor(Math.random() * 200) + 20;
@@ -262,8 +261,8 @@ export class MarketplaceComponent implements OnInit {
         const allAds = data || [];
         const premiumAds = allAds.filter((ad) => ad.isPremium);
         this.featuredAds =
-          premiumAds.length > 0 ? premiumAds : allAds.slice(0, 6);
-        this.featuredAds = this.featuredAds.slice(0, 6);
+          premiumAds.length > 0 ? premiumAds : allAds.slice(0, 10);
+        this.featuredAds = this.featuredAds.slice(0, 10);
         this.featuredAds.forEach((ad) => {
           ad.city = [
             "Bengaluru",
