@@ -36,7 +36,7 @@ mat-card-content {
   background-color: #3c3241 !important;
 }
 
-::ng-deep .cdk-overlay-pane {
+::ng-deep .cdk-overlay-pane.custom-dialog-container {
   width: 370px;
   pointer-events: auto;
   box-sizing: border-box;

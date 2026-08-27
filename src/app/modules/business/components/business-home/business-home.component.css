@@ -9,8 +9,8 @@
 }
 
 /* =========================================================
-       BUSINESS HERO
-       ========================================================= */
+    BUSINESS HERO
+    ========================================================= */
 
 .business-hero {
   padding: 40px 32px;
@@ -115,6 +115,30 @@
 
 .business-search .search-input::placeholder {
   color: #a79fbb;
+}
+
+.business-search .search-clear-btn {
+  border: none;
+  background: #f4f1fb;
+  color: #8b8299;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+.business-search .search-clear-btn .material-icons-outlined {
+  font-size: 14px;
+}
+
+.business-search .search-clear-btn:hover {
+  background: #ece4fb;
+  color: #e75462;
 }
 
 .business-search .search-divider {
@@ -258,8 +282,8 @@
 }
 
 /* =========================================================
-       SECTION WRAPPER
-       ========================================================= */
+    SECTION WRAPPER
+    ========================================================= */
 
 .section-wrapper {
   padding: 40px 0 20px;
@@ -329,105 +353,73 @@
   font-size: 18px;
 }
 
+.ads-count-badge {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #e75462;
+  background: #fde9f2;
+  padding: 5px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
 /* =========================================================
-       CATEGORIES ROW
-       ========================================================= */
+    SHARED COLOR VARIANTS (category icons, badges)
+    ========================================================= */
 
-.categories-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+.c-indigo {
+  background: #eaf0ff;
+  color: #4c6fe0;
 }
 
-.category-pill {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  background: #fff;
-  border: 1px solid #eee6fa;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  flex: 1 1 190px;
-  max-width: 230px;
+.c-red {
+  background: #fdeceb;
+  color: #e6483f;
 }
 
-.category-pill:hover {
-  border-color: #e75462;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(108, 76, 224, 0.1);
+.c-pink {
+  background: #fde9f2;
+  color: #e93d82;
 }
 
-.category-pill-icon {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fef0f2;
-  border-radius: 10px;
+.c-green {
+  background: #e6f7ec;
+  color: #1f9d55;
+}
+
+.c-blue {
+  background: #e8f2fe;
+  color: #2f8de0;
+}
+
+.c-orange {
+  background: #fff0e3;
+  color: #f0954b;
+}
+
+.c-purple {
+  background: #efe9fe;
   color: #e75462;
 }
 
-.category-pill-icon.c-neutral {
+.c-teal {
+  background: #e3f6f4;
+  color: #16a394;
+}
+
+.c-neutral {
   background: #f4f4f6;
   color: #8b8299;
 }
 
-.category-pill-icon .material-icons-outlined {
-  font-size: 19px;
-}
-
-.category-pill-info {
-  min-width: 0;
-}
-
-.category-name {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 700;
-  color: #1c1533;
-  white-space: nowrap;
-}
-
-.category-count {
-  font-size: 11px;
-  color: #8b8299;
-  white-space: nowrap;
-}
-
-.category-pill-more {
-  flex: 0 0 auto;
-  max-width: none;
-}
-
 /* =========================================================
-       BUSINESS ROW (Businesses Near You)
-       ========================================================= */
-
-.business-row-wrapper {
-  position: relative;
-}
-
-.business-row {
-  display: flex;
-  gap: 18px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 4px 2px 12px;
-  scrollbar-width: none;
-}
-
-.business-row::-webkit-scrollbar {
-  display: none;
-}
+    SCROLL ARROWS (shared: category row)
+    ========================================================= */
 
 .scroll-arrow {
   position: absolute;
-  top: 90px;
+  top: 42%;
+  transform: translateY(-50%);
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -455,8 +447,83 @@
   right: -17px;
 }
 
+/* =========================================================
+    BROWSE / POPULAR CATEGORIES (horizontally scrollable)
+    ========================================================= */
+
+.category-row-wrapper {
+  position: relative;
+}
+
+.category-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 2px 2px 10px;
+  scrollbar-width: none;
+}
+
+.category-row::-webkit-scrollbar {
+  display: none;
+}
+
+.category-card {
+  flex: 0 0 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 16px 10px;
+  background: #fff;
+  border: 1px solid #eee6fa;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-card:hover {
+  border-color: #e75462;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(108, 76, 224, 0.1);
+}
+
+.category-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-card-icon .material-icons-outlined {
+  font-size: 21px;
+}
+
+.category-card h4 {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1c1533;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+
+/* =========================================================
+    BUSINESS GRID (Businesses Near You / Search Results)
+    ========================================================= */
+
+.business-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+}
+
 .business-card {
-  flex: 0 0 240px;
   background: #fff;
   border: 1px solid #e8e8e8;
   border-radius: 14px;
@@ -520,7 +587,6 @@
 
 .business-card-logo {
   position: absolute;
-  /* bottom: -18px; */
   left: 12px;
   top: 88px;
   width: 40px;
@@ -676,9 +742,42 @@
   background: #d3f0dd;
 }
 
+/* View More */
+.view-more-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.view-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px solid #e75462;
+  color: #e75462;
+  padding: 10px 26px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-more-btn:hover {
+  background: #e75462;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(231, 84, 98, 0.25);
+}
+
+.view-more-btn .material-icons-outlined {
+  font-size: 18px;
+}
+
 /* =========================================================
-       WHY LIST SECTION
-       ========================================================= */
+    WHY LIST SECTION
+    ========================================================= */
 
 .why-list-section {
   background: linear-gradient(135deg, #f8f5ff 0%, #fef0f2 100%);
@@ -830,8 +929,8 @@
 }
 
 /* =========================================================
-       TOP RATED ROW
-       ========================================================= */
+    TOP RATED ROW (kept for when that section is re-enabled)
+    ========================================================= */
 
 .top-rated-row-wrapper {
   position: relative;
@@ -924,8 +1023,8 @@
 }
 
 /* =========================================================
-       OFFERS ROW
-       ========================================================= */
+    OFFERS ROW
+    ========================================================= */
 
 .offers-row {
   display: flex;
@@ -1002,8 +1101,112 @@
 }
 
 /* =========================================================
-       STATE BLOCKS
-       ========================================================= */
+    OFFERS GRID (Marketplace Style)
+    ========================================================= */
+
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.offer-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #e8e8e8;
+  border-radius: 14px;
+  background: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.offer-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(30, 20, 50, 0.08);
+}
+
+.offer-icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #fef0f2;
+  color: #e75462;
+}
+
+.offer-icon .material-icons-outlined {
+  font-size: 21px;
+}
+
+.offer-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.offer-title {
+  margin: 0 0 4px;
+  overflow: hidden;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.offer-description {
+  margin: 0 0 8px;
+  color: #635b67;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.offer-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 6px;
+}
+
+.offer-validity {
+  color: #888;
+  font-size: 11px;
+}
+
+.offer-code {
+  padding: 3px 9px;
+  border-radius: 5px;
+  background: #f4f0fa;
+  color: #6c4ce0;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Responsive adjustments for offers grid */
+@media (max-width: 1200px) {
+  .offers-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .offers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .offers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+    STATE BLOCKS
+    ========================================================= */
 
 .state-block {
   display: flex;
@@ -1055,8 +1258,96 @@
 }
 
 /* =========================================================
-       RESPONSIVE BREAKPOINTS
-       ========================================================= */
+    TRUST BAR
+  ========================================================= */
+
+.trust-bar {
+  background: #ffffff;
+  border-bottom: 1px solid #eee8fa;
+  margin-top: 40px;
+}
+
+.trust-bar-inner {
+  /* max-width: 1440px; */
+  margin: 0 auto;
+  padding: 15px 0px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 26px;
+}
+
+.trust-divider {
+  width: 1px;
+  align-self: stretch;
+  background: #ece6f8;
+  flex-shrink: 0;
+}
+
+.trust-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trust-icon .material-icons-outlined {
+  font-size: 22px;
+}
+
+.trust-icon.c-purple {
+  background: #efe9fe;
+  color: #6c4ce0;
+}
+
+.trust-icon.c-pink {
+  background: #fde9f2;
+  color: #e93d82;
+}
+
+.trust-icon.c-orange {
+  background: #fff0e3;
+  color: #f0954b;
+}
+
+.trust-icon.c-green {
+  background: #e6f7ec;
+  color: #1f9d55;
+}
+
+.trust-icon.c-indigo {
+  background: #eaf0ff;
+  color: #4c6fe0;
+}
+
+.trust-text h4 {
+  margin: 0 0 2px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1c1533;
+  white-space: nowrap;
+}
+
+.trust-text p {
+  margin: 0;
+  font-size: 12px;
+  color: #8b8299;
+  line-height: 1.4;
+  max-width: 170px;
+}
+
+/* =========================================================
+    RESPONSIVE BREAKPOINTS
+    ========================================================= */
 
 @media (max-width: 1100px) {
   .business-hero-illustration {
@@ -1079,6 +1370,10 @@
 
   .why-list-card {
     min-width: 0;
+  }
+
+  .business-grid {
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   }
 }
 
@@ -1122,6 +1417,10 @@
     display: none;
   }
 
+  .category-row {
+    padding-bottom: 6px;
+  }
+
   .section-title {
     font-size: 20px;
   }
@@ -1129,6 +1428,24 @@
   .section-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .business-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .trust-bar-inner {
+    padding: 15px 0px;
+  }
+
+  .trust-item {
+    padding: 8px 16px;
+    flex: 1 1 100%;
+  }
+
+  .trust-divider {
+    display: none;
   }
 }
 
@@ -1163,13 +1480,14 @@
     flex: 1 1 100%;
   }
 
-  .category-pill {
-    flex: 1 1 100%;
-    max-width: none;
+  .category-card {
+    flex: 0 0 108px;
+    padding: 12px 8px;
   }
 
-  .business-card {
-    flex: 0 0 200px;
+  .business-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
 
   .top-rated-card {
@@ -1179,5 +1497,11 @@
   .offer-card {
     flex: 1 1 100%;
     max-width: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .business-grid {
+    grid-template-columns: 1fr;
   }
 }

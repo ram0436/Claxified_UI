@@ -1,13 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { CommonService } from "src/app/shared/service/common.service";
-
-interface QuickCategory {
-  icon: string;
-  label: string;
-  route: string;
-  colorClass: string;
-}
+import { UserService } from "src/app/modules/user/service/user.service";
+import { LoginComponent } from "src/app/modules/user/component/login/login.component";
+import {
+  CATEGORY_MAPPING,
+  getCategoryRoute,
+  WishlistItem,
+} from "../../model/ads";
 
 interface AdCategory {
   id: number;
@@ -19,7 +20,8 @@ interface AdCategory {
 }
 
 interface ClassifiedAd {
-  id: string;
+  id: string; // tableRefGuid
+  categoryId: string; // raw categoryId, needed for wishlist + routing
   title: string;
   price: string;
   category: string;
@@ -37,13 +39,25 @@ interface WhyItem {
   subtitle: string;
 }
 
+interface TrustStat {
+  icon: string;
+  value: string;
+  label: string;
+}
+
+interface TrustItem {
+  icon: string;
+  title: string;
+  subtitle: string;
+  colorClass: string;
+}
+
 @Component({
   selector: "app-classified-ads-home",
   templateUrl: "./classified-ads-home.component.html",
   styleUrls: ["./classified-ads-home.component.css"],
 })
 export class ClassifiedAdsHomeComponent implements OnInit {
-  // Search
   searchQuery: string = "";
 
   adsLoading: boolean = true;
@@ -52,59 +66,21 @@ export class ClassifiedAdsHomeComponent implements OnInit {
   categoriesLoading: boolean = true;
   categoriesError: boolean = false;
 
-  quickCategories: QuickCategory[] = [
-    {
-      icon: "smartphone",
-      label: "Mobiles",
-      route: "/Electronics/view-posts",
-      colorClass: "c-indigo",
-    },
-    {
-      icon: "directions_car",
-      label: "Cars",
-      route: "/Vehicles/view-posts",
-      colorClass: "c-red",
-    },
-    {
-      icon: "two_wheeler",
-      label: "Bikes",
-      route: "/Vehicles/view-posts",
-      colorClass: "c-pink",
-    },
-    {
-      icon: "home",
-      label: "Property",
-      route: "/Properties/view-posts",
-      colorClass: "c-green",
-    },
-    {
-      icon: "work",
-      label: "Jobs",
-      route: "/Jobs/view-posts",
-      colorClass: "c-blue",
-    },
-    {
-      icon: "weekend",
-      label: "Furniture",
-      route: "/Furniture/view-posts",
-      colorClass: "c-orange",
-    },
-    {
-      icon: "more_horiz",
-      label: "More",
-      route: "/categories",
-      colorClass: "c-neutral",
-    },
-  ];
+  isUserLogedIn: boolean = false;
+  dialogRef: MatDialogRef<any> | null = null;
 
-  // Fetched from CommonService.getAllCategory() — no more hardcoded list
   browseCategories: AdCategory[] = [];
+  mappedAds: ClassifiedAd[] = [];
 
-  // Fetched from CommonService.getAllItems()
-  featuredAds: ClassifiedAd[] = [];
+  private readonly ADS_PER_LOAD = 10;
+  visibleAdsCount: number = this.ADS_PER_LOAD;
 
-  // Latest Ads is commented out for now (see fetchAds() and the template)
-  latestAds: ClassifiedAd[] = [];
+  trustStats: TrustStat[] = [
+    { icon: "verified", value: "10K+", label: "Active Ads" },
+    { icon: "location_city", value: "500+", label: "Cities Covered" },
+    { icon: "diversity_3", value: "25K+", label: "Happy Users" },
+    { icon: "bolt", value: "100%", label: "Free to Post" },
+  ];
 
   whyItems: WhyItem[] = [
     {
@@ -134,9 +110,39 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     },
   ];
 
-  private readonly FEATURED_LIMIT = 8;
+  trustItems: TrustItem[] = [
+    {
+      icon: "verified_user",
+      title: "Trusted & Verified",
+      subtitle: "Verified businesses you can trust",
+      colorClass: "c-purple",
+    },
+    {
+      icon: "sell",
+      title: "Great Deals",
+      subtitle: "Find the best deals near you",
+      colorClass: "c-pink",
+    },
+    {
+      icon: "shield",
+      title: "Safe & Secure",
+      subtitle: "Your safety is our top priority",
+      colorClass: "c-orange",
+    },
+    {
+      icon: "support_agent",
+      title: "24/7 Support",
+      subtitle: "We're here to help you anytime",
+      colorClass: "c-green",
+    },
+    {
+      icon: "smartphone",
+      title: "Easy to Use",
+      subtitle: "Simple, fast and seamless experience",
+      colorClass: "c-indigo",
+    },
+  ];
 
-  // Cycled for categories/ads that don't have an explicit color
   private readonly categoryColorClasses: string[] = [
     "c-indigo",
     "c-red",
@@ -148,7 +154,6 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     "c-teal",
   ];
 
-  // Category name -> Material icon (purely presentational; API doesn't send icons)
   private readonly categoryIconMap: { [key: string]: string } = {
     "Mobiles & Tablets": "smartphone",
     Mobiles: "smartphone",
@@ -168,7 +173,6 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     "Commercial Services": "handyman",
   };
 
-  // Category name -> route segment, mirrors the pattern used elsewhere in the app
   private readonly categoryRouteMap: { [key: string]: string } = {
     "Mobiles & Tablets": "Electronics",
     Mobiles: "Electronics",
@@ -185,7 +189,6 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     "Commercial Services": "Commercial Services",
   };
 
-  // Map of the *ImageList fields present on a Dashboard/GetAll item, in priority order
   private readonly imageListKeys: string[] = [
     "gadgetImageList",
     "vehicleImageList",
@@ -200,37 +203,100 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     "commercialServiceImageList",
   ];
 
-  private allAds: any[] = []; // raw cached items, used to (re)compute category counts
+  private rawAds: any[] = [];
 
-  constructor(private router: Router, private commonService: CommonService) {}
+  constructor(
+    private router: Router,
+    private commonService: CommonService,
+    private userService: UserService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.fetchCategories();
     this.fetchAds();
   }
 
-  // =========================================================
-  // SEARCH
-  // =========================================================
+  // ===================== SEARCH =====================
 
   onSearchInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input) {
-      this.searchQuery = input.value;
-    }
+    this.searchQuery = input ? input.value : "";
+    this.visibleAdsCount = this.ADS_PER_LOAD;
   }
 
   performSearch(): void {
-    if (this.searchQuery.trim().length >= 3) {
-      this.router.navigate(["/search"], {
-        queryParams: { q: this.searchQuery.trim(), type: "ads" },
-      });
+    this.visibleAdsCount = this.ADS_PER_LOAD;
+    const adsSection = document.getElementById("ads-section");
+    if (adsSection) {
+      adsSection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
 
-  // =========================================================
-  // FETCH CATEGORIES (CommonService.getAllCategory)
-  // =========================================================
+  clearSearch(): void {
+    this.searchQuery = "";
+    this.visibleAdsCount = this.ADS_PER_LOAD;
+  }
+
+  get filteredAds(): ClassifiedAd[] {
+    const q = this.searchQuery.trim().toLowerCase();
+    if (!q) return this.mappedAds;
+    return this.mappedAds.filter(
+      (ad) =>
+        ad.title.toLowerCase().includes(q) ||
+        ad.category.toLowerCase().includes(q) ||
+        ad.location.toLowerCase().includes(q)
+    );
+  }
+
+  get displayedAds(): ClassifiedAd[] {
+    return this.filteredAds.slice(0, this.visibleAdsCount);
+  }
+
+  get hasMoreAds(): boolean {
+    return this.visibleAdsCount < this.filteredAds.length;
+  }
+
+  loadMore(): void {
+    this.visibleAdsCount += this.ADS_PER_LOAD;
+  }
+
+  // ===================== FETCH CATEGORIES =====================
+
+  // Category icon mapping
+  categoryIcons: { [key: string]: string } = {
+    "Mobiles & Tablets": "smartphone",
+    Mobiles: "smartphone",
+
+    Cars: "directions_car",
+    Vehicles: "directions_car",
+
+    Bikes: "two_wheeler",
+
+    Property: "home",
+    "Real Estate": "home",
+
+    Jobs: "work",
+
+    Furniture: "weekend",
+    "Home & Kitchen": "kitchen",
+
+    Electronics: "devices_other",
+
+    Fashion: "checkroom",
+
+    Books: "menu_book",
+
+    Sports: "sports_soccer",
+
+    Pets: "pets",
+
+    "Commercial Services": "handyman",
+  };
+
+  getCategoryIcon(categoryName: string): string {
+    return this.categoryIcons[categoryName] || "category";
+  }
 
   fetchCategories(): void {
     this.categoriesLoading = true;
@@ -239,7 +305,8 @@ export class ClassifiedAdsHomeComponent implements OnInit {
       (data: any) => {
         const list = data || [];
         this.browseCategories = list.map((c: any) => {
-          const name = c.name || c.categoryName || "Category";
+          const name =
+            c.name || c.categoryName || CATEGORY_MAPPING[c.id] || "Category";
           return {
             id: c.id ?? c.categoryId,
             icon: this.categoryIconMap[name] || "category",
@@ -249,7 +316,8 @@ export class ClassifiedAdsHomeComponent implements OnInit {
               this.categoryColorClasses[
                 (c.id ?? 0) % this.categoryColorClasses.length
               ],
-            route: this.categoryRouteMap[name] || name,
+            route:
+              this.categoryRouteMap[name] || getCategoryRoute(c.id) || name,
           } as AdCategory;
         });
         this.categoriesLoading = false;
@@ -262,19 +330,16 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     );
   }
 
-  /** Counts active items per category once both categories and ads have loaded. */
   private updateCategoryCounts(): void {
-    if (!this.browseCategories.length || !this.allAds.length) return;
+    if (!this.browseCategories.length || !this.rawAds.length) return;
     this.browseCategories.forEach((category) => {
-      category.count = this.allAds.filter(
+      category.count = this.rawAds.filter(
         (item) => item.categoryId === category.id
       ).length;
     });
   }
 
-  // =========================================================
-  // FETCH ADS (CommonService.getAllItems)
-  // =========================================================
+  // ===================== FETCH ADS =====================
 
   fetchAds(): void {
     this.adsLoading = true;
@@ -282,20 +347,12 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     this.commonService.getAllItems().subscribe(
       (data: any) => {
         const list: any[] = (data || []).filter((item: any) => item.isActive);
-        this.allAds = list;
+        this.rawAds = list;
 
-        const premium = list.filter((item) => item.isPremium);
-        const featuredSource = (premium.length ? premium : list).slice(
-          0,
-          this.FEATURED_LIMIT
+        const sorted = [...list].sort(
+          (a, b) => (b.isPremium ? 1 : 0) - (a.isPremium ? 1 : 0)
         );
-        this.featuredAds = featuredSource.map((item, i) =>
-          this.mapItemToAd(item, i)
-        );
-
-        // Latest Ads is disabled for now — see template. Re-enable by uncommenting
-        // the block below once the section is unhidden.
-        // this.latestAds = list.slice(0, this.FEATURED_LIMIT).map((item, i) => this.mapItemToAd(item, i));
+        this.mappedAds = sorted.map((item, i) => this.mapItemToAd(item, i));
 
         this.adsLoading = false;
         this.updateCategoryCounts();
@@ -313,6 +370,7 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     );
     return {
       id: item.tableRefGuid || String(item.id),
+      categoryId: item.categoryId,
       title: item.title || "Untitled",
       price: this.formatPrice(item),
       category: category?.name || "General",
@@ -345,7 +403,6 @@ export class ClassifiedAdsHomeComponent implements OnInit {
       return `₹${Number(item.price).toLocaleString("en-IN")}`;
     }
     if (item.minSalary || item.maxSalary) {
-      // NOTE: assuming salaryPeriodType 2 = yearly, otherwise monthly — confirm against your enum.
       const period = item.salaryPeriodType === 2 ? "/year" : "/month";
       if (item.minSalary && item.maxSalary) {
         return `₹${Number(item.minSalary).toLocaleString("en-IN")} - ₹${Number(
@@ -377,23 +434,75 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     return ad.id;
   }
 
-  // =========================================================
-  // NAVIGATION
-  // =========================================================
+  // ===================== WISHLIST =====================
+
+  toggleWishlist(ad: ClassifiedAd, event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (localStorage.getItem("id") == null) {
+      this.openLoginModal();
+      return;
+    }
+
+    ad.isWishlisted = !ad.isWishlisted;
+
+    if (ad.isWishlisted) {
+      this.addToWishlist(ad.id, ad.categoryId);
+    }
+  }
+
+  private addToWishlist(productId: string, categoryId: string): void {
+    const wishlistItem: WishlistItem = {
+      id: 0,
+      productId,
+      categoryId,
+      createdBy: localStorage.getItem("id"),
+      createdOn: new Date().toISOString(),
+    };
+
+    this.userService.AddWishList(wishlistItem).subscribe(
+      () => {},
+      () => {}
+    );
+  }
+
+  openLoginModal(): void {
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+
+    this.dialogRef = this.dialog.open(LoginComponent, {
+      width: "400px",
+      panelClass: "custom-dialog-container",
+    });
+
+    const dialogRefElement = document.querySelector(".custom-dialog-container");
+    if (dialogRefElement) {
+      dialogRefElement.setAttribute("style", "margin-top: 85px");
+    }
+
+    this.dialogRef.afterClosed().subscribe(() => {
+      if (localStorage.getItem("authToken") != null) this.isUserLogedIn = true;
+    });
+  }
+
+  // ===================== NAVIGATION =====================
 
   navigateTo(route: string): void {
     this.router.navigate([route]);
   }
 
-  navigateToCategory(category: AdCategory | QuickCategory): void {
-    const route = "route" in category ? category.route : category;
-    this.router.navigate([`/${route}/view-posts`], {
-      queryParams: { type: route },
+  navigateToCategory(category: AdCategory): void {
+    this.router.navigate([`/${category.route}/view-posts`], {
+      queryParams: { type: category.route },
     });
   }
 
+  /** Mirrors PostCardComponent's routerLink: /:category/post-details/:tableRefGuid */
   viewAd(ad: ClassifiedAd): void {
-    this.router.navigate(["/ad-details", ad.id]);
+    const categoryRoute = getCategoryRoute(ad.categoryId);
+    this.router.navigate([`/${categoryRoute}/post-details/${ad.id}`]);
   }
 
   postAdd(): void {
@@ -402,11 +511,5 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     } else {
       this.router.navigate(["/login"]);
     }
-  }
-
-  toggleWishlist(ad: ClassifiedAd, event: Event): void {
-    event.stopPropagation();
-    ad.isWishlisted = !ad.isWishlisted;
-    // TODO: persist wishlist state via the real ads/wishlist service.
   }
 }

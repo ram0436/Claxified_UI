@@ -8,9 +8,20 @@ import { BusinessDirectoryItem, BusinessOfferDto } from "../../model/Business";
 import { BusinessLoginComponent } from "../business-login/business-login.component";
 import { CommonService } from "src/app/shared/service/common.service";
 
-// Local view-model so the template doesn't need to reach into raw DTO fields
 interface OfferViewModel extends BusinessOfferDto {
   businessName: string;
+}
+
+interface TrustItem {
+  icon: string;
+  title: string;
+  subtitle: string;
+  colorClass: string;
+}
+
+interface OfferViewModel extends BusinessOfferDto {
+  businessName: string;
+  icon?: string;
 }
 
 @Component({
@@ -26,21 +37,19 @@ export class BusinessHomeComponent implements OnInit {
   businesses: BusinessDirectoryItem[] = [];
   businessesLoading: boolean = true;
   businessesError: boolean = false;
-  private allActiveBusinesses: BusinessDirectoryItem[] = []; // full list, used for category counts + offer sourcing
+  private allActiveBusinesses: BusinessDirectoryItem[] = [];
 
   // Top Rated Businesses
-  // NOTE: disabled for now — this was mock data with no backing API.
-  // Re-enable fetchTopRatedBusinesses() (see below) once a real endpoint
-  // (e.g. businesses sorted/filtered by rating) is available.
   topRatedBusinesses: any[] = [];
 
-  // Categories — fetched from BusinessService, counts derived from live business data
   businessCategories: any[] = [];
   categoriesLoading: boolean = true;
   categoriesError: boolean = false;
   categoryDisplayLimit: number = 10;
 
-  // Offers — fetched via Business/offers per businessId, no longer hardcoded
+  private readonly BUSINESSES_PER_LOAD = 10;
+  visibleBusinessesCount: number = this.BUSINESSES_PER_LOAD;
+
   offers: OfferViewModel[] = [];
   offersLoading: boolean = true;
   offersError: boolean = false;
@@ -48,7 +57,6 @@ export class BusinessHomeComponent implements OnInit {
   private readonly OFFER_SOURCE_BUSINESS_LIMIT = 100;
   private readonly OFFER_DISPLAY_LIMIT = 6;
 
-  // Cycles through the offer badge colors, in the same order the offers render
   offerColors: string[] = [
     "#F0544E",
     "#F0954B",
@@ -64,8 +72,6 @@ export class BusinessHomeComponent implements OnInit {
     "#FDE9F2",
   ];
 
-  // Category icon mapping (purely presentational — maps a category name to a
-  // Material icon; not a source of business data)
   categoryIcons: { [key: string]: string } = {
     "Real Estate": "business_center",
     "Home Services": "handyman",
@@ -81,6 +87,39 @@ export class BusinessHomeComponent implements OnInit {
     Legal: "gavel",
   };
 
+  trustItems: TrustItem[] = [
+    {
+      icon: "verified_user",
+      title: "Trusted & Verified",
+      subtitle: "Verified businesses you can trust",
+      colorClass: "c-purple",
+    },
+    {
+      icon: "sell",
+      title: "Great Deals",
+      subtitle: "Find the best deals near you",
+      colorClass: "c-pink",
+    },
+    {
+      icon: "shield",
+      title: "Safe & Secure",
+      subtitle: "Your safety is our top priority",
+      colorClass: "c-orange",
+    },
+    {
+      icon: "support_agent",
+      title: "24/7 Support",
+      subtitle: "We're here to help you anytime",
+      colorClass: "c-green",
+    },
+    {
+      icon: "smartphone",
+      title: "Easy to Use",
+      subtitle: "Simple, fast and seamless experience",
+      colorClass: "c-indigo",
+    },
+  ];
+
   constructor(
     private businessService: BusinessService,
     private commonService: CommonService,
@@ -91,7 +130,6 @@ export class BusinessHomeComponent implements OnInit {
   ngOnInit(): void {
     this.fetchBusinesses();
     this.fetchCategories();
-    // this.fetchTopRatedBusinesses(); // disabled — mock data, no backing API yet
   }
 
   // =========================================================
@@ -102,14 +140,15 @@ export class BusinessHomeComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input) {
       this.searchQuery = input.value;
+      this.visibleBusinessesCount = this.BUSINESSES_PER_LOAD;
     }
   }
 
   performSearch(): void {
-    if (this.searchQuery.trim().length >= 3) {
-      this.router.navigate(["/search"], {
-        queryParams: { q: this.searchQuery.trim(), type: "business" },
-      });
+    this.visibleBusinessesCount = this.BUSINESSES_PER_LOAD;
+    const businessSection = document.getElementById("businesses-section");
+    if (businessSection) {
+      businessSection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
 
@@ -123,14 +162,14 @@ export class BusinessHomeComponent implements OnInit {
     this.businessService.getBusinessList().subscribe(
       (data: BusinessDirectoryItem[]) => {
         const activeBusinesses = (data || []).filter((b) => b.status !== 0);
-
-        this.allActiveBusinesses = activeBusinesses;
-        this.businesses = activeBusinesses.slice(0, 6);
-        this.businesses.forEach((b) => {
+        activeBusinesses.forEach((b) => {
           (b as any).rating = (4 + Math.random() * 0.8).toFixed(1);
           (b as any).reviewCount = Math.floor(Math.random() * 200) + 20;
           (b as any).establishedYear = 2015 + Math.floor(Math.random() * 10);
         });
+
+        this.allActiveBusinesses = activeBusinesses;
+        this.businesses = activeBusinesses;
         this.businessesLoading = false;
 
         this.fetchOffers(
@@ -156,12 +195,10 @@ export class BusinessHomeComponent implements OnInit {
     this.categoriesError = false;
     this.businessService.getBusinessCategories().subscribe(
       (data: any) => {
-        // Normalize whatever shape the API returns ({id, name} or
-        // {id, categoryName}) into a consistent local shape.
         this.businessCategories = (data || []).map((c: any) => ({
           id: c.id,
           name: c.name || c.categoryName,
-          count: undefined as number | undefined, // filled in by updateCategoryCounts()
+          count: undefined as number | undefined,
         }));
         this.categoriesLoading = false;
 
@@ -174,13 +211,6 @@ export class BusinessHomeComponent implements OnInit {
     );
   }
 
-  /**
-   * Counts active businesses per category by matching businessCategoryId.
-   * This page is specifically about *business* categories, so (unlike the
-   * classified-ads marketplace view) matching against businessCategoryId
-   * is correct here. Order-independent: called from both fetchBusinesses()
-   * and fetchCategories() since either may resolve first.
-   */
   private updateCategoryCounts(): void {
     if (!this.businessCategories.length || !this.allActiveBusinesses.length) {
       return;
@@ -235,6 +265,7 @@ export class BusinessHomeComponent implements OnInit {
               flattened.push({
                 ...offer,
                 businessName: business.businessName,
+                icon: this.getOfferIcon(offer.offerType),
               });
             });
         });
@@ -256,6 +287,15 @@ export class BusinessHomeComponent implements OnInit {
     );
   }
 
+  private getOfferIcon(offerType: number): string {
+    const iconMap: { [key: number]: string } = {
+      1: "local_offer",
+      2: "discount",
+      3: "card_giftcard",
+      4: "restaurant",
+    };
+    return iconMap[offerType] || "local_offer";
+  }
   private isOfferValid(offer: BusinessOfferDto): boolean {
     if (!offer.endDate) return true;
     return new Date(offer.endDate).getTime() >= new Date().setHours(0, 0, 0, 0);
@@ -265,56 +305,28 @@ export class BusinessHomeComponent implements OnInit {
     return offer.id;
   }
 
-  // =========================================================
-  // FETCH TOP RATED BUSINESSES
-  // =========================================================
-  // Disabled: this was mock/demo data, not sourced from any API. Uncomment
-  // and wire up to a real endpoint (e.g. businesses sorted by rating, or a
-  // dedicated "top-rated" endpoint) when one exists.
-  //
-  // fetchTopRatedBusinesses(): void {
-  //   this.topRatedBusinesses = [
-  //     {
-  //       businessName: "The Baker's Den",
-  //       category: "Bakery",
-  //       rating: 4.8,
-  //       reviewCount: 120,
-  //     },
-  //     {
-  //       businessName: "Nature's Basket",
-  //       category: "Grocery Store",
-  //       rating: 4.7,
-  //       reviewCount: 95,
-  //     },
-  //     {
-  //       businessName: "Laptop World",
-  //       category: "Electronics Store",
-  //       rating: 4.6,
-  //       reviewCount: 88,
-  //     },
-  //     {
-  //       businessName: "Blossom Salon",
-  //       category: "Beauty Salon",
-  //       rating: 4.7,
-  //       reviewCount: 132,
-  //     },
-  //     {
-  //       businessName: "Axis Physiotherapy",
-  //       category: "Physiotherapy Center",
-  //       rating: 4.8,
-  //       reviewCount: 101,
-  //     },
-  //     {
-  //       businessName: "Green Leaf Cafe",
-  //       category: "Cafe",
-  //       rating: 4.6,
-  //       reviewCount: 76,
-  //     },
-  //   ];
-  //   this.topRatedBusinesses.forEach((b, index) => {
-  //     (b as any).logoUrl = null;
-  //   });
-  // }
+  get filteredBusinesses(): BusinessDirectoryItem[] {
+    const q = this.searchQuery.trim().toLowerCase();
+    if (!q) return this.allActiveBusinesses;
+    return this.allActiveBusinesses.filter((b: any) => {
+      const name = (b.businessName || "").toLowerCase();
+      const category = (b.businessCategory || "").toLowerCase();
+      const location = (this.getLocationLabel(b) || "").toLowerCase();
+      return name.includes(q) || category.includes(q) || location.includes(q);
+    });
+  }
+
+  get displayedBusinesses(): BusinessDirectoryItem[] {
+    return this.filteredBusinesses.slice(0, this.visibleBusinessesCount);
+  }
+
+  get hasMoreBusinesses(): boolean {
+    return this.visibleBusinessesCount < this.filteredBusinesses.length;
+  }
+
+  loadMoreBusinesses(): void {
+    this.visibleBusinessesCount += this.BUSINESSES_PER_LOAD;
+  }
 
   // =========================================================
   // BUSINESS HELPERS
@@ -413,8 +425,6 @@ export class BusinessHomeComponent implements OnInit {
   // OFFER HELPERS
   // =========================================================
 
-  // Pulls a short badge ("20%", "Flat", "₹200") out of the offer title so the
-  // circular badge in the card always has something concise to show.
   getOfferBadge(title: string): { value: string; suffix: string } {
     if (!title) return { value: "OFFER", suffix: "" };
     const percentMatch = title.match(/(\d+)\s*%/);
@@ -442,6 +452,18 @@ export class BusinessHomeComponent implements OnInit {
       maxWidth: "95vw",
       panelClass: "business-login-dialog-container",
       autoFocus: false,
+    });
+  }
+
+  // Add this method to format offer validity date
+  formatOfferValidity(endDate: string): string {
+    if (!endDate) return "";
+    // Using moment.js if available, or plain JS
+    const date = new Date(endDate);
+    return date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
     });
   }
 }

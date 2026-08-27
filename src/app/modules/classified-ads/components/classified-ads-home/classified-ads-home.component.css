@@ -9,8 +9,8 @@
 }
 
 /* =========================================================
-       ADS HERO
-       ========================================================= */
+         ADS HERO
+    ========================================================= */
 
 .ads-hero {
   padding: 44px 32px;
@@ -48,6 +48,8 @@
 .ads-hero-text {
   max-width: 560px;
   text-align: left;
+  flex: 1;
+  min-width: 0;
 }
 
 .ads-hero-title {
@@ -76,7 +78,7 @@
 
 /* Search */
 .ads-search {
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 
 .ads-search .search-input-wrapper {
@@ -100,6 +102,7 @@
   color: #9a90b3;
   font-size: 20px;
   margin-right: 8px;
+  flex-shrink: 0;
 }
 
 .ads-search .search-input {
@@ -117,34 +120,36 @@
   color: #a79fbb;
 }
 
+.ads-search .search-clear-btn {
+  border: none;
+  background: #f4f1fb;
+  color: #8b8299;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+.ads-search .search-clear-btn .material-icons-outlined {
+  font-size: 14px;
+}
+
+.ads-search .search-clear-btn:hover {
+  background: #ece4fb;
+  color: #e75462;
+}
+
 .ads-search .search-divider {
   width: 1px;
   height: 22px;
   background: #ece4fb;
   margin: 0 10px;
   flex-shrink: 0;
-}
-
-.ads-search .location-inline {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #4a4358;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.ads-search .location-inline .material-icons-outlined {
-  font-size: 17px;
-  color: #e75462;
-}
-
-.ads-search .location-inline .expand-more {
-  font-size: 16px;
-  color: #9a90b3;
 }
 
 .ads-search .search-btn {
@@ -158,7 +163,6 @@
   cursor: pointer;
   transition: background 0.2s ease;
   white-space: nowrap;
-  margin-left: 10px;
   flex-shrink: 0;
 }
 
@@ -166,49 +170,50 @@
   background: #5a3bd0;
 }
 
-/* Quick category chips */
-.quick-category-row {
+/* Trust / stats strip (replaces the quick-category chips) */
+.trust-stats-row {
   display: flex;
   flex-wrap: wrap;
+  gap: 22px;
+}
+
+.trust-stat-item {
+  display: flex;
+  align-items: center;
   gap: 10px;
 }
 
-.quick-category-chip {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #fff;
-  border: 1px solid #eee6fa;
+.trust-stat-icon {
+  width: 34px;
+  height: 34px;
   border-radius: 10px;
-  padding: 8px 14px 8px 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1c1533;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.quick-category-chip:hover {
-  border-color: #e75462;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(108, 76, 224, 0.1);
-}
-
-.quick-chip-icon {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
+  background: #efe9fe;
+  color: #e75462;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 18px;
   flex-shrink: 0;
 }
 
-.quick-chip-icon .material-icons-outlined {
-  font-size: 15px;
+.trust-stat-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
 }
 
-/* Shared color variants (icons across hero chips, category grid, ad placeholders) */
+.trust-stat-text strong {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1c1533;
+}
+
+.trust-stat-text span {
+  font-size: 11.5px;
+  color: #8b8299;
+}
+
+/* Shared color variants (category icons, ad placeholders) */
 .c-indigo {
   background: #eaf0ff;
   color: #4c6fe0;
@@ -269,8 +274,8 @@
 }
 
 /* =========================================================
-       SECTION WRAPPER
-       ========================================================= */
+         SECTION WRAPPER
+    ========================================================= */
 
 .section-wrapper {
   padding: 40px 0 20px;
@@ -296,30 +301,19 @@
   margin: 0;
 }
 
-.view-all-link {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: #e75462;
-  font-size: 14px;
+.ads-count-badge {
+  font-size: 12.5px;
   font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s;
+  color: #e75462;
+  background: #fde9f2;
+  padding: 5px 12px;
+  border-radius: 20px;
   white-space: nowrap;
-  cursor: pointer;
-}
-
-.view-all-link:hover {
-  color: #5a3bd0;
-}
-
-.view-all-link .material-icons-outlined {
-  font-size: 18px;
 }
 
 /* =========================================================
-       STATE BLOCKS
-       ========================================================= */
+         STATE BLOCKS
+    ========================================================= */
 
 .state-block {
   display: flex;
@@ -354,95 +348,13 @@
 }
 
 /* =========================================================
-       BROWSE CATEGORIES GRID
-       ========================================================= */
-
-.browse-categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 14px;
-}
-
-.browse-category-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  background: #fff;
-  border: 1px solid #eee6fa;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
-}
-
-.browse-category-card:hover {
-  border-color: #e75462;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(108, 76, 224, 0.1);
-}
-
-.browse-category-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.browse-category-icon .material-icons-outlined {
-  font-size: 19px;
-}
-
-.browse-category-info h4 {
-  margin: 0 0 2px 0;
-  font-size: 13px;
-  font-weight: 700;
-  color: #1c1533;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.browse-category-info {
-  min-width: 0;
-}
-
-.browse-category-info span {
-  font-size: 11px;
-  color: #8b8299;
-}
-
-.more-tile {
-  justify-content: center;
-}
-
-/* =========================================================
-       AD ROW (Featured Ads)
-       ========================================================= */
-
-.ad-row-wrapper {
-  position: relative;
-}
-
-.ad-row {
-  display: flex;
-  gap: 18px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 2px 2px 12px;
-  scrollbar-width: none;
-}
-
-.ad-row::-webkit-scrollbar {
-  display: none;
-}
+         SCROLL ARROWS (shared: categories row)
+    ========================================================= */
 
 .scroll-arrow {
   position: absolute;
-  top: 75px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -470,8 +382,83 @@
   right: -17px;
 }
 
+/* =========================================================
+         BROWSE CATEGORIES (horizontally scrollable)
+    ========================================================= */
+
+.category-row-wrapper {
+  position: relative;
+}
+
+.category-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 2px 2px 10px;
+  scrollbar-width: none;
+}
+
+.category-row::-webkit-scrollbar {
+  display: none;
+}
+
+.category-card {
+  flex: 0 0 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 16px 10px;
+  background: #fff;
+  border: 1px solid #eee6fa;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-card:hover {
+  border-color: #e75462;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(108, 76, 224, 0.1);
+}
+
+.category-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-card-icon .material-icons-outlined {
+  font-size: 21px;
+}
+
+.category-card h4 {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1c1533;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+
+/* =========================================================
+         ADS GRID (All Ads / Search Results)
+    ========================================================= */
+
+.ads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
+
 .ad-card {
-  flex: 0 0 220px;
   background: #fff;
   border: 1px solid #e8e8e8;
   border-radius: 14px;
@@ -597,96 +584,42 @@
   flex-shrink: 0;
 }
 
-/* =========================================================
-       LATEST ADS GRID
-       ========================================================= */
-
-.latest-ads-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 16px;
-}
-
-.latest-ad-card {
+/* View More */
+.view-more-wrapper {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #fff;
-  border: 1px solid #e8e8e8;
-  border-radius: 12px;
-  padding: 10px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.latest-ad-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-}
-
-.latest-ad-thumb {
-  width: 56px;
-  height: 56px;
-  border-radius: 10px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  overflow: hidden;
+  margin-top: 28px;
 }
 
-.latest-ad-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.latest-ad-thumb .material-icons-outlined {
-  font-size: 24px;
-}
-
-.latest-ad-info {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.latest-ad-info h4 {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 700;
-  color: #1c1533;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.latest-ad-price {
-  font-size: 13px;
-  font-weight: 700;
-  color: #e75462;
-}
-
-.latest-ad-meta {
-  display: flex;
+.view-more-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 2px;
-  font-size: 11px;
-  color: #8b8299;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px solid #e75462;
+  color: #e75462;
+  padding: 10px 26px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.latest-ad-meta .material-icons-outlined {
-  font-size: 12px;
-  flex-shrink: 0;
+.view-more-btn:hover {
+  background: #e75462;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(231, 84, 98, 0.25);
+}
+
+.view-more-btn .material-icons-outlined {
+  font-size: 18px;
 }
 
 /* =========================================================
-       WHY BUY & SELL CTA
-       ========================================================= */
+         WHY BUY & SELL CTA
+    ========================================================= */
 
 .why-cta-section {
   background: linear-gradient(135deg, #f8f5ff 0%, #f5f0ff 100%);
@@ -826,8 +759,96 @@
 }
 
 /* =========================================================
-       RESPONSIVE BREAKPOINTS
-       ========================================================= */
+    TRUST BAR
+  ========================================================= */
+
+.trust-bar {
+  background: #ffffff;
+  border-bottom: 1px solid #eee8fa;
+  margin-top: 40px;
+}
+
+.trust-bar-inner {
+  /* max-width: 1440px; */
+  margin: 0 auto;
+  padding: 15px 0px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 26px;
+}
+
+.trust-divider {
+  width: 1px;
+  align-self: stretch;
+  background: #ece6f8;
+  flex-shrink: 0;
+}
+
+.trust-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trust-icon .material-icons-outlined {
+  font-size: 22px;
+}
+
+.trust-icon.c-purple {
+  background: #efe9fe;
+  color: #6c4ce0;
+}
+
+.trust-icon.c-pink {
+  background: #fde9f2;
+  color: #e93d82;
+}
+
+.trust-icon.c-orange {
+  background: #fff0e3;
+  color: #f0954b;
+}
+
+.trust-icon.c-green {
+  background: #e6f7ec;
+  color: #1f9d55;
+}
+
+.trust-icon.c-indigo {
+  background: #eaf0ff;
+  color: #4c6fe0;
+}
+
+.trust-text h4 {
+  margin: 0 0 2px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1c1533;
+  white-space: nowrap;
+}
+
+.trust-text p {
+  margin: 0;
+  font-size: 12px;
+  color: #8b8299;
+  line-height: 1.4;
+  max-width: 170px;
+}
+
+/* =========================================================
+         RESPONSIVE BREAKPOINTS
+    ========================================================= */
 
 @media (max-width: 1100px) {
   .ads-hero-illustration {
@@ -855,6 +876,10 @@
   .sell-cta-text {
     max-width: 70%;
   }
+
+  .ads-grid {
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
@@ -876,12 +901,24 @@
     font-size: 15px;
   }
 
+  /* .ads-search {
+    flex: 1 1 30px;
+  } */
+
+  .trust-stats-row {
+    gap: 22px;
+  }
+
   .why-cta-section {
     padding: 22px 18px;
   }
 
   .scroll-arrow {
     display: none;
+  }
+
+  .category-row {
+    padding-bottom: 6px;
   }
 
   .section-title {
@@ -893,12 +930,22 @@
     align-items: flex-start;
   }
 
-  .latest-ads-grid {
+  .ads-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
-  .browse-categories-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .trust-bar-inner {
+    padding: 15px 0px;
+  }
+
+  .trust-item {
+    padding: 8px 16px;
+    flex: 1 1 100%;
+  }
+
+  .trust-divider {
+    display: none;
   }
 }
 
@@ -914,27 +961,38 @@
   .ads-search .search-input-wrapper {
     flex-wrap: wrap;
     border-radius: 20px;
-    padding: 10px 12px;
+    padding: 5px 10px;
   }
 
   .ads-search .search-divider {
     display: none;
   }
 
-  .ads-search .location-inline {
-    margin: 6px 0;
-  }
-
   .ads-search .search-btn {
     margin-left: auto;
+    /* margin-top: 6px; */
   }
 
-  .ad-card {
-    flex: 0 0 180px;
+  .trust-stats-row {
+    gap: 40px;
   }
 
-  .latest-ads-grid {
-    grid-template-columns: 1fr;
+  .trust-stat-text span {
+    font-size: 10.5px;
+  }
+
+  .category-card {
+    flex: 0 0 108px;
+    padding: 12px 8px;
+  }
+
+  .ads-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .ad-image-wrapper {
+    height: 110px;
   }
 
   .why-item {
@@ -947,5 +1005,11 @@
 
   .sell-cta-illustration {
     display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .ads-grid {
+    grid-template-columns: 1fr;
   }
 }

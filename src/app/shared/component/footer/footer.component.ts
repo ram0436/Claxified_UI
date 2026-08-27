@@ -12,13 +12,6 @@ interface FooterColumn {
   links: FooterLink[];
 }
 
-interface TrustItem {
-  icon: string;
-  title: string;
-  subtitle: string;
-  colorClass: string;
-}
-
 interface PopularCategory {
   icon: string;
   name: string;
@@ -42,40 +35,6 @@ export class FooterComponent {
   currentYear: number = new Date().getFullYear();
   newsletterEmail: string = "";
   subscribeState: "idle" | "success" | "error" = "idle";
-
-  trustItems: TrustItem[] = [
-    {
-      icon: "verified_user",
-      title: "Trusted & Verified",
-      subtitle: "Verified businesses you can trust",
-      colorClass: "c-purple",
-    },
-    {
-      icon: "sell",
-      title: "Great Deals",
-      subtitle: "Find the best deals near you",
-      colorClass: "c-pink",
-    },
-    {
-      icon: "shield",
-      title: "Safe & Secure",
-      subtitle: "Your safety is our top priority",
-      colorClass: "c-orange",
-    },
-    {
-      icon: "support_agent",
-      title: "24/7 Support",
-      subtitle: "We're here to help you anytime",
-      colorClass: "c-green",
-    },
-    {
-      icon: "smartphone",
-      title: "Easy to Use",
-      subtitle: "Simple, fast and seamless experience",
-      colorClass: "c-indigo",
-    },
-  ];
-
   linkColumns: FooterColumn[] = [
     {
       title: "Marketplace",

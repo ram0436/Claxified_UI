@@ -13,11 +13,19 @@ import { CommonService } from "../../shared/service/common.service";
 import { AdminDashboardService } from "../../modules/admin/service/admin-dashboard.service";
 import { BusinessLoginComponent } from "../../modules/business/components/business-login/business-login.component";
 import { LoginComponent } from "../../modules/user/component/login/login.component";
+import { UserService } from "../user/service/user.service";
+import { WishlistItem } from "../classified-ads/model/ads";
 
-// Local view-model so the template doesn't need to know about offerType numbers etc.
 interface OfferViewModel extends BusinessOfferDto {
   businessName: string;
   icon: string;
+}
+
+interface TrustItem {
+  icon: string;
+  title: string;
+  subtitle: string;
+  colorClass: string;
 }
 
 @Component({
@@ -42,6 +50,8 @@ export class MarketplaceComponent implements OnInit {
 
   // Categories
   categories: any[] = [];
+  categoriesLoading: boolean = true;
+  categoriesError: boolean = false;
 
   // Offers
   offers: OfferViewModel[] = [];
@@ -51,7 +61,7 @@ export class MarketplaceComponent implements OnInit {
   private readonly OFFER_SOURCE_BUSINESS_LIMIT = 100;
   private readonly OFFER_DISPLAY_LIMIT = 8;
 
-  // Icon per offer type (see ServicePricingType-style enums on BusinessOffer.offerType)
+  // Icon per offer type
   private offerTypeIcons: { [key: number]: string } = {
     1: "local_offer", // percentage off
     2: "discount", // flat amount off
@@ -61,18 +71,22 @@ export class MarketplaceComponent implements OnInit {
 
   // Category icon mapping
   categoryIcons: { [key: string]: string } = {
-    Electronics: "devices_other",
-    Automobile: "directions_car",
-    Automotive: "directions_car",
-    "Food & Restaurants": "restaurant",
-    "Home & Living": "home",
-    "Beauty & Wellness": "spa",
-    Services: "handyman",
+    "Mobiles & Tablets": "smartphone",
+    Mobiles: "smartphone",
+    Cars: "directions_car",
+    Vehicles: "directions_car",
+    Bikes: "two_wheeler",
+    Property: "home",
+    "Real Estate": "home",
     Jobs: "work",
-    "Real Estate": "business_center",
-    Education: "school",
-    "Health & Care": "health_and_safety",
-    Music: "music_note",
+    Furniture: "weekend",
+    "Home & Kitchen": "kitchen",
+    Electronics: "devices_other",
+    Fashion: "checkroom",
+    Books: "menu_book",
+    Sports: "sports_soccer",
+    Pets: "pets",
+    "Commercial Services": "handyman",
   };
 
   // Category mapping for IDs
@@ -90,12 +104,46 @@ export class MarketplaceComponent implements OnInit {
     "11": "Commercial Services",
   };
 
+  trustItems: TrustItem[] = [
+    {
+      icon: "verified_user",
+      title: "Trusted & Verified",
+      subtitle: "Verified businesses you can trust",
+      colorClass: "c-purple",
+    },
+    {
+      icon: "sell",
+      title: "Great Deals",
+      subtitle: "Find the best deals near you",
+      colorClass: "c-pink",
+    },
+    {
+      icon: "shield",
+      title: "Safe & Secure",
+      subtitle: "Your safety is our top priority",
+      colorClass: "c-orange",
+    },
+    {
+      icon: "support_agent",
+      title: "24/7 Support",
+      subtitle: "We're here to help you anytime",
+      colorClass: "c-green",
+    },
+    {
+      icon: "smartphone",
+      title: "Easy to Use",
+      subtitle: "Simple, fast and seamless experience",
+      colorClass: "c-indigo",
+    },
+  ];
+
   constructor(
     private businessService: BusinessService,
     private commonService: CommonService,
     private adminService: AdminDashboardService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -107,15 +155,85 @@ export class MarketplaceComponent implements OnInit {
   // =========================================================
   // SEARCH
   // =========================================================
+  activeFilter: "all" | "business" | "ads" = "all";
 
   performSearch(): void {
-    if (this.searchQuery.trim().length >= 3) {
-      this.router.navigate(["/search"], {
-        queryParams: { q: this.searchQuery.trim() },
-      });
-    }
+    if (this.searchQuery.trim().length === 0) return;
+    this.activeFilter = "all";
+    setTimeout(() => {
+      const resultsSection = document.getElementById("search-results-section");
+      if (resultsSection) {
+        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 0);
   }
 
+  clearSearch(): void {
+    this.searchQuery = "";
+    this.activeFilter = "all";
+  }
+
+  setFilter(filter: "all" | "business" | "ads"): void {
+    this.activeFilter = filter;
+  }
+
+  get isSearching(): boolean {
+    return this.searchQuery.trim().length > 0;
+  }
+
+  get filteredBusinessResults(): BusinessDirectoryItem[] {
+    const q = this.searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return this.businesses.filter(
+      (b) =>
+        (b.businessName || "").toLowerCase().includes(q) ||
+        (b.businessCategory || "").toLowerCase().includes(q) ||
+        (this.getLocationLabel(b) || "").toLowerCase().includes(q)
+    );
+  }
+
+  get filteredAdResults(): any[] {
+    const q = this.searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return this.allAds
+      .filter((ad) => ad.isActive !== false)
+      .filter(
+        (ad) =>
+          (ad.title || "").toLowerCase().includes(q) ||
+          (this.getCategoryName(ad.categoryId) || "")
+            .toLowerCase()
+            .includes(q) ||
+          [ad.city, ad.state]
+            .filter(Boolean)
+            .join(", ")
+            .toLowerCase()
+            .includes(q)
+      )
+      .map((ad) => ({
+        ...ad,
+        priceLabel: this.formatAdPrice(ad),
+        isWishlisted: false,
+        locationLabel:
+          [ad.city, ad.state].filter(Boolean).join(", ") ||
+          "Location not specified",
+        postedAgo: this.getPostedAgo(ad.createdOn),
+      }));
+  }
+
+  get searchResultsCount(): number {
+    if (this.activeFilter === "business")
+      return this.filteredBusinessResults.length;
+    if (this.activeFilter === "ads") return this.filteredAdResults.length;
+    return this.filteredBusinessResults.length + this.filteredAdResults.length;
+  }
+
+  get showBusinessResults(): boolean {
+    return this.activeFilter === "all" || this.activeFilter === "business";
+  }
+
+  get showAdResults(): boolean {
+    return this.activeFilter === "all" || this.activeFilter === "ads";
+  }
   // =========================================================
   // NAVIGATION
   // =========================================================
@@ -252,27 +370,24 @@ export class MarketplaceComponent implements OnInit {
   // =========================================================
   // FETCH FEATURED ADS
   // =========================================================
-
   fetchAds(): void {
     this.adsLoading = true;
     this.adsError = false;
     this.adminService.getAllItems().subscribe(
       (data: any[]) => {
-        const allAds = data || [];
-        const premiumAds = allAds.filter((ad) => ad.isPremium);
-        this.featuredAds =
-          premiumAds.length > 0 ? premiumAds : allAds.slice(0, 10);
-        this.featuredAds = this.featuredAds.slice(0, 10);
-        this.featuredAds.forEach((ad) => {
-          ad.city = [
-            "Bengaluru",
-            "Mysuru",
-            "Chennai",
-            "Hyderabad",
-            "Mumbai",
-            "Delhi",
-          ][Math.floor(Math.random() * 6)];
-        });
+        this.allAds = data || [];
+        const premiumAds = this.allAds.filter((ad) => ad.isPremium);
+        const source =
+          premiumAds.length > 0 ? premiumAds : this.allAds.slice(0, 10);
+        this.featuredAds = source.slice(0, 10).map((ad) => ({
+          ...ad,
+          priceLabel: this.formatAdPrice(ad),
+          isWishlisted: false,
+          locationLabel:
+            [ad.city, ad.state].filter(Boolean).join(", ") ||
+            "Location not specified",
+          postedAgo: this.getPostedAgo(ad.createdOn),
+        }));
         this.adsLoading = false;
         this.updateCategoryCounts();
       },
@@ -283,17 +398,99 @@ export class MarketplaceComponent implements OnInit {
     );
   }
 
+  private formatAdPrice(ad: any): string {
+    if (ad.price) {
+      return `₹${Number(ad.price).toLocaleString("en-IN")}`;
+    }
+    if (ad.minSalary || ad.maxSalary) {
+      const period = ad.salaryPeriodType === 2 ? "/year" : "/month";
+      if (ad.minSalary && ad.maxSalary) {
+        return `₹${Number(ad.minSalary).toLocaleString("en-IN")}-₹${Number(
+          ad.maxSalary
+        ).toLocaleString("en-IN")}${period}`;
+      }
+      return `₹${Number(ad.minSalary || ad.maxSalary).toLocaleString(
+        "en-IN"
+      )}${period}`;
+    }
+    return "Price on request";
+  }
+
+  private getPostedAgo(createdOn: string): string {
+    if (!createdOn) return "";
+    const diffMs = Date.now() - new Date(createdOn).getTime();
+    const diffMins = Math.max(Math.floor(diffMs / 60000), 0);
+    if (diffMins < 60) return `${diffMins}m ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return `${Math.floor(diffHours / 24)}d ago`;
+  }
+
+  toggleWishlist(ad: any, event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (localStorage.getItem("id") == null) {
+      this.dialog.open(LoginComponent, {
+        width: "400px",
+        panelClass: "custom-dialog-container",
+      });
+      return;
+    }
+
+    ad.isWishlisted = !ad.isWishlisted;
+    if (ad.isWishlisted) {
+      const wishlistItem: WishlistItem = {
+        id: 0,
+        productId: ad.tableRefGuid,
+        categoryId: ad.categoryId,
+        createdBy: localStorage.getItem("id"),
+        createdOn: new Date().toISOString(),
+      };
+      this.userService.AddWishList(wishlistItem).subscribe(
+        () => {},
+        () => {}
+      );
+    }
+  }
+
   // =========================================================
   // FETCH CATEGORIES
   // =========================================================
 
+  private readonly categoryColorClasses: string[] = [
+    "c-red",
+    "c-pink",
+    "c-green",
+    "c-blue",
+    "c-orange",
+    "c-purple",
+    "c-teal",
+    "c-indigo",
+  ];
+
   fetchCategories(): void {
+    this.categoriesLoading = true;
+    this.categoriesError = false;
+
     this.commonService.getAllCategory().subscribe(
       (data: any) => {
-        this.categories = (data || []).slice(0, 8);
+        this.categories = (data || [])
+          .slice(0, 10)
+          .map((c: any, i: number) => ({
+            ...c,
+            colorClass:
+              this.categoryColorClasses[i % this.categoryColorClasses.length],
+          }));
+
+        this.categoriesLoading = false;
         this.updateCategoryCounts();
       },
-      () => {}
+      () => {
+        this.categories = [];
+        this.categoriesError = true;
+        this.categoriesLoading = false;
+      }
     );
   }
 

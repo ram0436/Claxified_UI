@@ -24,29 +24,29 @@
               (input)="onSearchInput($event)"
               (keyup.enter)="performSearch()"
             />
+            <button
+              class="search-clear-btn"
+              *ngIf="searchQuery.trim().length > 0"
+              (click)="clearSearch()"
+              aria-label="Clear search"
+            >
+              <span class="material-icons-outlined">close</span>
+            </button>
             <div class="search-divider"></div>
-            <!-- <div class="location-inline">
-              <span class="material-icons-outlined">location_on</span>
-              <span>Bengaluru</span>
-              <span class="material-icons-outlined expand-more"
-                >expand_more</span
-              >
-            </div> -->
             <button class="search-btn" (click)="performSearch()">Search</button>
           </div>
         </div>
 
-        <!-- Quick Category Chips -->
-        <div class="quick-category-row">
-          <div
-            class="quick-category-chip"
-            *ngFor="let cat of quickCategories"
-            (click)="navigateToCategory(cat)"
-          >
-            <span class="quick-chip-icon" [ngClass]="cat.colorClass">
-              <span class="material-icons-outlined">{{ cat.icon }}</span>
-            </span>
-            {{ cat.label }}
+        <!-- Trust / Stats strip -->
+        <div class="trust-stats-row">
+          <div class="trust-stat-item" *ngFor="let stat of trustStats">
+            <span class="material-icons-outlined trust-stat-icon">{{
+              stat.icon
+            }}</span>
+            <div class="trust-stat-text">
+              <strong>{{ stat.value }}</strong>
+              <span>{{ stat.label }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -256,14 +256,10 @@
     </div>
   </section>
 
-  <!-- Browse Ads by Category -->
+  <!-- Browse Categories (all categories, horizontally scrollable) -->
   <section class="section-wrapper">
     <div class="section-header">
-      <h2 class="section-title">Browse Ads by Category</h2>
-      <a routerLink="/categories" class="view-all-link">
-        View all categories
-        <span class="material-icons-outlined">arrow_forward</span>
-      </a>
+      <h2 class="section-title">Browse Categories</h2>
     </div>
 
     <div class="state-block" *ngIf="categoriesLoading">
@@ -277,45 +273,53 @@
     </div>
 
     <div
-      class="browse-categories-grid"
-      *ngIf="!categoriesLoading && !categoriesError"
+      class="category-row-wrapper"
+      *ngIf="
+        !categoriesLoading && !categoriesError && browseCategories.length > 0
+      "
     >
-      <div
-        class="browse-category-card"
-        *ngFor="let category of browseCategories; trackBy: trackByCategoryId"
-        (click)="navigateToCategory(category)"
+      <button
+        class="scroll-arrow scroll-arrow-left"
+        (click)="categoryScroll.scrollBy({ left: -240, behavior: 'smooth' })"
+        aria-label="Scroll categories left"
       >
-        <div class="browse-category-icon" [ngClass]="category.colorClass">
-          <span class="material-icons-outlined">{{ category.icon }}</span>
-        </div>
-        <div class="browse-category-info">
+        <span class="material-icons-outlined">chevron_left</span>
+      </button>
+
+      <div class="category-row" #categoryScroll>
+        <div
+          class="category-card"
+          *ngFor="let category of browseCategories; trackBy: trackByCategoryId"
+          (click)="navigateToCategory(category)"
+        >
+          <div class="category-card-icon" [ngClass]="category.colorClass">
+            <span class="material-icons-outlined">{{ category.icon }}</span>
+          </div>
           <h4>{{ category.name }}</h4>
-          <!-- <span>{{ category.count }}+ Ads</span> -->
         </div>
       </div>
 
-      <a routerLink="/categories" class="browse-category-card more-tile">
-        <div class="browse-category-icon c-neutral">
-          <span class="material-icons-outlined">apps</span>
-        </div>
-        <div class="browse-category-info">
-          <h4>More Categories</h4>
-        </div>
-      </a>
+      <button
+        class="scroll-arrow scroll-arrow-right"
+        (click)="categoryScroll.scrollBy({ left: 240, behavior: 'smooth' })"
+        aria-label="Scroll categories right"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </button>
     </div>
   </section>
 
-  <!-- Featured Ads -->
-  <section class="section-wrapper">
+  <!-- All Ads / Search Results -->
+  <section class="section-wrapper" id="ads-section">
     <div class="section-header">
-      <h2 class="section-title">Featured Ads</h2>
-      <a routerLink="/classified-ads" class="view-all-link">
-        View all ads
-        <span class="material-icons-outlined">arrow_forward</span>
-      </a>
+      <h2 class="section-title">
+        {{ searchQuery.trim() ? "Search Results" : "All Ads" }}
+      </h2>
+      <span class="ads-count-badge" *ngIf="searchQuery.trim().length > 0">
+        {{ filteredAds.length }} found
+      </span>
     </div>
 
-    <!-- Loading / Error states (hook up once the ads service is wired) -->
     <div class="state-block" *ngIf="adsLoading">
       <div class="spinner"></div>
       <p>Loading ads…</p>
@@ -323,116 +327,80 @@
 
     <div class="state-block" *ngIf="!adsLoading && adsError">
       <span class="material-icons-outlined state-icon">wifi_off</span>
-      <p>We couldn't load featured ads right now.</p>
+      <p>We couldn't load ads right now.</p>
     </div>
 
     <div
-      class="ad-row-wrapper"
-      *ngIf="!adsLoading && !adsError && featuredAds.length > 0"
+      class="state-block"
+      *ngIf="
+        !adsLoading &&
+        !adsError &&
+        searchQuery.trim().length > 0 &&
+        filteredAds.length === 0
+      "
     >
-      <button
-        class="scroll-arrow scroll-arrow-left"
-        (click)="featuredScroll.scrollBy({ left: -260, behavior: 'smooth' })"
-        aria-label="Scroll left"
-      >
-        <span class="material-icons-outlined">chevron_left</span>
-      </button>
-
-      <div class="ad-row" #featuredScroll>
-        <div
-          class="ad-card"
-          *ngFor="let ad of featuredAds; trackBy: trackByAdId"
-          (click)="viewAd(ad)"
-        >
-          <div class="ad-image-wrapper">
-            <img
-              *ngIf="ad.imageUrl"
-              [src]="ad.imageUrl"
-              [alt]="ad.title"
-              class="ad-image"
-              loading="lazy"
-            />
-            <div
-              class="ad-image-placeholder"
-              [ngClass]="ad.colorClass"
-              *ngIf="!ad.imageUrl"
-            >
-              <span class="material-icons-outlined">{{ ad.categoryIcon }}</span>
-            </div>
-            <button
-              class="wishlist-btn"
-              [class.active]="ad.isWishlisted"
-              (click)="toggleWishlist(ad, $event)"
-              aria-label="Save ad"
-            >
-              <span class="material-icons-outlined">{{
-                ad.isWishlisted ? "favorite" : "favorite_border"
-              }}</span>
-            </button>
-            <span class="ad-price-badge">{{ ad.price }}</span>
-          </div>
-          <div class="ad-content">
-            <h4 class="ad-title">{{ ad.title }}</h4>
-            <p class="ad-category">{{ ad.category }}</p>
-            <div class="ad-meta">
-              <span class="ad-location">
-                <span class="material-icons-outlined">location_on</span>
-                {{ ad.location }}
-              </span>
-              <span class="ad-time">{{ ad.postedAgo }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <button
-        class="scroll-arrow scroll-arrow-right"
-        (click)="featuredScroll.scrollBy({ left: 260, behavior: 'smooth' })"
-        aria-label="Scroll right"
-      >
-        <span class="material-icons-outlined">chevron_right</span>
-      </button>
-    </div>
-  </section>
-
-  <!-- Latest Ads -->
-  <!-- <section class="section-wrapper">
-    <div class="section-header">
-      <h2 class="section-title">Latest Ads</h2>
-      <a routerLink="/classified-ads" class="view-all-link">
-        View all
-        <span class="material-icons-outlined">arrow_forward</span>
-      </a>
+      <span class="material-icons-outlined state-icon">search_off</span>
+      <p>No ads match "{{ searchQuery }}".</p>
     </div>
 
-    <div class="latest-ads-grid">
+    <div
+      class="ads-grid"
+      *ngIf="!adsLoading && !adsError && displayedAds.length > 0"
+    >
       <div
-        class="latest-ad-card"
-        *ngFor="let ad of latestAds"
+        class="ad-card"
+        *ngFor="let ad of displayedAds; trackBy: trackByAdId"
         (click)="viewAd(ad)"
       >
-        <div class="latest-ad-thumb" [ngClass]="ad.colorClass">
+        <div class="ad-image-wrapper">
           <img
             *ngIf="ad.imageUrl"
             [src]="ad.imageUrl"
             [alt]="ad.title"
+            class="ad-image"
             loading="lazy"
           />
-          <span class="material-icons-outlined" *ngIf="!ad.imageUrl">{{
-            ad.categoryIcon
-          }}</span>
+          <div
+            class="ad-image-placeholder"
+            [ngClass]="ad.colorClass"
+            *ngIf="!ad.imageUrl"
+          >
+            <span class="material-icons-outlined">{{ ad.categoryIcon }}</span>
+          </div>
+          <button
+            class="wishlist-btn"
+            [class.active]="ad.isWishlisted"
+            (click)="toggleWishlist(ad, $event)"
+            title="Add in Wishlist"
+            aria-label="Save ad"
+          >
+            <span class="material-icons-outlined">{{
+              ad.isWishlisted ? "favorite" : "favorite_border"
+            }}</span>
+          </button>
+          <span class="ad-price-badge">{{ ad.price }}</span>
         </div>
-        <div class="latest-ad-info">
-          <h4>{{ ad.title }}</h4>
-          <span class="latest-ad-price">{{ ad.price }}</span>
-          <span class="latest-ad-meta">
-            <span class="material-icons-outlined">location_on</span>
-            {{ ad.location }} &bull; {{ ad.postedAgo }}
-          </span>
+        <div class="ad-content">
+          <h4 class="ad-title">{{ ad.title }}</h4>
+          <p class="ad-category">{{ ad.category }}</p>
+          <div class="ad-meta">
+            <span class="ad-location">
+              <span class="material-icons-outlined">location_on</span>
+              {{ ad.location }}
+            </span>
+            <span class="ad-time">{{ ad.postedAgo }}</span>
+          </div>
         </div>
       </div>
     </div>
-  </section> -->
+
+    <div class="view-more-wrapper" *ngIf="hasMoreAds">
+      <button class="view-more-btn" (click)="loadMore()">
+        View More
+        <span class="material-icons-outlined">expand_more</span>
+      </button>
+    </div>
+  </section>
 
   <!-- Why Buy & Sell + CTA -->
   <section class="section-wrapper why-cta-section">
@@ -500,4 +468,22 @@
       </div>
     </div>
   </section>
+
+  <!-- Trust Bar -->
+  <div class="trust-bar">
+    <div class="trust-bar-inner">
+      <ng-container *ngFor="let item of trustItems; let last = last">
+        <div class="trust-item">
+          <div class="trust-icon" [ngClass]="item.colorClass">
+            <span class="material-icons-outlined">{{ item.icon }}</span>
+          </div>
+          <div class="trust-text">
+            <h4>{{ item.title }}</h4>
+            <p>{{ item.subtitle }}</p>
+          </div>
+        </div>
+        <div class="trust-divider" *ngIf="!last"></div>
+      </ng-container>
+    </div>
+  </div>
 </div>

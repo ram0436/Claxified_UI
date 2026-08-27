@@ -237,67 +237,110 @@
   <section class="section-wrapper">
     <div class="section-header">
       <h2 class="section-title">Popular Business Categories</h2>
-      <a routerLink="/categories" class="view-all-link">
+      <a
+        routerLink="/categories"
+        class="view-all-link"
+        *ngIf="
+          !categoriesLoading &&
+          !categoriesError &&
+          businessCategories.length > 0
+        "
+      >
         View all categories
         <span class="material-icons-outlined">arrow_forward</span>
       </a>
     </div>
 
-    <div class="categories-row">
-      <div
-        class="category-pill"
-        *ngFor="
-          let category of businessCategories | slice : 0 : categoryDisplayLimit
-        "
-        (click)="navigateToCategory(category)"
+    <div class="state-block" *ngIf="categoriesLoading">
+      <div class="spinner"></div>
+      <p>Loading categories…</p>
+    </div>
+
+    <div class="state-block" *ngIf="!categoriesLoading && categoriesError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load the categories right now.</p>
+      <button class="retry-button" (click)="fetchCategories()">
+        Try Again
+      </button>
+    </div>
+
+    <div
+      class="state-block"
+      *ngIf="
+        !categoriesLoading &&
+        !categoriesError &&
+        businessCategories.length === 0
+      "
+    >
+      <span class="material-icons-outlined state-icon">category</span>
+      <p>No categories available right now.</p>
+    </div>
+
+    <div
+      class="category-row-wrapper"
+      *ngIf="
+        !categoriesLoading && !categoriesError && businessCategories.length > 0
+      "
+    >
+      <button
+        class="scroll-arrow scroll-arrow-left"
+        (click)="categoryScroll.scrollBy({ left: -240, behavior: 'smooth' })"
+        aria-label="Scroll categories left"
       >
-        <div class="category-pill-icon">
-          <span class="material-icons-outlined">{{
-            getCategoryIcon(category.name)
-          }}</span>
-        </div>
-        <div class="category-pill-info">
-          <h4 class="category-name">{{ category.name }}</h4>
-          <!-- <span class="category-count">{{
-            getCategoryCountLabel(category)
-          }}</span> -->
+        <span class="material-icons-outlined">chevron_left</span>
+      </button>
+
+      <div class="category-row" #categoryScroll>
+        <div
+          class="category-card"
+          *ngFor="let category of businessCategories"
+          (click)="navigateToCategory(category)"
+        >
+          <!-- <div class="category-card-icon" [ngClass]="category.colorClass">
+             <span class="material-icons-outlined">{{
+              getCategoryIcon(category.name)
+            }}</span>
+          </div> -->
+          <h4>{{ category.name }}</h4>
         </div>
       </div>
 
-      <a routerLink="/categories" class="category-pill category-pill-more">
-        <div class="category-pill-icon c-neutral">
-          <span class="material-icons-outlined">apps</span>
-        </div>
-        <div class="category-pill-info">
-          <h4 class="category-name">More</h4>
-        </div>
-      </a>
+      <button
+        class="scroll-arrow scroll-arrow-right"
+        (click)="categoryScroll.scrollBy({ left: 240, behavior: 'smooth' })"
+        aria-label="Scroll categories right"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </button>
     </div>
   </section>
 
   <!-- Businesses Near You -->
-  <section class="section-wrapper">
+  <section class="section-wrapper" id="businesses-section">
     <div class="section-header">
       <div class="section-title-group">
-        <h2 class="section-title">Businesses Near You</h2>
-        <!-- <span class="section-title-chip">
-          <span class="material-icons-outlined">location_on</span>
-          Bengaluru
-        </span> -->
+        <h2 class="section-title">
+          {{ searchQuery.trim() ? "Search Results" : "Businesses Near You" }}
+        </h2>
       </div>
-      <a routerLink="/business/directories" class="view-all-link">
+      <span class="ads-count-badge" *ngIf="searchQuery.trim().length > 0">
+        {{ filteredBusinesses.length }} found
+      </span>
+      <a
+        routerLink="/business/directories"
+        class="view-all-link"
+        *ngIf="!searchQuery.trim()"
+      >
         View all businesses
         <span class="material-icons-outlined">arrow_forward</span>
       </a>
     </div>
 
-    <!-- Loading State -->
     <div class="state-block" *ngIf="businessesLoading">
       <div class="spinner"></div>
       <p>Loading businesses…</p>
     </div>
 
-    <!-- Error State -->
     <div class="state-block" *ngIf="!businessesLoading && businessesError">
       <span class="material-icons-outlined state-icon">wifi_off</span>
       <p>We couldn't load the businesses right now.</p>
@@ -306,128 +349,193 @@
       </button>
     </div>
 
-    <!-- Business Row -->
     <div
-      class="business-row-wrapper"
-      *ngIf="!businessesLoading && !businessesError && businesses.length > 0"
+      class="state-block"
+      *ngIf="
+        !businessesLoading &&
+        !businessesError &&
+        searchQuery.trim().length > 0 &&
+        filteredBusinesses.length === 0
+      "
     >
-      <button
-        class="scroll-arrow scroll-arrow-left"
-        (click)="businessScroll.scrollBy({ left: -280, behavior: 'smooth' })"
-        aria-label="Scroll left"
+      <span class="material-icons-outlined state-icon">search_off</span>
+      <p>No businesses match "{{ searchQuery }}".</p>
+    </div>
+
+    <div
+      class="business-grid"
+      *ngIf="
+        !businessesLoading && !businessesError && displayedBusinesses.length > 0
+      "
+    >
+      <div
+        class="business-card"
+        *ngFor="let business of displayedBusinesses; trackBy: trackByBusinessId"
+        (click)="viewBusiness(business)"
       >
-        <span class="material-icons-outlined">chevron_left</span>
-      </button>
-
-      <div class="business-row" #businessScroll>
-        <div
-          class="business-card"
-          *ngFor="
-            let business of businesses | slice : 0 : 6;
-            trackBy: trackByBusinessId
-          "
-          (click)="viewBusiness(business)"
+        <div class="business-card-image-wrapper">
+          <img
+            *ngIf="business.coverImageUrl"
+            [src]="business.coverImageUrl"
+            [alt]="business.businessName"
+            class="business-card-image"
+            loading="lazy"
+          />
+          <div
+            class="business-card-image-placeholder"
+            *ngIf="!business.coverImageUrl"
+          >
+            <span class="material-icons-outlined">storefront</span>
+          </div>
+          <div
+            class="business-card-verified"
+            *ngIf="business.businessVerificationDto?.isBusinessVerified"
+          >
+            <span class="material-icons-outlined">verified</span>
+            Verified
+          </div>
+        </div>
+        <div class="business-card-logo">
+          <img
+            *ngIf="business.logoUrl"
+            [src]="business.logoUrl"
+            [alt]="business.businessName"
+          />
+          <span *ngIf="!business.logoUrl" class="business-card-initials">{{
+            getInitials(business.businessName)
+          }}</span>
+        </div>
+        <div class="business-card-body">
+          <h3 class="business-name">
+            {{ business.businessName || "Unnamed Business" }}
+          </h3>
+          <p class="business-category">
+            {{ business.businessCategory || "Business" }}
+          </p>
+          <div class="business-location">
+            <span class="material-icons-outlined">location_on</span>
+            {{ getLocationLabel(business) || "Location" }}
+          </div>
+          <div class="business-rating">
+            <!-- <span class="rating-stars">
+          <span class="material-icons-outlined">star</span>
+          {{ business.rating || "4.5" }}
+        </span>
+        <span class="rating-count"
+          >({{ business.reviewCount || 0 }})</span
         >
-          <div class="business-card-image-wrapper">
-            <img
-              *ngIf="business.coverImageUrl"
-              [src]="business.coverImageUrl"
-              [alt]="business.businessName"
-              class="business-card-image"
-              loading="lazy"
-            />
-            <div
-              class="business-card-image-placeholder"
-              *ngIf="!business.coverImageUrl"
+        <span class="rating-divider">|</span> -->
+            <span class="business-years"
+              >{{ getYearsInBusiness(business.establishedYear) }}+ years in
+              business</span
             >
-              <span class="material-icons-outlined">storefront</span>
-            </div>
-            <div
-              class="business-card-verified"
-              *ngIf="business.businessVerificationDto?.isBusinessVerified"
-            >
-              <span class="material-icons-outlined">verified</span>
-              Verified
-            </div>
           </div>
-          <div class="business-card-logo">
-            <img
-              *ngIf="business.logoUrl"
-              [src]="business.logoUrl"
-              [alt]="business.businessName"
-            />
-            <span *ngIf="!business.logoUrl" class="business-card-initials">{{
-              getInitials(business.businessName)
-            }}</span>
-          </div>
-          <div class="business-card-body">
-            <h3 class="business-name">
-              {{ business.businessName || "Unnamed Business" }}
-            </h3>
-            <p class="business-category">
-              {{ business.businessCategory || "Business" }}
-            </p>
-            <div class="business-location">
-              <span class="material-icons-outlined">location_on</span>
-              {{ getLocationLabel(business) || "Location" }}
-            </div>
-            <div class="business-rating">
-              <!-- <span class="rating-stars">
-                <span class="material-icons-outlined">star</span>
-                {{ business.rating || "4.5" }}
-              </span>
-              <span class="rating-count"
-                >({{ business.reviewCount || 0 }})</span
-              >
-              <span class="rating-divider">|</span> -->
-              <span class="business-years"
-                >{{ getYearsInBusiness(business.establishedYear) }}+ years in
-                business</span
-              >
-            </div>
 
-            <div class="business-card-footer">
-              <button
-                class="view-details-btn"
-                (click)="viewBusiness(business); $event.stopPropagation()"
-              >
-                View Details
-              </button>
-              <a
-                *ngIf="getBusinessPhone(business)"
-                class="icon-btn"
-                [href]="'tel:' + getBusinessPhone(business)"
-                (click)="$event.stopPropagation()"
-                aria-label="Call business"
-              >
-                <span class="material-icons-outlined">call</span>
-              </a>
-              <a
-                *ngIf="getBusinessPhone(business)"
-                class="icon-btn whatsapp"
-                [href]="getWhatsAppLink(business)"
-                target="_blank"
-                rel="noopener"
-                (click)="$event.stopPropagation()"
-                aria-label="Message on WhatsApp"
-              >
-                <span class="material-icons-outlined">chat</span>
-              </a>
-            </div>
+          <div class="business-card-footer">
+            <button
+              class="view-details-btn"
+              (click)="viewBusiness(business); $event.stopPropagation()"
+            >
+              View Details
+            </button>
+            <a
+              *ngIf="getBusinessPhone(business)"
+              class="icon-btn"
+              [href]="'tel:' + getBusinessPhone(business)"
+              (click)="$event.stopPropagation()"
+              aria-label="Call business"
+            >
+              <span class="material-icons-outlined">call</span>
+            </a>
+            <a
+              *ngIf="getBusinessPhone(business)"
+              class="icon-btn whatsapp"
+              [href]="getWhatsAppLink(business)"
+              target="_blank"
+              rel="noopener"
+              (click)="$event.stopPropagation()"
+              aria-label="Message on WhatsApp"
+            >
+              <span class="material-icons-outlined">chat</span>
+            </a>
           </div>
         </div>
       </div>
+    </div>
 
-      <button
-        class="scroll-arrow scroll-arrow-right"
-        (click)="businessScroll.scrollBy({ left: 280, behavior: 'smooth' })"
-        aria-label="Scroll right"
-      >
-        <span class="material-icons-outlined">chevron_right</span>
+    <div class="view-more-wrapper" *ngIf="hasMoreBusinesses">
+      <button class="view-more-btn" (click)="loadMoreBusinesses()">
+        View More
+        <span class="material-icons-outlined">expand_more</span>
       </button>
     </div>
   </section>
 
+  <!-- Offers & Deals from Local Businesses -->
+  <section class="section-wrapper offers-section">
+    <div class="section-header">
+      <h2 class="section-title">Offers & Deals from Local Businesses</h2>
+      <a routerLink="/offers" class="view-all-link">
+        View all offers
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Loading State -->
+    <div class="state-block" *ngIf="offersLoading">
+      <div class="spinner"></div>
+      <p>Loading offers…</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="state-block" *ngIf="!offersLoading && offersError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load offers right now.</p>
+      <button class="retry-button" (click)="fetchBusinesses()">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      class="state-block"
+      *ngIf="!offersLoading && !offersError && offers.length === 0"
+    >
+      <span class="material-icons-outlined state-icon">local_offer</span>
+      <p>No offers available right now.</p>
+    </div>
+
+    <!-- Offers Grid (Marketplace Style) -->
+    <div
+      class="offers-grid"
+      *ngIf="!offersLoading && !offersError && offers.length > 0"
+    >
+      <div
+        class="offer-card"
+        *ngFor="let offer of offers; trackBy: trackByOfferId"
+      >
+        <div class="offer-icon">
+          <span class="material-icons-outlined">{{
+            offer.icon || "local_offer"
+          }}</span>
+        </div>
+        <div class="offer-content">
+          <h4 class="offer-title">{{ offer.title }}</h4>
+          <p class="offer-description">
+            {{ offer.businessName }}
+          </p>
+          <div class="offer-footer">
+            <span class="offer-validity" *ngIf="offer.endDate">
+              Valid till {{ formatOfferValidity(offer.endDate) }}
+            </span>
+            <span class="offer-code" *ngIf="offer.couponCode">
+              Code: {{ offer.couponCode }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   <!-- Why List Your Business -->
   <section class="section-wrapper why-list-section">
     <div class="why-list-content">
@@ -573,69 +681,20 @@
     </div>
   </section> -->
 
-  <!-- Offers & Deals from Local Businesses -->
-  <section class="section-wrapper offers-section">
-    <div class="section-header">
-      <h2 class="section-title">Offers & Deals from Local Businesses</h2>
-      <a routerLink="/offers" class="view-all-link">
-        View all offers
-        <span class="material-icons-outlined">arrow_forward</span>
-      </a>
-    </div>
-
-    <!-- Loading State -->
-    <div class="state-block" *ngIf="offersLoading">
-      <div class="spinner"></div>
-      <p>Loading offers…</p>
-    </div>
-
-    <!-- Error State -->
-    <div class="state-block" *ngIf="!offersLoading && offersError">
-      <span class="material-icons-outlined state-icon">wifi_off</span>
-      <p>We couldn't load offers right now.</p>
-      <button class="retry-button" (click)="fetchBusinesses()">
-        Try Again
-      </button>
-    </div>
-
-    <!-- Empty State -->
-    <div
-      class="state-block"
-      *ngIf="!offersLoading && !offersError && offers.length === 0"
-    >
-      <span class="material-icons-outlined state-icon">local_offer</span>
-      <p>No offers available right now.</p>
-    </div>
-
-    <div
-      class="offers-row"
-      *ngIf="!offersLoading && !offersError && offers.length > 0"
-    >
-      <div
-        class="offer-card"
-        *ngFor="let offer of offers; let i = index; trackBy: trackByOfferId"
-      >
-        <div
-          class="offer-badge"
-          [style.background]="getOfferBgColor(i)"
-          [style.color]="getOfferColor(i)"
-        >
-          <span class="offer-badge-value">{{
-            getOfferBadge(offer.title).value
-          }}</span>
-          <span
-            class="offer-badge-suffix"
-            *ngIf="getOfferBadge(offer.title).suffix"
-          >
-            {{ getOfferBadge(offer.title).suffix }}
-          </span>
+  <div class="trust-bar">
+    <div class="trust-bar-inner">
+      <ng-container *ngFor="let item of trustItems; let last = last">
+        <div class="trust-item">
+          <div class="trust-icon" [ngClass]="item.colorClass">
+            <span class="material-icons-outlined">{{ item.icon }}</span>
+          </div>
+          <div class="trust-text">
+            <h4>{{ item.title }}</h4>
+            <p>{{ item.subtitle }}</p>
+          </div>
         </div>
-        <div class="offer-content">
-          <h4 class="offer-title">{{ offer.title }}</h4>
-          <p class="offer-description">{{ offer.businessName }}</p>
-        </div>
-        <span class="offer-arrow material-icons-outlined">chevron_right</span>
-      </div>
+        <div class="trust-divider" *ngIf="!last"></div>
+      </ng-container>
     </div>
-  </section>
+  </div>
 </div>

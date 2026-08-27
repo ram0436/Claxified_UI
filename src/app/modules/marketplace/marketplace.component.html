@@ -27,7 +27,14 @@
                 (input)="onSearchInput($event)"
                 (keyup.enter)="performSearch()"
               />
-              <div class="search-divider"></div>
+              <button
+                class="search-clear-btn"
+                *ngIf="searchQuery.trim().length > 0"
+                (click)="clearSearch()"
+                aria-label="Clear search"
+              >
+                <span class="material-icons-outlined">close</span>
+              </button>
               <button class="search-btn" (click)="performSearch()">
                 Search
               </button>
@@ -53,16 +60,6 @@
               <div class="quick-text">
                 <span class="quick-title">List Your Business</span>
                 <span class="quick-sub">Grow your brand</span>
-              </div>
-            </div>
-
-            <div class="quick-action-card" (click)="navigateTo('/offers')">
-              <span class="quick-icon icon-pink">
-                <span class="material-icons-outlined">percent</span>
-              </span>
-              <div class="quick-text">
-                <span class="quick-title">Create Offers</span>
-                <span class="quick-sub">Attract more buyers</span>
               </div>
             </div>
           </div>
@@ -169,10 +166,168 @@
     </div>
   </section>
 
+  <!-- Search Results Section -->
+  <section
+    class="section-wrapper search-results-section"
+    id="search-results-section"
+    *ngIf="isSearching"
+  >
+    <div class="section-header search-results-header">
+      <h2 class="section-title">Search Results for "{{ searchQuery }}"</h2>
+      <span class="ads-count-badge">{{ searchResultsCount }} found</span>
+    </div>
+
+    <div class="search-filter-tabs">
+      <button
+        class="filter-tab"
+        [class.active]="activeFilter === 'all'"
+        (click)="setFilter('all')"
+      >
+        All
+        <span class="filter-tab-count">{{
+          filteredBusinessResults.length + filteredAdResults.length
+        }}</span>
+      </button>
+      <button
+        class="filter-tab"
+        [class.active]="activeFilter === 'business'"
+        (click)="setFilter('business')"
+      >
+        <span class="material-icons-outlined">storefront</span>
+        Businesses
+        <span class="filter-tab-count">{{
+          filteredBusinessResults.length
+        }}</span>
+      </button>
+      <button
+        class="filter-tab"
+        [class.active]="activeFilter === 'ads'"
+        (click)="setFilter('ads')"
+      >
+        <span class="material-icons-outlined">local_offer</span>
+        Ads
+        <span class="filter-tab-count">{{ filteredAdResults.length }}</span>
+      </button>
+    </div>
+
+    <div class="state-block" *ngIf="searchResultsCount === 0">
+      <span class="material-icons-outlined state-icon">search_off</span>
+      <p>No results match "{{ searchQuery }}".</p>
+    </div>
+
+    <ng-container
+      *ngIf="showBusinessResults && filteredBusinessResults.length > 0"
+    >
+      <h3 class="search-group-title" *ngIf="activeFilter === 'all'">
+        Businesses
+      </h3>
+      <div class="search-results-grid">
+        <div
+          class="business-card"
+          *ngFor="
+            let business of filteredBusinessResults;
+            trackBy: trackByBusinessId
+          "
+          (click)="viewBusiness(business)"
+        >
+          <div class="card-image-wrapper">
+            <img
+              *ngIf="business.coverImageUrl"
+              [src]="business.coverImageUrl"
+              [alt]="business.businessName"
+              class="card-image"
+              loading="lazy"
+              (error)="onBusinessImageError($event)"
+            />
+            <div class="card-image-placeholder" *ngIf="!business.coverImageUrl">
+              <span class="material-icons-outlined">storefront</span>
+            </div>
+            <div class="business-logo-badge">
+              <img
+                *ngIf="business.logoUrl"
+                [src]="business.logoUrl"
+                [alt]="business.businessName"
+                (error)="onLogoError($event)"
+              />
+              <span class="logo-initials" *ngIf="!business.logoUrl">{{
+                getInitials(business.businessName)
+              }}</span>
+            </div>
+            <div
+              class="card-status"
+              [class.open]="isOpenNow(business)"
+              [class.closed]="!isOpenNow(business)"
+            >
+              {{ isOpenNow(business) ? "Open" : "Closed" }}
+            </div>
+          </div>
+          <div class="card-content">
+            <h3 class="business-name">
+              {{ business.businessName || "Unnamed Business" }}
+            </h3>
+            <p class="business-category">
+              {{ business.businessCategory || "Business" }}
+            </p>
+            <div class="business-location">
+              <span class="material-icons-outlined">location_on</span>
+              {{ getLocationLabel(business) || "Location" }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="showAdResults && filteredAdResults.length > 0">
+      <h3 class="search-group-title" *ngIf="activeFilter === 'all'">
+        Classified Ads
+      </h3>
+      <div class="search-results-grid">
+        <div
+          class="ad-card"
+          *ngFor="let ad of filteredAdResults; trackBy: trackByAdId"
+          (click)="viewAd(ad)"
+        >
+          <div class="ad-image-wrapper">
+            <img
+              [src]="getAdImage(ad)"
+              [alt]="ad.title"
+              class="ad-image"
+              loading="lazy"
+              (error)="onAdImageError($event)"
+            />
+            <button
+              class="wishlist-btn"
+              [class.active]="ad.isWishlisted"
+              (click)="toggleWishlist(ad, $event)"
+              title="Add in Wishlist"
+              aria-label="Save ad"
+            >
+              <span class="material-icons-outlined">{{
+                ad.isWishlisted ? "favorite" : "favorite_border"
+              }}</span>
+            </button>
+            <span class="ad-price-badge">{{ ad.priceLabel }}</span>
+          </div>
+          <div class="ad-content">
+            <h4 class="ad-title">{{ truncateTitle(ad.title, 30) }}</h4>
+            <p class="ad-category">{{ getCategoryName(ad.categoryId) }}</p>
+            <div class="ad-meta">
+              <span class="ad-location">
+                <span class="material-icons-outlined">location_on</span>
+                {{ ad.locationLabel }}
+              </span>
+              <span class="ad-time">{{ ad.postedAgo }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </section>
+
   <!-- Popular Businesses Section -->
-  <section class="section-wrapper">
+  <section class="section-wrapper" *ngIf="!isSearching">
     <div class="section-header">
-      <h2 class="section-title">Popular Businesses Near You</h2>
+      <h2 class="section-title">Popular Businesses</h2>
       <a routerLink="/business/directories" class="view-all-link">
         View All Business
         <span class="material-icons-outlined">arrow_forward</span>
@@ -237,30 +392,27 @@
             <div class="card-image-placeholder" *ngIf="!business.coverImageUrl">
               <span class="material-icons-outlined">storefront</span>
             </div>
+            <div class="business-logo-badge">
+              <img
+                *ngIf="business.logoUrl"
+                [src]="business.logoUrl"
+                [alt]="business.businessName"
+                (error)="onLogoError($event)"
+              />
+              <span class="logo-initials" *ngIf="!business.logoUrl">
+                {{ getInitials(business.businessName) }}
+              </span>
+            </div>
             <div
               class="card-status"
               [class.open]="isOpenNow(business)"
               [class.closed]="!isOpenNow(business)"
             >
-              {{ isOpenNow(business) ? "Open Now" : "Closed" }}
+              {{ isOpenNow(business) ? "Open" : "Closed" }}
             </div>
           </div>
+
           <div class="card-content">
-            <!-- Business Logo -->
-            <div class="business-logo-wrapper">
-              <div class="business-logo" *ngIf="business.logoUrl">
-                <img
-                  [src]="business.logoUrl"
-                  [alt]="business.businessName"
-                  (error)="onLogoError($event)"
-                />
-              </div>
-              <div class="business-logo placeholder" *ngIf="!business.logoUrl">
-                <span class="logo-initials">{{
-                  getInitials(business.businessName)
-                }}</span>
-              </div>
-            </div>
             <h3 class="business-name">
               {{ business.businessName || "Unnamed Business" }}
             </h3>
@@ -271,22 +423,9 @@
               <span class="material-icons-outlined">location_on</span>
               {{ getLocationLabel(business) || "Location" }}
             </div>
-            <div class="business-rating">
-              <span class="business-years"
-                >{{ getYearsInBusiness(business.establishedYear) }}+ years in
-                business</span
-              >
-            </div>
-            <button
-              class="view-business-btn"
-              (click)="viewBusiness(business); $event.stopPropagation()"
-            >
-              View Business
-            </button>
           </div>
         </div>
       </div>
-
       <button
         class="scroll-arrow scroll-arrow-right"
         (click)="businessScroll.scrollBy({ left: 300, behavior: 'smooth' })"
@@ -297,91 +436,10 @@
     </div>
   </section>
 
-  <!-- Featured Classified Ads Section -->
-  <section class="section-wrapper featured-ads-section">
-    <div class="section-header">
-      <h2 class="section-title">Featured Classified Ads</h2>
-      <a routerLink="/classified-ads" class="view-all-link">
-        View All Ads
-        <span class="material-icons-outlined">arrow_forward</span>
-      </a>
-    </div>
-
-    <!-- Loading State -->
-    <div class="state-block" *ngIf="adsLoading">
-      <div class="spinner"></div>
-      <p>Loading ads…</p>
-    </div>
-
-    <!-- Error State -->
-    <div class="state-block" *ngIf="!adsLoading && adsError">
-      <span class="material-icons-outlined state-icon">wifi_off</span>
-      <p>We couldn't load the ads right now.</p>
-      <button class="retry-button" (click)="fetchAds()">Try Again</button>
-    </div>
-
-    <!-- Empty State -->
-    <div
-      class="state-block"
-      *ngIf="!adsLoading && !adsError && featuredAds.length === 0"
-    >
-      <span class="material-icons-outlined state-icon">list_alt</span>
-      <p>No featured ads available.</p>
-    </div>
-
-    <!-- Ads Row with Scroll -->
-    <div
-      class="ads-row-wrapper"
-      *ngIf="!adsLoading && !adsError && featuredAds.length > 0"
-    >
-      <button
-        class="scroll-arrow scroll-arrow-left"
-        (click)="adsScroll.scrollBy({ left: -280, behavior: 'smooth' })"
-        aria-label="Scroll left"
-      >
-        <span class="material-icons-outlined">chevron_left</span>
-      </button>
-
-      <div class="ads-row" #adsScroll>
-        <div
-          class="ad-card"
-          *ngFor="let ad of featuredAds | slice : 0 : 10; trackBy: trackByAdId"
-          (click)="viewAd(ad)"
-        >
-          <div class="ad-image-wrapper">
-            <img
-              [src]="getAdImage(ad)"
-              [alt]="ad.title"
-              class="ad-image"
-              loading="lazy"
-              (error)="onAdImageError($event)"
-            />
-            <div class="ad-location">
-              <span class="material-icons-outlined">location_on</span>
-              {{ ad.city || "Bengaluru" }}
-            </div>
-          </div>
-          <div class="ad-content">
-            <h4 class="ad-title">{{ truncateTitle(ad.title, 25) }}</h4>
-            <p class="ad-category">{{ getCategoryName(ad.categoryId) }}</p>
-          </div>
-        </div>
-      </div>
-
-      <button
-        class="scroll-arrow scroll-arrow-right"
-        (click)="adsScroll.scrollBy({ left: 280, behavior: 'smooth' })"
-        aria-label="Scroll right"
-      >
-        <span class="material-icons-outlined">chevron_right</span>
-      </button>
-    </div>
-  </section>
-
   <!-- Top Offers & Deals Section -->
-  <section class="section-wrapper offers-section">
+  <section class="section-wrapper offers-section" *ngIf="!isSearching">
     <div class="section-header">
-      <h2 class="section-title">Top Offers & Deals</h2>
+      <h2 class="section-title">Top Business Offers & Deals</h2>
       <a routerLink="/offers" class="view-all-link">
         View All Offers
         <span class="material-icons-outlined">arrow_forward</span>
@@ -442,34 +500,197 @@
     </div>
   </section>
 
+  <!-- Featured Classified Ads Section -->
+  <section class="section-wrapper featured-ads-section" *ngIf="!isSearching">
+    <div class="section-header">
+      <h2 class="section-title">Featured Classified Ads</h2>
+      <a routerLink="/classified-ads" class="view-all-link">
+        View All Ads
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Loading State -->
+    <div class="state-block" *ngIf="adsLoading">
+      <div class="spinner"></div>
+      <p>Loading ads…</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="state-block" *ngIf="!adsLoading && adsError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load the ads right now.</p>
+      <button class="retry-button" (click)="fetchAds()">Try Again</button>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      class="state-block"
+      *ngIf="!adsLoading && !adsError && featuredAds.length === 0"
+    >
+      <span class="material-icons-outlined state-icon">list_alt</span>
+      <p>No featured ads available.</p>
+    </div>
+
+    <!-- Ads Row with Scroll -->
+    <div
+      class="ads-row-wrapper"
+      *ngIf="!adsLoading && !adsError && featuredAds.length > 0"
+    >
+      <button
+        class="scroll-arrow scroll-arrow-left"
+        (click)="adsScroll.scrollBy({ left: -280, behavior: 'smooth' })"
+        aria-label="Scroll left"
+      >
+        <span class="material-icons-outlined">chevron_left</span>
+      </button>
+
+      <div class="ads-row" #adsScroll>
+        <div
+          class="ad-card"
+          *ngFor="let ad of featuredAds | slice : 0 : 10; trackBy: trackByAdId"
+          (click)="viewAd(ad)"
+        >
+          <div class="ad-image-wrapper">
+            <img
+              [src]="getAdImage(ad)"
+              [alt]="ad.title"
+              class="ad-image"
+              loading="lazy"
+              (error)="onAdImageError($event)"
+            />
+            <button
+              class="wishlist-btn"
+              [class.active]="ad.isWishlisted"
+              (click)="toggleWishlist(ad, $event)"
+              title="Add in Wishlist"
+              aria-label="Save ad"
+            >
+              <span class="material-icons-outlined">
+                {{ ad.isWishlisted ? "favorite" : "favorite_border" }}
+              </span>
+            </button>
+            <span class="ad-price-badge">{{ ad.priceLabel }}</span>
+          </div>
+          <div class="ad-content">
+            <h4 class="ad-title">{{ truncateTitle(ad.title, 30) }}</h4>
+            <p class="ad-category">{{ getCategoryName(ad.categoryId) }}</p>
+            <div class="ad-meta">
+              <span class="ad-location">
+                <span class="material-icons-outlined">location_on</span>
+                {{ ad.locationLabel }}
+              </span>
+              <span class="ad-time">{{ ad.postedAgo }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        class="scroll-arrow scroll-arrow-right"
+        (click)="adsScroll.scrollBy({ left: 280, behavior: 'smooth' })"
+        aria-label="Scroll right"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </button>
+    </div>
+  </section>
+
   <!-- Browse by Category Section -->
-  <section class="section-wrapper categories-section">
+  <section class="section-wrapper categories-section" *ngIf="!isSearching">
     <div class="section-header">
       <h2 class="section-title">Browse by Category</h2>
-      <a routerLink="/categories" class="view-all-link">
+
+      <a
+        routerLink="/categories"
+        class="view-all-link"
+        *ngIf="!categoriesLoading && !categoriesError && categories.length > 0"
+      >
         All Categories
         <span class="material-icons-outlined">arrow_forward</span>
       </a>
     </div>
 
-    <div class="categories-grid">
-      <div
-        class="category-card"
-        *ngFor="let category of categories"
-        (click)="navigateToCategory(category)"
+    <!-- Loading State -->
+    <div class="state-block" *ngIf="categoriesLoading">
+      <div class="spinner"></div>
+      <p>Loading categories…</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="state-block" *ngIf="!categoriesLoading && categoriesError">
+      <span class="material-icons-outlined state-icon"> wifi_off </span>
+
+      <p>We couldn't load the categories right now.</p>
+
+      <button class="retry-button" (click)="fetchCategories()">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      class="state-block"
+      *ngIf="!categoriesLoading && !categoriesError && categories.length === 0"
+    >
+      <span class="material-icons-outlined state-icon"> category </span>
+
+      <p>No categories available right now.</p>
+    </div>
+
+    <!-- Categories Row -->
+    <div
+      class="category-row-wrapper"
+      *ngIf="!categoriesLoading && !categoriesError && categories.length > 0"
+    >
+      <button
+        class="scroll-arrow scroll-arrow-left"
+        (click)="categoryScroll.scrollBy({ left: -240, behavior: 'smooth' })"
+        aria-label="Scroll categories left"
       >
-        <div class="category-icon">
-          <span class="material-icons-outlined">{{
-            getCategoryIcon(category.categoryName)
-          }}</span>
-        </div>
-        <div class="category-info">
-          <h4 class="category-name">{{ category.categoryName }}</h4>
-        </div>
-        <span class="category-arrow material-icons-outlined"
-          >chevron_right</span
+        <span class="material-icons-outlined">chevron_left</span>
+      </button>
+
+      <div class="category-row" #categoryScroll>
+        <div
+          class="category-card"
+          *ngFor="let category of categories"
+          (click)="navigateToCategory(category)"
         >
+          <div class="category-card-icon" [ngClass]="category.colorClass">
+            <span class="material-icons-outlined">
+              {{ getCategoryIcon(category.categoryName) }}
+            </span>
+          </div>
+
+          <h4>{{ category.categoryName }}</h4>
+        </div>
       </div>
+
+      <button
+        class="scroll-arrow scroll-arrow-right"
+        (click)="categoryScroll.scrollBy({ left: 240, behavior: 'smooth' })"
+        aria-label="Scroll categories right"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </button>
     </div>
   </section>
+
+  <!-- Trust Bar -->
+  <div class="trust-bar">
+    <div class="trust-bar-inner">
+      <ng-container *ngFor="let item of trustItems; let last = last">
+        <div class="trust-item">
+          <div class="trust-icon" [ngClass]="item.colorClass">
+            <span class="material-icons-outlined">{{ item.icon }}</span>
+          </div>
+          <div class="trust-text">
+            <h4>{{ item.title }}</h4>
+            <p>{{ item.subtitle }}</p>
+          </div>
+        </div>
+        <div class="trust-divider" *ngIf="!last"></div>
+      </ng-container>
+    </div>
+  </div>
 </div>
