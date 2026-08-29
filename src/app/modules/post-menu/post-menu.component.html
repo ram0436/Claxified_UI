@@ -1,26 +1,45 @@
-<div class="head">
-  <div>
-    <h1 class="heading"><span>Post your add</span></h1>
-    <div class="cat">
-      <h3 class="category"><span>Choose category</span></h3>
-      <div class="opt">
-        <ul class="bord no-pointer-nav">
+<div class="post-menu-wrapper">
+  <div class="post-menu-inner">
+    <div class="post-menu-header">
+      <h1 class="post-menu-title">
+        Post Your <span class="post-menu-accent">Ad</span>
+      </h1>
+      <p class="post-menu-subtitle">
+        Choose a category below to get started — it only takes a minute.
+      </p>
+    </div>
+
+    <div class="cat-card">
+      <div class="cat-card-header">
+        <span class="material-icons-outlined cat-card-icon">category</span>
+        <h3 class="cat-card-title">Choose Category</h3>
+      </div>
+
+      <div class="cat-columns" [class.has-sub]="showSubcategories">
+        <ul class="cat-list main-list no-pointer-nav">
           <li
-            class="cat-name auto-pointer-events"
+            class="cat-item auto-pointer-events"
             *ngFor="let mainCategory of mainCategories"
             [ngClass]="{
               active: selectedCategory == mainCategory?.categoryName
             }"
             (click)="toggleSubCategories(mainCategory)"
           >
-            <span class="name">{{ mainCategory?.categoryName }}</span>
+            <span class="cat-item-name">{{ mainCategory?.categoryName }}</span>
+            <span class="material-icons-outlined cat-item-chevron"
+              >chevron_right</span
+            >
           </li>
         </ul>
-        <ul class="bord sub-cat" *ngIf="showSubcategories">
-          <li class="cat-name" *ngFor="let subCategory of subCategories">
+
+        <ul class="cat-list sub-list" *ngIf="showSubcategories">
+          <li
+            class="cat-item sub-item"
+            *ngFor="let subCategory of subCategories"
+          >
             <a
-              class="name"
-              [routerLink]="['/' + selectedCategory, 'add-post']"
+              class="cat-item-name"
+              [routerLink]="['/classified-ads/' + selectedCategory, 'add-post']"
               [queryParams]="{
                 main: selectedCategory,
                 sub: subCategory?.subCategoryName
@@ -29,6 +48,11 @@
             >
           </li>
         </ul>
+
+        <div class="cat-empty-state" *ngIf="!showSubcategories">
+          <span class="material-icons-outlined cat-empty-icon">touch_app</span>
+          <p>Select a category on the left to see subcategories</p>
+        </div>
       </div>
     </div>
   </div>

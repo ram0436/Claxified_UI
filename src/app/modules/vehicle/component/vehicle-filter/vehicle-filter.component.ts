@@ -27,7 +27,10 @@ import { forkJoin } from "rxjs";
 @Component({
   selector: "app-vehicle-filter",
   templateUrl: "./vehicle-filter.component.html",
-  styleUrls: ["./vehicle-filter.component.css"],
+  styleUrls: [
+    "./vehicle-filter.component.css",
+    "../../../modulefilter.component.css",
+  ],
 })
 export class VehicleFilterComponent {
   @Output() resetClicked: EventEmitter<void> = new EventEmitter<void>();

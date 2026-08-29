@@ -1,25 +1,111 @@
-<div class="flex-whole bg-whole md-w-100">
-  <div class="w-30 bg-white w-md-none md-none" [class.md-none]="!showFilters">
-    <app-book-filter
-      class="fixed-filter"
-      (resetClicked)="onResetClicked()"
-    ></app-book-filter>
-  </div>
-  <div class="spinner__loading" *ngIf="isLoading">
-    <div>
-      <mat-spinner></mat-spinner>
+<div class="cp-page">
+  <!-- ============ PAGE HEADER ============ -->
+  <section class="cp-header">
+    <div class="cp-header-top">
+      <div class="cp-header-info">
+        <nav class="cp-breadcrumb" aria-label="Breadcrumb">
+          <a routerLink="/classified-ads">Home</a>
+          <span class="material-icons-outlined cp-crumb-sep"
+            >chevron_right</span
+          >
+          <span class="cp-crumb-current">{{ category }}</span>
+        </nav>
+
+        <div class="cp-title-row">
+          <span class="cp-title-icon">
+            <span class="material-icons-outlined">{{
+              getActiveCategoryIcon()
+            }}</span>
+          </span>
+          <div>
+            <h1 class="cp-title">{{ category }}</h1>
+            <p class="cp-subtitle" *ngIf="!isLoading">
+              {{ cards.length }}
+              {{ cards.length === 1 ? "listing" : "listings" }} available
+            </p>
+            <p class="cp-subtitle" *ngIf="isLoading">Loading listings…</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="cp-filter-toggle" (click)="toggleFilters()">
+        <span class="material-icons-outlined">tune</span>
+        Filters
+      </button>
     </div>
-  </div>
-  <div class="cards" *ngIf="!isLoading">
-    <div class="filters-md">
-      <span (click)="toggleFilters()">Show Filters</span>
+
+    <!-- Browse / switch categories -->
+    <div class="category-switcher-wrapper" *ngIf="browseCategories.length > 0">
+      <div class="category-switcher-row-wrapper">
+        <button
+          class="cs-scroll-arrow cs-scroll-arrow-left"
+          (click)="
+            categorySwitcherScroll.scrollBy({ left: -220, behavior: 'smooth' })
+          "
+          aria-label="Scroll categories left"
+        >
+          <span class="material-icons-outlined">chevron_left</span>
+        </button>
+
+        <div class="category-switcher-row" #categorySwitcherScroll>
+          <div
+            class="category-switcher-chip"
+            *ngFor="let cat of browseCategories"
+            [class.active]="isActiveCategory(cat)"
+            (click)="navigateToCategory(cat)"
+          >
+            <span class="material-icons-outlined">{{
+              getCategoryIcon(cat.categoryName)
+            }}</span>
+            <span>{{ cat.categoryName }}</span>
+          </div>
+        </div>
+
+        <button
+          class="cs-scroll-arrow cs-scroll-arrow-right"
+          (click)="
+            categorySwitcherScroll.scrollBy({ left: 220, behavior: 'smooth' })
+          "
+          aria-label="Scroll categories right"
+        >
+          <span class="material-icons-outlined">chevron_right</span>
+        </button>
+      </div>
     </div>
-    <app-post-card
-      [cards]="cards"
-      [isLoading]="isLoading"
-      [increaseHeight]="false"
-      [increaseMargin]="true"
-      [columns]="3"
-    ></app-post-card>
+  </section>
+
+  <!-- ============ BODY ============ -->
+  <div class="cp-body">
+    <!-- Mobile backdrop, closes the drawer on tap -->
+    <div
+      class="cp-backdrop"
+      *ngIf="showFilters"
+      (click)="toggleFilters()"
+    ></div>
+
+    <aside class="cp-sidebar" [class.open]="showFilters">
+      <app-book-filter
+        class="fixed-filter"
+        (resetClicked)="onResetClicked()"
+      ></app-book-filter>
+    </aside>
+
+    <main class="cp-main">
+      <div class="spinner__loading" *ngIf="isLoading">
+        <div>
+          <mat-spinner></mat-spinner>
+        </div>
+      </div>
+
+      <app-post-card
+        *ngIf="!isLoading"
+        [cards]="cards"
+        [isLoading]="isLoading"
+        [increaseHeight]="true"
+        [increaseMargin]="true"
+        class="app-post-card"
+        [columns]="4"
+      ></app-post-card>
+    </main>
   </div>
 </div>

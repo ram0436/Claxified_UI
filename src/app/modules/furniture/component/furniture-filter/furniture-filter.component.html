@@ -10,7 +10,7 @@
     </div>
     <span
       class="material-icons-outlined cancel-icon md-db-icon"
-      (click)="closeFilters()"
+      (click)="clearFilters()"
     >
       cancel
     </span>
@@ -20,14 +20,16 @@
   <div>
     <div class="selected-states-container">
       <mat-chip-listbox>
-        <mat-chip-option
-          *ngFor="let filter of appliedFilters"
-          (removed)="removeItem(filter)"
-          >{{ filter.value }}
-          <button matChipRemove aria-label="Remove orange">
-            <mat-icon>cancel</mat-icon>
-          </button></mat-chip-option
-        >
+        <div class="selected-states">
+          <mat-chip-option
+            *ngFor="let filter of appliedFilters"
+            (removed)="removeItem(filter)"
+            >{{ filter.value }}
+            <button matChipRemove aria-label="Remove orange">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-option>
+        </div>
       </mat-chip-listbox>
     </div>
   </div>
@@ -60,7 +62,6 @@
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
-
   <mat-form-field
     appearance="fill"
     *ngIf="filterObj?.state"
@@ -119,7 +120,8 @@
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
-  <div class="example-label-container" *ngIf="subCategory != undefined">
+
+  <div class="example-label-container">
     <label id="example-name-label" class="example-name-label">Price</label>
     <div class="pd-5">
       <label class="example-value-label">{{
@@ -130,11 +132,7 @@
       }}</label>
     </div>
   </div>
-  <div
-    style="display: flex"
-    class="price-slider"
-    *ngIf="subCategory != undefined"
-  >
+  <div style="display: flex" class="price-slider">
     <mat-slider
       class="example-margin"
       min="0"
@@ -147,7 +145,7 @@
       <input matSliderEndThumb [(ngModel)]="toPrice" />
     </mat-slider>
     <button
-      class="post ml-8"
+      class="post"
       mat-raised-button
       color="primary"
       (click)="priceChange()"
@@ -160,7 +158,7 @@
       class="md-apply-btn"
       mat-raised-button
       color="primary"
-      (click)="closeFilters()"
+      (click)="clearFilters()"
     >
       Apply
     </button>

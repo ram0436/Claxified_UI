@@ -1,235 +1,274 @@
-  
-  .example-label-container {
-    /* display: flex; */
-    justify-content: space-between;
-    margin: 20px 10px 0;
-    max-width: 280px;
-  }
-  
-  .example-result-card .example-value-label {
-    font-weight: 600;
-  }
-  
-  .example-margin {
-    margin: 8px;
-    max-width: 284px;
-    min-width: 210px;
-  }
-  
-  .mat-slider-horizontal {
-    height: 48px;
-    min-width: 280px;
-  }
-  
-  .mat-mdc-form-field {
-    width: 220px;
-  }
-  
-  .wt-95 {
-    width: 95px;
-  }
-  
-  .toYear {
-    margin-right: 5px;
-    margin-left: 30px;
-  }
-  
-  .post {
-    margin-top: 10px;
-  }
-  
-  .fl-r {
-    float: right;
-  }
-  
-  .pd-5 {
-    padding: 5px 0;
-  }
+.example-label-container {
+  justify-content: space-between;
+  margin: 20px 10px 0;
+  max-width: 280px;
+}
 
-  
-  /* Chagnes Made By Hamza */
+.example-result-card .example-value-label {
+  font-weight: 700;
+  color: #1c1533;
+}
 
-  .filters-head{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 15px;
-    margin-right: 5px;
-    position: relative;
-  }
-  
-  .filter-heading{
-    font-size: 18px;
-    font-weight: 500;
-    color: #0d475c;
-  }
-  
-  .clear-filters{
-    color: #2874F0;
-    font-size: 15px;
-    font-weight: 500;
-  }
-  
-  
-  .clear-filters:hover{
-    cursor: pointer;
-  }
+.example-name-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1c1533;
+}
 
-  .grid{
-    padding: 0 20px;
-    background-color: #fff;
-    position: sticky;
-    top: 110px;
-    left: 0;
-    bottom: 0;
-    overflow-y: scroll;
-    scrollbar-width: none;
-    z-index: 20; 
-  }
-  
-  .sidebar-container::-webkit-scrollbar {
-    display: none;
-    }
-    
-    .example-margin {
-    margin: 8px;
-    margin-left: 12px !important;
-    max-width: 284px;
-    min-width: 210px;
-    }
-    
-    .form-field-w-100{
+.example-value-label {
+  font-size: 12.5px;
+  color: #635b76;
+}
+
+.mat-slider-horizontal {
+  height: 48px;
+  min-width: 280px;
+}
+
+/* Slider accent color */
+::ng-deep .mat-mdc-slider {
+  --mdc-slider-handle-color: #e75462;
+  --mdc-slider-focus-handle-color: #e75462;
+  --mdc-slider-hover-handle-color: #e75462;
+  --mdc-slider-active-track-color: #e75462;
+  --mdc-slider-inactive-track-color: #ece4fb;
+  --mat-mdc-slider-value-indicator-opacity: 1;
+}
+
+.mat-mdc-form-field {
+  width: 220px;
+}
+
+/* Form field accent (outline / label focus color) */
+::ng-deep .mat-mdc-form-field .mdc-text-field--filled {
+  background-color: #f8f6fd;
+  border-radius: 10px 10px 0 0;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-line-ripple::after {
+  border-bottom-color: #e75462;
+}
+
+::ng-deep .mat-mdc-form-field .mdc-floating-label--float-above {
+  color: #e75462;
+}
+
+.wt-95 {
+  width: 95px;
+}
+
+.toYear {
+  margin-right: 5px;
+  margin-left: 30px;
+}
+
+.post {
+  margin-top: 10px;
+  background: linear-gradient(90deg, #e75462, #e93d82) !important;
+  color: #fff !important;
+  border-radius: 50px !important;
+  font-weight: 700;
+  font-size: 12.5px;
+  box-shadow: 0 4px 14px rgba(231, 84, 98, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(231, 84, 98, 0.32);
+}
+
+.fl-r {
+  float: right;
+}
+
+.pd-5 {
+  padding: 5px 0;
+}
+
+/* =========================================================
+       Header row
+       ========================================================= */
+
+.filters-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+  margin-right: 5px;
+  position: relative;
+}
+
+.filter-heading {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0d475c;
+}
+
+.clear-filters {
+  color: #e75462;
+  font-size: 13.5px;
+  font-weight: 700;
+  background: #fde9f2;
+  padding: 6px 14px;
+  border-radius: 50px;
+  transition: background 0.2s ease;
+}
+
+.clear-filters:hover {
+  cursor: pointer;
+  background: #fcd7e5;
+}
+
+/* =========================================================
+       Sidebar container
+       ========================================================= */
+
+.grid {
+  padding: 20px 20px 24px;
+  background-color: #fff;
+  box-shadow: 0 4px 20px rgba(108, 76, 224, 0.06);
+  position: sticky;
+  height: 100vh;
+  left: 0;
+  bottom: 0;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.sidebar-container::-webkit-scrollbar {
+  display: none;
+}
+
+.example-margin {
+  margin: 8px;
+  margin-left: 12px !important;
+  max-width: 175px;
+  min-width: 175px;
+}
+
+.form-field-w-100 {
+  width: 99%;
+}
+
+.price-slider {
+  gap: 8px;
+}
+
+.ml-8 {
+  margin-left: 15px;
+}
+
+/* =========================================================
+       Applied filter chips — pill style matching ads-count-badge
+       ========================================================= */
+
+.selected-states-container {
+  margin-top: 15px;
+}
+
+::ng-deep .selected-states-container .mat-mdc-chip {
+  background: #fde9f2 !important;
+  color: #e75462 !important;
+  font-weight: 700;
+  font-size: 12px;
+  border-radius: 50px !important;
+  border: 1px solid #f7c3d7;
+}
+
+::ng-deep .selected-states-container .mat-mdc-chip .mat-mdc-chip-remove {
+  color: #e75462 !important;
+  opacity: 0.8;
+}
+
+.remove-chip {
+  margin-left: 50px;
+}
+
+.filterSepreator {
+  margin-top: -10px;
+  border: none;
+  border-top: 1px solid #eee6fa;
+}
+
+/* =========================================================
+       Mobile "Apply" button
+       ========================================================= */
+
+.md-apply-btn {
+  display: none;
+  width: 90vw;
+  background: linear-gradient(90deg, #e75462, #e93d82) !important;
+  color: #fff !important;
+  border-radius: 50px !important;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(231, 84, 98, 0.3);
+}
+
+.md-pb-10 {
+  padding-bottom: 20px;
+  margin: 0;
+}
+
+.cancel-icon {
+  cursor: pointer;
+  font-size: 24px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: #8b8299;
+}
+
+.cancel-icon:hover {
+  color: #e75462;
+}
+
+.md-db-icon {
+  display: none;
+}
+
+@media (max-width: 750px) {
+  .grid {
+    position: static;
     width: 100%;
-    }
-    
-    .price-slider{
-    gap: 8px;
-    }
-    
-    .ml-8{
-    margin-left: 15px;
-    }
-    
-    .selected-states-container {
-    margin-top: 15px; 
-    }
-  
-    .filterSepreator{
-      margin-top: -10px;
-    }
-
-    .md-apply-btn{
-      display: none;
-      width: 90vw;
-    }
-
-    .md-pb-10{
-      padding-bottom: 20px;
-      margin: 0;
-    }
-
-    .cancel-icon{
-      cursor: pointer;
-      font-size: 25px;
-      position: absolute;
-      top: -10px;
-      right: -15px;
-    }
-  
-    .md-db-icon{
-      display: none;
-    }
-  
-
-
-  @media (max-width: 1430px) {
-    .filters-head{
-      margin-top: 30px;
-    }
-  }
-  @media (max-width: 1200px){
-    .example-margin {
-      min-width: 186px !important;
-      }
+    height: 100%;
+    margin-top: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-y: auto;
   }
 
-  @media (max-width: 1105px) {
-    .filters-head{
-      margin-top: 50px;
-    }
+  .example-margin {
+    min-width: 84% !important;
   }
 
-
-  @media (max-width: 1050px){
-    .example-margin {
-      min-width: 150px !important;
-      }
+  .clear-filters {
+    margin-right: 30px;
   }
 
-  @media (max-width: 930px){
-    .example-margin {
-      min-width: 100px !important;
-      }
+  .md-db-icon {
+    display: inline-block;
   }
 
-  @media (max-width: 768px) {
-    .filters-head{
-      margin-top: 90px;
-    }
+  .md-apply-btn {
+    display: block;
   }
+}
 
-  @media (max-width: 750px){
-    .grid{
-      /* min-height: 100vh !important; */
-      /* position: absolute;
-      top: 110px;
-      left: 0;
-      overflow-y: auto; */
-      width: 100vw;
-      height: 89vh;
-      position: fixed;
-      overflow: auto;
-      scrollbar-width: 0;
-      z-index: 20;
-      box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
-      -webkit-box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
-      -moz-box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
-      /* bottom: -10px; */
-    }
-
-    .example-margin{
-      min-width: 84% !important;
-    }
-
-    .clear-filters{
-      margin-right: 30px;
-    }
-
-    .md-db-icon{
-      display: inline-block;
-    }
-
-    .md-apply-btn{
-      display: block;
-    }
-
+@media (max-width: 650px) {
+  .example-margin {
+    min-width: 78% !important;
   }
+}
 
-
-  @media (max-width: 650px){
-    .example-margin{
-      min-width: 78% !important;
-    }
+@media (max-width: 450px) {
+  .example-margin {
+    min-width: 70% !important;
   }
+}
 
-  @media (max-width: 450px){
-    .example-margin{
-      min-width: 70% !important;
-    }
+@media (max-width: 330px) {
+  .example-margin {
+    min-width: 60% !important;
   }
-
-  @media (max-width: 330px){
-    .example-margin{
-      min-width: 60% !important;
-    }
-  }
+}

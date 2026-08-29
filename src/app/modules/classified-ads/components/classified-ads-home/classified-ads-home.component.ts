@@ -494,15 +494,16 @@ export class ClassifiedAdsHomeComponent implements OnInit {
   }
 
   navigateToCategory(category: AdCategory): void {
-    this.router.navigate([`/${category.route}/view-posts`], {
+    this.router.navigate([`classified-ads/${category.route}/view-posts`], {
       queryParams: { type: category.route },
     });
   }
 
-  /** Mirrors PostCardComponent's routerLink: /:category/post-details/:tableRefGuid */
   viewAd(ad: ClassifiedAd): void {
     const categoryRoute = getCategoryRoute(ad.categoryId);
-    this.router.navigate([`/${categoryRoute}/post-details/${ad.id}`]);
+    this.router.navigate([
+      `classified-ads/${categoryRoute}/post-details/${ad.id}`,
+    ]);
   }
 
   postAdd(): void {

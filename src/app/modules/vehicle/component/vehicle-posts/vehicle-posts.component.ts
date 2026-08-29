@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ViewEncapsulation } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { CommonService } from "src/app/shared/service/common.service";
 import { VehicleService } from "../../service/vehicle.service";
 
@@ -21,11 +21,61 @@ export class VehiclePostsComponent {
   cards: any = [];
   subscription: any;
   actualCards: any;
+
+  // ===== Category switcher state =====
+  browseCategories: any[] = [];
+
+  routeMap: { [key: string]: string } = {
+    Electronics: "Electronics",
+    Automobile: "Vehicles",
+    Automotive: "Vehicles",
+    "Food & Restaurants": "Commercial Services",
+    "Home & Living": "Furniture",
+    "Beauty & Wellness": "Fashion",
+    Services: "Commercial Services",
+    Jobs: "Jobs",
+    "Real Estate": "Properties",
+    Education: "Commercial Services",
+    "Health & Care": "Commercial Services",
+  };
+
+  // Category icon mapping
+  categoryIcons: { [key: string]: string } = {
+    "Mobiles & Tablets": "smartphone",
+    Mobiles: "smartphone",
+
+    Cars: "directions_car",
+    Vehicles: "directions_car",
+
+    Bikes: "two_wheeler",
+
+    Property: "home",
+    "Real Estate": "home",
+
+    Jobs: "work",
+
+    Furniture: "weekend",
+    "Home & Kitchen": "kitchen",
+
+    Electronics: "devices_other",
+
+    Fashion: "checkroom",
+
+    Books: "menu_book",
+
+    Sports: "sports_soccer",
+
+    Pets: "pets",
+
+    "Commercial Services": "handyman",
+  };
+
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
     private cdr: ChangeDetectorRef,
-    private vehicleService: VehicleService
+    private vehicleService: VehicleService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -40,6 +90,7 @@ export class VehiclePostsComponent {
       this.isLoading = true;
       setTimeout(() => this.filterPosts(data), 500);
     });
+    this.getBrowseCategories();
   }
 
   toggleFilters() {
@@ -68,9 +119,11 @@ export class VehiclePostsComponent {
       this.subCategoryId = 0;
     });
   }
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
+
   filterPosts(data: any) {
     const filterObj: { [key: string]: { operator: string; value: any } } = {};
     Object.keys(data).forEach((key) => {
@@ -93,7 +146,6 @@ export class VehiclePostsComponent {
       Object.entries(filterObj).every(([field, condition]) => {
         const { operator, value } = condition;
         const itemValue = item[field];
-
         if (Array.isArray(itemValue) && operator === "includes") {
           return itemValue.some((v) => value.includes(v));
         } else {
@@ -116,5 +168,37 @@ export class VehiclePostsComponent {
     this.cards = filteredData.filter((card: any) => card.isVerified === true);
     this.isLoading = false;
     this.cdr.detectChanges();
+  }
+
+  // ===== Category switcher =====
+
+  getBrowseCategories() {
+    this.commonService.getAllCategory().subscribe((data: any) => {
+      this.browseCategories = data;
+    });
+  }
+
+  getCategoryIcon(categoryName: string): string {
+    return this.categoryIcons[categoryName] || "category";
+  }
+
+  isActiveCategory(category: any): boolean {
+    const route = this.routeMap[category.categoryName] || category.categoryName;
+    return route === this.category;
+  }
+
+  navigateToCategory(category: any): void {
+    const categoryName = category.categoryName;
+    const route = this.routeMap[categoryName] || categoryName;
+    this.router.navigate([`classified-ads/${route}/view-posts`], {
+      queryParams: { type: route },
+    });
+  }
+
+  getActiveCategoryIcon(): string {
+    const match = this.browseCategories.find(
+      (c) => (this.routeMap[c.categoryName] || c.categoryName) === this.category
+    );
+    return match ? this.getCategoryIcon(match.categoryName) : "category";
   }
 }

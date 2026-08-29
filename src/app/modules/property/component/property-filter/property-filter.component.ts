@@ -1,36 +1,46 @@
-import { Component, ViewChild, ElementRef, Renderer2, HostListener, EventEmitter, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatAutocomplete } from '@angular/material/autocomplete';
-import { MatSelectionList } from '@angular/material/list';
-import { MatSelect } from '@angular/material/select';
-import { ActivatedRoute } from '@angular/router';
-import { Observable, startWith, map } from 'rxjs';
-import { ConstructionStatus } from 'src/app/shared/enum/ConstructionStatus';
-import { FacingType } from 'src/app/shared/enum/FacingType';
-import { FurnishingStatus } from 'src/app/shared/enum/FurnishingStatus';
-import { HouseType } from 'src/app/shared/enum/HouseType';
-import { ListedBy } from 'src/app/shared/enum/ListBy';
-import { PGType } from 'src/app/shared/enum/PGType';
-import { PropertyType } from 'src/app/shared/enum/PropertyType';
-import { ServiceType } from 'src/app/shared/enum/ServiceType';
-import { Filter } from 'src/app/shared/model/Filter';
-import { CommonService } from 'src/app/shared/service/common.service';
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  Renderer2,
+  HostListener,
+  EventEmitter,
+  Output,
+} from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { MatAutocomplete } from "@angular/material/autocomplete";
+import { MatSelectionList } from "@angular/material/list";
+import { MatSelect } from "@angular/material/select";
+import { ActivatedRoute } from "@angular/router";
+import { Observable, startWith, map } from "rxjs";
+import { ConstructionStatus } from "src/app/shared/enum/ConstructionStatus";
+import { FacingType } from "src/app/shared/enum/FacingType";
+import { FurnishingStatus } from "src/app/shared/enum/FurnishingStatus";
+import { HouseType } from "src/app/shared/enum/HouseType";
+import { ListedBy } from "src/app/shared/enum/ListBy";
+import { PGType } from "src/app/shared/enum/PGType";
+import { PropertyType } from "src/app/shared/enum/PropertyType";
+import { ServiceType } from "src/app/shared/enum/ServiceType";
+import { Filter } from "src/app/shared/model/Filter";
+import { CommonService } from "src/app/shared/service/common.service";
 
 @Component({
-  selector: 'app-property-filter',
-  templateUrl: './property-filter.component.html',
-  styleUrls: ['./property-filter.component.css']
+  selector: "app-property-filter",
+  templateUrl: "./property-filter.component.html",
+  styleUrls: [
+    "./property-filter.component.css",
+    "../../../modulefilter.component.css",
+  ],
 })
 export class PropertyFilterComponent {
-
   @Output() resetClicked: EventEmitter<void> = new EventEmitter<void>();
 
   stateControl = new FormControl("");
   cityControl = new FormControl("");
   nearByControl = new FormControl("");
-  filteredStates!: Observable<{ id: number; name: string; }[]>;
-  filteredCities!: Observable<{ id: number; name: string; }[]>;
-  filteredNearBy!: Observable<{ id: number; name: string; }[]>;
+  filteredStates!: Observable<{ id: number; name: string }[]>;
+  filteredCities!: Observable<{ id: number; name: string }[]>;
+  filteredNearBy!: Observable<{ id: number; name: string }[]>;
   priceRange: number = 0;
   country: any;
   districts: any = [];
@@ -46,16 +56,16 @@ export class PropertyFilterComponent {
   mainCategory: string = "";
   filterObj = new Filter();
   appliedFilters: any = [];
-  @ViewChild('houseTypeMultiSelect') houseTypeMultiSelect!: MatSelect;
-  @ViewChild('subTypeMultiSelect') subTypeMultiSelect!: MatSelect;
-  @ViewChild('serviceTypeMultiSelect') serviceTypeMultiSelect!: MatSelect;
-  @ViewChild('furnishingMultiSelect') furnishingMultiSelect!: MatSelect;
-  @ViewChild('constructionMultiSelect') constructionMultiSelect!: MatSelect;
-  @ViewChild('listedByMultiSelect') listedByMultiSelect!: MatSelect;
+  @ViewChild("houseTypeMultiSelect") houseTypeMultiSelect!: MatSelect;
+  @ViewChild("subTypeMultiSelect") subTypeMultiSelect!: MatSelect;
+  @ViewChild("serviceTypeMultiSelect") serviceTypeMultiSelect!: MatSelect;
+  @ViewChild("furnishingMultiSelect") furnishingMultiSelect!: MatSelect;
+  @ViewChild("constructionMultiSelect") constructionMultiSelect!: MatSelect;
+  @ViewChild("listedByMultiSelect") listedByMultiSelect!: MatSelect;
 
-  @ViewChild('stateMatAutocomplete') stateAutocomplete!: MatAutocomplete;
-  @ViewChild('cityMatAutocomplete') cityAutocomplete!: MatAutocomplete;
-  @ViewChild('nearByMatAutocomplete') nearByAutocomplete!: MatAutocomplete;
+  @ViewChild("stateMatAutocomplete") stateAutocomplete!: MatAutocomplete;
+  @ViewChild("cityMatAutocomplete") cityAutocomplete!: MatAutocomplete;
+  @ViewChild("nearByMatAutocomplete") nearByAutocomplete!: MatAutocomplete;
   @ViewChild(MatSelectionList)
   matSelectionList!: MatSelectionList;
 
@@ -101,21 +111,54 @@ export class PropertyFilterComponent {
     label: key,
     id: PGType[key],
   }));
-  houseApartmentsSale = ['houseType', 'bedrooms', 'bathrooms', 'furnishing', 'constructionStatus', 'listedBy', 'superBuildUpArea', 'projectName'];
-  houseApartmentsRent = ['houseType', 'bedrooms', 'bathrooms', 'furnishing', 'constructionStatus', 'listedBy', 'superBuildUpArea', 'bachelorAllowed',];
-  landsAndPlots = ['serviceType', 'listedBy', 'plotArea'];
-  shopsAndOfcRent = ['furnishing', 'listedBy', 'superBuildUpArea'];
-  shopsAndOfcSale = ['furnishing', 'constructionStatus', 'listedBy', 'superBuildUpArea'];
-  pgAndGuestHouses = ['subType', 'furnishing', 'listedBy'];
+  houseApartmentsSale = [
+    "houseType",
+    "bedrooms",
+    "bathrooms",
+    "furnishing",
+    "constructionStatus",
+    "listedBy",
+    "superBuildUpArea",
+    "projectName",
+  ];
+  houseApartmentsRent = [
+    "houseType",
+    "bedrooms",
+    "bathrooms",
+    "furnishing",
+    "constructionStatus",
+    "listedBy",
+    "superBuildUpArea",
+    "bachelorAllowed",
+  ];
+  landsAndPlots = ["serviceType", "listedBy", "plotArea"];
+  shopsAndOfcRent = ["furnishing", "listedBy", "superBuildUpArea"];
+  shopsAndOfcSale = [
+    "furnishing",
+    "constructionStatus",
+    "listedBy",
+    "superBuildUpArea",
+  ];
+  pgAndGuestHouses = ["subType", "furnishing", "listedBy"];
   propertiesToShow: any = [];
-  bachelorsAllowed = [{ label: 'No', value: false }, { label: 'Yes', value: true }];
-  constructor(private commonService: CommonService, private route: ActivatedRoute, private renderer: Renderer2) { }
-
+  bachelorsAllowed = [
+    { label: "No", value: false },
+    { label: "Yes", value: true },
+  ];
+  constructor(
+    private commonService: CommonService,
+    private route: ActivatedRoute,
+    private renderer: Renderer2
+  ) {}
 
   ngOnInit() {
     this.houseTypes = this.houseTypes.slice(this.houseTypes.length / 2);
-    this.furnishingStatus = this.furnishingStatus.slice(this.furnishingStatus.length / 2);
-    this.constructionStatus = this.constructionStatus.slice(this.constructionStatus.length / 2);
+    this.furnishingStatus = this.furnishingStatus.slice(
+      this.furnishingStatus.length / 2
+    );
+    this.constructionStatus = this.constructionStatus.slice(
+      this.constructionStatus.length / 2
+    );
     this.facingTypes = this.facingTypes.slice(this.facingTypes.length / 2);
     this.listedBy = this.listedBy.slice(this.listedBy.length / 2);
     this.serviceTypes = this.serviceTypes.slice(this.serviceTypes.length / 2);
@@ -128,14 +171,36 @@ export class PropertyFilterComponent {
       this.subCategory = params.sub;
       if (this.subCategory != undefined) {
         this.filterObj.subCategoryId = Number(params.sub);
-        this.houseApartmentsSale = ['houseType', 'bedrooms', 'bathrooms', 'furnishing', 'constructionStatus', 'listedBy', 'superBuildUpArea', 'projectName'];
-        this.houseApartmentsRent = ['houseType', 'bedrooms', 'bathrooms', 'furnishing', 'constructionStatus', 'listedBy', 'superBuildUpArea', 'bachelorAllowed',];
-        this.landsAndPlots = ['serviceType', 'listedBy', 'plotArea'];
-        this.shopsAndOfcRent = ['furnishing', 'listedBy', 'superBuildUpArea'];
-        this.shopsAndOfcSale = ['furnishing', 'constructionStatus', 'listedBy', 'superBuildUpArea'];
-        this.pgAndGuestHouses = ['subType', 'furnishing', 'listedBy'];
-      }
-      else {
+        this.houseApartmentsSale = [
+          "houseType",
+          "bedrooms",
+          "bathrooms",
+          "furnishing",
+          "constructionStatus",
+          "listedBy",
+          "superBuildUpArea",
+          "projectName",
+        ];
+        this.houseApartmentsRent = [
+          "houseType",
+          "bedrooms",
+          "bathrooms",
+          "furnishing",
+          "constructionStatus",
+          "listedBy",
+          "superBuildUpArea",
+          "bachelorAllowed",
+        ];
+        this.landsAndPlots = ["serviceType", "listedBy", "plotArea"];
+        this.shopsAndOfcRent = ["furnishing", "listedBy", "superBuildUpArea"];
+        this.shopsAndOfcSale = [
+          "furnishing",
+          "constructionStatus",
+          "listedBy",
+          "superBuildUpArea",
+        ];
+        this.pgAndGuestHouses = ["subType", "furnishing", "listedBy"];
+      } else {
         this.houseApartmentsSale = [];
         this.houseApartmentsRent = [];
         this.landsAndPlots = [];
@@ -147,19 +212,21 @@ export class PropertyFilterComponent {
     });
   }
   getAllStates() {
-    this.commonService.getStatesByCountry(this.country.id).subscribe(data => {
+    this.commonService.getStatesByCountry(this.country.id).subscribe((data) => {
       this.districts = data;
       this.getFilteredStates();
     });
   }
   onDistrictChange(event: any) {
-    this.filterObj.state = (event.option.value == null) ? null : event.option.value.name;
+    this.filterObj.state =
+      event.option.value == null ? null : event.option.value.name;
     this.commonService.setData(this.filterObj);
     this.updateAppliedFilters("state", this.filterObj.state);
     if (this.filterObj.state == null)
-      this.appliedFilters = this.appliedFilters.filter((item: any) => (item.name != 'city' && item.name != 'nearBy'));
-    else
-      this.getCities(event.option.value.id);
+      this.appliedFilters = this.appliedFilters.filter(
+        (item: any) => item.name != "city" && item.name != "nearBy"
+      );
+    else this.getCities(event.option.value.id);
 
     this.filtersSelected = true; //Changes made by Hamza
     this.filterObj.state = event.option.value ? event.option.value.name : null;
@@ -167,24 +234,27 @@ export class PropertyFilterComponent {
     this.filterObj.nearBy = null; // Reset nearby when state changes
   }
   getCities(stateId: Number) {
-    this.commonService.getCitiesByState(stateId).subscribe(data => {
+    this.commonService.getCitiesByState(stateId).subscribe((data) => {
       this.cities = data;
       this.getFilteredCities();
     });
   }
   onCityChange(event: any) {
-    this.filterObj.city = (event.option.value == null) ? null : event.option.value.name;
+    this.filterObj.city =
+      event.option.value == null ? null : event.option.value.name;
     this.commonService.setData(this.filterObj);
     this.updateAppliedFilters("city", this.filterObj.city);
     if (this.filterObj.city == null)
-      this.appliedFilters = this.appliedFilters.filter((item: any) => (item.name != 'nearBy'));
-    else
-      this.getNearByPlaces(event.option.value.id);
+      this.appliedFilters = this.appliedFilters.filter(
+        (item: any) => item.name != "nearBy"
+      );
+    else this.getNearByPlaces(event.option.value.id);
 
     this.filtersSelected = true; //Changes made by Hamza
   }
   onNearByChange(event: any) {
-    this.filterObj.nearBy = (event.option.value == null) ? null : event.option.value.name;
+    this.filterObj.nearBy =
+      event.option.value == null ? null : event.option.value.name;
     this.updateAppliedFilters("nearBy", this.filterObj.nearBy);
     this.commonService.setData(this.filterObj);
     this.filtersSelected = true; //Changes made by Hamza
@@ -195,18 +265,27 @@ export class PropertyFilterComponent {
     prices.push(Number(this.toPrice));
     this.filterObj.price = prices;
     this.commonService.setData(this.filterObj);
-    this.updateAppliedFilters("price", this.formatAmount(this.fromPrice) + " - " + this.formatAmount(this.toPrice));
+    this.updateAppliedFilters(
+      "price",
+      this.formatAmount(this.fromPrice) +
+        " - " +
+        this.formatAmount(this.toPrice)
+    );
     this.filtersSelected = true; //Changes made by Hamza
   }
   removeItem(item: any): void {
-    if (item.name == 'state') {
-      const cityIndex = this.appliedFilters.findIndex((item: any) => item.name == 'city');
+    if (item.name == "state") {
+      const cityIndex = this.appliedFilters.findIndex(
+        (item: any) => item.name == "city"
+      );
       if (cityIndex >= 0) {
         this.appliedFilters.splice(cityIndex, 1);
       }
     }
-    if (item.name == 'state' || item.name == 'city') {
-      const nearByIndex = this.appliedFilters.findIndex((item: any) => item.name == 'nearBy');
+    if (item.name == "state" || item.name == "city") {
+      const nearByIndex = this.appliedFilters.findIndex(
+        (item: any) => item.name == "nearBy"
+      );
       if (nearByIndex >= 0) {
         this.appliedFilters.splice(nearByIndex, 1);
       }
@@ -218,25 +297,40 @@ export class PropertyFilterComponent {
     }
   }
   formatAmount(amount: number): string {
-    return amount.toLocaleString('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return amount.toLocaleString("en-IN", {
+      style: "currency",
+      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
   }
   updateAppliedFilters(filterName: string, value: any) {
     let matchFound = false;
-    let singleSelectionFilters = ['state', 'city', 'nearBy', 'price', 'bathrooms', 'bedrooms', 'superBuildUpArea', 'plotArea', 'bachelorAllowed']
+    let singleSelectionFilters = [
+      "state",
+      "city",
+      "nearBy",
+      "price",
+      "bathrooms",
+      "bedrooms",
+      "superBuildUpArea",
+      "plotArea",
+      "bachelorAllowed",
+    ];
     for (let i = 0; i < this.appliedFilters.length; i++) {
-      if (this.appliedFilters[i].name == filterName && singleSelectionFilters.includes(filterName)) {
+      if (
+        this.appliedFilters[i].name == filterName &&
+        singleSelectionFilters.includes(filterName)
+      ) {
         matchFound = true;
-        (value == null) ? this.appliedFilters.splice(i, 1) : this.appliedFilters[i].value = value;
+        value == null
+          ? this.appliedFilters.splice(i, 1)
+          : (this.appliedFilters[i].value = value);
         break;
       }
     }
     if (!matchFound)
-      this.appliedFilters.push({ name: filterName, value: value })
+      this.appliedFilters.push({ name: filterName, value: value });
   }
   displayLocation(brand: any): string {
     return brand?.name || "";
@@ -247,12 +341,13 @@ export class PropertyFilterComponent {
       map((value) => this.filterLocations(value || "", this.districts))
     );
   }
-  filterLocations(value: any, dataArray: any[]): { id: number; name: string }[] {
+  filterLocations(
+    value: any,
+    dataArray: any[]
+  ): { id: number; name: string }[] {
     var filterValue = "";
-    if (typeof value == 'object')
-      filterValue = value.name.toLowerCase();
-    else
-      filterValue = value.toLowerCase();
+    if (typeof value == "object") filterValue = value.name.toLowerCase();
+    else filterValue = value.toLowerCase();
     return dataArray.filter(
       (data: any) => data.name.toLowerCase().indexOf(filterValue) === 0
     );
@@ -272,22 +367,52 @@ export class PropertyFilterComponent {
         this.resetPrice();
         break;
       case "houseType":
-        this.removeOptionFromArray(this.houseTypeMultiSelect, (this.filterObj.houseType || []), "label", filter.value);
+        this.removeOptionFromArray(
+          this.houseTypeMultiSelect,
+          this.filterObj.houseType || [],
+          "label",
+          filter.value
+        );
         break;
       case "pgType":
-        this.removeOptionFromArray(this.subTypeMultiSelect, (this.filterObj.pgType || []), "label", filter.value);
+        this.removeOptionFromArray(
+          this.subTypeMultiSelect,
+          this.filterObj.pgType || [],
+          "label",
+          filter.value
+        );
         break;
       case "serviceType":
-        this.removeOptionFromArray(this.serviceTypeMultiSelect, (this.filterObj.serviceType || []), "label", filter.value);
+        this.removeOptionFromArray(
+          this.serviceTypeMultiSelect,
+          this.filterObj.serviceType || [],
+          "label",
+          filter.value
+        );
         break;
       case "furnishingStatus":
-        this.removeOptionFromArray(this.furnishingMultiSelect, (this.filterObj.furnishingStatus || []), "label", filter.value);
+        this.removeOptionFromArray(
+          this.furnishingMultiSelect,
+          this.filterObj.furnishingStatus || [],
+          "label",
+          filter.value
+        );
         break;
       case "constructionStatus":
-        this.removeOptionFromArray(this.constructionMultiSelect, (this.filterObj.constructionStatus || []), "label", filter.value);
+        this.removeOptionFromArray(
+          this.constructionMultiSelect,
+          this.filterObj.constructionStatus || [],
+          "label",
+          filter.value
+        );
         break;
       case "listedBy":
-        this.removeOptionFromArray(this.listedByMultiSelect, (this.filterObj.listedBy || []), "label", filter.value);
+        this.removeOptionFromArray(
+          this.listedByMultiSelect,
+          this.filterObj.listedBy || [],
+          "label",
+          filter.value
+        );
         break;
       case "bedrooms":
         this.resetBedrooms();
@@ -308,7 +433,12 @@ export class PropertyFilterComponent {
     this.commonService.setData(this.filterObj);
   }
 
-  removeOptionFromArray(select: any, dataArray: any[], key: string | null, value: any) {
+  removeOptionFromArray(
+    select: any,
+    dataArray: any[],
+    key: string | null,
+    value: any
+  ) {
     const selectedOptions = select.value as any[];
     const index = selectedOptions.findIndex((option: any) => {
       if (key) {
@@ -342,16 +472,15 @@ export class PropertyFilterComponent {
     window.location.reload();
   }
 
-  closeFilters(){
+  closeFilters() {
     this.resetClicked.emit();
   }
-
 
   resetFilters() {
     this.stateControl.patchValue("");
     this.cityControl.patchValue("");
     this.nearByControl.patchValue("");
-    this.stateAutocomplete.options.forEach(option => option.deselect());
+    this.stateAutocomplete.options.forEach((option) => option.deselect());
     this.filterObj.state = null;
     this.filterObj.city = null;
     this.filterObj.nearBy = null;
@@ -360,7 +489,7 @@ export class PropertyFilterComponent {
   resetCityAndNearby() {
     this.cityControl.patchValue("");
     this.nearByControl.patchValue("");
-    this.cityAutocomplete.options.forEach(option => option.deselect());
+    this.cityAutocomplete.options.forEach((option) => option.deselect());
     this.filterObj.city = null;
     this.filterObj.nearBy = null;
   }
@@ -368,7 +497,7 @@ export class PropertyFilterComponent {
   resetNearBy() {
     this.nearByControl.patchValue("");
     this.filterObj.nearBy = null;
-    this.nearByAutocomplete.options.forEach(option => option.deselect());
+    this.nearByAutocomplete.options.forEach((option) => option.deselect());
   }
 
   resetPrice() {
@@ -389,10 +518,10 @@ export class PropertyFilterComponent {
     );
   }
   getNearByPlaces(cityId: Number) {
-    this.commonService.getNearPlacesByCity(cityId).subscribe(data => {
+    this.commonService.getNearPlacesByCity(cityId).subscribe((data) => {
       this.nearByPlaces = data;
       this.getFilteredNearBy();
-    })
+    });
   }
   onBedRoomSelect(event: any) {
     this.filterObj.bedrooms = event.value;
@@ -408,7 +537,9 @@ export class PropertyFilterComponent {
   }
   onHouseTypeSelect(event: any) {
     var houseTypes = [];
-    this.appliedFilters = this.appliedFilters.filter((item: any) => item.name != 'houseType');
+    this.appliedFilters = this.appliedFilters.filter(
+      (item: any) => item.name != "houseType"
+    );
     for (let value of event.value) {
       houseTypes.push(value.id);
       this.updateAppliedFilters("houseType", value.label);
@@ -419,7 +550,9 @@ export class PropertyFilterComponent {
   }
   onFurnishingSelect(event: any) {
     var furnishingStatus = [];
-    this.appliedFilters = this.appliedFilters.filter((item: any) => item.name != 'furnishingStatus');
+    this.appliedFilters = this.appliedFilters.filter(
+      (item: any) => item.name != "furnishingStatus"
+    );
     for (let value of event.value) {
       furnishingStatus.push(value.id);
       this.updateAppliedFilters("furnishingStatus", value.label);
@@ -436,7 +569,9 @@ export class PropertyFilterComponent {
   }
   onConstructionStatusSelect(event: any) {
     var constructionStatus = [];
-    this.appliedFilters = this.appliedFilters.filter((item: any) => item.name != 'constructionStatus');
+    this.appliedFilters = this.appliedFilters.filter(
+      (item: any) => item.name != "constructionStatus"
+    );
     for (let value of event.value) {
       constructionStatus.push(value.id);
       this.updateAppliedFilters("constructionStatus", value.label);
@@ -447,7 +582,9 @@ export class PropertyFilterComponent {
   }
   onListedBySelect(event: any) {
     var listedBy = [];
-    this.appliedFilters = this.appliedFilters.filter((item: any) => item.name != 'listedBy');
+    this.appliedFilters = this.appliedFilters.filter(
+      (item: any) => item.name != "listedBy"
+    );
     for (let value of event.value) {
       listedBy.push(value.id);
       this.updateAppliedFilters("listedBy", value.label);
@@ -458,7 +595,9 @@ export class PropertyFilterComponent {
   }
   onServiceTypeSelect(event: any) {
     var serviceType = [];
-    this.appliedFilters = this.appliedFilters.filter((item: any) => item.name != 'serviceType');
+    this.appliedFilters = this.appliedFilters.filter(
+      (item: any) => item.name != "serviceType"
+    );
     for (let value of event.value) {
       serviceType.push(value.id);
       this.updateAppliedFilters("serviceType", value.label);
@@ -469,7 +608,9 @@ export class PropertyFilterComponent {
   }
   onPgTypeSelect(event: any) {
     var pgType = [];
-    this.appliedFilters = this.appliedFilters.filter((item: any) => item.name != 'pgType');
+    this.appliedFilters = this.appliedFilters.filter(
+      (item: any) => item.name != "pgType"
+    );
     for (let value of event.value) {
       pgType.push(value.id);
       this.updateAppliedFilters("pgType", value.label);
@@ -484,7 +625,12 @@ export class PropertyFilterComponent {
     buildUpArea.push(Number(this.toBuildUpArea));
     this.filterObj.superBuildUpArea = buildUpArea;
     this.commonService.setData(this.filterObj);
-    this.updateAppliedFilters("superBuildUpArea", this.formatAmount(this.fromBuildUpArea) + " - " + this.formatAmount(this.toBuildUpArea));
+    this.updateAppliedFilters(
+      "superBuildUpArea",
+      this.formatAmount(this.fromBuildUpArea) +
+        " - " +
+        this.formatAmount(this.toBuildUpArea)
+    );
     this.filtersSelected = true; //Changes made by Hamza
   }
   plotAreaChange() {
@@ -493,7 +639,12 @@ export class PropertyFilterComponent {
     plotArea.push(Number(this.toPlotArea));
     this.filterObj.plotArea = plotArea;
     this.commonService.setData(this.filterObj);
-    this.updateAppliedFilters("plotArea", this.formatAmount(this.fromPlotArea) + " - " + this.formatAmount(this.toPlotArea));
+    this.updateAppliedFilters(
+      "plotArea",
+      this.formatAmount(this.fromPlotArea) +
+        " - " +
+        this.formatAmount(this.toPlotArea)
+    );
     this.filtersSelected = true; //Changes made by Hamza
   }
   selectRequiredFilters() {

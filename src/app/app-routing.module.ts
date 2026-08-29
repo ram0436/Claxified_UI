@@ -9,85 +9,7 @@ import { PageComponent } from "./pages/page/page.component";
 import { MarketplaceComponent } from "./modules/marketplace/marketplace.component";
 
 const routes: Routes = [
-  {
-    path: "Gadgets",
-    loadChildren: () =>
-      import("./modules/gadget/gadget.module").then((m) => m.GadgetModule),
-  },
-  {
-    path: "Vehicles",
-    loadChildren: () =>
-      import("./modules/vehicle/vehicle.module").then((m) => m.VehicleModule),
-  },
-  {
-    path: "user",
-    loadChildren: () =>
-      import("./modules/user/user.module").then((m) => m.UserModule),
-    canActivate: [AuthGuard],
-  },
-  {
-    path: "Electronics",
-    loadChildren: () =>
-      import("./modules/electronic-appliance/electronic-appliance.module").then(
-        (m) => m.ElectronicApplianceModule
-      ),
-  },
-  {
-    path: "Furniture",
-    loadChildren: () =>
-      import("./modules/furniture/furniture.module").then(
-        (m) => m.FurnitureModule
-      ),
-  },
-  {
-    path: "Sports",
-    loadChildren: () =>
-      import("./modules/sport/sport.module").then((m) => m.SportModule),
-  },
-  {
-    path: "Pets",
-    loadChildren: () =>
-      import("./modules/pet/pet.module").then((m) => m.PetModule),
-  },
-  {
-    path: "Fashion",
-    loadChildren: () =>
-      import("./modules/fashion/fashion.module").then((m) => m.FashionModule),
-  },
-  {
-    path: "Books",
-    loadChildren: () =>
-      import("./modules/book/book.module").then((m) => m.BookModule),
-  },
-  {
-    path: "Properties",
-    loadChildren: () =>
-      import("./modules/property/property.module").then(
-        (m) => m.PropertyModule
-      ),
-  },
-  {
-    path: "Jobs",
-    loadChildren: () =>
-      import("./modules/job/job.module").then((m) => m.JobModule),
-  },
-  {
-    path: "Commercial Services",
-    loadChildren: () =>
-      import("./modules/commercial-service/commercial-service.module").then(
-        (m) => m.CommercialServiceModule
-      ),
-  },
   { path: "", component: MarketplaceComponent },
-  { path: "post-menu", component: PostMenuComponent, canActivate: [AuthGuard] },
-  {
-    path: "Admin",
-    loadChildren: () =>
-      import("./modules/admin/admin.module").then((m) => m.AdminModule),
-  },
-  { path: "vacancy-opening", component: VacancyOpeningComponent },
-  { path: "help", component: HelpComponent },
-  { path: "page/:slug", component: PageComponent },
   {
     path: "business",
     loadChildren: () =>
@@ -102,8 +24,22 @@ const routes: Routes = [
       import("./modules/classified-ads/classified-ads.module").then(
         (m) => m.ClassifiedAdsModule
       ),
-    // canActivate: [AuthGuard],
   },
+  {
+    path: "user",
+    loadChildren: () =>
+      import("./modules/user/user.module").then((m) => m.UserModule),
+    canActivate: [AuthGuard],
+  },
+  { path: "post-menu", component: PostMenuComponent, canActivate: [AuthGuard] },
+  {
+    path: "Admin",
+    loadChildren: () =>
+      import("./modules/admin/admin.module").then((m) => m.AdminModule),
+  },
+  { path: "vacancy-opening", component: VacancyOpeningComponent },
+  { path: "help", component: HelpComponent },
+  { path: "page/:slug", component: PageComponent },
 ];
 
 @NgModule({

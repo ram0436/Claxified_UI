@@ -43,19 +43,19 @@ export class PostMenuComponent {
 
   generateRouterLink(mainCategory: string, subCategory: string): string {
     if (mainCategory === "\r\nElectronics") {
-      return `/Electronics & Appliances/add-post?main=Electronics & Appliances=&sub=${encodeURIComponent(
+      return `classified-ads/Electronics & Appliances/add-post?main=Electronics & Appliances=&sub=${encodeURIComponent(
         subCategory
       )}`;
     } else if (mainCategory === "Furnitures") {
-      return `/Furniture/add-post?main=Furniture=&sub=${encodeURIComponent(
+      return `classified-ads/Furniture/add-post?main=Furniture=&sub=${encodeURIComponent(
         subCategory
       )}`;
     } else if (mainCategory === "Sports") {
-      return `/Sports & Hobbies/add-post?main=Sports & Hobbies=&sub=${encodeURIComponent(
+      return `classified-ads/Sports & Hobbies/add-post?main=Sports & Hobbies=&sub=${encodeURIComponent(
         subCategory
       )}`;
     } else {
-      return `/${mainCategory}/add-post?main=${mainCategory}=&sub=${encodeURIComponent(
+      return `classified-ads/${mainCategory}/add-post?main=${mainCategory}=&sub=${encodeURIComponent(
         subCategory
       )}`;
     }

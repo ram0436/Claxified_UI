@@ -1,138 +1,219 @@
-.main {
-    z-index: 10;
-    width: 100%;
-    position: fixed;
-    background: #80808012;
-    box-sizing: border-box;
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .1);
-    height: 60px;
-    top: 0px;
+/* =========================================================
+   POST MENU WRAPPER
+   ========================================================= */
+
+.post-menu-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
 }
 
-.heading {
-    width: 100%;
-    text-align: center;
-    font-size: 24px;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-top: 120px;
+.post-menu-inner {
+  width: 100%;
 }
 
-.head {
-    height: 100%;
+/* Header */
+.post-menu-header {
+  text-align: center;
+  margin-bottom: 28px;
 }
 
-.cat {
-    width: 60%;
-    margin: 0 auto;
-    overflow: hidden;
-    box-sizing: border-box;
-    border: 1px solid black;
-    border-radius: 4px;
-    /* height: 400px; */
+.post-menu-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1c1533;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
 }
 
-.category {
-    padding: 24px 30px 16px;
-    font-size: 16px;
-    line-height: 1.5;
-    margin: 0;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: black;
-    border-bottom: 1px solid black;
+.post-menu-accent {
+  background: linear-gradient(90deg, #e93d82 0%, #a855f7 60%, #e75462 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-.opt {
-    position: relative;
+.post-menu-subtitle {
+  font-size: 15px;
+  color: #635b76;
+  margin: 0;
+}
+
+/* =========================================================
+     CATEGORY CARD
+     ========================================================= */
+
+.cat-card {
+  background: #ffffff;
+  border: 1px solid #eee6fa;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(108, 76, 224, 0.08);
+  overflow: hidden;
+}
+
+.cat-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 26px;
+  border-bottom: 1px solid #f1ecfb;
+  background: linear-gradient(120deg, #efe9fc 0%, #f6ecf6 100%);
+}
+
+.cat-card-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #efe9fe;
+  color: #e75462;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.cat-card-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1c1533;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* Two-column layout */
+.cat-columns {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.cat-columns.has-sub {
+  grid-template-columns: 1fr 1fr;
+}
+
+.cat-list {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+  /* max-height: 420px;
+  overflow-y: auto; */
+}
+
+.main-list {
+  border-right: 1px solid #f1ecfb;
+}
+
+.cat-columns:not(.has-sub) .main-list {
+  border-right: none;
+}
+
+.cat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1c1533;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.cat-item-name {
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.cat-item-chevron {
+  font-size: 18px;
+  color: #b3adc4;
+  flex-shrink: 0;
+}
+
+.main-list .cat-item:hover {
+  background: #f8f5ff;
+}
+
+.main-list .cat-item.active {
+  background: linear-gradient(90deg, #e75462, #e93d82);
+  color: #ffffff;
+}
+
+.main-list .cat-item.active .cat-item-chevron {
+  color: #ffffff;
+}
+
+.sub-item {
+  padding: 12px 14px;
+}
+
+.sub-item:hover {
+  background: #fde9f2;
+}
+
+.sub-item .cat-item-name:hover {
+  color: #e75462;
+}
+
+/* Empty state (right column before a category is chosen) */
+.cat-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 20px;
+  color: #a79fbb;
+  text-align: center;
+  font-size: 13.5px;
+}
+
+.cat-empty-icon {
+  font-size: 34px;
+  color: #d8cbf7;
+}
+
+.cat-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cat-list::-webkit-scrollbar-thumb {
+  background: #e6dcff;
+  border-radius: 10px;
+}
+
+/* =========================================================
+     RESPONSIVE
+     ========================================================= */
+
+@media (max-width: 768px) {
+  .post-menu-wrapper {
+    padding: 90px 16px 40px;
+  }
+
+  .post-menu-title {
+    font-size: 26px;
+  }
+
+  .cat-columns.has-sub {
+    grid-template-columns: 1fr;
+  }
+
+  .main-list {
     border-right: none;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 20px;
+    border-bottom: 1px solid #f1ecfb;
+  }
 }
 
-.bord {
-    width: 50%;
-    margin-left: auto;
-    left: auto;
-    right: auto;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    border-right: 1px solid black;
-    border-left: none;
-    float: left;
-    min-height: 1px;
-    box-sizing: border-box;
-    cursor: pointer;
-}
+@media (max-width: 480px) {
+  .post-menu-title {
+    font-size: 22px;
+  }
 
-.cat-name {
-    list-style: none;
-    padding: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    line-height: 2;
-    color: black;
-    border: 1px solid;
-}
-
-.name {
-    width: 100%;
-    margin-left: 30px;
-    text-decoration: none !important;
-}
-
-.sub-cat {
-    /* position: absolute; */
-    right: 0 !important;
-    border-right: none !important;
-    border-bottom: 1px solid black;
-}
-
-.sub-cat li{
-    border-left: 0.1rem solid #222;
-}
-
-/* .cat-name:hover,
-.cat-name:active {
-    color: white;
-    background-color: #09ca09f5;
-    border: #09ca09f5;
-} */
-.active{
-    color: #222;
-    background-color: #f1f1f1;
-}
-
-/* Apply styles when hovering on the li element inside the bord div */
-.bord li.cat-name:hover {
-    background-color: #f1f1f1;
-}
-
-.bord li.cat-name:hover span{
-    color: #222 !important;
-}
-  
-@media (max-width: 750px){
-    .heading{
-        margin-top: 200px;
-    }
-
-    .cat{
-        width: 80%;
-    }
-}
-
-@media (max-width: 500px){
-    .cat{
-        width: 95%;
-    }
-
-    .name{
-        margin-left: 0;
-    }
+  .cat-card-header {
+    padding: 16px 18px;
+  }
 }

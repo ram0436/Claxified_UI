@@ -654,7 +654,9 @@ export class MarketplaceComponent implements OnInit {
   viewAd(ad: any): void {
     const category = this.getCategoryName(ad.categoryId);
     if (category && ad.tableRefGuid) {
-      this.router.navigate([`/${category}/post-details/${ad.tableRefGuid}`]);
+      this.router.navigate([
+        `/classified-ads/${category}/post-details/${ad.tableRefGuid}`,
+      ]);
     }
   }
 
@@ -710,7 +712,7 @@ export class MarketplaceComponent implements OnInit {
     };
 
     const route = routeMap[categoryName] || categoryName;
-    this.router.navigate([`/${route}/view-posts`], {
+    this.router.navigate([`classified-ads/${route}/view-posts`], {
       queryParams: { type: route },
     });
   }

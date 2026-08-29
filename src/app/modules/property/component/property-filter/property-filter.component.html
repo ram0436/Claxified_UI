@@ -119,7 +119,7 @@
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
-  <div class="example-label-container" *ngIf="subCategory != undefined">
+  <div class="example-label-container">
     <label id="example-name-label" class="example-name-label">Price</label>
     <div class="pd-5">
       <label class="example-value-label">{{
@@ -130,7 +130,7 @@
       }}</label>
     </div>
   </div>
-  <div style="display: flex" *ngIf="subCategory != undefined">
+  <div style="display: flex">
     <mat-slider
       class="example-margin"
       min="0"
@@ -154,7 +154,11 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="propertiesToShow.includes('bedrooms') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('bedrooms') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <mat-label>Bed Rooms</mat-label>
     <mat-select
@@ -169,7 +173,11 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="propertiesToShow.includes('bathrooms') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('bathrooms') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <mat-label>Bath Rooms</mat-label>
     <mat-select
@@ -184,7 +192,11 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="propertiesToShow.includes('houseType') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('houseType') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <mat-label>House Type</mat-label>
     <mat-select
@@ -201,7 +213,11 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="propertiesToShow.includes('subType') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('subType') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <mat-label>Sub type</mat-label>
     <mat-select
@@ -218,7 +234,11 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="propertiesToShow.includes('serviceType') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('serviceType') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <mat-label>Service Type</mat-label>
     <mat-select
@@ -237,7 +257,11 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="propertiesToShow.includes('furnishing') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('furnishing') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <mat-label>Furnishing Type</mat-label>
     <mat-select
@@ -256,7 +280,11 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="propertiesToShow.includes('constructionStatus') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('constructionStatus') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <mat-label>Construction Status</mat-label>
     <mat-select
@@ -275,7 +303,11 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="propertiesToShow.includes('listedBy') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('listedBy') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <mat-label>Listed By</mat-label>
     <mat-select
@@ -292,7 +324,11 @@
   <mat-form-field
     appearance="fill"
     class="form-field-w-100"
-    *ngIf="propertiesToShow.includes('bachelorAllowed') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('bachelorAllowed') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <mat-label>Bachelors allowed</mat-label>
     <mat-select
@@ -308,7 +344,11 @@
   </mat-form-field>
   <div
     class="example-label-container"
-    *ngIf="propertiesToShow.includes('superBuildUpArea') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('superBuildUpArea') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <label id="example-name-label" class="example-name-label"
       >SUPER BUILTUP AREA (FT²)</label
@@ -320,7 +360,11 @@
   </div>
   <div
     style="display: flex"
-    *ngIf="propertiesToShow.includes('superBuildUpArea') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('superBuildUpArea') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <mat-slider
       class="example-margin"
@@ -344,7 +388,11 @@
   </div>
   <div
     class="example-label-container"
-    *ngIf="propertiesToShow.includes('plotArea') && subCategory != undefined && subCategory !='17'"
+    *ngIf="
+      propertiesToShow.includes('plotArea') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
   >
     <label id="example-name-label" class="example-name-label">Plot area</label>
     <div class="pd-5">
@@ -352,7 +400,14 @@
       <label class="example-value-label fl-r">{{ toPlotArea }}</label>
     </div>
   </div>
-  <div style="display: flex" *ngIf="propertiesToShow.includes('plotArea') && subCategory != undefined && subCategory !='17'">
+  <div
+    style="display: flex"
+    *ngIf="
+      propertiesToShow.includes('plotArea') &&
+      subCategory != undefined &&
+      subCategory != '17'
+    "
+  >
     <mat-slider
       class="example-margin"
       min="0"
