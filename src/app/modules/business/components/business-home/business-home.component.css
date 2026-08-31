@@ -52,7 +52,7 @@
 
 .business-hero-title {
   font-size: 38px;
-  font-weight: 800;
+  font-weight: 600;
   color: #1c1533;
   margin: 0 0 12px 0;
   line-height: 1.2;
@@ -154,7 +154,7 @@
   align-items: center;
   gap: 4px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: #4a4358;
   cursor: pointer;
   white-space: nowrap;
@@ -255,7 +255,7 @@
 .feature-text h4 {
   margin: 0;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1c1533;
   white-space: nowrap;
 }
@@ -327,7 +327,7 @@
 
 .section-title {
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 600;
   color: #0d475c;
   margin: 0;
 }
@@ -505,7 +505,7 @@
 .category-card h4 {
   margin: 0;
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1c1533;
   white-space: nowrap;
   overflow: hidden;
@@ -576,7 +576,7 @@
   background: rgba(255, 255, 255, 0.95);
   color: #1f9d55;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 3px 8px 3px 6px;
   border-radius: 20px;
 }
@@ -610,7 +610,7 @@
 
 .business-card-initials {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: #e75462;
 }
 
@@ -621,7 +621,7 @@
 .business-name {
   margin: 0 0 2px 0;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: #0d475c;
   white-space: nowrap;
   overflow: hidden;
@@ -758,7 +758,7 @@
   color: #e75462;
   padding: 10px 26px;
   border-radius: 50px;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13.5px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -851,7 +851,7 @@
 .why-list-item h4 {
   margin: 0 0 3px 0;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1c1533;
 }
 
@@ -875,7 +875,7 @@
 .why-list-card h3 {
   margin: 0 0 8px 0;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1c1533;
   max-width: 75%;
 }
@@ -910,7 +910,7 @@
   border: none;
   padding: 10px 20px;
   border-radius: 50px;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -987,14 +987,14 @@
 
 .top-rated-initials {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: #e75462;
 }
 
 .top-rated-name {
   margin: 0 0 2px 0;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #0d475c;
   white-space: nowrap;
   overflow: hidden;
@@ -1064,12 +1064,12 @@
 
 .offer-badge-value {
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .offer-badge-suffix {
   font-size: 8px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.3px;
 }
 
@@ -1081,7 +1081,7 @@
 .offer-title {
   margin: 0 0 2px 0;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1a1a1a;
   white-space: nowrap;
   overflow: hidden;
@@ -1152,7 +1152,7 @@
   overflow: hidden;
   color: #1a1a1a;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1182,7 +1182,7 @@
   background: #f4f0fa;
   color: #6c4ce0;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* Responsive adjustments for offers grid */
@@ -1332,7 +1332,7 @@
 .trust-text h4 {
   margin: 0 0 2px 0;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1c1533;
   white-space: nowrap;
 }

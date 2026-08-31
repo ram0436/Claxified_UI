@@ -53,7 +53,7 @@
   margin: 0 0 14px;
   color: #1c1533;
   font-size: 40px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.22;
   letter-spacing: -0.5px;
 }
@@ -207,7 +207,7 @@
 .quick-title {
   color: #1c1533;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -252,7 +252,7 @@
   margin: 0;
   color: #0d475c;
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .view-all-link {
@@ -461,7 +461,7 @@
 .business-logo-badge .logo-initials {
   color: #fff;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .card-status {
@@ -476,7 +476,7 @@
   color: #fff;
 
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
   backdrop-filter: blur(5px);
 }
 
@@ -501,7 +501,7 @@
   overflow: hidden;
   color: #0d475c;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -600,7 +600,7 @@
   color: #fff;
 
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -615,7 +615,7 @@
   overflow: hidden;
   color: #1a1a1a;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -713,7 +713,7 @@
   overflow: hidden;
   color: #1a1a1a;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -744,7 +744,7 @@
   background: #f4f0fa;
   color: #6c4ce0;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* =========================================================
@@ -828,7 +828,7 @@
   margin: 0;
 
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.3;
 
   color: #1c1533;
@@ -1276,7 +1276,7 @@
 .trust-text h4 {
   margin: 0 0 2px 0;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1c1533;
   white-space: nowrap;
 }
@@ -1315,7 +1315,7 @@
   background: #f4f0fa;
   color: #6c4ce0;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .search-filter-tabs {
@@ -1364,7 +1364,7 @@
   margin: 8px 0 14px;
   color: #0d475c;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .search-results-grid {

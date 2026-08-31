@@ -5,13 +5,13 @@
 }
 
 .example-result-card .example-value-label {
-  font-weight: 700;
+  font-weight: 600;
   color: #1c1533;
 }
 
 .example-name-label {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1c1533;
 }
 
@@ -67,7 +67,7 @@
   background: linear-gradient(90deg, #e75462, #e93d82) !important;
   color: #fff !important;
   border-radius: 50px !important;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 12.5px;
   box-shadow: 0 4px 14px rgba(231, 84, 98, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -101,14 +101,14 @@
 
 .filter-heading {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 600;
   color: #0d475c;
 }
 
 .clear-filters {
   color: #e75462;
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 600;
   background: #fde9f2;
   padding: 6px 14px;
   border-radius: 50px;
@@ -170,7 +170,7 @@
 ::ng-deep .selected-states-container .mat-mdc-chip {
   background: #fde9f2 !important;
   color: #e75462 !important;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 12px;
   border-radius: 50px !important;
   border: 1px solid #f7c3d7;
@@ -201,7 +201,7 @@
   background: linear-gradient(90deg, #e75462, #e93d82) !important;
   color: #fff !important;
   border-radius: 50px !important;
-  font-weight: 700;
+  font-weight: 600;
   box-shadow: 0 6px 18px rgba(231, 84, 98, 0.3);
 }
 

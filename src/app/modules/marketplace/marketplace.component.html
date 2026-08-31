@@ -324,6 +324,182 @@
     </ng-container>
   </section>
 
+  <!-- Featured Classified Ads Section -->
+  <section class="section-wrapper featured-ads-section" *ngIf="!isSearching">
+    <div class="section-header">
+      <h2 class="section-title">Featured Classified Ads</h2>
+      <a routerLink="/classified-ads" class="view-all-link">
+        View All Ads
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Loading State -->
+    <div class="state-block" *ngIf="adsLoading">
+      <div class="spinner"></div>
+      <p>Loading ads…</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="state-block" *ngIf="!adsLoading && adsError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load the ads right now.</p>
+      <button class="retry-button" (click)="fetchAds()">Try Again</button>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      class="state-block"
+      *ngIf="!adsLoading && !adsError && featuredAds.length === 0"
+    >
+      <span class="material-icons-outlined state-icon">list_alt</span>
+      <p>No featured ads available.</p>
+    </div>
+
+    <!-- Ads Row with Scroll -->
+    <div
+      class="ads-row-wrapper"
+      *ngIf="!adsLoading && !adsError && featuredAds.length > 0"
+    >
+      <button
+        class="scroll-arrow scroll-arrow-left"
+        (click)="adsScroll.scrollBy({ left: -280, behavior: 'smooth' })"
+        aria-label="Scroll left"
+      >
+        <span class="material-icons-outlined">chevron_left</span>
+      </button>
+
+      <div class="ads-row" #adsScroll>
+        <div
+          class="ad-card"
+          *ngFor="let ad of featuredAds | slice : 0 : 10; trackBy: trackByAdId"
+          (click)="viewAd(ad)"
+        >
+          <div class="ad-image-wrapper">
+            <img
+              [src]="getAdImage(ad)"
+              [alt]="ad.title"
+              class="ad-image"
+              loading="lazy"
+              (error)="onAdImageError($event)"
+            />
+            <button
+              class="wishlist-btn"
+              [class.active]="ad.isWishlisted"
+              (click)="toggleWishlist(ad, $event)"
+              title="Add in Wishlist"
+              aria-label="Save ad"
+            >
+              <span class="material-icons-outlined">
+                {{ ad.isWishlisted ? "favorite" : "favorite_border" }}
+              </span>
+            </button>
+            <span class="ad-price-badge">{{ ad.priceLabel }}</span>
+          </div>
+          <div class="ad-content">
+            <h4 class="ad-title">{{ truncateTitle(ad.title, 30) }}</h4>
+            <p class="ad-category">{{ getCategoryName(ad.categoryId) }}</p>
+            <div class="ad-meta">
+              <span class="ad-location">
+                <span class="material-icons-outlined">location_on</span>
+                {{ ad.locationLabel }}
+              </span>
+              <span class="ad-time">{{ ad.postedAgo }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        class="scroll-arrow scroll-arrow-right"
+        (click)="adsScroll.scrollBy({ left: 280, behavior: 'smooth' })"
+        aria-label="Scroll right"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Browse by Category Section -->
+  <section class="section-wrapper categories-section" *ngIf="!isSearching">
+    <div class="section-header">
+      <h2 class="section-title">Browse Ads by Category</h2>
+
+      <a
+        routerLink="/categories"
+        class="view-all-link"
+        *ngIf="!categoriesLoading && !categoriesError && categories.length > 0"
+      >
+        All Categories
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Loading State -->
+    <div class="state-block" *ngIf="categoriesLoading">
+      <div class="spinner"></div>
+      <p>Loading categories…</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="state-block" *ngIf="!categoriesLoading && categoriesError">
+      <span class="material-icons-outlined state-icon"> wifi_off </span>
+
+      <p>We couldn't load the categories right now.</p>
+
+      <button class="retry-button" (click)="fetchCategories()">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      class="state-block"
+      *ngIf="!categoriesLoading && !categoriesError && categories.length === 0"
+    >
+      <span class="material-icons-outlined state-icon"> category </span>
+
+      <p>No categories available right now.</p>
+    </div>
+
+    <!-- Categories Row -->
+    <div
+      class="category-row-wrapper"
+      *ngIf="!categoriesLoading && !categoriesError && categories.length > 0"
+    >
+      <button
+        class="scroll-arrow scroll-arrow-left"
+        (click)="categoryScroll.scrollBy({ left: -240, behavior: 'smooth' })"
+        aria-label="Scroll categories left"
+      >
+        <span class="material-icons-outlined">chevron_left</span>
+      </button>
+
+      <div class="category-row" #categoryScroll>
+        <div
+          class="category-card"
+          *ngFor="let category of categories"
+          (click)="navigateToCategory(category)"
+        >
+          <div class="category-card-icon" [ngClass]="category.colorClass">
+            <span class="material-icons-outlined">
+              {{ getCategoryIcon(category.categoryName) }}
+            </span>
+          </div>
+
+          <h4>{{ category.categoryName }}</h4>
+        </div>
+      </div>
+
+      <button
+        class="scroll-arrow scroll-arrow-right"
+        (click)="categoryScroll.scrollBy({ left: 240, behavior: 'smooth' })"
+        aria-label="Scroll categories right"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </button>
+    </div>
+  </section>
+
   <!-- Popular Businesses Section -->
   <section class="section-wrapper" *ngIf="!isSearching">
     <div class="section-header">
@@ -497,182 +673,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Featured Classified Ads Section -->
-  <section class="section-wrapper featured-ads-section" *ngIf="!isSearching">
-    <div class="section-header">
-      <h2 class="section-title">Featured Classified Ads</h2>
-      <a routerLink="/classified-ads" class="view-all-link">
-        View All Ads
-        <span class="material-icons-outlined">arrow_forward</span>
-      </a>
-    </div>
-
-    <!-- Loading State -->
-    <div class="state-block" *ngIf="adsLoading">
-      <div class="spinner"></div>
-      <p>Loading ads…</p>
-    </div>
-
-    <!-- Error State -->
-    <div class="state-block" *ngIf="!adsLoading && adsError">
-      <span class="material-icons-outlined state-icon">wifi_off</span>
-      <p>We couldn't load the ads right now.</p>
-      <button class="retry-button" (click)="fetchAds()">Try Again</button>
-    </div>
-
-    <!-- Empty State -->
-    <div
-      class="state-block"
-      *ngIf="!adsLoading && !adsError && featuredAds.length === 0"
-    >
-      <span class="material-icons-outlined state-icon">list_alt</span>
-      <p>No featured ads available.</p>
-    </div>
-
-    <!-- Ads Row with Scroll -->
-    <div
-      class="ads-row-wrapper"
-      *ngIf="!adsLoading && !adsError && featuredAds.length > 0"
-    >
-      <button
-        class="scroll-arrow scroll-arrow-left"
-        (click)="adsScroll.scrollBy({ left: -280, behavior: 'smooth' })"
-        aria-label="Scroll left"
-      >
-        <span class="material-icons-outlined">chevron_left</span>
-      </button>
-
-      <div class="ads-row" #adsScroll>
-        <div
-          class="ad-card"
-          *ngFor="let ad of featuredAds | slice : 0 : 10; trackBy: trackByAdId"
-          (click)="viewAd(ad)"
-        >
-          <div class="ad-image-wrapper">
-            <img
-              [src]="getAdImage(ad)"
-              [alt]="ad.title"
-              class="ad-image"
-              loading="lazy"
-              (error)="onAdImageError($event)"
-            />
-            <button
-              class="wishlist-btn"
-              [class.active]="ad.isWishlisted"
-              (click)="toggleWishlist(ad, $event)"
-              title="Add in Wishlist"
-              aria-label="Save ad"
-            >
-              <span class="material-icons-outlined">
-                {{ ad.isWishlisted ? "favorite" : "favorite_border" }}
-              </span>
-            </button>
-            <span class="ad-price-badge">{{ ad.priceLabel }}</span>
-          </div>
-          <div class="ad-content">
-            <h4 class="ad-title">{{ truncateTitle(ad.title, 30) }}</h4>
-            <p class="ad-category">{{ getCategoryName(ad.categoryId) }}</p>
-            <div class="ad-meta">
-              <span class="ad-location">
-                <span class="material-icons-outlined">location_on</span>
-                {{ ad.locationLabel }}
-              </span>
-              <span class="ad-time">{{ ad.postedAgo }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <button
-        class="scroll-arrow scroll-arrow-right"
-        (click)="adsScroll.scrollBy({ left: 280, behavior: 'smooth' })"
-        aria-label="Scroll right"
-      >
-        <span class="material-icons-outlined">chevron_right</span>
-      </button>
-    </div>
-  </section>
-
-  <!-- Browse by Category Section -->
-  <section class="section-wrapper categories-section" *ngIf="!isSearching">
-    <div class="section-header">
-      <h2 class="section-title">Browse by Category</h2>
-
-      <a
-        routerLink="/categories"
-        class="view-all-link"
-        *ngIf="!categoriesLoading && !categoriesError && categories.length > 0"
-      >
-        All Categories
-        <span class="material-icons-outlined">arrow_forward</span>
-      </a>
-    </div>
-
-    <!-- Loading State -->
-    <div class="state-block" *ngIf="categoriesLoading">
-      <div class="spinner"></div>
-      <p>Loading categories…</p>
-    </div>
-
-    <!-- Error State -->
-    <div class="state-block" *ngIf="!categoriesLoading && categoriesError">
-      <span class="material-icons-outlined state-icon"> wifi_off </span>
-
-      <p>We couldn't load the categories right now.</p>
-
-      <button class="retry-button" (click)="fetchCategories()">
-        Try Again
-      </button>
-    </div>
-
-    <!-- Empty State -->
-    <div
-      class="state-block"
-      *ngIf="!categoriesLoading && !categoriesError && categories.length === 0"
-    >
-      <span class="material-icons-outlined state-icon"> category </span>
-
-      <p>No categories available right now.</p>
-    </div>
-
-    <!-- Categories Row -->
-    <div
-      class="category-row-wrapper"
-      *ngIf="!categoriesLoading && !categoriesError && categories.length > 0"
-    >
-      <button
-        class="scroll-arrow scroll-arrow-left"
-        (click)="categoryScroll.scrollBy({ left: -240, behavior: 'smooth' })"
-        aria-label="Scroll categories left"
-      >
-        <span class="material-icons-outlined">chevron_left</span>
-      </button>
-
-      <div class="category-row" #categoryScroll>
-        <div
-          class="category-card"
-          *ngFor="let category of categories"
-          (click)="navigateToCategory(category)"
-        >
-          <div class="category-card-icon" [ngClass]="category.colorClass">
-            <span class="material-icons-outlined">
-              {{ getCategoryIcon(category.categoryName) }}
-            </span>
-          </div>
-
-          <h4>{{ category.categoryName }}</h4>
-        </div>
-      </div>
-
-      <button
-        class="scroll-arrow scroll-arrow-right"
-        (click)="categoryScroll.scrollBy({ left: 240, behavior: 'smooth' })"
-        aria-label="Scroll categories right"
-      >
-        <span class="material-icons-outlined">chevron_right</span>
-      </button>
     </div>
   </section>
 

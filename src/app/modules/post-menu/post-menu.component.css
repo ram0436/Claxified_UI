@@ -20,7 +20,7 @@
 
 .post-menu-title {
   font-size: 32px;
-  font-weight: 800;
+  font-weight: 600;
   color: #1c1533;
   margin: 0 0 8px 0;
   letter-spacing: -0.5px;
@@ -76,7 +76,7 @@
 .cat-card-title {
   margin: 0;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1c1533;
   text-transform: uppercase;
   letter-spacing: 0.4px;
@@ -117,7 +117,7 @@
   border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: #1c1533;
   transition: background 0.2s ease, color 0.2s ease;
 }

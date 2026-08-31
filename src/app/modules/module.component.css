@@ -41,7 +41,7 @@
 }
 .text-blue {
   color: #e75462;
-  font-weight: 800;
+  font-weight: 500;
 }
 .date-added {
   font-size: 12.5px;
@@ -55,7 +55,7 @@
   margin-top: 10px;
   padding: 0 16px;
   color: #1c1533;
-  font-weight: 800;
+  font-weight: 500;
 }
 
 .description-content {
@@ -85,7 +85,7 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 14px;
   transition: all 0.2s ease;
   z-index: 10;
@@ -101,7 +101,7 @@
   align-items: center;
   gap: 4px;
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .pd-breadcrumb a {
@@ -213,7 +213,7 @@
   color: #fff;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .zoom-in {
@@ -326,7 +326,7 @@
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .pg_arrow_left_after,
@@ -375,7 +375,7 @@
 
 .date-added-pill {
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 500;
   color: #8b8299;
   background: #f4f1fb;
   padding: 3px 10px;
@@ -383,7 +383,7 @@
 }
 
 .pd-listing-title {
-  font-weight: 700;
+  font-weight: 500;
   color: #1c1533;
   font-size: 14.5px;
 }
@@ -455,13 +455,13 @@
   margin: 0;
   font-size: 11.5px;
   color: #8b8299;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .pd-stat-value {
   margin: 2px 0 0;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   color: #1c1533;
 }
 
@@ -511,7 +511,7 @@
   padding-left: 8px;
   margin: 0;
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 500;
   color: #1c1533;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -529,7 +529,7 @@
   color: #e75462 !important;
   background: #fff !important;
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 500;
   height: 40px;
   padding: 0 18px;
   flex-shrink: 0;
@@ -575,7 +575,7 @@
   border: 1px solid transparent;
   border-radius: 50px;
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 500;
   height: 42px;
   padding: 10px 16px;
   transition: all 0.2s ease;
@@ -615,7 +615,7 @@
 .report-success-title {
   color: #1f9d55;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .report-options {
@@ -683,7 +683,7 @@
   border-color: #e75462;
   background: #fde9f2;
   color: #e75462;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .radio-switch:checked + label::before {
@@ -738,7 +738,7 @@ textarea.more-info:focus {
   border-bottom: 1px solid #eee6fa;
   padding-bottom: 4px;
   color: #1c1533;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .text-carousel-logo {
@@ -752,7 +752,7 @@ textarea.more-info:focus {
 
 .text-carousel-logo span {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   color: #e75462;
 }
 
@@ -767,7 +767,7 @@ textarea.more-info:focus {
   cursor: pointer;
   text-decoration: none;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .carousel-link a {
@@ -854,7 +854,7 @@ ul {
   border: none;
   border-radius: 50px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   height: 44px;
   width: 100%;
   transition: box-shadow 0.2s ease;

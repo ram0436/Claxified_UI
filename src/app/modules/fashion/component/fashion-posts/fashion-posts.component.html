@@ -72,6 +72,31 @@
         </button>
       </div>
     </div>
+    <!-- Refine within active category: sub-categories -->
+    <div
+      class="subcategory-switcher-row"
+      *ngIf="activeCategorySubCategories.length > 0"
+    >
+      <span class="subcategory-connector"></span>
+
+      <div
+        class="subcategory-chip"
+        [class.active]="!currentSubParam"
+        (click)="clearSubCategory()"
+      >
+        <span class="material-icons-outlined">apps</span>
+        All {{ category }}
+      </div>
+
+      <div
+        class="subcategory-chip"
+        *ngFor="let sub of activeCategorySubCategories"
+        [class.active]="isActiveSubCategory(sub)"
+        (click)="navigateToSubCategory(sub)"
+      >
+        {{ sub.subCategoryName }}
+      </div>
+    </div>
   </section>
 
   <!-- ============ BODY ============ -->

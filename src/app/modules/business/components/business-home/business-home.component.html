@@ -326,14 +326,14 @@
       <span class="ads-count-badge" *ngIf="searchQuery.trim().length > 0">
         {{ filteredBusinesses.length }} found
       </span>
-      <a
+      <!-- <a
         routerLink="/business/directories"
         class="view-all-link"
         *ngIf="!searchQuery.trim()"
       >
         View all businesses
         <span class="material-icons-outlined">arrow_forward</span>
-      </a>
+      </a> -->
     </div>
 
     <div class="state-block" *ngIf="businessesLoading">
@@ -536,6 +536,7 @@
       </div>
     </div>
   </section>
+
   <!-- Why List Your Business -->
   <section class="section-wrapper why-list-section">
     <div class="why-list-content">
