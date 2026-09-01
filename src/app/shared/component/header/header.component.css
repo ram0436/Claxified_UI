@@ -90,7 +90,7 @@
   color: #555;
   text-decoration: none;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   padding: 8px 0;
   position: relative;
   transition: color 0.2s;
@@ -136,6 +136,7 @@
 .header-auth {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 .auth-btn {
@@ -147,7 +148,7 @@
   padding: 8px 14px;
   border-radius: 8px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #333;
   cursor: pointer;
   transition: all 0.2s;
@@ -209,7 +210,7 @@
 
 .profile-name {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #333;
   max-width: 100px;
   overflow: hidden;
@@ -246,7 +247,7 @@
   padding: 8px 18px;
   border-radius: 8px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   border: none;
   cursor: pointer;
   transition: all 0.2s;
@@ -351,7 +352,7 @@
   justify-content: center;
   background: #e75462;
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 18px;
   flex-shrink: 0;
 }
@@ -376,7 +377,7 @@
   font-size: 13px;
   color: #0065ff;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
   pointer-events: auto;
   cursor: pointer;
 }
@@ -581,7 +582,7 @@
   color: #444;
   text-decoration: none;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   transition: all 0.2s;
   cursor: pointer;
   border: none;
@@ -924,4 +925,554 @@
   .header-nav-links .nav-link {
     font-size: 16px;
   }
+}
+
+/* =========================================================
+   ADDITIONAL STYLES FOR BUSINESSES MENU & IMAGE BUTTONS
+   ========================================================= */
+
+/* Action Buttons with Images */
+.action-btn .action-icon-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.post-ad-btn .action-icon-img {
+  filter: brightness(0) invert(1);
+}
+
+/* Businesses Button */
+.businesses-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #f8f9fa;
+  border: 1px solid #e8e8e8;
+}
+
+.businesses-btn:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.businesses-btn .expand {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #777;
+  transition: transform 0.3s ease;
+}
+
+.businesses-btn .expand.rotated {
+  transform: rotate(180deg);
+}
+
+.businesses-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* =========================================================
+   BUSINESSES MENU (MatMenu)
+   ========================================================= */
+
+::ng-deep .cdk-overlay-pane:has(.businesses-menu-panel) {
+  margin-top: 8px !important;
+}
+
+::ng-deep .businesses-menu-panel {
+  min-width: 280px !important;
+  max-width: 340px !important;
+  border-radius: 12px !important;
+  margin-top: 0 !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
+  padding: 8px 0 !important;
+  background: #ffffff !important;
+  border: 1px solid #e8e8e8 !important;
+  overflow: hidden !important;
+}
+
+::ng-deep .businesses-menu-panel .businesses-menu-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 12px 20px !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+::ng-deep .businesses-menu-panel .businesses-menu-title {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+}
+
+::ng-deep .businesses-menu-panel .businesses-menu-add {
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  color: #e75462 !important;
+  padding: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  transition: background 0.2s !important;
+}
+
+::ng-deep .businesses-menu-panel .businesses-menu-add:hover {
+  background: #fef0f2 !important;
+}
+
+::ng-deep .businesses-menu-panel .businesses-menu-add .material-icons-outlined {
+  font-size: 24px !important;
+}
+
+::ng-deep .businesses-menu-panel .businesses-menu-list {
+  padding: 4px 0 !important;
+}
+
+::ng-deep .businesses-menu-panel .business-menu-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 20px !important;
+  min-height: 48px !important;
+  height: auto !important;
+  background: transparent !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+::ng-deep
+  .businesses-menu-panel
+  .business-menu-item
+  .mdc-list-item__primary-text {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+::ng-deep .businesses-menu-panel .business-item-avatar {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  flex-shrink: 0 !important;
+}
+
+::ng-deep .businesses-menu-panel .business-item-name {
+  flex: 1 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+}
+
+::ng-deep .businesses-menu-panel .business-item-check {
+  color: #e75462 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+::ng-deep .businesses-menu-panel .business-item-check .material-icons-outlined {
+  font-size: 20px !important;
+}
+
+::ng-deep .businesses-menu-panel .business-menu-item:hover {
+  background: #f5f5f5 !important;
+}
+
+::ng-deep .businesses-menu-panel .business-menu-show-all {
+  color: #0065ff !important;
+}
+
+::ng-deep
+  .businesses-menu-panel
+  .business-menu-show-all
+  .material-icons-outlined {
+  color: #0065ff !important;
+}
+
+::ng-deep .businesses-menu-panel .business-menu-show-all:hover {
+  background: #e8f0ff !important;
+}
+
+::ng-deep .businesses-menu-panel .businesses-menu-divider {
+  margin: 4px 16px !important;
+  border: none;
+  border-top: 1px solid #e8e8e8;
+  height: 1px;
+  background: #e8e8e8;
+}
+
+::ng-deep
+  .businesses-menu-panel
+  .business-menu-dashboard
+  .material-icons-outlined {
+  color: #6c5ce7 !important;
+}
+
+::ng-deep
+  .businesses-menu-panel
+  .business-menu-profile
+  .material-icons-outlined {
+  color: #e75462 !important;
+}
+
+::ng-deep
+  .businesses-menu-panel
+  .business-menu-settings
+  .material-icons-outlined {
+  color: #777 !important;
+}
+
+/* =========================================================
+   SIDE NAV BUSINESS ITEMS
+   ========================================================= */
+
+.side-nav-section-title {
+  padding: 8px 20px 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.side-nav-business-item {
+  padding: 8px 20px;
+  gap: 12px;
+}
+
+.side-nav-business-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.side-nav-business-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.side-nav-business-check {
+  color: #e75462;
+  display: flex;
+  align-items: center;
+}
+
+.side-nav-business-check .material-icons-outlined {
+  font-size: 18px;
+}
+
+.side-nav-show-all {
+  color: #0065ff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.side-nav-show-all .material-icons-outlined {
+  color: #0065ff;
+}
+
+.side-nav-show-all:hover {
+  background: #e8f0ff;
+  color: #0065ff;
+}
+
+.side-nav-show-all:hover .material-icons-outlined {
+  color: #0065ff;
+}
+
+.side-nav-business {
+  color: #0065ff;
+}
+
+.side-nav-business .material-icons-outlined {
+  color: #0065ff;
+}
+
+.side-nav-business:hover {
+  background: #e8f0ff;
+  color: #0065ff;
+}
+
+.side-nav-business:hover .material-icons-outlined {
+  color: #0065ff;
+}
+
+.side-nav-post {
+  color: #e75462;
+}
+
+.side-nav-post .material-icons-outlined {
+  color: #e75462;
+}
+
+.side-nav-post:hover {
+  background: #fde8eb;
+  color: #e75462;
+}
+
+.side-nav-post:hover .material-icons-outlined {
+  color: #e75462;
+}
+
+/* =========================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================= */
+
+@media (max-width: 1024px) {
+  .business-btn .btn-text,
+  .post-ad-btn .btn-text {
+    display: none;
+  }
+
+  .action-btn .action-icon-img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .business-btn,
+  .post-ad-btn {
+    padding: 8px 12px;
+  }
+
+  .business-btn {
+    border: none;
+  }
+
+  .businesses-text {
+    display: none;
+  }
+
+  .businesses-btn {
+    padding: 8px 10px;
+  }
+
+  ::ng-deep .businesses-menu-panel {
+    min-width: 260px !important;
+    max-width: 290px !important;
+  }
+}
+
+@media (max-width: 820px) {
+  .business-btn .btn-text,
+  .post-ad-btn .btn-text {
+    display: none;
+  }
+
+  .action-btn .action-icon-img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .business-btn {
+    border: none;
+    background: transparent;
+    padding: 8px;
+  }
+
+  .business-btn:hover {
+    background: transparent;
+  }
+
+  .post-ad-btn {
+    padding: 8px 14px;
+  }
+
+  .businesses-text {
+    display: none;
+  }
+
+  .businesses-btn {
+    padding: 8px 10px;
+  }
+
+  .side-nav {
+    width: 280px;
+    left: -290px;
+  }
+
+  .side-nav--open {
+    left: 0;
+  }
+
+  ::ng-deep .businesses-menu-panel {
+    min-width: 240px !important;
+    max-width: 270px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .post-ad-btn .action-icon-img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .action-btn .action-icon-img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .side-nav {
+    width: 260px;
+    left: -270px;
+  }
+
+  .side-nav--open {
+    left: 0;
+  }
+
+  .side-nav-link {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .side-nav-header {
+    padding: 14px 16px;
+  }
+
+  ::ng-deep .businesses-menu-panel {
+    min-width: 200px !important;
+    max-width: 240px !important;
+  }
+
+  ::ng-deep .businesses-menu-panel .businesses-menu-header {
+    padding: 10px 16px !important;
+  }
+
+  ::ng-deep .businesses-menu-panel .business-menu-item {
+    padding: 8px 16px !important;
+    min-height: 40px !important;
+  }
+
+  ::ng-deep .businesses-menu-panel .business-item-avatar {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 11px !important;
+  }
+
+  ::ng-deep .businesses-menu-panel .business-item-name {
+    font-size: 13px !important;
+  }
+}
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  transform: scale(1.05);
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-btn .action-btn-img {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* =========================================================
+     RESPONSIVE BREAKPOINTS
+     ========================================================= */
+
+/* Tablets & Small Laptops */
+@media (max-width: 1024px) {
+  .action-btn .action-btn-img {
+    height: 35px;
+  }
+}
+
+/* Mobile & Small Tablets */
+@media (max-width: 820px) {
+  .header-actions {
+    gap: 6px;
+  }
+
+  .action-btn .action-btn-img {
+    height: 32px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .action-btn .action-btn-img {
+    height: 28px;
+  }
+}
+
+::ng-deep .businesses-menu-panel {
+  min-width: 280px !important;
+  max-width: 340px !important;
+  border-radius: 12px !important;
+  margin-top: 0 !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
+  padding: 8px 0 !important;
+  background: #ffffff !important;
+  border: 1px solid #e8e8e8 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: 70vh;
+}
+
+/* nice thin scrollbar to match the side-nav */
+::ng-deep .businesses-menu-panel::-webkit-scrollbar {
+  width: 4px;
+}
+::ng-deep .businesses-menu-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+::ng-deep .businesses-menu-panel::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 4px;
+}
+
+::ng-deep
+  .businesses-menu-panel
+  .business-menu-attributes
+  .material-icons-outlined {
+  color: #6c5ce7 !important;
 }

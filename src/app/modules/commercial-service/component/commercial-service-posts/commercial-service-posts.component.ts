@@ -561,4 +561,43 @@ export class CommercialServicePostsComponent {
       categoryRoutes[categoryName]?.[subCategoryName] || defaultSubCategory
     );
   }
+
+  searchQuery: string = "";
+
+  onSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery = input ? input.value : "";
+  }
+
+  performSearch(): void {
+    const main = document.querySelector(".cp-main");
+    if (main) {
+      main.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  clearSearch(): void {
+    this.searchQuery = "";
+  }
+
+  get displayedCards(): any[] {
+    const q = this.searchQuery.trim().toLowerCase();
+    if (!q) return this.cards;
+
+    return this.cards.filter((card: any) => {
+      const haystack = [
+        card.title,
+        card.brand,
+        card.model,
+        card.description,
+        card.city,
+        card.state,
+        card.pincode,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(q);
+    });
+  }
 }

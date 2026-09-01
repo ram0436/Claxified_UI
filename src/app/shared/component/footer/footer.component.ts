@@ -1,6 +1,9 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
+import { Router, NavigationEnd } from "@angular/router";
+import { Subscription, filter } from "rxjs";
+import { BUSINESS_FOOTER_SECTIONS } from "./../../../modules/business/components/business-footer/business-footer.component";
+import { FooterSection } from "./../../../modules/business/components/business-footer/business-footer.component";
 import { FOOTER_DATA } from "./footer.config";
-import { Router } from "@angular/router";
 
 interface FooterLink {
   label: string;
@@ -26,15 +29,30 @@ interface SocialLink {
   colorClass: string;
 }
 
+type FooterMode = "full" | "simple" | "business";
+
 @Component({
   selector: "app-footer",
   templateUrl: "./footer.component.html",
   styleUrls: ["./footer.component.css"],
 })
-export class FooterComponent {
+export class FooterComponent implements OnDestroy {
   currentYear: number = new Date().getFullYear();
   newsletterEmail: string = "";
   subscribeState: "idle" | "success" | "error" = "idle";
+
+  // 'full' = default marketplace footer
+  // 'simple' = classified-ads routes -> FOOTER_DATA-driven link columns only
+  // 'business' = business/* routes -> business footer sections
+  footerMode: FooterMode = "full";
+
+  businessFooterSections: FooterSection[] = BUSINESS_FOOTER_SECTIONS;
+
+  // Used only in 'simple' mode (classified-ads routes)
+  footerSections = FOOTER_DATA;
+
+  private routerSub: Subscription;
+
   linkColumns: FooterColumn[] = [
     {
       title: "Marketplace",
@@ -140,7 +158,45 @@ export class FooterComponent {
     { label: "Sitemap", route: "/sitemap" },
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    this.footerMode = this.computeFooterMode(this.router.url);
+
+    this.routerSub = this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe((event) => {
+        this.footerMode = this.computeFooterMode(event.urlAfterRedirects);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSub?.unsubscribe();
+  }
+
+  private computeFooterMode(url: string): FooterMode {
+    // "/business" and "/business/..." -> business footer
+    if (
+      url === "/business" ||
+      url.startsWith("/business/") ||
+      url.startsWith("/business?")
+    ) {
+      return "business";
+    }
+    // classified-ads routes -> simplified, FOOTER_DATA-driven footer
+    if (url.includes("classified-ads")) {
+      return "simple";
+    }
+    return "full";
+  }
+
+  isRouteSection(
+    section: any
+  ): section is {
+    type: "route";
+    title: string;
+    links: { label: string; slug: string }[];
+  } {
+    return section.type === "route";
+  }
 
   onNewsletterInput(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -155,7 +211,6 @@ export class FooterComponent {
       this.subscribeState = "error";
       return;
     }
-    // TODO: wire up to the real newsletter subscription endpoint.
     this.subscribeState = "success";
     this.newsletterEmail = "";
   }
@@ -167,11 +222,4 @@ export class FooterComponent {
   navigateTo(route: string): void {
     this.router.navigate([route]);
   }
-  // footerSections = FOOTER_DATA;
-
-  // isRouteSection(
-  //   section: any
-  // ): section is { type: "route"; links: { label: string; slug: string }[] } {
-  //   return section.type === "route";
-  // }
 }

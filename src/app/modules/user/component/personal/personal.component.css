@@ -1,9 +1,37 @@
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+  background-color: #ffffff;
+}
+
+.container h2 {
+  font-size: 26px;
+  font-weight: 600;
+  color: #1c1533;
+  margin: 0 0 20px 0;
+}
+
 .bold {
   font-weight: 600;
+  color: #1c1533;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
+}
+
+.container p:not(.bold) {
+  color: #635b76;
+  font-size: 15px;
+  margin: 0 0 16px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #eee6fa;
+  margin: 16px 0;
 }
 
 @media (max-width: 750px) {
-  .sm-mt-175 {
-    margin-top: 175px;
-  }
 }

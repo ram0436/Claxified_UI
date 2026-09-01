@@ -28,6 +28,28 @@
         </div>
       </div>
 
+      <div class="cp-search-wrapper">
+        <div class="cp-search-input-wrapper">
+          <span class="material-icons-outlined cp-search-icon">search</span>
+          <input
+            type="text"
+            placeholder="Search in {{ category }}..."
+            class="cp-search-input"
+            [value]="searchQuery"
+            (input)="onSearchInput($event)"
+            (keyup.enter)="performSearch()"
+          />
+          <button
+            class="cp-search-clear-btn"
+            *ngIf="searchQuery.trim().length > 0"
+            (click)="clearSearch()"
+            aria-label="Clear search"
+          >
+            <span class="material-icons-outlined">close</span>
+          </button>
+        </div>
+      </div>
+
       <button class="cp-filter-toggle" (click)="toggleFilters()">
         <span class="material-icons-outlined">tune</span>
         Filters
@@ -124,7 +146,7 @@
 
       <app-post-card
         *ngIf="!isLoading"
-        [cards]="cards"
+        [cards]="displayedCards"
         [isLoading]="isLoading"
         [increaseHeight]="true"
         [increaseMargin]="true"

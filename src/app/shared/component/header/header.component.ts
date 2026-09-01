@@ -1,4 +1,10 @@
-import { Component, OnInit, HostListener, ElementRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  HostListener,
+  ElementRef,
+  OnDestroy,
+} from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { UserService } from "src/app/modules/user/service/user.service";
@@ -21,19 +27,23 @@ import { AdminDashboardService } from "src/app/modules/admin/service/admin-dashb
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { CommonService } from "../../service/common.service";
 import { BusinessLoginComponent } from "src/app/modules/business/components/business-login/business-login.component";
+import { BusinessService } from "src/app/modules/business/service/business.service";
+import { BusinessListItem } from "src/app/modules/business/model/Business";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.css"],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   searchQuery: string = "";
   locationSearchQuery: string = "";
   searchResults: any[] = [];
   allItems: any[] = [];
 
   isSlideVisible = false;
+  showCategories = false;
 
   mainCategories: any = [];
   subCategories: any = [];
@@ -59,6 +69,16 @@ export class HeaderComponent implements OnInit {
   dialogRef: MatDialogRef<any> | null = null;
   isAdmin: boolean = false;
 
+  // Business properties
+  businesses: BusinessListItem[] = [];
+  currentBusinessId: string = "";
+  showAllBusinesses: boolean = false;
+  showAllBusinessesMobile: boolean = false;
+  businessesMenuOpen: boolean = false;
+  private businessUpdatedSub!: Subscription;
+
+  hideSecondNav = false;
+
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -67,7 +87,8 @@ export class HeaderComponent implements OnInit {
     private AdminDashboardService: AdminDashboardService,
     private snackBar: MatSnackBar,
     private elRef: ElementRef,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private businessService: BusinessService
   ) {
     this.userService.getData().subscribe((data) => {
       var role = localStorage.getItem("role");
@@ -75,8 +96,6 @@ export class HeaderComponent implements OnInit {
       else this.isAdmin = false;
     });
   }
-
-  hideSecondNav = false;
 
   // Function to handle the scroll event
   @HostListener("window:scroll", [])
@@ -86,7 +105,6 @@ export class HeaderComponent implements OnInit {
       document.documentElement.scrollTop ||
       document.body.scrollTop ||
       0;
-    // Adjust the value (e.g., 200) based on when you want the effect to trigger
     this.hideSecondNav = scrollPosition > 0;
   }
 
@@ -99,10 +117,7 @@ export class HeaderComponent implements OnInit {
   }
 
   reloadApp() {
-    // Navigate to the root route (you can replace this with your desired route)
     this.router.navigate(["/"]);
-
-    // Trigger a hard reload of the application
     this.location.replaceState("/");
     window.location.reload();
   }
@@ -145,7 +160,6 @@ export class HeaderComponent implements OnInit {
         this.gadgetsTypes.Accessories,
       ],
     };
-
     return queryParams;
   }
 
@@ -478,7 +492,6 @@ export class HeaderComponent implements OnInit {
     };
 
     const defaultSubCategory = { type: categoryName, sub: "Others" };
-
     const routeData =
       categoryRoutes[categoryName]?.[subCategoryName] || defaultSubCategory;
     const route = `/${categoryName}/view-posts`;
@@ -519,6 +532,7 @@ export class HeaderComponent implements OnInit {
     if (localStorage.getItem("authToken") != null) {
       this.isUserLogedIn = true;
       this.getUserData();
+      this.loadUserBusinesses();
     }
     this.userService.getData().subscribe((data) => {
       this.getUserData();
@@ -527,6 +541,116 @@ export class HeaderComponent implements OnInit {
     if (role != null && role == "Admin") this.isAdmin = true;
     else this.isAdmin = false;
     this.getAllCategory();
+
+    // Subscribe to business updates
+    this.businessUpdatedSub = this.businessService.businessUpdated$.subscribe(
+      (update) => {
+        const match = this.businesses.find(
+          (b) =>
+            b.businessId === update.businessId ||
+            (b as any).id === update.businessId
+        );
+        if (match) {
+          match.businessName = update.businessName;
+          if (update.logoUrl) {
+            match.logoUrl = update.logoUrl;
+          }
+        }
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.businessUpdatedSub) {
+      this.businessUpdatedSub.unsubscribe();
+    }
+  }
+
+  loadUserBusinesses(): void {
+    const userId = Number(localStorage.getItem("id"));
+    if (!userId) return;
+
+    this.businessService.getUserBusinesses(userId).subscribe(
+      (businesses: BusinessListItem[]) => {
+        this.businesses = businesses || [];
+        this.showAllBusinesses = false;
+        this.showAllBusinessesMobile = false;
+        if (this.businesses.length > 0) {
+          this.currentBusinessId = this.businesses[0].businessId;
+        }
+      },
+      (error) => {}
+    );
+  }
+
+  getDisplayedBusinesses(): BusinessListItem[] {
+    if (this.showAllBusinesses || this.showAllBusinessesMobile) {
+      return this.businesses;
+    }
+    return this.businesses.slice(0, 3);
+  }
+
+  toggleBusinessesMenu(): void {
+    this.businessesMenuOpen = !this.businessesMenuOpen;
+  }
+
+  toggleShowAllBusinesses(event: Event): void {
+    event.stopPropagation();
+    this.showAllBusinesses = !this.showAllBusinesses;
+  }
+
+  toggleShowAllBusinessesInMobile(event: Event): void {
+    event.stopPropagation();
+    this.showAllBusinessesMobile = !this.showAllBusinessesMobile;
+  }
+
+  getInitials(name: string): string {
+    if (!name) return "?";
+    const words = name.trim().split(/\s+/);
+    const initials =
+      words.length === 1 ? words[0].substring(0, 2) : words[0][0] + words[1][0];
+    return initials.toUpperCase();
+  }
+
+  avatarGradient(name: string): string {
+    const gradients = [
+      "linear-gradient(135deg, #0d475c 0%, #1f9254 100%)",
+      "linear-gradient(135deg, #e75462 0%, #f4a261 100%)",
+      "linear-gradient(135deg, #6c5ce7 0%, #0065ff 100%)",
+      "linear-gradient(135deg, #00b894 0%, #0d475c 100%)",
+      "linear-gradient(135deg, #e75462 0%, #6c5ce7 100%)",
+    ];
+    let hash = 0;
+    for (let i = 0; i < (name || "").length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % gradients.length;
+    return gradients[index];
+  }
+
+  switchBusiness(biz: BusinessListItem): void {
+    const tabRefGuid = biz.businessId;
+    if (!tabRefGuid) {
+      return;
+    }
+    this.currentBusinessId = biz.businessId;
+    this.router.navigate(["/business/profile", tabRefGuid]);
+  }
+
+  goToBusinessDashboard() {
+    this.router.navigate(["/business/dashboard"]);
+  }
+
+  goToBusinessProfile() {
+    this.router.navigate(["/business/profile"]);
+  }
+
+  goToAccountSettings() {
+    this.router.navigate(["/user/account"]);
+  }
+
+  goToAttributeMapping(): void {
+    this.router.navigate(["/business/admin/attribute-mapping"]);
   }
 
   openLoginModal() {
@@ -549,7 +673,10 @@ export class HeaderComponent implements OnInit {
     }
 
     this.dialogRef.afterClosed().subscribe((result) => {
-      if (localStorage.getItem("authToken") != null) this.isUserLogedIn = true;
+      if (localStorage.getItem("authToken") != null) {
+        this.isUserLogedIn = true;
+        this.loadUserBusinesses();
+      }
     });
   }
 
@@ -565,10 +692,6 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  // =========================================================
-  // BUSINESS LOGIN MODAL
-  // =========================================================
-
   openBusinessLoginModal() {
     if (this.isSlideVisible) {
       this.isSlideVisible = false;
@@ -582,13 +705,11 @@ export class HeaderComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      // Refresh user data if needed
+      if (localStorage.getItem("authToken") != null) {
+        this.loadUserBusinesses();
+      }
     });
   }
-
-  // =========================================================
-  // GET USER INITIALS
-  // =========================================================
 
   getUserInitials(): string {
     if (!this.userData?.firstName) return "U";
@@ -599,10 +720,6 @@ export class HeaderComponent implements OnInit {
     }
     return (words[0][0] + words[1][0]).toUpperCase();
   }
-
-  // =========================================================
-  // CHECK ACTIVE ROUTE
-  // =========================================================
 
   isActiveRoute(route: string): boolean {
     return this.router.url === route || this.router.url.startsWith(route + "/");
@@ -618,6 +735,9 @@ export class HeaderComponent implements OnInit {
       localStorage.removeItem("id");
       localStorage.removeItem("userId");
       this.isUserLogedIn = false;
+      this.businesses = [];
+      this.showAllBusinesses = false;
+      this.showAllBusinessesMobile = false;
       this.router.navigate(["/"]);
     }
   }

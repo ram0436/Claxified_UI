@@ -12,6 +12,19 @@ body {
   background-color: #f9f9f9;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0;
+  padding: 0;
+}
+
 :root {
   --clx-purple: #4b2aad;
   --clx-pink: #ee3f7b;
@@ -45,10 +58,6 @@ body {
 
 .cdk-overlay-container .cdk-overlay-connected-position-bounding-box {
   z-index: 2001;
-}
-
-::ng-deep .custom-dialog-container {
-  margin-top: 100px;
 }
 
 a {

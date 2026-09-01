@@ -15,7 +15,7 @@
         <!-- Logo -->
         <a [routerLink]="['/']" class="header-logo" (click)="getAllItems()">
           <img
-            src="https://cfdblob.blob.core.windows.net/image/Claxified129479.png"
+            src="https://cfdblob.blob.core.windows.net/image/Claxified128730.png"
             alt="Claxified"
             class="logo-img"
           />
@@ -57,8 +57,24 @@
           </button>
         </div>
 
-        <!-- User Profile (when logged in) -->
+        <!-- User Profile & Businesses (when logged in) -->
         <div class="header-auth" *ngIf="isUserLogedIn">
+          <!-- My Businesses Dropdown -->
+          <button
+            class="auth-btn businesses-btn"
+            [matMenuTriggerFor]="businessesMenu"
+            #businessesMenuTrigger="matMenuTrigger"
+            (click)="toggleBusinessesMenu()"
+            *ngIf="businesses.length > 0"
+          >
+            <span class="material-icons-outlined">storefront</span>
+            <span class="businesses-text">My Businesses</span>
+            <mat-icon class="expand" [class.rotated]="businessesMenuOpen">
+              expand_more
+            </mat-icon>
+          </button>
+
+          <!-- Profile Button -->
           <button
             class="auth-btn profile-btn"
             [matMenuTriggerFor]="userMenu"
@@ -90,15 +106,26 @@
           <button
             class="action-btn business-btn"
             (click)="openBusinessLoginModal()"
+            aria-label="List Business"
           >
-            <span class="material-icons-outlined">storefront</span>
-            <span class="btn-text">List Business</span>
+            <img
+              src="https://cfdblob.blob.core.windows.net/image/Claxified137426.png"
+              alt="List Business"
+              class="action-btn-img"
+            />
           </button>
 
           <!-- Post Free Ad Button -->
-          <button class="action-btn post-ad-btn" (click)="postAdd()">
-            <span class="material-icons-outlined">add_circle_outline</span>
-            <span class="btn-text">Post Free Ad</span>
+          <button
+            class="action-btn post-ad-btn"
+            (click)="postAdd()"
+            aria-label="Post Free Ad"
+          >
+            <img
+              src="https://cfdblob.blob.core.windows.net/image/Claxified250701.png"
+              alt="Post Free Ad"
+              class="action-btn-img"
+            />
           </button>
         </div>
       </div>
@@ -158,6 +185,77 @@
       </a>
 
       <div class="side-nav-divider"></div>
+
+      <!-- My Businesses in Mobile Menu -->
+      <ng-container *ngIf="isUserLogedIn && businesses.length > 0">
+        <div class="side-nav-section-title">My Businesses</div>
+        <a
+          *ngFor="let biz of getDisplayedBusinesses()"
+          (click)="switchBusiness(biz); toggleSlideVisibility()"
+          class="side-nav-link side-nav-business-item"
+        >
+          <div
+            class="side-nav-business-avatar"
+            [style.background]="avatarGradient(biz.businessName)"
+          >
+            {{ getInitials(biz.businessName) }}
+          </div>
+          <span class="side-nav-business-name">{{ biz.businessName }}</span>
+          <span
+            class="side-nav-business-check"
+            *ngIf="biz.businessId === currentBusinessId"
+          >
+            <span class="material-icons-outlined">check</span>
+          </span>
+        </a>
+        <a
+          *ngIf="businesses.length > 3"
+          (click)="toggleShowAllBusinessesInMobile($event)"
+          class="side-nav-link side-nav-show-all"
+        >
+          <span class="material-icons-outlined">{{
+            showAllBusinessesMobile ? "expand_less" : "expand_more"
+          }}</span>
+          <span>{{
+            showAllBusinessesMobile ? "Show Less" : "Show All Businesses"
+          }}</span>
+        </a>
+
+        <!-- NEW: Business Dashboard / Profile / Settings -->
+        <a
+          (click)="goToBusinessDashboard(); toggleSlideVisibility()"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">dashboard</span>
+          Business Dashboard
+        </a>
+        <a
+          (click)="goToBusinessProfile(); toggleSlideVisibility()"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">storefront</span>
+          Business Profile
+        </a>
+
+        <a
+          *ngIf="isAdmin"
+          (click)="goToAttributeMapping(); toggleSlideVisibility()"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">tune</span>
+          Manage Attributes
+        </a>
+
+        <!-- <a
+          (click)="goToAccountSettings(); toggleSlideVisibility()"
+          class="side-nav-link"
+        >
+          <span class="material-icons-outlined">settings</span>
+          Account Settings
+        </a> -->
+
+        <div class="side-nav-divider"></div>
+      </ng-container>
 
       <!-- User Links -->
       <ng-container *ngIf="isUserLogedIn">
@@ -268,7 +366,7 @@
   </div>
 
   <!-- ========================================================= -->
-  <!-- USER MENU (MatMenu)  -->
+  <!-- USER MENU (MatMenu) -->
   <!-- ========================================================= -->
 
   <mat-menu
@@ -344,5 +442,93 @@
       <span class="material-icons-outlined">logout</span>
       <span>Logout</span>
     </button>
+  </mat-menu>
+
+  <!-- ========================================================= -->
+  <!-- BUSINESSES MENU (MatMenu) -->
+  <!-- ========================================================= -->
+
+  <mat-menu
+    #businessesMenu="matMenu"
+    xPosition="before"
+    yPosition="below"
+    overlapTrigger="false"
+    class="businesses-menu-panel"
+  >
+    <div class="businesses-menu-list">
+      <button
+        mat-menu-item
+        *ngFor="let biz of getDisplayedBusinesses()"
+        class="business-menu-item"
+        (click)="switchBusiness(biz)"
+      >
+        <div
+          class="business-item-avatar"
+          [style.background]="avatarGradient(biz.businessName)"
+        >
+          {{ getInitials(biz.businessName) }}
+        </div>
+        <span class="business-item-name">{{ biz.businessName }}</span>
+        <span
+          class="business-item-check"
+          *ngIf="biz.businessId === currentBusinessId"
+        >
+          <span class="material-icons-outlined">check</span>
+        </span>
+      </button>
+
+      <button
+        mat-menu-item
+        *ngIf="businesses.length > 3"
+        class="business-menu-item business-menu-show-all"
+        (click)="toggleShowAllBusinesses($event)"
+      >
+        <span class="material-icons-outlined">{{
+          showAllBusinesses ? "expand_less" : "expand_more"
+        }}</span>
+        <span>{{
+          showAllBusinesses ? "Show Less" : "Show All Businesses"
+        }}</span>
+      </button>
+    </div>
+
+    <hr class="businesses-menu-divider" />
+
+    <button
+      mat-menu-item
+      class="business-menu-item business-menu-dashboard"
+      (click)="goToBusinessDashboard()"
+    >
+      <span class="material-icons-outlined">dashboard</span>
+      <span>Business Dashboard</span>
+    </button>
+
+    <button
+      mat-menu-item
+      class="business-menu-item business-menu-profile"
+      (click)="goToBusinessProfile()"
+    >
+      <span class="material-icons-outlined">storefront</span>
+      <span>Business Profile</span>
+    </button>
+
+    <button
+      mat-menu-item
+      class="business-menu-item business-menu-attributes"
+      *ngIf="isAdmin"
+      (click)="goToAttributeMapping()"
+    >
+      <span class="material-icons-outlined">tune</span>
+      <span>Manage Attributes</span>
+    </button>
+
+    <!-- <button
+      mat-menu-item
+      class="business-menu-item business-menu-settings"
+      (click)="goToAccountSettings()"
+    >
+      <span class="material-icons-outlined">settings</span>
+      <span>Account Settings</span>
+    </button> -->
   </mat-menu>
 </header>
