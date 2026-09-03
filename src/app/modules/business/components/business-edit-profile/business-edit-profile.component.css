@@ -885,3 +885,35 @@ mat-form-field {
     padding: 12px 20px;
   }
 }
+
+.subcategory-checkbox-container {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: 4px;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  margin-bottom: 4px;
+  background: #fff;
+  min-height: 56px;
+}
+
+.subcategory-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.subcategory-checkbox-list mat-checkbox {
+  width: 100%;
+}
+
+.subcategory-placeholder {
+  color: #777;
+  font-size: 14px;
+  line-height: 30px;
+}
+
+.subcategory-checkbox-container.disabled {
+  background: #f5f5f5;
+  opacity: 0.6;
+}

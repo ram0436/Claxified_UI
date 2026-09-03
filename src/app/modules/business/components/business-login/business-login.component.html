@@ -227,13 +227,24 @@
           <!-- ================= BUSINESS SUB CATEGORY ================= -->
 
           <label class="field-label"> Business Sub Category </label>
-
           <mat-form-field appearance="outline">
             <mat-select
-              placeholder="Select business sub category"
-              name="businessSubCategoryId"
-              [(ngModel)]="businessSubCategoryId"
-              [disabled]="!businessCategoryId"
+              #subCategorySelect
+              panelClass="subcategory-select-panel"
+              placeholder="{{
+                !businessCategoryId
+                  ? 'Select a business category first'
+                  : businessSubCategories.length === 0
+                  ? 'No subcategories available'
+                  : 'Select business sub categories'
+              }}"
+              name="businessSubCategoryIds"
+              [(ngModel)]="selectedBusinessSubCategoryIds"
+              [disabled]="
+                !businessCategoryId || businessSubCategories.length === 0
+              "
+              multiple
+              (selectionChange)="onBusinessSubCategoryChange($event.value)"
             >
               <mat-option
                 *ngFor="let subCategory of businessSubCategories"
@@ -243,18 +254,8 @@
               </mat-option>
             </mat-select>
 
-            <mat-icon matSuffix> label </mat-icon>
+            <mat-icon matSuffix> checklist </mat-icon>
           </mat-form-field>
-
-          <p
-            class="otp-failure-message"
-            *ngIf="businessSubCategoryErrorMessage"
-          >
-            <span class="material-icons-outlined"> report </span>
-
-            Please select a business sub category*
-          </p>
-
           <!-- ================================================= -->
           <!-- PINCODE + COUNTRY -->
           <!-- ================================================= -->

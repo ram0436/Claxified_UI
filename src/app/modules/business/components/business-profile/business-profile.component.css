@@ -1694,3 +1694,25 @@ button {
     justify-content: center;
   }
 }
+
+/* ---------- Business Sub Category Chips ---------- */
+
+.subcategory-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.subcategory-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 16px;
+  background: #eef4f6;
+  color: #0d475c;
+  border: 1px solid #d8e5e9;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}

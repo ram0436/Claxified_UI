@@ -9,6 +9,7 @@ import {
   SimpleChanges,
   ViewChild,
   ElementRef,
+  HostListener,
 } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -20,6 +21,7 @@ import {
   BusinessViewDto,
 } from "../../model/Business";
 import { CommonService } from "src/app/shared/service/common.service";
+import { MatSelect } from "@angular/material/select";
 
 type SectionId =
   | "basic"
@@ -48,6 +50,26 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
   @Output() saved = new EventEmitter<string>();
 
   @ViewChild("aboutEditor") aboutEditorRef?: ElementRef<HTMLDivElement>;
+  @ViewChild("subCategorySelect") subCategorySelect?: MatSelect;
+
+  @HostListener("document:click", ["$event"])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.subCategorySelect || !this.subCategorySelect.panelOpen) {
+      return;
+    }
+
+    const target = event.target as HTMLElement;
+
+    const triggerEl = this.subCategorySelect._elementRef.nativeElement;
+    const clickedTrigger = triggerEl.contains(target);
+
+    const panelEl = document.querySelector(".subcategory-select-panel");
+    const clickedPanel = panelEl ? panelEl.contains(target) : false;
+
+    if (!clickedTrigger && !clickedPanel) {
+      this.subCategorySelect.close();
+    }
+  }
 
   business: Business = new Business();
 
@@ -55,6 +77,8 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
   businessSubCategories: any[] = [];
   businessTypes: any[] = [];
   sellerTypes: any[] = [];
+
+  selectedBusinessSubCategoryIds: number[] = [];
 
   dayNames = [
     "Sunday",
@@ -259,19 +283,42 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
     });
   }
 
-  onCategoryChange() {
-    // Category changed — the previously selected sub-category id no longer
-    // belongs to this category, so clear it to avoid sending a stale/mismatched
-    // sub-category id + name pair in the update payload.
-    this.business.businessSubCategoryId = 0;
+  onCategoryChange(): void {
+    // Category changed, so previously selected subcategories
+    // are no longer valid for the new category.
+    this.selectedBusinessSubCategoryIds = [];
     this.businessSubCategories = [];
-    if (this.business.businessCategoryId) {
-      this.businessService
-        .getBusinessSubCategories(this.business.businessCategoryId)
-        .subscribe((data: any) => {
-          this.businessSubCategories = data;
-        });
+
+    if (!this.business.businessCategoryId) {
+      return;
     }
+
+    this.businessService
+      .getBusinessSubCategories(this.business.businessCategoryId)
+      .subscribe(
+        (data: any) => {
+          this.businessSubCategories = (data || []).map((s: any) => ({
+            ...s,
+            id: Number(s.id),
+          }));
+        },
+        (error) => {
+          this.businessSubCategories = [];
+        }
+      );
+  }
+
+  isSubCategorySelected(subCategoryId: number): boolean {
+    return this.selectedBusinessSubCategoryIds.includes(Number(subCategoryId));
+  }
+
+  onBusinessSubCategoryChange(selectedIds: number[]): void {
+    this.selectedBusinessSubCategoryIds = selectedIds.map((id) => Number(id));
+  }
+
+  // ---------- Multi-select compareWith (fixes type-mismatch selection bugs) ----------
+  compareSubCategoryIds(a: number, b: number): boolean {
+    return Number(a) === Number(b);
   }
 
   getAddress(event: any) {
@@ -340,17 +387,21 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
         this.business.sellerTypeId = matchedSeller ? matchedSeller.id : 0;
 
         if (this.business.businessCategoryId) {
-          this.businessService
-            .getBusinessSubCategories(this.business.businessCategoryId)
-            .subscribe((subs: any) => {
-              this.businessSubCategories = subs;
-              const matchedSub = subs.find(
-                (s: any) => s.name === dto.businessSubCategory
-              );
-              this.business.businessSubCategoryId = matchedSub
-                ? matchedSub.id
-                : 0;
-            });
+          if (this.business.businessCategoryId) {
+            this.businessService
+              .getBusinessSubCategories(this.business.businessCategoryId)
+              .subscribe((subs: any) => {
+                this.businessSubCategories = (subs || []).map((s: any) => ({
+                  ...s,
+                  id: Number(s.id),
+                }));
+
+                // The GET response returns the selected sub-category IDs directly
+                this.selectedBusinessSubCategoryIds = (
+                  dto.businessSubCategoryIds || []
+                ).map((id: number) => Number(id));
+              });
+          }
         }
 
         // ---------- Contact ----------
@@ -691,10 +742,18 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
       this.businessCategories.find(
         (c) => c.id === this.business.businessCategoryId
       )?.name || "";
-    const subCategoryName =
-      this.businessSubCategories.find(
-        (s) => s.id === this.business.businessSubCategoryId
-      )?.name || "";
+    const businessSubCategoryIds = this.selectedBusinessSubCategoryIds.map(
+      (id) => Number(id)
+    );
+
+    const businessSubCategoryNames = this.selectedBusinessSubCategoryIds
+      .map(
+        (id) =>
+          this.businessSubCategories.find(
+            (sub) => Number(sub.id) === Number(id)
+          )?.name
+      )
+      .filter((name): name is string => !!name);
     const typeName =
       this.businessTypes.find((t) => t.id === this.business.businessTypeId)
         ?.name || "";
@@ -735,8 +794,8 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
       businessName: this.business.businessName || "",
       businessCategoryId: this.business.businessCategoryId || 0,
       businessCategory: categoryName,
-      businessSubCategoryId: this.business.businessSubCategoryId || 0,
-      businessSubCategory: subCategoryName,
+      businessSubCategoryIds,
+      businessSubCategory: businessSubCategoryNames,
       businessTypeId: this.business.businessTypeId || 0,
       businessType: typeName,
       sellerTypeId: this.business.sellerTypeId || 0,

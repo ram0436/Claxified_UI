@@ -187,6 +187,20 @@ export class BusinessProfileComponent implements OnInit {
     });
   }
 
+  get businessSubCategoryNames(): string {
+    if (!this.business?.businessSubCategory?.length) {
+      return "";
+    }
+
+    return this.business.businessSubCategory
+      .filter((name) => !!name && name.trim())
+      .join(", ");
+  }
+
+  get businessSubCategories(): number[] {
+    return this.business?.businessSubCategoryIds || [];
+  }
+
   toggleViewAsPublic(): void {
     this.viewingAsPublic = !this.viewingAsPublic;
   }

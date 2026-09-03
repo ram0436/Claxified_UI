@@ -123,12 +123,15 @@
       </div>
       <p class="profile-meta">
         {{ business.businessCategory || "-" }}
-        <span *ngIf="business.businessSubCategory">
-          &middot; {{ business.businessSubCategory }}</span
-        >
+
+        <span *ngIf="businessSubCategoryNames">
+          &middot; {{ businessSubCategoryNames }}
+        </span>
+
         <span *ngIf="business.businessType">
-          &middot; {{ business.businessType }}</span
-        >
+          &middot; {{ business.businessType }}
+        </span>
+
         <span *ngIf="business.establishedYear">
           &middot; In business for
           {{ getYearsInBusiness(business.establishedYear) }} years
@@ -220,15 +223,25 @@
           <span class="material-icons-outlined detail-icon">category</span>
           <div>
             <span class="detail-label">Category</span>
+
             <p
               class="detail-value"
               [class.is-empty]="!business.businessCategory"
             >
               {{ business.businessCategory || "Not specified" }}
-              <span *ngIf="business.businessSubCategory">
-                &middot; {{ business.businessSubCategory }}</span
-              >
             </p>
+
+            <div
+              class="subcategory-chips"
+              *ngIf="business.businessSubCategory?.length"
+            >
+              <span
+                class="subcategory-chip"
+                *ngFor="let subCategory of business.businessSubCategory"
+              >
+                {{ subCategory }}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -848,7 +861,7 @@
     *ngIf="addProductPanelOpen && business"
     [businessId]="business.id"
     [businessCategoryId]="business.businessCategoryId"
-    [businessSubCategoryId]="business.businessSubCategoryId"
+    [businessSubCategories]="businessSubCategories"
     [product]="editingProduct"
     (close)="closeAddProductPanel()"
     (saved)="onProductSaved()"
@@ -865,7 +878,7 @@
     *ngIf="addServicePanelOpen && business"
     [businessId]="business.id"
     [businessCategoryId]="business.businessCategoryId"
-    [businessSubCategoryId]="business.businessSubCategoryId"
+    [businessSubCategories]="businessSubCategories"
     [service]="editingService"
     (close)="closeAddServicePanel()"
     (saved)="onServiceSaved()"

@@ -75,6 +75,13 @@ export class BusinessVerification extends AuditFields {
   verificationRemarks: string = "";
 }
 
+export class BusinessSubCategoryMapping extends AuditFields {
+  id: number = 0;
+  businessId: number = 0;
+  businessSubCategoryId: number = 0;
+  businessCategoryId: number = 0;
+}
+
 /** Used for creating/updating a business (POST /api/Business) */
 export class Business extends AuditFields {
   id: number = 0;
@@ -82,7 +89,6 @@ export class Business extends AuditFields {
   userId: number = 0;
   businessName: string = "";
   businessCategoryId: number = 0;
-  businessSubCategoryId: number = 0;
   businessTypeId: number = 0;
   sellerTypeId: number = 0;
   description: string = "";
@@ -97,6 +103,7 @@ export class Business extends AuditFields {
   businessSocialMedia: BusinessSocialMedia = new BusinessSocialMedia();
   businessAddress: BusinessAddress = new BusinessAddress();
   businessGalleryList: BusinessGallery[] = [];
+  businessSubCategoryMappings: BusinessSubCategoryMapping[] = [];
 }
 
 // ---------- Registration payload (users + business combined) ----------
@@ -178,14 +185,15 @@ export interface BusinessGalleryDto {
   displayOrder: number;
 }
 
+/** Response / Edit shape for GET Business/{id} and PUT Business/{id} */
 export interface BusinessViewDto {
   id: number;
   userId: number;
   businessName: string;
   businessCategory: string;
-  businessSubCategory: string;
   businessCategoryId: number;
-  businessSubCategoryId: number;
+  businessSubCategoryIds: number[];
+  businessSubCategory: string[];
   businessType: string;
   sellerType: string;
   tabRefGUID: string;
@@ -268,14 +276,15 @@ export interface BusinessDirectoryGallery {
   displayOrder: number;
 }
 
+/** Response shape for the business directory / list endpoints */
 export interface BusinessDirectoryItem {
   id: number;
   userId: number;
   businessName: string;
   businessCategoryId: number;
   businessCategory: string;
-  businessSubCategoryId: number;
-  businessSubCategory: string;
+  businessSubCategoryIds: number[];
+  businessSubCategory: string[];
   businessTypeId: number;
   businessType: string;
   sellerTypeId: number;
@@ -649,13 +658,6 @@ export interface ServiceAttributeMasterDto {
 
 export interface ServiceAttributeMasterIdsDto {
   serviceAttributeMasterIds: number[];
-}
-
-export interface ServiceAttributeMasterDto {
-  serviceAttributeMasterId: number;
-  name: string;
-  dataType: string; // "string" | "number" | etc.
-  unit: string | null;
 }
 
 export interface ServiceAttributeDetailDto {
