@@ -21,6 +21,9 @@ import {
   AttributeMasterListItem,
   CategoryAttributeMappingPayload,
   CategoryAttributeMappingDto,
+  OfferingMedicalServiceDto,
+  BusinessOfferingDto,
+  OfferingCourseDto
 } from "../model/Business";
 import { EntityType } from "../enum/business-product.enum";
 
@@ -266,4 +269,66 @@ export class BusinessService {
       `${this.baseUrl}Business/category-attribute-mapping?subCategoryId=${subCategoryId}&entityType=${entityType}`
     );
   }
+
+  // ---------- Business Offerings ----------
+ 
+  getBusinessOfferingsByBusinessId(
+    businessId: number
+  ): Observable<BusinessOfferingDto[]> {
+    return this.http.get<BusinessOfferingDto[]>(
+      `${this.baseUrl}Business/business-offering/businessId?businessId=${businessId}`
+    );
+  }
+ 
+  getBusinessOfferingById(id: number): Observable<BusinessOfferingDto> {
+    return this.http.get<BusinessOfferingDto>(
+      `${this.baseUrl}Business/business-offering?id=${id}`
+    );
+  }
+ 
+  saveBusinessOffering(
+    payload: BusinessOfferingDto
+  ): Observable<BusinessOfferingDto> {
+    return this.http.post<BusinessOfferingDto>(
+      `${this.baseUrl}Business/business-offering`,
+      payload
+    );
+  }
+ 
+  // ---------- Offering detail: Course ----------
+ 
+  getOfferingCourse(businessOfferingId: number): Observable<OfferingCourseDto> {
+    return this.http.get<OfferingCourseDto>(
+      `${this.baseUrl}offering-course/id?businessOfferingId=${businessOfferingId}`
+    );
+  }
+ 
+  saveOfferingCourse(
+    payload: OfferingCourseDto
+  ): Observable<OfferingCourseDto> {
+    return this.http.post<OfferingCourseDto>(
+      `${this.baseUrl}Business/offering-course`,
+      payload
+    );
+  }
+ 
+  // ---------- Offering detail: Medical Service ----------
+ 
+  getOfferingMedicalService(
+    businessOfferingId: number
+  ): Observable<OfferingMedicalServiceDto> {
+    return this.http.get<OfferingMedicalServiceDto>(
+      `${this.baseUrl}Business/offering-medical-service/id?businessOfferingId=${businessOfferingId}`
+    );
+  }
+ 
+  saveOfferingMedicalService(
+    payload: OfferingMedicalServiceDto
+  ): Observable<OfferingMedicalServiceDto> {
+    return this.http.post<OfferingMedicalServiceDto>(
+      `${this.baseUrl}Business/offering-medical-service`,
+      payload
+    );
+  }
+ 
 }

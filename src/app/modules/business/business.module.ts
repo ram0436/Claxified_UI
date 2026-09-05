@@ -38,6 +38,7 @@ import { AddBusinessReviewComponent } from "./components/add-business-review/add
 import { BusinessAttributeMappingComponent } from "./components/business-attribute-mapping/business-attribute-mapping.component";
 import { BusinessHomeComponent } from "./components/business-home/business-home.component";
 import { HeaderComponent } from "src/app/shared/component/header/header.component";
+import { AddBusinessOfferingComponent } from './components/add-business-offering/add-business-offering.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { HeaderComponent } from "src/app/shared/component/header/header.componen
     AddBusinessReviewComponent,
     BusinessAttributeMappingComponent,
     BusinessHomeComponent,
+    AddBusinessOfferingComponent,
   ],
   imports: [
     CommonModule,

@@ -879,10 +879,6 @@ button {
   flex-wrap: wrap;
 }
 
-.products-toolbar-left h3 {
-  margin-top: 10px;
-}
-
 .products-toolbar-right {
   display: flex;
   align-items: center;
@@ -1715,4 +1711,48 @@ button {
   font-size: 12px;
   font-weight: 600;
   line-height: 1.2;
+}
+
+.filter-dropdown {
+  position: relative;
+}
+
+.filter-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown-caret {
+  font-size: 18px;
+}
+
+.filter-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 180px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 20;
+  overflow: hidden;
+}
+
+.filter-dropdown-item {
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: #3c3241;
+  cursor: pointer;
+}
+
+.filter-dropdown-item:hover {
+  background: #f0f4f6;
+}
+
+.filter-dropdown-item.active {
+  background: #eaf3f7;
+  color: #0d475c;
+  font-weight: 600;
 }

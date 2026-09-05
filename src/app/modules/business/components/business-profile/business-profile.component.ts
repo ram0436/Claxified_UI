@@ -1,5 +1,5 @@
-// business-profile.component.ts
-import { Component, HostListener, OnInit } from "@angular/core";
+
+import { Component, ElementRef, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BusinessService } from "../../service/business.service";
 import {
@@ -9,7 +9,10 @@ import {
   BusinessServiceDto,
   BusinessOfferDto,
   BusinessReviewDto,
+    BusinessOfferingDto,
+  OFFERING_TYPE_OPTIONS,
 } from "../../model/Business";
+import { OfferingType } from "../../enum/business-offering.enum";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { BusinessLoginComponent } from "../business-login/business-login.component";
 import { forkJoin } from "rxjs";
@@ -43,9 +46,12 @@ export class BusinessProfileComponent implements OnInit {
   businesses: BusinessListItem[] = [];
   business: BusinessViewDto | null = null;
 
+  offeringFilterOpen: boolean = false;
+
+  // "products" removed from the active union in favor of "offerings".
   activeTab:
     | "overview"
-    | "products"
+    | "offerings"
     | "hours"
     | "gallery"
     | "offers"
@@ -54,11 +60,57 @@ export class BusinessProfileComponent implements OnInit {
 
   skeletonItems = [1, 2, 3, 4, 5, 6];
 
-  // Products & Services state
+  /* ---------- Products & Services state (commented out along with the tab) ----------
+
   catalogFilter: "all" | "products" | "services" = "all";
   catalogSearch: string = "";
   catalogLoading: boolean = false;
   private catalogItems: CatalogItem[] = [];
+
+  addProductPanelOpen: boolean = false;
+  editingProduct: BusinessProductDto | null = null;
+
+  addServicePanelOpen: boolean = false;
+  editingService: BusinessServiceDto | null = null;
+
+  quickViewOpen: boolean = false;
+  quickViewProduct: BusinessProductDto | null = null;
+
+  private rawProducts: BusinessProductDto[] = [];
+  private rawServices: BusinessServiceDto[] = [];
+
+  quickViewServiceOpen: boolean = false;
+  quickViewService: BusinessServiceDto | null = null;
+
+  private readonly pricingTypeDisplayMap: { [key: string]: string } = {
+    FixedPrice: "Fixed Price",
+    StartingFrom: "Starting From",
+    PriceRange: "Price Range",
+    Hourly: "Hourly",
+    Daily: "Daily",
+    CustomQuote: "Custom Quote",
+  };
+
+  private readonly priceUnitMap: { [key: string]: string } = {
+    FixedPrice: "",
+    StartingFrom: "Starting",
+    PriceRange: "Range",
+    Hourly: "/hr",
+    Daily: "/day",
+    CustomQuote: "Quote",
+  };
+
+  ---------------------------------------------------------------------- */
+
+  // ---------- Offerings state (new) ----------
+  offerings: BusinessOfferingDto[] = [];
+  offeringsLoading: boolean = false;
+  offeringFilter: OfferingType | "all" = "all";
+  offeringSearch: string = "";
+  offeringTypeFilterOptions = OFFERING_TYPE_OPTIONS;
+
+  addOfferingPanelOpen: boolean = false;
+  editingOffering: BusinessOfferingDto | null = null;
 
   // Offers & Reviews state
   offers: BusinessOfferDto[] = [];
@@ -105,42 +157,6 @@ export class BusinessProfileComponent implements OnInit {
 
   viewingAsPublic: boolean = false;
 
-  addProductPanelOpen: boolean = false;
-  editingProduct: BusinessProductDto | null = null;
-
-  addServicePanelOpen: boolean = false;
-  editingService: BusinessServiceDto | null = null;
-
-  quickViewOpen: boolean = false;
-  quickViewProduct: BusinessProductDto | null = null;
-
-  // Store raw data for both products and services
-  private rawProducts: BusinessProductDto[] = [];
-  private rawServices: BusinessServiceDto[] = [];
-
-  // Service quick view
-  quickViewServiceOpen: boolean = false;
-  quickViewService: BusinessServiceDto | null = null;
-
-  // Pricing type display mapping
-  private readonly pricingTypeDisplayMap: { [key: string]: string } = {
-    FixedPrice: "Fixed Price",
-    StartingFrom: "Starting From",
-    PriceRange: "Price Range",
-    Hourly: "Hourly",
-    Daily: "Daily",
-    CustomQuote: "Custom Quote",
-  };
-
-  private readonly priceUnitMap: { [key: string]: string } = {
-    FixedPrice: "",
-    StartingFrom: "Starting",
-    PriceRange: "Range",
-    Hourly: "/hr",
-    Daily: "/day",
-    CustomQuote: "Quote",
-  };
-
   openLightbox(src?: string, caption?: string) {
     if (!src) return;
     this.lightboxSrc = src;
@@ -161,11 +177,21 @@ export class BusinessProfileComponent implements OnInit {
     }
   }
 
+  @HostListener("document:click", ["$event"])
+onDocumentClickForOfferingFilter(event: MouseEvent): void {
+  if (!this.offeringFilterOpen) return;
+  const target = event.target as HTMLElement;
+  if (!this.elRef.nativeElement.contains(target)) {
+    this.offeringFilterOpen = false;
+  }
+}
+
   constructor(
     private businessService: BusinessService,
     private route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private elRef: ElementRef
   ) {}
 
   getYearsInBusiness(establishedYear: number): number {
@@ -256,7 +282,8 @@ export class BusinessProfileComponent implements OnInit {
       (data) => {
         this.business = data;
         this.loading = false;
-        this.loadCatalogItems();
+        // this.loadCatalogItems(); // Products & Services - disabled with the tab
+        this.loadOfferings();
         this.loadOffers();
         this.loadReviews();
       },
@@ -264,8 +291,21 @@ export class BusinessProfileComponent implements OnInit {
     );
   }
 
+  toggleOfferingFilterDropdown(): void {
+  this.offeringFilterOpen = !this.offeringFilterOpen;
+}
+
+closeOfferingFilterDropdown(): void {
+  this.offeringFilterOpen = false;
+}
+
+selectOfferingFilter(filter: OfferingType | "all"): void {
+  this.setOfferingFilter(filter);
+  this.offeringFilterOpen = false;
+}
+
   setTab(
-    tab: "overview" | "products" | "hours" | "gallery" | "offers" | "reviews"
+    tab: "overview" | "offerings" | "hours" | "gallery" | "offers" | "reviews"
   ) {
     this.activeTab = tab;
   }
@@ -410,13 +450,12 @@ export class BusinessProfileComponent implements OnInit {
         );
       },
       (error) => {
-        // console.error("Delete failed", error);
         alert("Failed to delete business");
       }
     );
   }
 
-  // ---------- Products & Services ----------
+  /* ---------- Products & Services (commented out along with the tab) ----------
 
   loadCatalogItems(): void {
     if (!this.business?.id) return;
@@ -450,7 +489,6 @@ export class BusinessProfileComponent implements OnInit {
         this.catalogLoading = false;
       },
       (error) => {
-        // console.error("Error loading catalog items:", error);
         this.catalogItems = [];
         this.catalogLoading = false;
       }
@@ -610,6 +648,82 @@ export class BusinessProfileComponent implements OnInit {
     });
   }
 
+  ---------------------------------------------------------------------- */
+
+  // ---------- Offerings (new) ----------
+
+  loadOfferings(): void {
+    if (!this.business?.id) return;
+    this.offeringsLoading = true;
+
+    this.businessService
+      .getBusinessOfferingsByBusinessId(this.business.id)
+      .subscribe(
+        (data) => {
+          this.offerings = data || [];
+          this.offeringsLoading = false;
+        },
+        () => {
+          this.offerings = [];
+          this.offeringsLoading = false;
+        }
+      );
+  }
+
+  get filteredOfferings(): BusinessOfferingDto[] {
+    const term = this.offeringSearch.trim().toLowerCase();
+
+    return this.offerings.filter((item) => {
+      const matchesFilter =
+        this.offeringFilter === "all" ||
+        item.offeringType === this.offeringFilter;
+
+      const matchesSearch = !term || item.name.toLowerCase().includes(term);
+
+      return matchesFilter && matchesSearch;
+    });
+  }
+
+  setOfferingFilter(filter: OfferingType | "all"): void {
+    this.offeringFilter = filter;
+  }
+
+  getOfferingTypeLabel(type: OfferingType): string {
+    return (
+      OFFERING_TYPE_OPTIONS.find((o) => o.value === type)?.label || "Offering"
+    );
+  }
+
+  addOffering(): void {
+    this.editingOffering = null;
+    this.addOfferingPanelOpen = true;
+  }
+
+  editOffering(item: BusinessOfferingDto): void {
+    this.editingOffering = { ...item };
+    this.addOfferingPanelOpen = true;
+  }
+
+  viewOffering(item: BusinessOfferingDto): void {
+    // No dedicated public detail page exists yet for offerings (unlike
+    // /business/product/:id and /business/service/:id). For now, owners
+    // land on the edit panel; build a detail route/component here if a
+    // public view is needed later.
+    if (this.isOwner && !this.viewingAsPublic) {
+      this.editOffering(item);
+    }
+  }
+
+  closeAddOfferingPanel(): void {
+    this.addOfferingPanelOpen = false;
+    this.editingOffering = null;
+  }
+
+  onOfferingSaved(): void {
+    this.closeAddOfferingPanel();
+    this.loadOfferings();
+  }
+
   // ---------- Offers ----------
 
   loadOffers(): void {
@@ -622,7 +736,6 @@ export class BusinessProfileComponent implements OnInit {
         this.offersLoading = false;
       },
       (error) => {
-        // console.error("Error loading offers:", error);
         this.offers = [];
         this.offersLoading = false;
       }
@@ -684,7 +797,6 @@ export class BusinessProfileComponent implements OnInit {
         this.reviewsLoading = false;
       },
       (error) => {
-        // console.error("Error loading reviews:", error);
         this.reviews = [];
         this.reviewsLoading = false;
       }

@@ -1,3 +1,4 @@
+import { OfferingType } from "../enum/business-offering.enum";
 import { EntityType } from "../enum/business-product.enum";
 
 export class AuditFields {
@@ -713,4 +714,112 @@ export interface CategoryAttributeMappingDto {
   subCategoryId: number;
   entityType: number;
   attributeMasterIds: number[];
+}
+
+
+
+
+export const OFFERING_TYPE_OPTIONS: { value: OfferingType; label: string }[] = [
+  { value: OfferingType.Course, label: "Course" },
+  { value: OfferingType.MedicalService, label: "Medical Service" },
+  { value: OfferingType.RoomAccommodation, label: "Room / Accommodation" },
+  { value: OfferingType.MenuItem, label: "Menu Item" },
+  { value: OfferingType.Property, label: "Property" },
+  { value: OfferingType.RentalVehicle, label: "Rental Vehicle" },
+  { value: OfferingType.Event, label: "Event" },
+  { value: OfferingType.TourPackage, label: "Tour Package" },
+  { value: OfferingType.MembershipPlan, label: "Membership / Plan" },
+];
+
+export const SUPPORTED_OFFERING_TYPES: OfferingType[] = [
+  OfferingType.Course,
+  OfferingType.MedicalService,
+];
+
+// ---------- Parent record ----------
+
+export interface BusinessOfferingDto {
+  id: number;
+  businessId: number;
+  subCategoryId: number;
+  offeringType: OfferingType;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  isActive: boolean;
+  displayOrder: number;
+  createdAt?: string;
+  updatedAt?: string | null;
+}
+
+// ---------- Course detail ----------
+
+export interface OfferingCourseDto {
+  id: number;
+  businessOfferingId: number;
+  businessId: number;
+  courseType: string;
+  courseCategory: string;
+  courseLevel: string;
+  duration: number;
+  durationUnit: string;
+  modeOfLearning: string;
+  classSchedule: string;
+  startDate: string | null;
+  endDate: string | null;
+  eligibility: string;
+  ageGroup: string;
+  language: string;
+  curriculum: string;
+  subjectsCovered: string;
+  certification: string;
+  accreditation: string;
+  instructorName: string;
+  instituteName: string;
+  batchSize: number;
+  feeFrequency: string;
+  registrationFee: number;
+  discount: number;
+  scholarshipAvailable: boolean;
+  studyMaterialIncluded: boolean;
+  examIncluded: boolean;
+  placementAssistance: boolean;
+  internshipAvailable: boolean;
+  courseHighlights: string;
+}
+
+// ---------- Medical service detail ----------
+
+export interface OfferingMedicalServiceDto {
+  id: number;
+  businessOfferingId: number;
+  businessId: number;
+  serviceType: string;
+  medicalSpecialty: string;
+  department: string;
+  doctorName: string;
+  qualification: string;
+  experience: number;
+  gender: string;
+  serviceMode: string;
+  consultationType: string;
+  followUpFee: number;
+  appointmentRequired: boolean;
+  emergencyService: boolean;
+  homeVisitAvailable: boolean;
+  teleconsultationAvailable: boolean;
+  serviceDuration: number;
+  serviceDurationUnit: string;
+  availableDays: string;
+  availableTime: string;
+  insuranceAccepted: boolean;
+  cashlessAvailable: boolean;
+  labFacility: boolean;
+  pharmacyAvailable: boolean;
+  ambulanceAvailable: boolean;
+  ageGroup: string;
+  conditionsTreated: string;
+  procedures: string;
+  serviceHighlights: string;
 }

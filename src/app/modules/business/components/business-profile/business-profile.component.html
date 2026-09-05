@@ -174,13 +174,30 @@
     >
       Overview
     </span>
+
+    <!--
+      Products & Services tab - commented out in favor of the unified
+      Offerings tab below. Re-enable by uncommenting this tab-item and the
+      matching content block further down, and the ts's activeTab union /
+      loadCatalogItems() call.
+
+      <span
+        class="tab-item"
+        [class.active]="activeTab === 'products'"
+        (click)="setTab('products')"
+      >
+        Products &amp; Services
+      </span>
+    -->
+
     <span
       class="tab-item"
-      [class.active]="activeTab === 'products'"
-      (click)="setTab('products')"
+      [class.active]="activeTab === 'offerings'"
+      (click)="setTab('offerings')"
     >
-      Products &amp; Services
+      Offerings
     </span>
+
     <span
       class="tab-item"
       [class.active]="activeTab === 'hours'"
@@ -412,52 +429,67 @@
     </div>
   </ng-container>
 
-  <!-- ---------- PRODUCTS & SERVICES ---------- -->
+  <!-- ---------- PRODUCTS & SERVICES (commented out - replaced by Offerings) ----------
+
   <div class="content-card products-card" *ngIf="activeTab === 'products'">
+    ... original Products & Services block preserved verbatim in
+    business-profile.component.html.bak / version control history so it can
+    be restored later if needed ...
+  </div>
+
+  ---------------------------------------------------------------------- -->
+
+  <!-- ---------- OFFERINGS ---------- -->
+  <div class="content-card products-card" *ngIf="activeTab === 'offerings'">
     <div class="products-toolbar">
       <div class="products-toolbar-left">
-        <h3>Products &amp; Services</h3>
-        <div class="filter-pills">
-          <button
-            class="filter-pill"
-            [class.active]="catalogFilter === 'all'"
-            (click)="setCatalogFilter('all')"
+      <h3>Offerings</h3>
+
+      <div class="filter-dropdown" (clickOutside)="closeOfferingFilterDropdown()">
+        <button
+          class="btn-outline btn-sm filter-toggle-btn"
+          (click)="toggleOfferingFilterDropdown(); $event.stopPropagation()"
+        >
+          <span class="material-icons-outlined">filter_list</span>
+          {{ offeringFilter === 'all' ? 'All Offerings' : getOfferingTypeLabel(offeringFilter) }}
+          <span class="material-icons-outlined dropdown-caret">
+            {{ offeringFilterOpen ? 'expand_less' : 'expand_more' }}
+          </span>
+        </button>
+
+        <div class="filter-dropdown-panel" *ngIf="offeringFilterOpen">
+          <div
+            class="filter-dropdown-item"
+            [class.active]="offeringFilter === 'all'"
+            (click)="selectOfferingFilter('all')"
           >
             All
-          </button>
-          <button
-            class="filter-pill"
-            [class.active]="catalogFilter === 'products'"
-            (click)="setCatalogFilter('products')"
+          </div>
+          <div
+            class="filter-dropdown-item"
+            *ngFor="let opt of offeringTypeFilterOptions"
+            [class.active]="offeringFilter === opt.value"
+            (click)="selectOfferingFilter(opt.value)"
           >
-            Products
-          </button>
-          <button
-            class="filter-pill"
-            [class.active]="catalogFilter === 'services'"
-            (click)="setCatalogFilter('services')"
-          >
-            Services
-          </button>
+            {{ opt.label }}
+          </div>
         </div>
       </div>
+    </div>
 
       <div class="products-toolbar-right">
         <div class="search-box">
           <span class="material-icons-outlined">search</span>
           <input
             type="text"
-            placeholder="Search products & services"
-            [(ngModel)]="catalogSearch"
+            placeholder="Search offerings"
+            [(ngModel)]="offeringSearch"
           />
         </div>
 
         <ng-container *ngIf="isOwner && !viewingAsPublic">
-          <button class="btn-outline btn-sm" (click)="addProduct()">
-            <span class="material-icons-outlined">add</span> Add Product
-          </button>
-          <button class="btn-outline btn-sm" (click)="addService()">
-            <span class="material-icons-outlined">add</span> Add Service
+          <button class="btn-outline btn-sm" (click)="addOffering()">
+            <span class="material-icons-outlined">add</span> Add Offering
           </button>
         </ng-container>
       </div>
@@ -466,16 +498,16 @@
     <div
       class="catalog-grid"
       *ngIf="
-        !catalogLoading && filteredCatalogItems.length > 0;
-        else noCatalogItems
+        !offeringsLoading && filteredOfferings.length > 0;
+        else noOfferings
       "
     >
       <div
         class="catalog-card"
-        *ngFor="let item of filteredCatalogItems"
-        (click)="viewCatalogItem(item)"
+        *ngFor="let item of filteredOfferings"
+        (click)="viewOffering(item)"
         tabindex="0"
-        (keyup.enter)="viewCatalogItem(item)"
+        (keyup.enter)="viewOffering(item)"
       >
         <div class="catalog-card-image">
           <img *ngIf="item.imageUrl" [src]="item.imageUrl" [alt]="item.name" />
@@ -483,65 +515,26 @@
             *ngIf="!item.imageUrl"
             class="material-icons-outlined catalog-placeholder-icon"
           >
-            {{ item.type === "service" ? "design_services" : "inventory_2" }}
+            inventory_2
           </span>
-          <span
-            class="catalog-type-badge"
-            [class.badge-service]="item.type === 'service'"
-          >
-            {{ item.type === "service" ? "Service" : "Product" }}
+          <span class="catalog-type-badge">
+            {{ getOfferingTypeLabel(item.offeringType) }}
           </span>
         </div>
 
         <div class="catalog-card-body">
           <p class="catalog-card-name">{{ item.name }}</p>
-          <p class="catalog-card-category" *ngIf="item.category">
-            {{ item.category }}
+          <p class="catalog-card-category">
+            {{ getOfferingTypeLabel(item.offeringType) }}
           </p>
 
-          <!-- Product Pricing -->
-          <p class="catalog-card-price" *ngIf="item.type === 'product'">
-            <ng-container *ngIf="!item.priceOnRequest">
-              <span class="price-current"
-                >₹{{ discountedPrice(item) | number }}</span
-              >
-              <span class="price-original" *ngIf="item.discountPercentage">
-                ₹{{ item.price | number }}
-              </span>
-              <span class="price-unit" *ngIf="item.priceUnit">
-                / {{ item.priceUnit }}
-              </span>
-            </ng-container>
-            <ng-container *ngIf="item.priceOnRequest"
-              >Price on request</ng-container
-            >
-          </p>
-
-          <!-- Service Pricing -->
-          <p class="catalog-card-price" *ngIf="item.type === 'service'">
-            <ng-container *ngIf="!item.priceOnRequest">
-              <span class="price-current">
-                <ng-container *ngIf="item.pricingType === 'PriceRange'">
-                  ₹{{ item.minimumPrice | number }} - ₹{{
-                    item.maximumPrice | number
-                  }}
-                </ng-container>
-                <ng-container *ngIf="item.pricingType !== 'PriceRange'">
-                  ₹{{ item.price | number }}
-                </ng-container>
-              </span>
-              <span class="price-unit" *ngIf="item.priceUnit">
-                {{ item.priceUnit }}
-              </span>
-            </ng-container>
-            <ng-container *ngIf="item.priceOnRequest"
-              >Price on request</ng-container
-            >
+          <p class="catalog-card-price">
+            <span class="price-current">₹{{ item.price | number }}</span>
           </p>
 
           <a
             class="catalog-view-link"
-            (click)="viewCatalogItem(item); $event.stopPropagation()"
+            (click)="viewOffering(item); $event.stopPropagation()"
           >
             View Details
             <span class="material-icons-outlined">arrow_forward</span>
@@ -550,24 +543,23 @@
       </div>
     </div>
 
-    <!-- No Items Message -->
-    <ng-template #noCatalogItems>
+    <ng-template #noOfferings>
       <div class="empty-services">
         <span class="material-icons-outlined empty-icon">storefront</span>
         <p class="about-text">
           {{
-            catalogSearch
+            offeringSearch
               ? "No results match your search."
-              : "No products or services listed yet."
+              : "No offerings listed yet."
           }}
         </p>
         <button
           class="btn-primary"
-          *ngIf="isOwner && !viewingAsPublic && !catalogSearch"
-          (click)="addProduct()"
+          *ngIf="isOwner && !viewingAsPublic && !offeringSearch"
+          (click)="addOffering()"
         >
           <span class="material-icons-outlined">add</span> Add Your First
-          Product
+          Offering
         </button>
       </div>
     </ng-template>
@@ -857,39 +849,57 @@
     (saved)="onProfileSaved()"
   ></app-business-edit-profile>
 
-  <app-add-business-product
-    *ngIf="addProductPanelOpen && business"
+  <!--
+    Add Product / Add Service panels - kept in the DOM (commented) since the
+    Products & Services tab that launched them is disabled. Their routes
+    (/business/product/:id, /business/service/:id) and quick-view panels
+    still work if reached directly; uncomment along with the tab above to
+    fully restore the old flow.
+
+    <app-add-business-product
+      *ngIf="addProductPanelOpen && business"
+      [businessId]="business.id"
+      [businessCategoryId]="business.businessCategoryId"
+      [businessSubCategories]="businessSubCategories"
+      [product]="editingProduct"
+      (close)="closeAddProductPanel()"
+      (saved)="onProductSaved()"
+    ></app-add-business-product>
+
+    <app-business-product-quickview
+      *ngIf="quickViewOpen && quickViewProduct"
+      [product]="quickViewProduct"
+      (close)="closeQuickView()"
+      (viewFullDetails)="viewFullProductDetails()"
+    ></app-business-product-quickview>
+
+    <app-add-business-service
+      *ngIf="addServicePanelOpen && business"
+      [businessId]="business.id"
+      [businessCategoryId]="business.businessCategoryId"
+      [businessSubCategories]="businessSubCategories"
+      [service]="editingService"
+      (close)="closeAddServicePanel()"
+      (saved)="onServiceSaved()"
+    ></app-add-business-service>
+
+    <app-business-service-quickview
+      *ngIf="quickViewServiceOpen && quickViewService"
+      [service]="quickViewService"
+      (close)="closeServiceQuickView()"
+      (viewFullDetails)="viewFullServiceDetails()"
+    ></app-business-service-quickview>
+  -->
+
+  <!-- Add Offering Component (new) -->
+  <app-add-business-offering
+    *ngIf="addOfferingPanelOpen && business"
     [businessId]="business.id"
-    [businessCategoryId]="business.businessCategoryId"
     [businessSubCategories]="businessSubCategories"
-    [product]="editingProduct"
-    (close)="closeAddProductPanel()"
-    (saved)="onProductSaved()"
-  ></app-add-business-product>
-
-  <app-business-product-quickview
-    *ngIf="quickViewOpen && quickViewProduct"
-    [product]="quickViewProduct"
-    (close)="closeQuickView()"
-    (viewFullDetails)="viewFullProductDetails()"
-  ></app-business-product-quickview>
-
-  <app-add-business-service
-    *ngIf="addServicePanelOpen && business"
-    [businessId]="business.id"
-    [businessCategoryId]="business.businessCategoryId"
-    [businessSubCategories]="businessSubCategories"
-    [service]="editingService"
-    (close)="closeAddServicePanel()"
-    (saved)="onServiceSaved()"
-  ></app-add-business-service>
-
-  <app-business-service-quickview
-    *ngIf="quickViewServiceOpen && quickViewService"
-    [service]="quickViewService"
-    (close)="closeServiceQuickView()"
-    (viewFullDetails)="viewFullServiceDetails()"
-  ></app-business-service-quickview>
+    [offering]="editingOffering"
+    (close)="closeAddOfferingPanel()"
+    (saved)="onOfferingSaved()"
+  ></app-add-business-offering>
 
   <!-- Add Offer Component -->
   <app-add-business-offer
