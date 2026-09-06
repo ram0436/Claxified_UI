@@ -24,7 +24,9 @@ button {
   padding: 10px 18px;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
   white-space: nowrap;
 }
 
@@ -45,7 +47,9 @@ button {
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
   white-space: nowrap;
 }
 
@@ -106,7 +110,10 @@ button {
   border: 1px solid #eee;
   border-radius: 12px;
   cursor: pointer;
-  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
   background: #fff;
   animation: cardIn 0.35s ease backwards;
 }
@@ -234,7 +241,9 @@ button {
   border-radius: 20px;
   padding: 8px 16px 8px 12px;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease,
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
     transform 0.15s ease;
 }
 
@@ -261,7 +270,9 @@ button {
   border-radius: 20px;
   padding: 8px 16px;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .view-public-btn:hover {
@@ -394,7 +405,9 @@ button {
   color: #635b67;
   padding-bottom: 12px;
   border-bottom: 3px solid transparent;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
   white-space: nowrap;
 }
 
@@ -733,8 +746,11 @@ button {
   color: #b9c2c6;
   opacity: 0;
   transform: scale(0.9);
-  transition: opacity 0.15s ease, transform 0.15s ease,
-    background-color 0.15s ease, color 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .business-card:hover .delete-btn,
@@ -849,7 +865,9 @@ button {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .lightbox-close:hover {
@@ -903,7 +921,9 @@ button {
   padding: 6px 14px;
   border-radius: 16px;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .filter-pill:hover {
@@ -956,7 +976,10 @@ button {
   overflow: hidden;
   cursor: pointer;
   background: #fff;
-  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .catalog-card:hover {
@@ -1755,4 +1778,37 @@ button {
   background: #eaf3f7;
   color: #0d475c;
   font-weight: 600;
+}
+
+/* ---------- Sub-category tab strip ---------- */
+.subcategory-tab-strip {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.subcat-tab-item {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  color: #635b67;
+  background: #f2f2f2;
+  padding: 6px 16px;
+  border-radius: 18px;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.subcat-tab-item:hover {
+  color: #3c3241;
+  transform: translateY(-1px);
+}
+
+.subcat-tab-item.active {
+  background: #0d475c;
+  color: #fff;
 }

@@ -1,5 +1,5 @@
-import { OfferingType } from "../enum/business-offering.enum";
-import { EntityType } from "../enum/business-product.enum";
+import { OfferingType } from '../enum/business-offering.enum';
+import { EntityType } from '../enum/business-product.enum';
 
 export class AuditFields {
   createdBy: number = 0;
@@ -15,50 +15,50 @@ export class BusinessWorkingHours extends AuditFields {
   id: number = 0;
   businessId: number = 0;
   dayOfWeek: number = 0;
-  openTime: string = "";
-  closeTime: string = "";
+  openTime: string = '';
+  closeTime: string = '';
   isClosed: boolean = true;
 }
 
 export class BusinessContact extends AuditFields {
   id: number = 0;
   businessId: number = 0;
-  contactPerson: string = "";
-  mobile: string = "";
-  alternateMobile: string = "";
-  email: string = "";
-  whatsApp: string = "";
+  contactPerson: string = '';
+  mobile: string = '';
+  alternateMobile: string = '';
+  email: string = '';
+  whatsApp: string = '';
 }
 
 export class BusinessSocialMedia extends AuditFields {
   id: number = 0;
   businessId: number = 0;
-  facebook: string = "";
-  instagram: string = "";
-  linkedIn: string = "";
-  youTube: string = "";
-  twitter: string = "";
+  facebook: string = '';
+  instagram: string = '';
+  linkedIn: string = '';
+  youTube: string = '';
+  twitter: string = '';
 }
 
 export class BusinessAddress extends AuditFields {
   id: number = 0;
   businessId: number = 0;
-  country: string = "";
-  state: string = "";
-  city: string = "";
-  area: string = "";
-  pincode: string = "";
-  address: string = "";
+  country: string = '';
+  state: string = '';
+  city: string = '';
+  area: string = '';
+  pincode: string = '';
+  address: string = '';
   isPrimary: boolean = true;
-  googleMapURL: string = "";
+  googleMapURL: string = '';
 }
 
 export class BusinessGallery extends AuditFields {
   id: number = 0;
   businessId: number = 0;
-  imageUrl: string = "";
-  thumbnailUrl: string = "";
-  caption: string = "";
+  imageUrl: string = '';
+  thumbnailUrl: string = '';
+  caption: string = '';
   displayOrder: number = 0;
 }
 
@@ -73,7 +73,7 @@ export class BusinessVerification extends AuditFields {
   isBusinessVerified: boolean = false;
   verificationDate: string = new Date().toISOString().slice(0, 23);
   verifiedBy: number = 0;
-  verificationRemarks: string = "";
+  verificationRemarks: string = '';
 }
 
 export class BusinessSubCategoryMapping extends AuditFields {
@@ -86,17 +86,17 @@ export class BusinessSubCategoryMapping extends AuditFields {
 /** Used for creating/updating a business (POST /api/Business) */
 export class Business extends AuditFields {
   id: number = 0;
-  tabRefGUID: string = "";
+  tabRefGUID: string = '';
   userId: number = 0;
-  businessName: string = "";
+  businessName: string = '';
   businessCategoryId: number = 0;
   businessTypeId: number = 0;
   sellerTypeId: number = 0;
-  description: string = "";
-  logoUrl: string = "";
-  coverImageUrl: string = "";
+  description: string = '';
+  logoUrl: string = '';
+  coverImageUrl: string = '';
   establishedYear: number = 0;
-  website: string = "";
+  website: string = '';
   status: number = 1;
   businessWorkingHoursList: BusinessWorkingHours[] = [];
   businessVerification: BusinessVerification = new BusinessVerification();
@@ -110,9 +110,9 @@ export class Business extends AuditFields {
 // ---------- Registration payload (users + business combined) ----------
 
 export class BusinessRegisterUser {
-  mobileNo: string = "";
+  mobileNo: string = '';
   otp: number = 0;
-  name: string = "";
+  name: string = '';
 }
 
 export class BusinessRegisterRequest {
@@ -309,13 +309,13 @@ export class BusinessProductAttribute {
   id: number = 0;
   businessProductId: number = 0;
   productSubCategoryAttributeId: number = 0;
-  value: string = "";
+  value: string = '';
 }
 
 export class BusinessProductImage {
   id: number = 0;
   businessProductId: number = 0;
-  imageUrl: string = "";
+  imageUrl: string = '';
   isPrimary: boolean = true;
   sortOrder: number = 0;
 }
@@ -323,11 +323,11 @@ export class BusinessProductImage {
 export class BusinessProduct {
   id: number = 0;
   businessId: number = 0;
-  name: string = "";
+  name: string = '';
   productCategoryId: number = 0;
   productSubCategoryId: number = 0;
-  shortDescription: string = "";
-  about: string = "";
+  shortDescription: string = '';
+  about: string = '';
   price: number = 0;
   discountPercentage: number = 0;
   priceOnRequest: boolean = true;
@@ -341,8 +341,8 @@ export class BusinessProduct {
   warrantyAvailable: boolean = true;
   warrantyDuration: number = 0;
   warrantyPeriodUnit: number = 1;
-  warrantyDescription: string = "";
-  returnPolicy: string = "";
+  warrantyDescription: string = '';
+  returnPolicy: string = '';
   attributes: BusinessProductAttribute[] = [];
   images: BusinessProductImage[] = [];
 }
@@ -377,15 +377,15 @@ export interface BusinessProductDto {
   about: string;
   price: number;
   discountPercentage: number;
-  priceOnRequest: "Yes" | "No";
+  priceOnRequest: 'Yes' | 'No';
   gst: number;
   priceUnit: string; // e.g. "Piece"
   condition: string; // e.g. "New"
   availabilityStatus: string; // e.g. "InStock"
-  deliveryAvailable: "Yes" | "No";
+  deliveryAvailable: 'Yes' | 'No';
   shippingCharges: number;
-  freeShipping: "Yes" | "No";
-  warrantyAvailable: "Yes" | "No";
+  freeShipping: 'Yes' | 'No';
+  warrantyAvailable: 'Yes' | 'No';
   warrantyDuration: number;
   warrantyPeriodUnit: string; // e.g. "Month"
   warrantyDescription: string;
@@ -428,18 +428,18 @@ export interface ProductAttributeMasterDto {
 export class BusinessOffer {
   id: number = 0;
   businessId: number = 0;
-  title: string = "";
-  description: string = "";
+  title: string = '';
+  description: string = '';
   offerType: number = 1;
   discountValue: number = 0;
-  couponCode: string = "";
+  couponCode: string = '';
   minimumPurchaseAmount: number = 0;
   maximumDiscountAmount: number = 0;
   startDate: string = new Date().toISOString();
   endDate: string = new Date().toISOString();
   usageLimit: number = 0;
   usagePerUser: number = 0;
-  termsAndConditions: string = "";
+  termsAndConditions: string = '';
   isFeatured: boolean = true;
   isActive: boolean = true;
   createdDate: string = new Date().toISOString();
@@ -476,10 +476,10 @@ export class BusinessReview {
   businessId: number = 0;
   userId: number = 0;
   rating: number = 0;
-  title: string = "";
-  comment: string = "";
+  title: string = '';
+  comment: string = '';
   isVerified: boolean = true;
-  businessReply: string = "";
+  businessReply: string = '';
   businessReplyDate: string = new Date().toISOString();
   isPublished: boolean = true;
   createdDate: string = new Date().toISOString();
@@ -539,54 +539,54 @@ export const SERVICE_PRICING_TYPE_OPTIONS: {
   value: ServicePricingType;
   label: string;
 }[] = [
-  { value: ServicePricingType.FixedPrice, label: "Fixed Price" },
-  { value: ServicePricingType.StartingFrom, label: "Starting From" },
-  { value: ServicePricingType.PriceRange, label: "Price Range" },
-  { value: ServicePricingType.Hourly, label: "Hourly" },
-  { value: ServicePricingType.Daily, label: "Daily" },
-  { value: ServicePricingType.CustomQuote, label: "Custom Quote" },
+  { value: ServicePricingType.FixedPrice, label: 'Fixed Price' },
+  { value: ServicePricingType.StartingFrom, label: 'Starting From' },
+  { value: ServicePricingType.PriceRange, label: 'Price Range' },
+  { value: ServicePricingType.Hourly, label: 'Hourly' },
+  { value: ServicePricingType.Daily, label: 'Daily' },
+  { value: ServicePricingType.CustomQuote, label: 'Custom Quote' },
 ];
 
 export const SERVICE_MODE_OPTIONS: { value: ServiceMode; label: string }[] = [
-  { value: ServiceMode.AtBusiness, label: "At Business" },
-  { value: ServiceMode.AtCustomerLocation, label: "At Customer Location" },
-  { value: ServiceMode.Remote, label: "Remote" },
+  { value: ServiceMode.AtBusiness, label: 'At Business' },
+  { value: ServiceMode.AtCustomerLocation, label: 'At Customer Location' },
+  { value: ServiceMode.Remote, label: 'Remote' },
 ];
 
 export const SERVICE_AVAILABILITY_STATUS_OPTIONS: {
   value: ServiceAvailabilityStatus;
   label: string;
 }[] = [
-  { value: ServiceAvailabilityStatus.Available, label: "Available" },
+  { value: ServiceAvailabilityStatus.Available, label: 'Available' },
   {
     value: ServiceAvailabilityStatus.TemporarilyUnavailable,
-    label: "Temporarily Unavailable",
+    label: 'Temporarily Unavailable',
   },
-  { value: ServiceAvailabilityStatus.NotAvailable, label: "Not Available" },
+  { value: ServiceAvailabilityStatus.NotAvailable, label: 'Not Available' },
 ];
 
 export const SERVICE_DURATION_UNIT_OPTIONS: {
   value: ServiceDurationUnit;
   label: string;
 }[] = [
-  { value: ServiceDurationUnit.Minute, label: "Minute(s)" },
-  { value: ServiceDurationUnit.Hour, label: "Hour(s)" },
-  { value: ServiceDurationUnit.Day, label: "Day(s)" },
-  { value: ServiceDurationUnit.Week, label: "Week(s)" },
-  { value: ServiceDurationUnit.Month, label: "Month(s)" },
+  { value: ServiceDurationUnit.Minute, label: 'Minute(s)' },
+  { value: ServiceDurationUnit.Hour, label: 'Hour(s)' },
+  { value: ServiceDurationUnit.Day, label: 'Day(s)' },
+  { value: ServiceDurationUnit.Week, label: 'Week(s)' },
+  { value: ServiceDurationUnit.Month, label: 'Month(s)' },
 ];
 
 export class BusinessServiceAttribute {
   id: number = 0;
   businessServiceId: number = 0;
   serviceAttributeMasterId: number = 0;
-  value: string = "";
+  value: string = '';
 }
 
 export class BusinessServiceImage {
   id: number = 0;
   businessServiceId: number = 0;
-  imageUrl: string = "";
+  imageUrl: string = '';
   isPrimary: boolean = true;
   sortOrder: number = 0;
 }
@@ -597,15 +597,15 @@ export class BusinessServicePayload {
   businessId: number = 0;
   serviceCategoryId: number = 0;
   serviceSubCategoryId: number = 0;
-  serviceName: string = "";
-  shortDescription: string = "";
-  about: string = "";
+  serviceName: string = '';
+  shortDescription: string = '';
+  about: string = '';
   minimumPrice: number = 0;
   maximumPrice: number = 0;
   pricingType: ServicePricingType = ServicePricingType.FixedPrice;
   gstIncluded: boolean = true;
   serviceMode: ServiceMode = ServiceMode.AtBusiness;
-  serviceArea: string = "";
+  serviceArea: string = '';
   duration: number = 0;
   durationUnit: ServiceDurationUnit = ServiceDurationUnit.Hour;
   isBookingRequired: boolean = true;
@@ -670,7 +670,7 @@ export interface ServiceAttributeDetailDto {
 
 export interface CatalogItem {
   id: number;
-  type: "product" | "service";
+  type: 'product' | 'service';
   name: string;
   category?: string;
   price: number;
@@ -682,6 +682,7 @@ export interface CatalogItem {
   maximumPrice?: number;
   pricingType?: string;
   pricingTypeDisplay?: string;
+  subCategoryId: number;
 }
 
 /** Response shape for GET Business/attribute-masterids?businessSubCategoryId= */
@@ -716,19 +717,17 @@ export interface CategoryAttributeMappingDto {
   attributeMasterIds: number[];
 }
 
-
-
-
 export const OFFERING_TYPE_OPTIONS: { value: OfferingType; label: string }[] = [
-  { value: OfferingType.Course, label: "Course" },
-  { value: OfferingType.MedicalService, label: "Medical Service" },
-  { value: OfferingType.RoomAccommodation, label: "Room / Accommodation" },
-  { value: OfferingType.MenuItem, label: "Menu Item" },
-  { value: OfferingType.Property, label: "Property" },
-  { value: OfferingType.RentalVehicle, label: "Rental Vehicle" },
-  { value: OfferingType.Event, label: "Event" },
-  { value: OfferingType.TourPackage, label: "Tour Package" },
-  { value: OfferingType.MembershipPlan, label: "Membership / Plan" },
+  { value: OfferingType.ProductAndService, label: 'Product & Service' },
+  { value: OfferingType.Course, label: 'Course' },
+  { value: OfferingType.MedicalService, label: 'Medical Service' },
+  { value: OfferingType.RoomAccommodation, label: 'Room / Accommodation' },
+  { value: OfferingType.MenuItem, label: 'Menu Item' },
+  { value: OfferingType.Property, label: 'Property' },
+  { value: OfferingType.RentalVehicle, label: 'Rental Vehicle' },
+  { value: OfferingType.Event, label: 'Event' },
+  { value: OfferingType.TourPackage, label: 'Tour Package' },
+  { value: OfferingType.MembershipPlan, label: 'Membership / Plan' },
 ];
 
 export const SUPPORTED_OFFERING_TYPES: OfferingType[] = [

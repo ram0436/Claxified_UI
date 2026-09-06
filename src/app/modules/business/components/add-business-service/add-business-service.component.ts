@@ -7,11 +7,11 @@ import {
   OnInit,
   Output,
   ViewChild,
-} from "@angular/core";
-import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { of } from "rxjs";
-import { switchMap } from "rxjs/operators";
-import { BusinessService } from "../../service/business.service";
+} from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { BusinessService } from '../../service/business.service';
 import {
   BusinessServiceDto,
   ServicePricingType,
@@ -23,9 +23,9 @@ import {
   SERVICE_AVAILABILITY_STATUS_OPTIONS,
   SERVICE_DURATION_UNIT_OPTIONS,
   AttributeMasterDto,
-} from "../../model/Business";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { EntityType } from "../../enum/business-product.enum";
+} from '../../model/Business';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { EntityType } from '../../enum/business-product.enum';
 
 interface ServiceImagePreview {
   localId: number;
@@ -37,12 +37,12 @@ interface ServiceImagePreview {
   uploading: boolean;
 }
 
-type SectionId = "basic" | "attributes" | "pricing" | "details" | "images";
+type SectionId = 'basic' | 'attributes' | 'pricing' | 'details' | 'images';
 
 @Component({
-  selector: "app-add-business-service",
-  templateUrl: "./add-business-service.component.html",
-  styleUrls: ["./add-business-service.component.css"],
+  selector: 'app-add-business-service',
+  templateUrl: './add-business-service.component.html',
+  styleUrls: ['./add-business-service.component.css'],
 })
 export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
   @Input() businessId!: number;
@@ -57,21 +57,23 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
    */
   @Input() businessSubCategories: any[] = [];
 
+  @Input() selectedSubCategoryId: number | null = null;
+
   @Input() service: BusinessServiceDto | null = null;
 
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<void>();
 
-  @ViewChild("aboutEditor")
+  @ViewChild('aboutEditor')
   aboutEditorRef?: ElementRef<HTMLDivElement>;
 
   form!: FormGroup;
 
   loading = false;
   saving = false;
-  errorMessage = "";
+  errorMessage = '';
 
-  activeSection: SectionId = "basic";
+  activeSection: SectionId = 'basic';
 
   sections: {
     id: SectionId;
@@ -80,31 +82,31 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
     required?: boolean;
   }[] = [
     {
-      id: "basic",
-      label: "Basic Details",
-      icon: "storefront",
+      id: 'basic',
+      label: 'Basic Details',
+      icon: 'storefront',
       required: true,
     },
     {
-      id: "attributes",
-      label: "Attributes",
-      icon: "tune",
+      id: 'attributes',
+      label: 'Attributes',
+      icon: 'tune',
     },
     {
-      id: "pricing",
-      label: "Pricing",
-      icon: "sell",
+      id: 'pricing',
+      label: 'Pricing',
+      icon: 'sell',
       required: true,
     },
     {
-      id: "details",
-      label: "Service Details",
-      icon: "design_services",
+      id: 'details',
+      label: 'Service Details',
+      icon: 'design_services',
     },
     {
-      id: "images",
-      label: "Images",
-      icon: "photo_library",
+      id: 'images',
+      label: 'Images',
+      icon: 'photo_library',
       required: true,
     },
   ];
@@ -140,13 +142,13 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
   }
 
   get attributesArray(): FormArray {
-    return this.form.get("attributes") as FormArray;
+    return this.form.get('attributes') as FormArray;
   }
 
   constructor(
     private fb: FormBuilder,
     private businessService: BusinessService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -158,7 +160,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
 
     this.buildForm();
 
-    this.activeSection = "basic";
+    this.activeSection = 'basic';
 
     if (this.service) {
       this.patchFromService(this.service);
@@ -179,29 +181,27 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
    */
   private setInternalServiceSubCategoryId(): void {
     /**
-     * EDIT MODE
-     *
-     * Always preserve the existing service's
-     * subcategory.
+     * EDIT MODE — always preserve the existing service's subcategory.
      */
     if (this.service?.serviceSubCategoryId) {
       this.serviceSubCategoryId = Number(this.service.serviceSubCategoryId);
-
       return;
     }
 
     /**
-     * ADD MODE
-     *
-     * Business can have multiple subcategories.
-     *
-     * Since the Service API currently accepts only
-     * one subcategory, use the first business
-     * subcategory internally.
+     * ADD MODE — use the sub-category tab currently selected on the
+     * business profile page.
+     */
+    if (this.selectedSubCategoryId !== null) {
+      this.serviceSubCategoryId = Number(this.selectedSubCategoryId) || 0;
+      return;
+    }
+
+    /**
+     * Fallback for the rare case no tab is selected.
      */
     if (this.businessSubCategories && this.businessSubCategories.length > 0) {
       this.serviceSubCategoryId = Number(this.businessSubCategories[0]) || 0;
-
       return;
     }
 
@@ -211,7 +211,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
   setSection(id: SectionId): void {
     this.activeSection = id;
 
-    if (id === "basic") {
+    if (id === 'basic') {
       this.hydrateAboutEditor();
     }
   }
@@ -220,12 +220,12 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       if (this.aboutEditorRef) {
         this.aboutEditorRef.nativeElement.innerHTML =
-          this.form.get("about")?.value || "";
+          this.form.get('about')?.value || '';
       }
     });
   }
 
-  exec(command: string, value: string = ""): void {
+  exec(command: string, value: string = ''): void {
     document.execCommand(command, false, value);
 
     this.aboutEditorRef?.nativeElement.focus();
@@ -236,29 +236,29 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
   }
 
   insertLink(): void {
-    const url = window.prompt("Enter a URL");
+    const url = window.prompt('Enter a URL');
 
     if (url) {
-      this.exec("createLink", url);
+      this.exec('createLink', url);
     }
   }
 
   onAboutInput(el: HTMLDivElement): void {
-    this.form.get("about")?.setValue(el.innerHTML);
+    this.form.get('about')?.setValue(el.innerHTML);
   }
 
   private defaultValue() {
     return {
       id: 0,
-      serviceName: "",
-      shortDescription: "",
-      about: "",
+      serviceName: '',
+      shortDescription: '',
+      about: '',
       minimumPrice: null,
       maximumPrice: null,
       pricingType: ServicePricingType.FixedPrice,
       gstIncluded: false,
       serviceMode: ServiceMode.AtBusiness,
-      serviceArea: "",
+      serviceArea: '',
       duration: 0,
       durationUnit: ServiceDurationUnit.Hour,
       isBookingRequired: false,
@@ -318,9 +318,9 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
     });
 
     this.form
-      .get("pricingType")!
+      .get('pricingType')!
       .valueChanges.subscribe((type: ServicePricingType) => {
-        const maxCtrl = this.form.get("maximumPrice")!;
+        const maxCtrl = this.form.get('maximumPrice')!;
 
         if (type === ServicePricingType.PriceRange) {
           maxCtrl.setValidators([Validators.required, Validators.min(0)]);
@@ -333,16 +333,16 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
   }
 
   getAttributePlaceholder(attr: AttributeMasterDto): string {
-    const type = (attr.dataType || "").toLowerCase();
+    const type = (attr.dataType || '').toLowerCase();
 
     switch (type) {
-      case "number":
+      case 'number':
         return attr.unit ? `Enter value in ${attr.unit}` : `Enter ${attr.name}`;
 
-      case "boolean":
-        return "Yes / No";
+      case 'boolean':
+        return 'Yes / No';
 
-      case "string":
+      case 'string':
       default:
         return `Enter ${attr.name}`;
     }
@@ -350,7 +350,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
 
   private resolveAttributesForSubCategory(
     subCategoryId: number,
-    presetValues?: Map<string, string>
+    presetValues?: Map<string, string>,
   ): void {
     if (!subCategoryId) {
       this.attributeDefs = [];
@@ -372,7 +372,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
           }
 
           return this.businessService.getAttributeDetails(ids);
-        })
+        }),
       )
       .subscribe(
         (defs) => {
@@ -384,27 +384,27 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
           this.setAttributeDefs([], presetValues);
 
           this.loadingAttributes = false;
-        }
+        },
       );
   }
 
   private setAttributeDefs(
     defs: AttributeMasterDto[],
-    presetValues?: Map<string, string>
+    presetValues?: Map<string, string>,
   ): void {
     this.attributeDefs = defs;
 
     this.attributesArray.clear();
 
     for (const def of defs) {
-      const existingValue = presetValues?.get(def.name) || "";
+      const existingValue = presetValues?.get(def.name) || '';
 
       this.attributesArray.push(
         this.fb.group({
           id: [0],
           serviceAttributeMasterId: [def.attributeMasterId],
           value: [existingValue],
-        })
+        }),
       );
     }
   }
@@ -412,7 +412,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
   // ---------- Images ----------
 
   selectFile(): void {
-    document.getElementById("serviceImageUpload")?.click();
+    document.getElementById('serviceImageUpload')?.click();
   }
 
   onImagesSelected(event: Event): void {
@@ -436,7 +436,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
           localId,
           file,
           previewUrl: reader.result as string,
-          uploadedUrl: "",
+          uploadedUrl: '',
           isPrimary: this.images.length === 0,
           sortOrder: this.images.length + 1,
           uploading: false,
@@ -446,7 +446,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
       reader.readAsDataURL(file);
     });
 
-    input.value = "";
+    input.value = '';
   }
 
   setPrimaryImage(localId: number): void {
@@ -475,7 +475,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
       const formData = new FormData();
 
       pending.forEach((img) => {
-        formData.append("files", img.file as File);
+        formData.append('files', img.file as File);
 
         img.uploading = true;
       });
@@ -494,7 +494,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
           pending.forEach((img) => (img.uploading = false));
 
           reject(err);
-        }
+        },
       );
     });
   }
@@ -529,45 +529,45 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
 
       maximumPrice: s.maximumPrice,
 
-      gstIncluded: s.gstIncluded === "Yes",
+      gstIncluded: s.gstIncluded === 'Yes',
 
       serviceArea: s.serviceArea,
 
       duration: s.duration,
 
-      isBookingRequired: s.isBookingRequired === "Yes",
+      isBookingRequired: s.isBookingRequired === 'Yes',
 
       isActive: s.isActive,
     });
 
     this.form
-      .get("pricingType")!
+      .get('pricingType')!
       .setValue(
         this.pricingTypeOptions.find((o) => o.label === s.pricingType)?.value ||
-          ServicePricingType.FixedPrice
+          ServicePricingType.FixedPrice,
       );
 
     this.form
-      .get("serviceMode")!
+      .get('serviceMode')!
       .setValue(
         this.serviceModeOptions.find(
-          (o) => o.label.replace(/\s/g, "") === s.serviceMode
-        )?.value || ServiceMode.AtBusiness
+          (o) => o.label.replace(/\s/g, '') === s.serviceMode,
+        )?.value || ServiceMode.AtBusiness,
       );
 
     this.form
-      .get("availability")!
+      .get('availability')!
       .setValue(
         this.availabilityOptions.find(
-          (o) => o.label.replace(/\s/g, "") === s.availabilityStatus
-        )?.value || ServiceAvailabilityStatus.Available
+          (o) => o.label.replace(/\s/g, '') === s.availabilityStatus,
+        )?.value || ServiceAvailabilityStatus.Available,
       );
 
     this.form
-      .get("durationUnit")!
+      .get('durationUnit')!
       .setValue(
         this.durationUnitOptions.find((o) => o.label.startsWith(s.durationUnit))
-          ?.value || ServiceDurationUnit.Hour
+          ?.value || ServiceDurationUnit.Hour,
       );
 
     this.images = (s.images || []).map((img, idx) => ({
@@ -585,12 +585,12 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
     }));
 
     const presetValues = new Map<string, string>(
-      (s.attributes || []).map((a) => [a.name, a.value])
+      (s.attributes || []).map((a) => [a.name, a.value]),
     );
 
     this.resolveAttributesForSubCategory(
       this.serviceSubCategoryId,
-      presetValues
+      presetValues,
     );
 
     this.loading = false;
@@ -616,7 +616,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.errorMessage = "";
+    this.errorMessage = '';
 
     const idx = this.sections.findIndex((s) => s.id === this.activeSection);
 
@@ -637,32 +637,32 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
 
   isSectionFilled(id: SectionId): boolean {
     switch (id) {
-      case "basic":
-        return !!this.form.get("serviceName")?.valid;
+      case 'basic':
+        return !!this.form.get('serviceName')?.valid;
 
-      case "attributes":
+      case 'attributes':
         return this.attributesArray.controls.some(
-          (c) => !!c.get("value")?.value
+          (c) => !!c.get('value')?.value,
         );
 
-      case "pricing": {
-        const priceCtrl = this.form.get("minimumPrice");
+      case 'pricing': {
+        const priceCtrl = this.form.get('minimumPrice');
 
         return !!(
           priceCtrl?.valid &&
           priceCtrl?.value !== null &&
-          priceCtrl?.value !== ""
+          priceCtrl?.value !== ''
         );
       }
 
-      case "details":
+      case 'details':
         return !!(
-          this.form.get("serviceArea")?.value ||
-          this.form.get("duration")?.value ||
-          this.form.get("isBookingRequired")?.value
+          this.form.get('serviceArea')?.value ||
+          this.form.get('duration')?.value ||
+          this.form.get('isBookingRequired')?.value
         );
 
-      case "images":
+      case 'images':
         return this.images.length > 0;
 
       default:
@@ -673,14 +673,14 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
   // ---------- Save ----------
 
   async onSave(): Promise<void> {
-    this.errorMessage = "";
+    this.errorMessage = '';
 
     /**
      * Make sure the internal subcategory
      * is available before calling the API.
      */
     if (!this.serviceSubCategoryId) {
-      this.errorMessage = "Unable to determine the service category.";
+      this.errorMessage = 'Unable to determine the service category.';
 
       return;
     }
@@ -688,20 +688,20 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
     /**
      * Keep the hidden form control synchronized.
      */
-    this.form.get("serviceSubCategoryId")?.setValue(this.serviceSubCategoryId);
+    this.form.get('serviceSubCategoryId')?.setValue(this.serviceSubCategoryId);
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
 
-      this.errorMessage = "Please fill in all required fields.";
+      this.errorMessage = 'Please fill in all required fields.';
 
       return;
     }
 
     if (this.images.length === 0) {
-      this.errorMessage = "Please add at least one service image.";
+      this.errorMessage = 'Please add at least one service image.';
 
-      this.activeSection = "images";
+      this.activeSection = 'images';
 
       return;
     }
@@ -714,7 +714,7 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
       this.saving = false;
 
       this.errorMessage =
-        "One or more images failed to upload. Please try again.";
+        'One or more images failed to upload. Please try again.';
 
       return;
     }
@@ -784,17 +784,17 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
       () => {
         this.saving = false;
 
-        this.showNotification("Service Added Successfully");
+        this.showNotification('Service Added Successfully');
 
         this.saved.emit();
       },
       () => {
         this.saving = false;
 
-        this.showNotification("Failed to save service. Please try again.");
+        this.showNotification('Failed to save service. Please try again.');
 
-        this.errorMessage = "Failed to save service. Please try again.";
-      }
+        this.errorMessage = 'Failed to save service. Please try again.';
+      },
     );
   }
 
@@ -803,10 +803,10 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
   }
 
   showNotification(message: string): void {
-    this.snackBar.open(message, "Close", {
+    this.snackBar.open(message, 'Close', {
       duration: 5000,
-      horizontalPosition: "end",
-      verticalPosition: "top",
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
     });
   }
 }

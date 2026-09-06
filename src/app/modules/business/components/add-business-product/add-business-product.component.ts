@@ -7,12 +7,12 @@ import {
   OnInit,
   Output,
   ViewChild,
-} from "@angular/core";
-import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { of } from "rxjs";
-import { switchMap } from "rxjs/operators";
-import { BusinessService } from "../../service/business.service";
-import { BusinessProductDto, AttributeMasterDto } from "../../model/Business";
+} from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { BusinessService } from '../../service/business.service';
+import { BusinessProductDto, AttributeMasterDto } from '../../model/Business';
 import {
   PRICE_UNIT_OPTIONS,
   PRODUCT_CONDITION_OPTIONS,
@@ -23,8 +23,8 @@ import {
   ProductAvailabilityStatus,
   WarrantyPeriodUnit,
   EntityType,
-} from "./../../enum/business-product.enum";
-import { MatSnackBar } from "@angular/material/snack-bar";
+} from './../../enum/business-product.enum';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface ProductImagePreview {
   localId: number;
@@ -36,12 +36,12 @@ interface ProductImagePreview {
   uploading: boolean;
 }
 
-type SectionId = "basic" | "attributes" | "pricing" | "delivery" | "images";
+type SectionId = 'basic' | 'attributes' | 'pricing' | 'delivery' | 'images';
 
 @Component({
-  selector: "app-add-business-product",
-  templateUrl: "./add-business-product.component.html",
-  styleUrls: ["./add-business-product.component.css"],
+  selector: 'app-add-business-product',
+  templateUrl: './add-business-product.component.html',
+  styleUrls: ['./add-business-product.component.css'],
 })
 export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   @Input() businessId!: number;
@@ -52,21 +52,23 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   // This value is used internally and is NOT displayed to the user.
   @Input() businessSubCategories: any[] = [];
 
+  @Input() selectedSubCategoryId: number | null = null;
+
   @Input() product: BusinessProductDto | null = null;
 
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<void>();
 
-  @ViewChild("aboutEditor")
+  @ViewChild('aboutEditor')
   aboutEditorRef?: ElementRef<HTMLDivElement>;
 
   form!: FormGroup;
 
   loading = false;
   saving = false;
-  errorMessage = "";
+  errorMessage = '';
 
-  activeSection: SectionId = "basic";
+  activeSection: SectionId = 'basic';
 
   sections: {
     id: SectionId;
@@ -75,31 +77,31 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     required?: boolean;
   }[] = [
     {
-      id: "basic",
-      label: "Basic Details",
-      icon: "storefront",
+      id: 'basic',
+      label: 'Basic Details',
+      icon: 'storefront',
       required: true,
     },
     {
-      id: "attributes",
-      label: "Attributes",
-      icon: "tune",
+      id: 'attributes',
+      label: 'Attributes',
+      icon: 'tune',
     },
     {
-      id: "pricing",
-      label: "Pricing",
-      icon: "sell",
+      id: 'pricing',
+      label: 'Pricing',
+      icon: 'sell',
       required: true,
     },
     {
-      id: "delivery",
-      label: "Delivery & Warranty",
-      icon: "local_shipping",
+      id: 'delivery',
+      label: 'Delivery & Warranty',
+      icon: 'local_shipping',
     },
     {
-      id: "images",
-      label: "Images",
-      icon: "photo_library",
+      id: 'images',
+      label: 'Images',
+      icon: 'photo_library',
       required: true,
     },
   ];
@@ -133,13 +135,13 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   }
 
   get attributesArray(): FormArray {
-    return this.form.get("attributes") as FormArray;
+    return this.form.get('attributes') as FormArray;
   }
 
   constructor(
     private fb: FormBuilder,
     private businessService: BusinessService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -148,7 +150,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
 
     this.buildForm();
 
-    this.activeSection = "basic";
+    this.activeSection = 'basic';
 
     if (this.product) {
       this.patchFromProduct(this.product);
@@ -168,17 +170,21 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
    * It is completely hidden from the user.
    */
   private setInternalProductSubCategoryId(): void {
-    // Edit mode:
-    // Always preserve the product's existing subcategory.
+    // Edit mode: always preserve the product's existing subcategory.
     if (this.product?.productSubCategoryId) {
       this.productSubCategoryId = this.product.productSubCategoryId;
       return;
     }
 
-    // Add mode:
-    // Business can have multiple subcategories.
-    // Since Product API accepts only one, use the first
-    // business subcategory internally.
+    // Add mode: use the sub-category tab currently selected on the
+    // business profile page.
+    if (this.selectedSubCategoryId !== null) {
+      this.productSubCategoryId = Number(this.selectedSubCategoryId) || 0;
+      return;
+    }
+
+    // Fallback for the rare case no tab is selected (e.g. zero
+    // subcategories on the business).
     if (this.businessSubCategories && this.businessSubCategories.length > 0) {
       this.productSubCategoryId = Number(this.businessSubCategories[0]) || 0;
       return;
@@ -190,7 +196,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   setSection(id: SectionId): void {
     this.activeSection = id;
 
-    if (id === "basic") {
+    if (id === 'basic') {
       this.hydrateAboutEditor();
     }
   }
@@ -199,12 +205,12 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       if (this.aboutEditorRef) {
         this.aboutEditorRef.nativeElement.innerHTML =
-          this.form.get("about")?.value || "";
+          this.form.get('about')?.value || '';
       }
     });
   }
 
-  exec(command: string, value: string = ""): void {
+  exec(command: string, value: string = ''): void {
     document.execCommand(command, false, value);
 
     this.aboutEditorRef?.nativeElement.focus();
@@ -215,23 +221,23 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   }
 
   insertLink(): void {
-    const url = window.prompt("Enter a URL");
+    const url = window.prompt('Enter a URL');
 
     if (url) {
-      this.exec("createLink", url);
+      this.exec('createLink', url);
     }
   }
 
   onAboutInput(el: HTMLDivElement): void {
-    this.form.get("about")?.setValue(el.innerHTML);
+    this.form.get('about')?.setValue(el.innerHTML);
   }
 
   private defaultValue() {
     return {
       id: 0,
-      name: "",
-      shortDescription: "",
-      about: "",
+      name: '',
+      shortDescription: '',
+      about: '',
       price: null,
       discountPercentage: 0,
       priceOnRequest: false,
@@ -245,8 +251,8 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
       warrantyAvailable: false,
       warrantyDuration: 0,
       warrantyPeriodUnit: WarrantyPeriodUnit.Month,
-      warrantyDescription: "",
-      returnPolicy: "",
+      warrantyDescription: '',
+      returnPolicy: '',
     };
   }
 
@@ -309,9 +315,9 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     });
 
     this.form
-      .get("priceOnRequest")!
+      .get('priceOnRequest')!
       .valueChanges.subscribe((onRequest: boolean) => {
-        const priceCtrl = this.form.get("price")!;
+        const priceCtrl = this.form.get('price')!;
 
         if (onRequest) {
           priceCtrl.clearValidators();
@@ -324,16 +330,16 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   }
 
   getAttributePlaceholder(attr: AttributeMasterDto): string {
-    const type = (attr.dataType || "").toLowerCase();
+    const type = (attr.dataType || '').toLowerCase();
 
     switch (type) {
-      case "number":
+      case 'number':
         return attr.unit ? `Enter value in ${attr.unit}` : `Enter ${attr.name}`;
 
-      case "boolean":
-        return "Yes / No";
+      case 'boolean':
+        return 'Yes / No';
 
-      case "string":
+      case 'string':
       default:
         return `Enter ${attr.name}`;
     }
@@ -345,7 +351,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
    */
   private resolveAttributesForSubCategory(
     subCategoryId: number,
-    presetValues?: Map<string, string>
+    presetValues?: Map<string, string>,
   ): void {
     if (!subCategoryId) {
       this.attributeDefs = [];
@@ -367,7 +373,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
           }
 
           return this.businessService.getAttributeDetails(ids);
-        })
+        }),
       )
       .subscribe(
         (defs) => {
@@ -378,33 +384,33 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
         () => {
           this.setAttributeDefs([], presetValues);
           this.loadingAttributes = false;
-        }
+        },
       );
   }
 
   private setAttributeDefs(
     defs: AttributeMasterDto[],
-    presetValues?: Map<string, string>
+    presetValues?: Map<string, string>,
   ): void {
     this.attributeDefs = defs;
 
     this.attributesArray.clear();
 
     for (const def of defs) {
-      const existingValue = presetValues?.get(def.name) || "";
+      const existingValue = presetValues?.get(def.name) || '';
 
       this.attributesArray.push(
         this.fb.group({
           id: [0],
           productAttributeMasterId: [def.attributeMasterId],
           value: [existingValue],
-        })
+        }),
       );
     }
   }
 
   selectFile(): void {
-    document.getElementById("productImageUpload")?.click();
+    document.getElementById('productImageUpload')?.click();
   }
 
   onImagesSelected(event: Event): void {
@@ -428,7 +434,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
           localId,
           file,
           previewUrl: reader.result as string,
-          uploadedUrl: "",
+          uploadedUrl: '',
           isPrimary: this.images.length === 0,
           sortOrder: this.images.length + 1,
           uploading: false,
@@ -438,7 +444,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
       reader.readAsDataURL(file);
     });
 
-    input.value = "";
+    input.value = '';
   }
 
   setPrimaryImage(localId: number): void {
@@ -467,7 +473,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
       const formData = new FormData();
 
       pending.forEach((img) => {
-        formData.append("files", img.file as File);
+        formData.append('files', img.file as File);
         img.uploading = true;
       });
 
@@ -484,7 +490,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
           pending.forEach((img) => (img.uploading = false));
 
           reject(err);
-        }
+        },
       );
     });
   }
@@ -513,45 +519,45 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
       about: p.about,
       price: p.price,
       discountPercentage: p.discountPercentage,
-      priceOnRequest: p.priceOnRequest === "Yes",
+      priceOnRequest: p.priceOnRequest === 'Yes',
       gst: p.gst,
-      deliveryAvailable: p.deliveryAvailable === "Yes",
+      deliveryAvailable: p.deliveryAvailable === 'Yes',
       shippingCharges: p.shippingCharges,
-      freeShipping: p.freeShipping === "Yes",
-      warrantyAvailable: p.warrantyAvailable === "Yes",
+      freeShipping: p.freeShipping === 'Yes',
+      warrantyAvailable: p.warrantyAvailable === 'Yes',
       warrantyDuration: p.warrantyDuration,
       warrantyDescription: p.warrantyDescription,
       returnPolicy: p.returnPolicy,
     });
 
     this.form
-      .get("priceUnit")!
+      .get('priceUnit')!
       .setValue(
         this.priceUnitOptions.find((o) => o.label === p.priceUnit)?.value ||
-          PriceUnit.Piece
+          PriceUnit.Piece,
       );
 
     this.form
-      .get("condition")!
+      .get('condition')!
       .setValue(
         this.conditionOptions.find((o) => o.label === p.condition)?.value ||
-          ProductCondition.New
+          ProductCondition.New,
       );
 
     this.form
-      .get("availabilityStatus")!
+      .get('availabilityStatus')!
       .setValue(
         this.availabilityOptions.find(
-          (o) => o.label.replace(/\s/g, "") === p.availabilityStatus
-        )?.value || ProductAvailabilityStatus.InStock
+          (o) => o.label.replace(/\s/g, '') === p.availabilityStatus,
+        )?.value || ProductAvailabilityStatus.InStock,
       );
 
     this.form
-      .get("warrantyPeriodUnit")!
+      .get('warrantyPeriodUnit')!
       .setValue(
         this.warrantyPeriodOptions.find((o) =>
-          o.label.startsWith(p.warrantyPeriodUnit)
-        )?.value || WarrantyPeriodUnit.Month
+          o.label.startsWith(p.warrantyPeriodUnit),
+        )?.value || WarrantyPeriodUnit.Month,
       );
 
     this.images = (p.images || []).map((img, idx) => ({
@@ -564,12 +570,12 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
     }));
 
     const presetValues = new Map<string, string>(
-      (p.attributes || []).map((a) => [a.name, a.value])
+      (p.attributes || []).map((a) => [a.name, a.value]),
     );
 
     this.resolveAttributesForSubCategory(
       this.productSubCategoryId,
-      presetValues
+      presetValues,
     );
 
     this.loading = false;
@@ -592,7 +598,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.errorMessage = "";
+    this.errorMessage = '';
 
     const idx = this.sections.findIndex((s) => s.id === this.activeSection);
 
@@ -611,35 +617,35 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
 
   isSectionFilled(id: SectionId): boolean {
     switch (id) {
-      case "basic":
-        return !!this.form.get("name")?.valid;
+      case 'basic':
+        return !!this.form.get('name')?.valid;
 
-      case "attributes":
+      case 'attributes':
         return this.attributesArray.controls.some(
-          (c) => !!c.get("value")?.value
+          (c) => !!c.get('value')?.value,
         );
 
-      case "pricing": {
-        const priceOnRequest = this.form.get("priceOnRequest")?.value;
+      case 'pricing': {
+        const priceOnRequest = this.form.get('priceOnRequest')?.value;
 
-        const priceCtrl = this.form.get("price");
+        const priceCtrl = this.form.get('price');
 
         return !!(
           priceOnRequest ||
           (priceCtrl?.valid &&
             priceCtrl?.value !== null &&
-            priceCtrl?.value !== "")
+            priceCtrl?.value !== '')
         );
       }
 
-      case "delivery":
+      case 'delivery':
         return !!(
-          this.form.get("deliveryAvailable")?.value ||
-          this.form.get("warrantyAvailable")?.value ||
-          this.form.get("returnPolicy")?.value
+          this.form.get('deliveryAvailable')?.value ||
+          this.form.get('warrantyAvailable')?.value ||
+          this.form.get('returnPolicy')?.value
         );
 
-      case "images":
+      case 'images':
         return this.images.length > 0;
 
       default:
@@ -648,30 +654,30 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   }
 
   async onSave(): Promise<void> {
-    this.errorMessage = "";
+    this.errorMessage = '';
 
     /**
      * Make absolutely sure the internal subcategory exists.
      */
     if (!this.productSubCategoryId) {
-      this.errorMessage = "Unable to determine the product category.";
+      this.errorMessage = 'Unable to determine the product category.';
       return;
     }
 
     /**
      * Keep the internal form value synchronized.
      */
-    this.form.get("productSubCategoryId")?.setValue(this.productSubCategoryId);
+    this.form.get('productSubCategoryId')?.setValue(this.productSubCategoryId);
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.errorMessage = "Please fill in all required fields.";
+      this.errorMessage = 'Please fill in all required fields.';
       return;
     }
 
     if (this.images.length === 0) {
-      this.errorMessage = "Please add at least one product image.";
-      this.activeSection = "images";
+      this.errorMessage = 'Please add at least one product image.';
+      this.activeSection = 'images';
       return;
     }
 
@@ -683,7 +689,7 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
       this.saving = false;
 
       this.errorMessage =
-        "One or more images failed to upload. Please try again.";
+        'One or more images failed to upload. Please try again.';
 
       return;
     }
@@ -759,17 +765,17 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
       () => {
         this.saving = false;
 
-        this.showNotification("Product Added Successfully");
+        this.showNotification('Product Added Successfully');
 
         this.saved.emit();
       },
       () => {
         this.saving = false;
 
-        this.showNotification("Failed to save product. Please try again.");
+        this.showNotification('Failed to save product. Please try again.');
 
-        this.errorMessage = "Failed to save product. Please try again.";
-      }
+        this.errorMessage = 'Failed to save product. Please try again.';
+      },
     );
   }
 
@@ -778,10 +784,10 @@ export class AddBusinessProductComponent implements OnInit, AfterViewInit {
   }
 
   showNotification(message: string): void {
-    this.snackBar.open(message, "Close", {
+    this.snackBar.open(message, 'Close', {
       duration: 5000,
-      horizontalPosition: "end",
-      verticalPosition: "top",
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
     });
   }
 }
