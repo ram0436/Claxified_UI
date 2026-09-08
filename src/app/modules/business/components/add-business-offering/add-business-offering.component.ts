@@ -10,7 +10,7 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BusinessService } from '../../service/business.service';
-import {} from '../../model/Business';
+import { OfferingTypeOptionDto } from '../../model/Business';
 import {
   BusinessOfferingDto,
   OfferingCourseDto,
@@ -42,6 +42,11 @@ export class AddBusinessOfferingComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<void>();
 
+  @Input() businessCategoryId!: number;
+
+  offeringTypeOptions: OfferingTypeOptionDto[] = [];
+  offeringTypesLoading = false;
+
   @ViewChild('imageInputRef') imageInputRef?: ElementRef<HTMLInputElement>;
 
   form!: FormGroup;
@@ -54,7 +59,6 @@ export class AddBusinessOfferingComponent implements OnInit {
 
   activeSection: SectionId = 'type';
 
-  offeringTypeOptions = OFFERING_TYPE_OPTIONS;
   OfferingType = OfferingType;
 
   imagePreviewUrl = '';
@@ -114,6 +118,7 @@ export class AddBusinessOfferingComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForms();
+    this.loadOfferingTypeOptions();
 
     if (this.offering) {
       this.patchFromOffering(this.offering);
@@ -130,6 +135,28 @@ export class AddBusinessOfferingComponent implements OnInit {
 
       this.form.patchValue({ subCategoryId });
     }
+  }
+
+  private loadOfferingTypeOptions(): void {
+    if (!this.businessCategoryId) return;
+    this.offeringTypesLoading = true;
+
+    this.businessService
+      .getOfferingTypesByBusinessCategory(this.businessCategoryId)
+      .subscribe(
+        (types) => {
+          this.offeringTypeOptions = (types || []).filter(
+            (t) =>
+              t.value !== OfferingType.Product &&
+              t.value !== OfferingType.Service,
+          );
+          this.offeringTypesLoading = false;
+        },
+        () => {
+          this.offeringTypeOptions = [];
+          this.offeringTypesLoading = false;
+        },
+      );
   }
 
   private buildForms(): void {

@@ -41,7 +41,6 @@
         <!-- ---------- OFFERING TYPE ---------- -->
         <mat-card class="section-card" *ngIf="activeSection === 'type'">
           <h3 class="section-title">Offering Type</h3>
-
           <label class="field-label">What are you offering?</label>
           <mat-form-field appearance="outline">
             <mat-select formControlName="offeringType">
@@ -49,17 +48,27 @@
                 *ngFor="let o of offeringTypeOptions"
                 [value]="o.value"
               >
-                {{ o.label }}
+                {{ o.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
+
+          <p class="attr-loading" *ngIf="offeringTypesLoading">
+            Loading offering types…
+          </p>
+          <p
+            class="attr-empty"
+            *ngIf="!offeringTypesLoading && offeringTypeOptions.length === 0"
+          >
+            No offering types are configured for this business category yet.
+          </p>
 
           <p
             class="attr-loading"
             *ngIf="selectedOfferingType && !isSupportedType"
           >
-            Detailed fields for this offering type aren't available yet -
-            you can still save the basic details below.
+            Detailed fields for this offering type aren't available yet - you
+            can still save the basic details below.
           </p>
         </mat-card>
 
@@ -76,43 +85,82 @@
             />
           </mat-form-field>
 
-        <label class="field-label">Description</label>
-        <div class="rte-wrapper">
-        <div class="rte-toolbar">
-            <button type="button" class="rte-btn" (click)="exec('bold')" title="Bold">
-            <span class="material-icons-outlined">format_bold</span>
-            </button>
-            <button type="button" class="rte-btn" (click)="exec('italic')" title="Italic">
-            <span class="material-icons-outlined">format_italic</span>
-            </button>
-            <button type="button" class="rte-btn" (click)="exec('underline')" title="Underline">
-            <span class="material-icons-outlined">format_underlined</span>
-            </button>
-            <span class="rte-divider"></span>
-            <button type="button" class="rte-btn" (click)="exec('insertUnorderedList')" title="Bullet list">
-            <span class="material-icons-outlined">format_list_bulleted</span>
-            </button>
-            <button type="button" class="rte-btn" (click)="exec('insertOrderedList')" title="Numbered list">
-            <span class="material-icons-outlined">format_list_numbered</span>
-            </button>
-            <span class="rte-divider"></span>
-            <button type="button" class="rte-btn" (click)="insertLink()" title="Insert link">
-            <span class="material-icons-outlined">link</span>
-            </button>
-            <button type="button" class="rte-btn" (click)="exec('removeFormat')" title="Clear formatting">
-            <span class="material-icons-outlined">format_clear</span>
-            </button>
-        </div>
+          <label class="field-label">Description</label>
+          <div class="rte-wrapper">
+            <div class="rte-toolbar">
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('bold')"
+                title="Bold"
+              >
+                <span class="material-icons-outlined">format_bold</span>
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('italic')"
+                title="Italic"
+              >
+                <span class="material-icons-outlined">format_italic</span>
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('underline')"
+                title="Underline"
+              >
+                <span class="material-icons-outlined">format_underlined</span>
+              </button>
+              <span class="rte-divider"></span>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('insertUnorderedList')"
+                title="Bullet list"
+              >
+                <span class="material-icons-outlined"
+                  >format_list_bulleted</span
+                >
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('insertOrderedList')"
+                title="Numbered list"
+              >
+                <span class="material-icons-outlined"
+                  >format_list_numbered</span
+                >
+              </button>
+              <span class="rte-divider"></span>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="insertLink()"
+                title="Insert link"
+              >
+                <span class="material-icons-outlined">link</span>
+              </button>
+              <button
+                type="button"
+                class="rte-btn"
+                (click)="exec('removeFormat')"
+                title="Clear formatting"
+              >
+                <span class="material-icons-outlined">format_clear</span>
+              </button>
+            </div>
 
-        <div
-            #descriptionEditor
-            class="rte-content"
-            contenteditable="true"
-            (input)="onDescriptionInput(descriptionEditor)"
-            (blur)="onDescriptionInput(descriptionEditor)"
-            data-placeholder="Describe this offering"
-        ></div>
-        </div>
+            <div
+              #descriptionEditor
+              class="rte-content"
+              contenteditable="true"
+              (input)="onDescriptionInput(descriptionEditor)"
+              (blur)="onDescriptionInput(descriptionEditor)"
+              data-placeholder="Describe this offering"
+            ></div>
+          </div>
 
           <label class="field-label">Price (₹)</label>
           <mat-form-field appearance="outline">
@@ -229,7 +277,11 @@
 
             <label class="field-label">Curriculum</label>
             <mat-form-field appearance="outline">
-              <textarea matInput rows="3" formControlName="curriculum"></textarea>
+              <textarea
+                matInput
+                rows="3"
+                formControlName="curriculum"
+              ></textarea>
             </mat-form-field>
 
             <label class="field-label">Subjects Covered</label>
@@ -528,7 +580,11 @@
 
             <label class="field-label">Procedures</label>
             <mat-form-field appearance="outline">
-              <textarea matInput rows="2" formControlName="procedures"></textarea>
+              <textarea
+                matInput
+                rows="2"
+                formControlName="procedures"
+              ></textarea>
             </mat-form-field>
 
             <label class="field-label">Service Highlights</label>

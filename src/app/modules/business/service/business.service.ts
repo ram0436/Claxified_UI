@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { map, Observable, Subject } from "rxjs";
-import { environment } from "src/environments/environment";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { map, Observable, Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import {
   BusinessDirectoryItem,
   BusinessListItem,
@@ -23,12 +23,13 @@ import {
   CategoryAttributeMappingDto,
   OfferingMedicalServiceDto,
   BusinessOfferingDto,
-  OfferingCourseDto
-} from "../model/Business";
-import { EntityType } from "../enum/business-product.enum";
+  OfferingCourseDto,
+  OfferingTypeOptionDto,
+} from '../model/Business';
+import { EntityType } from '../enum/business-product.enum';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class BusinessService {
   private baseUrl = environment.baseUrl;
@@ -46,7 +47,7 @@ export class BusinessService {
 
   getBusinessList(): Observable<BusinessDirectoryItem[]> {
     return this.http.get<BusinessDirectoryItem[]>(
-      `${this.baseUrl}Business/List`
+      `${this.baseUrl}Business/List`,
     );
   }
 
@@ -56,21 +57,21 @@ export class BusinessService {
 
   getBusinessSubCategories(businessCategoryId: number) {
     return this.http.get(
-      `${this.baseUrl}Business/business-subcategories?businessCategoryId=${businessCategoryId}`
+      `${this.baseUrl}Business/business-subcategories?businessCategoryId=${businessCategoryId}`,
     );
   }
 
   getProductCategories(): Observable<ProductCategoryDto[]> {
     return this.http.get<ProductCategoryDto[]>(
-      `${this.baseUrl}Business/business-categories`
+      `${this.baseUrl}Business/business-categories`,
     );
   }
 
   getProductSubCategories(
-    productCategoryId: number
+    productCategoryId: number,
   ): Observable<ProductSubCategoryDto[]> {
     return this.http.get<ProductSubCategoryDto[]>(
-      `${this.baseUrl}Business/business-subcategories?businessCategoryId=${productCategoryId}`
+      `${this.baseUrl}Business/business-subcategories?businessCategoryId=${productCategoryId}`,
     );
   }
 
@@ -84,19 +85,19 @@ export class BusinessService {
 
   getBusinessByGuid(tabRefGUID: string): Observable<BusinessViewDto> {
     return this.http.get<BusinessViewDto>(
-      `${this.baseUrl}Business/${tabRefGUID}`
+      `${this.baseUrl}Business/${tabRefGUID}`,
     );
   }
 
   getUserBusinesses(userId: number): Observable<BusinessListItem[]> {
     return this.http.get<BusinessListItem[]>(
-      `${this.baseUrl}Business/businesses?userId=${userId}`
+      `${this.baseUrl}Business/businesses?userId=${userId}`,
     );
   }
 
   uploadLogo(formData: FormData): Observable<string> {
     return this.http.post(`${this.baseUrl}Business/UploadLogo`, formData, {
-      responseType: "text",
+      responseType: 'text',
     }) as Observable<string>;
   }
 
@@ -105,22 +106,22 @@ export class BusinessService {
       `${this.baseUrl}Business/UploadCoverImage`,
       formData,
       {
-        responseType: "text",
-      }
+        responseType: 'text',
+      },
     ) as Observable<string>;
   }
 
   uploadGalleryImages(formData: any) {
     return this.http.post(
       `${this.baseUrl}Business/UploadGalleryImages`,
-      formData
+      formData,
     );
   }
 
   uploadProductImages(formData: FormData): Observable<string[]> {
     return this.http.post<string[]>(
       `${this.baseUrl}Business/UploadProductImages`,
-      formData
+      formData,
     );
   }
 
@@ -140,7 +141,7 @@ export class BusinessService {
 
   getBusinessProducts(businessId: number): Observable<BusinessProductDto[]> {
     return this.http.get<BusinessProductDto[]>(
-      `${this.baseUrl}Business/products?businessId=${businessId}`
+      `${this.baseUrl}Business/products?businessId=${businessId}`,
     );
   }
 
@@ -151,7 +152,7 @@ export class BusinessService {
   notifyBusinessUpdated(
     businessId: string,
     businessName: string,
-    logoUrl: string
+    logoUrl: string,
   ): void {
     this.businessUpdatedSource.next({ businessId, businessName, logoUrl });
   }
@@ -166,7 +167,7 @@ export class BusinessService {
 
   getBusinessOffers(businessId: number): Observable<BusinessOfferDto[]> {
     return this.http.get<BusinessOfferDto[]>(
-      `${this.baseUrl}Business/offers?businessId=${businessId}`
+      `${this.baseUrl}Business/offers?businessId=${businessId}`,
     );
   }
 
@@ -178,7 +179,7 @@ export class BusinessService {
 
   getBusinessReviews(businessId: number): Observable<BusinessReviewDto[]> {
     return this.http.get<BusinessReviewDto[]>(
-      `${this.baseUrl}Business/reviews?businessId=${businessId}`
+      `${this.baseUrl}Business/reviews?businessId=${businessId}`,
     );
   }
 
@@ -190,15 +191,15 @@ export class BusinessService {
 
   getBusinessServices(businessId: number): Observable<BusinessServiceDto[]> {
     return this.http.get<BusinessServiceDto[]>(
-      `${this.baseUrl}Business/services?businessId=${businessId}`
+      `${this.baseUrl}Business/services?businessId=${businessId}`,
     );
   }
 
   getBusinessServiceDetails(serviceId: number): Observable<BusinessServiceDto> {
     return this.http
-      .get<BusinessServiceDto[]>(
-        `${this.baseUrl}Business/services/${serviceId}`
-      )
+      .get<
+        BusinessServiceDto[]
+      >(`${this.baseUrl}Business/services/${serviceId}`)
       .pipe(map((res) => res[0]));
   }
 
@@ -209,7 +210,7 @@ export class BusinessService {
   uploadServiceImages(formData: FormData): Observable<string[]> {
     return this.http.post<string[]>(
       `${this.baseUrl}Business/UploadServiceImages`,
-      formData
+      formData,
     );
   }
 
@@ -217,30 +218,30 @@ export class BusinessService {
 
   getAttributeMasterIds(
     businessSubCategoryId: number,
-    entityType: EntityType
+    entityType: EntityType,
   ): Observable<AttributeMasterIdDto[]> {
     return this.http
-      .get<AttributeMasterIdDto[]>(
-        `${this.baseUrl}Business/attribute-masterids?businessSubCategoryId=${businessSubCategoryId}`
-      )
+      .get<
+        AttributeMasterIdDto[]
+      >(`${this.baseUrl}Business/attribute-masterids?businessSubCategoryId=${businessSubCategoryId}`)
       .pipe(
         map((res) =>
-          (res || []).filter((a) => a.entityType === entityType && a.isActive)
-        )
+          (res || []).filter((a) => a.entityType === entityType && a.isActive),
+        ),
       );
   }
 
   getAttributeDetails(
-    attributeMasterIds: number[]
+    attributeMasterIds: number[],
   ): Observable<AttributeMasterDto[]> {
     let params = new HttpParams();
     attributeMasterIds.forEach((id) => {
-      params = params.append("attributeMasterIds", id.toString());
+      params = params.append('attributeMasterIds', id.toString());
     });
 
     return this.http.get<AttributeMasterDto[]>(
       `${this.baseUrl}Business/attributes-detail`,
-      { params }
+      { params },
     );
   }
 
@@ -248,87 +249,94 @@ export class BusinessService {
 
   getAttributeMasterList(): Observable<AttributeMasterListItem[]> {
     return this.http.get<AttributeMasterListItem[]>(
-      `${this.baseUrl}Business/attribute-master`
+      `${this.baseUrl}Business/attribute-master`,
     );
   }
 
   saveCategoryAttributeMapping(
-    payload: CategoryAttributeMappingPayload
+    payload: CategoryAttributeMappingPayload,
   ): Observable<any> {
     return this.http.post(
       `${this.baseUrl}Business/category-attribute-mapping`,
-      payload
+      payload,
     );
   }
 
   getCategoryAttributeMapping(
     subCategoryId: number,
-    entityType: EntityType
+    entityType: EntityType,
   ): Observable<CategoryAttributeMappingDto> {
     return this.http.get<CategoryAttributeMappingDto>(
-      `${this.baseUrl}Business/category-attribute-mapping?subCategoryId=${subCategoryId}&entityType=${entityType}`
+      `${this.baseUrl}Business/category-attribute-mapping?subCategoryId=${subCategoryId}&entityType=${entityType}`,
     );
   }
 
   // ---------- Business Offerings ----------
- 
+
   getBusinessOfferingsByBusinessId(
-    businessId: number
+    businessId: number,
   ): Observable<BusinessOfferingDto[]> {
     return this.http.get<BusinessOfferingDto[]>(
-      `${this.baseUrl}Business/business-offering/businessId?businessId=${businessId}`
+      `${this.baseUrl}Business/business-offering/businessId?businessId=${businessId}`,
     );
   }
- 
+
   getBusinessOfferingById(id: number): Observable<BusinessOfferingDto> {
     return this.http.get<BusinessOfferingDto>(
-      `${this.baseUrl}Business/business-offering?id=${id}`
+      `${this.baseUrl}Business/business-offering?id=${id}`,
     );
   }
- 
+
   saveBusinessOffering(
-    payload: BusinessOfferingDto
+    payload: BusinessOfferingDto,
   ): Observable<BusinessOfferingDto> {
     return this.http.post<BusinessOfferingDto>(
       `${this.baseUrl}Business/business-offering`,
-      payload
+      payload,
     );
   }
- 
+
   // ---------- Offering detail: Course ----------
- 
+
   getOfferingCourse(businessOfferingId: number): Observable<OfferingCourseDto> {
     return this.http.get<OfferingCourseDto>(
-      `${this.baseUrl}offering-course/id?businessOfferingId=${businessOfferingId}`
+      `${this.baseUrl}offering-course/id?businessOfferingId=${businessOfferingId}`,
     );
   }
- 
+
   saveOfferingCourse(
-    payload: OfferingCourseDto
+    payload: OfferingCourseDto,
   ): Observable<OfferingCourseDto> {
     return this.http.post<OfferingCourseDto>(
       `${this.baseUrl}Business/offering-course`,
-      payload
+      payload,
     );
   }
- 
+
   // ---------- Offering detail: Medical Service ----------
- 
+
   getOfferingMedicalService(
-    businessOfferingId: number
+    businessOfferingId: number,
   ): Observable<OfferingMedicalServiceDto> {
     return this.http.get<OfferingMedicalServiceDto>(
-      `${this.baseUrl}Business/offering-medical-service/id?businessOfferingId=${businessOfferingId}`
+      `${this.baseUrl}Business/offering-medical-service/id?businessOfferingId=${businessOfferingId}`,
     );
   }
- 
+
   saveOfferingMedicalService(
-    payload: OfferingMedicalServiceDto
+    payload: OfferingMedicalServiceDto,
   ): Observable<OfferingMedicalServiceDto> {
     return this.http.post<OfferingMedicalServiceDto>(
       `${this.baseUrl}Business/offering-medical-service`,
-      payload
+      payload,
     );
   }
- 
+
+  getOfferingTypesByBusinessCategory(
+    businessCategoryId: number,
+  ): Observable<OfferingTypeOptionDto[]> {
+    return this.http.get<OfferingTypeOptionDto[]>(
+      `${this.baseUrl}Business/offeringType?businessCategoryId=${businessCategoryId}`,
+    );
+  }
 }

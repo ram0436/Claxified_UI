@@ -10,11 +10,12 @@ import {
   BusinessReviewDto,
   BusinessOfferingDto,
   OFFERING_TYPE_OPTIONS,
+  OfferingTypeOptionDto,
 } from '../../model/Business';
 import { OfferingType } from '../../enum/business-offering.enum';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BusinessLoginComponent } from '../business-login/business-login.component';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 
 interface CatalogItem {
   id: number;
@@ -71,16 +72,6 @@ export class BusinessProfileComponent implements OnInit {
     return ids.map((id, i) => ({ id, name: names[i] || `Category ${id}` }));
   }
 
-  selectSubCategoryTab(id: number): void {
-    if (this.selectedSubCategoryId === id) return;
-    this.selectedSubCategoryId = id;
-
-    this.loadOfferings();
-    if (this.offeringFilter === this.OfferingType.ProductAndService) {
-      this.loadCatalogItems();
-    }
-  }
-
   // ---------- Products & Services (catalog) state ----------
   catalogItems: CatalogItem[] = [];
   catalogLoading: boolean = false;
@@ -120,9 +111,23 @@ export class BusinessProfileComponent implements OnInit {
   // ---------- Offerings state ----------
   offerings: BusinessOfferingDto[] = [];
   offeringsLoading: boolean = false;
-  offeringFilter: OfferingType | 'all' = 'all';
+  offeringFilter: OfferingType | 'all' | null = 'all';
   offeringSearch: string = '';
-  offeringTypeFilterOptions = OFFERING_TYPE_OPTIONS;
+
+  availableOfferingTypes: OfferingTypeOptionDto[] = [];
+  offeringTypesLoading: boolean = false;
+
+  get isProductFilter(): boolean {
+    return Number(this.offeringFilter) === Number(this.OfferingType.Product);
+  }
+
+  get isServiceFilter(): boolean {
+    return Number(this.offeringFilter) === Number(this.OfferingType.Service);
+  }
+
+  get isProductOrServiceFilter(): boolean {
+    return this.isProductFilter || this.isServiceFilter;
+  }
 
   addOfferingPanelOpen: boolean = false;
   editingOffering: BusinessOfferingDto | null = null;
@@ -132,6 +137,24 @@ export class BusinessProfileComponent implements OnInit {
   reviews: BusinessReviewDto[] = [];
   offersLoading: boolean = false;
   reviewsLoading: boolean = false;
+
+  // ---------- Allowed offering types (from business category) ----------
+  allowedOfferingTypes: Set<OfferingType> = new Set();
+
+  get hasProductOffering(): boolean {
+    return this.allowedOfferingTypes.has(OfferingType.Product);
+  }
+
+  get hasServiceOffering(): boolean {
+    return this.allowedOfferingTypes.has(OfferingType.Service);
+  }
+
+  get offeringTypeFilterOptions(): { value: OfferingType; label: string }[] {
+    if (!this.allowedOfferingTypes.size) return [];
+    return OFFERING_TYPE_OPTIONS.filter((opt) =>
+      this.allowedOfferingTypes.has(opt.value),
+    );
+  }
 
   addOfferPanelOpen: boolean = false;
   editingOffer: BusinessOfferDto | null = null;
@@ -298,12 +321,30 @@ export class BusinessProfileComponent implements OnInit {
         const ids = data?.businessSubCategoryIds || [];
         this.selectedSubCategoryId = ids.length > 0 ? ids[0] : null;
 
-        this.loadOfferings();
+        this.loadOfferingTypes();
         this.loadOffers();
         this.loadReviews();
       },
       () => (this.loading = false),
     );
+  }
+
+  loadAllowedOfferingTypes(businessCategoryId: number): void {
+    if (!businessCategoryId) {
+      this.allowedOfferingTypes = new Set();
+      return;
+    }
+
+    this.businessService
+      .getOfferingTypesByBusinessCategory(businessCategoryId)
+      .subscribe(
+        (data) => {
+          this.allowedOfferingTypes = new Set(
+            (data || []).map((t) => t.value as OfferingType),
+          );
+        },
+        () => (this.allowedOfferingTypes = new Set()),
+      );
   }
 
   toggleOfferingFilterDropdown(): void {
@@ -314,13 +355,23 @@ export class BusinessProfileComponent implements OnInit {
     this.offeringFilterOpen = false;
   }
 
-  selectOfferingFilter(filter: OfferingType | 'all'): void {
-    this.setOfferingFilter(filter);
+  selectOfferingFilter(filter: OfferingType | 'all', event?: Event): void {
+    event?.stopPropagation();
     this.offeringFilterOpen = false;
 
-    if (filter === this.OfferingType.ProductAndService) {
-      this.loadCatalogItems();
-    }
+    if (this.offeringFilter === filter) return;
+
+    this.offeringFilter = filter;
+    this.loadForCurrentFilter();
+  }
+  selectSubCategoryTab(id: number): void {
+    if (this.selectedSubCategoryId === id) return;
+    this.selectedSubCategoryId = id;
+    this.loadForCurrentFilter();
+  }
+
+  private isCatalogFilter(filter: OfferingType | 'all'): boolean {
+    return filter === OfferingType.Product || filter === OfferingType.Service;
   }
 
   setTab(
@@ -474,40 +525,136 @@ export class BusinessProfileComponent implements OnInit {
     );
   }
 
-  // ================== Products & Services (catalog) ==================
+  // ================== Offering Types ==================
 
-  loadCatalogItems(): void {
+  loadOfferingTypes(): void {
+    if (!this.business?.businessCategoryId) return;
+
+    this.offeringTypesLoading = true;
+    this.availableOfferingTypes = [];
+
+    this.businessService
+      .getOfferingTypesByBusinessCategory(this.business.businessCategoryId)
+      .subscribe(
+        (types) => {
+          this.availableOfferingTypes = types || [];
+          this.offeringTypesLoading = false;
+          this.offeringFilter = 'all';
+          this.loadForCurrentFilter();
+        },
+        () => {
+          this.availableOfferingTypes = [];
+          this.offeringFilter = 'all';
+          this.offeringTypesLoading = false;
+        },
+      );
+  }
+
+  private loadForCurrentFilter(): void {
+    if (this.offeringFilter === null) return;
+
+    if (this.offeringFilter === 'all') {
+      this.loadAllOfferings();
+    } else if (this.isProductFilter) {
+      this.loadProducts();
+    } else if (this.isServiceFilter) {
+      this.loadServices();
+    } else {
+      this.loadOfferings();
+    }
+  }
+
+  loadAllOfferings(): void {
+    if (!this.business?.id) return;
+
+    this.catalogLoading = true;
+    this.offeringsLoading = true;
+    this.catalogItems = [];
+    this.offerings = [];
+
+    const hasProduct = this.availableOfferingTypes.some(
+      (t) => Number(t.value) === Number(OfferingType.Product),
+    );
+    const hasService = this.availableOfferingTypes.some(
+      (t) => Number(t.value) === Number(OfferingType.Service),
+    );
+    const hasOther = this.availableOfferingTypes.some(
+      (t) =>
+        Number(t.value) !== Number(OfferingType.Product) &&
+        Number(t.value) !== Number(OfferingType.Service),
+    );
+
+    forkJoin({
+      products: hasProduct
+        ? this.businessService.getBusinessProducts(this.business.id)
+        : of([]),
+      services: hasService
+        ? this.businessService.getBusinessServices(this.business.id)
+        : of([]),
+      offerings: hasOther
+        ? this.businessService.getBusinessOfferingsByBusinessId(
+            this.business.id,
+          )
+        : of([]),
+    }).subscribe(
+      ({ products, services, offerings }) => {
+        this.rawProducts = products || [];
+        this.rawServices = services || [];
+        this.catalogItems = [
+          ...this.rawProducts.map((p) => this.mapProductToCatalogItem(p)),
+          ...this.rawServices.map((s) => this.mapServiceToCatalogItem(s)),
+        ];
+        this.offerings = offerings || [];
+        this.catalogLoading = false;
+        this.offeringsLoading = false;
+      },
+      () => {
+        this.catalogItems = [];
+        this.offerings = [];
+        this.catalogLoading = false;
+        this.offeringsLoading = false;
+      },
+    );
+  }
+
+  // ================== Products (catalog) ==================
+
+  loadProducts(): void {
     if (!this.business?.id) return;
     this.catalogLoading = true;
     this.catalogItems = [];
 
-    const products$ = this.businessService.getBusinessProducts(
-      this.business.id,
-    );
-    const services$ = this.businessService.getBusinessServices(
-      this.business.id,
-    );
-
-    forkJoin({
-      products: products$,
-      services: services$,
-    }).subscribe(
-      (result) => {
-        this.rawProducts = result.products || [];
-        this.rawServices = result.services || [];
-
-        const productItems = this.rawProducts.map((p) =>
+    this.businessService.getBusinessProducts(this.business.id).subscribe(
+      (products) => {
+        this.rawProducts = products || [];
+        this.catalogItems = this.rawProducts.map((p) =>
           this.mapProductToCatalogItem(p),
         );
-
-        const serviceItems = this.rawServices.map((s) =>
-          this.mapServiceToCatalogItem(s),
-        );
-
-        this.catalogItems = [...productItems, ...serviceItems];
         this.catalogLoading = false;
       },
-      (error) => {
+      () => {
+        this.catalogItems = [];
+        this.catalogLoading = false;
+      },
+    );
+  }
+
+  // ================== Services (catalog) ==================
+
+  loadServices(): void {
+    if (!this.business?.id) return;
+    this.catalogLoading = true;
+    this.catalogItems = [];
+
+    this.businessService.getBusinessServices(this.business.id).subscribe(
+      (services) => {
+        this.rawServices = services || [];
+        this.catalogItems = this.rawServices.map((s) =>
+          this.mapServiceToCatalogItem(s),
+        );
+        this.catalogLoading = false;
+      },
+      () => {
         this.catalogItems = [];
         this.catalogLoading = false;
       },
@@ -608,19 +755,27 @@ export class BusinessProfileComponent implements OnInit {
 
   onProductSaved(): void {
     this.closeAddProductPanel();
-    this.loadCatalogItems();
+    this.loadProducts();
   }
 
   onServiceSaved(): void {
     this.closeAddServicePanel();
-    this.loadCatalogItems();
+    this.loadServices();
   }
 
   viewCatalogItem(item: CatalogItem): void {
     if (item.type === 'product') {
-      this.editProduct(item);
+      const product = this.rawProducts.find((p) => p.id === item.id);
+      if (product) {
+        this.quickViewProduct = product;
+        this.quickViewOpen = true;
+      }
     } else {
-      this.editService(item);
+      const service = this.rawServices.find((s) => s.id === item.id);
+      if (service) {
+        this.quickViewService = service;
+        this.quickViewServiceOpen = true;
+      }
     }
   }
 
@@ -692,10 +847,24 @@ export class BusinessProfileComponent implements OnInit {
     });
   }
 
+  get hasAnyOfferingResults(): boolean {
+    return (
+      this.filteredCatalogItems.length > 0 || this.filteredOfferings.length > 0
+    );
+  }
+
   get filteredCatalogItems(): CatalogItem[] {
     const term = this.offeringSearch.trim().toLowerCase();
+    const wantType: 'product' | 'service' | null =
+      this.offeringFilter === OfferingType.Product
+        ? 'product'
+        : this.offeringFilter === OfferingType.Service
+          ? 'service'
+          : null;
 
     return this.catalogItems.filter((item) => {
+      const matchesType = !wantType || item.type === wantType;
+
       const matchesSubCategory =
         this.selectedSubCategoryId === null ||
         item.subCategoryId === this.selectedSubCategoryId;
@@ -705,23 +874,29 @@ export class BusinessProfileComponent implements OnInit {
         item.name.toLowerCase().includes(term) ||
         (item.category || '').toLowerCase().includes(term);
 
-      return matchesSubCategory && matchesSearch;
+      return matchesType && matchesSubCategory && matchesSearch;
     });
   }
 
-  setOfferingFilter(filter: OfferingType | 'all'): void {
-    this.offeringFilter = filter;
-  }
-
-  getOfferingTypeLabel(type: OfferingType): string {
-    return (
-      OFFERING_TYPE_OPTIONS.find((o) => o.value === type)?.label || 'Offering'
-    );
+  get catalogHeading(): string {
+    if (this.offeringFilter === OfferingType.Product) return 'Products';
+    if (this.offeringFilter === OfferingType.Service) return 'Services';
+    return 'Offerings';
   }
 
   get currentFilterLabel(): string {
-    if (this.offeringFilter === 'all') return 'All Offerings';
-    return this.getOfferingTypeLabel(this.offeringFilter);
+    if (this.offeringFilter === 'all') return 'All';
+    const match = this.availableOfferingTypes.find(
+      (t) => Number(t.value) === Number(this.offeringFilter),
+    );
+    return match?.name || 'Select Type';
+  }
+
+  getOfferingTypeLabel(type: OfferingType): string {
+    const match = this.availableOfferingTypes.find(
+      (t) => Number(t.value) === Number(type),
+    );
+    return match?.name || 'Offering';
   }
 
   addOffering(): void {
@@ -732,6 +907,11 @@ export class BusinessProfileComponent implements OnInit {
   editOffering(item: BusinessOfferingDto): void {
     this.editingOffering = { ...item };
     this.addOfferingPanelOpen = true;
+  }
+
+  isOfferingTypeActive(value: OfferingType | 'all'): boolean {
+    if (value === 'all') return this.offeringFilter === 'all';
+    return Number(this.offeringFilter) === Number(value);
   }
 
   viewOffering(item: BusinessOfferingDto): void {

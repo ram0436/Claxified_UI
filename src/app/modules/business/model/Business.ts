@@ -717,8 +717,14 @@ export interface CategoryAttributeMappingDto {
   attributeMasterIds: number[];
 }
 
+export interface OfferingTypeOptionDto {
+  value: number;
+  name: string;
+}
+
 export const OFFERING_TYPE_OPTIONS: { value: OfferingType; label: string }[] = [
-  { value: OfferingType.ProductAndService, label: 'Product & Service' },
+  { value: OfferingType.Product, label: 'Product' },
+  { value: OfferingType.Service, label: 'Service' },
   { value: OfferingType.Course, label: 'Course' },
   { value: OfferingType.MedicalService, label: 'Medical Service' },
   { value: OfferingType.RoomAccommodation, label: 'Room / Accommodation' },
