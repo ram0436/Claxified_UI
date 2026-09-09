@@ -1,139 +1,416 @@
-<div class="container-center bg" [class.bg-height-150]="reporterClicked">
+<div class="pd-page bg" [class.bg-height-155]="reporterClicked">
   <div class="spinner__loading" *ngIf="isLoading">
     <div>
       <mat-spinner></mat-spinner>
     </div>
   </div>
-  <div class="pd-3">
-    <div class="btn-text">
+
+  <div class="pd-content" *ngIf="!isLoading">
+    <!-- ============ TOP BAR ============ -->
+    <div class="pd-topbar">
       <button class="back-btn" (click)="goBack()">
-        <span class="material-icons-outlined"> chevron_left </span>Back
+        <span class="material-icons-outlined">chevron_left</span>Back
       </button>
-      <h4
+      <nav
+        class="pd-breadcrumb"
         *ngIf="
           !isLoading && mainCategories.length > 0 && subCategories.length > 0
         "
       >
-        <a routerLink="/Gadgets/view-posts">{{
+        <a routerLink="/Vehicles/view-posts">{{
           getMainCategoryName(postDetails?.categoryId)
         }}</a>
-        /<a
-          [routerLink]="'/Gadgets/view-posts'"
-          [queryParams]="{ type: 'Gadget', sub: postDetails?.subCategoryId }"
+        <span class="material-icons-outlined pd-crumb-sep">chevron_right</span>
+        <a
+          [routerLink]="'/Vehicles/view-posts'"
+          [queryParams]="{ type: 'vehicle', sub: postDetails?.subCategoryId }"
           >{{ getSubCategoryName(postDetails?.subCategoryId) }}</a
         >
-      </h4>
+      </nav>
     </div>
-    <div class="flex gap-2 pt-3" *ngIf="!isLoading">
-      <mat-card class="border-1 mb-2 block img-mat-card">
-        <span
-          class="material-icons set-fav-card"
-          [class.material-icons-outlined]="
-            !favoriteStatus[postDetails?.tableRefGuid]
-          "
-          [class.fill]="favoriteStatus[postDetails?.tableRefGuid]"
-          [class.active]="favoriteStatus[postDetails?.tableRefGuid]"
-          (click)="
-            toggleFavorite(
-              $event,
-              postDetails?.tableRefGuid,
-              postDetails?.categoryId
-            )
-          "
-          title="Add in Wishlist"
-        >
-          {{
-            favoriteStatus[postDetails?.tableRefGuid]
-              ? "favorite"
-              : "favorite_border"
-          }}
-        </span>
-        <div class="pg-card">
+
+    <div class="pd-layout">
+      <!-- ============ MAIN COLUMN ============ -->
+      <div class="pd-main">
+        <!-- Gallery -->
+        <mat-card class="border-1 mb-2 pd-gallery-card">
           <span
-            class="material-icons pg_arrow pg_arrow_left"
-            (click)="showPrevious()"
-            [ngClass]="{ disable: imageIndex <= 0 }"
+            class="material-icons set-fav-card"
+            [class.material-icons-outlined]="
+              !favoriteStatus[postDetails?.tableRefGuid]
+            "
+            [class.fill]="favoriteStatus[postDetails?.tableRefGuid]"
+            [class.active]="favoriteStatus[postDetails?.tableRefGuid]"
+            (click)="
+              toggleFavorite(
+                $event,
+                postDetails?.tableRefGuid,
+                postDetails?.categoryId
+              )
+            "
+            title="Add in Wishlist"
           >
-            arrow_back_ios_new
+            {{
+              favoriteStatus[postDetails?.tableRefGuid]
+                ? "favorite"
+                : "favorite_border"
+            }}
           </span>
-          <div class="postImgCont">
-            <img
-              class="details-post-img"
-              [src]="imagesList[imageIndex].imageURL"
-              alt=""
-            />
+          <div class="pg-card">
+            <span
+              class="material-icons pg_arrow pg_arrow_left"
+              (click)="showPrevious()"
+              [ngClass]="{ disable: imageIndex <= 0 }"
+            >
+              arrow_back_ios_new
+            </span>
+            <div class="postImgCont">
+              <img
+                class="details-post-img"
+                [src]="imagesList[imageIndex].imageURL"
+                alt=""
+              />
+            </div>
+            <span
+              class="material-icons pg_arrow"
+              (click)="showNext()"
+              [ngClass]="{ disable: imageIndex >= imagesList.length - 1 }"
+            >
+              arrow_forward_ios
+            </span>
           </div>
-          <span
-            class="material-icons pg_arrow"
-            (click)="showNext()"
-            [ngClass]="{ disable: imageIndex >= imagesList.length - 1 }"
-          >
-            arrow_forward_ios
-          </span>
-        </div>
-        <div class="img-feature">
-          <p class="img_count">
-            <span class="material-icons"> photo_camera </span>
+          <div class="img-feature">
+            <p class="img_count">
+              <span class="material-icons"> photo_camera </span>
+              {{ imageIndex + 1 }} of {{ imagesList.length }}
+            </p>
+            <p class="zoom-in" (click)="zoomIn()">
+              <span class="material-icons-outlined"> zoom_in </span>
+            </p>
+          </div>
+          <div class="zoom-controls">
+            <span
+              class="material-icons-outlined"
+              *ngIf="isZoomed"
+              (click)="closeZoom()"
+              >close</span
+            >
+          </div>
+          <div class="pg-arrows-after">
+            <span
+              class="material-icons pg_arrow_left_after"
+              (click)="showPrevious()"
+              *ngIf="isZoomed"
+              [ngClass]="{ disable: imageIndex <= 0 }"
+            >
+              arrow_back_ios_new
+            </span>
+            <span
+              class="material-icons pg_arrow_right_after"
+              (click)="showNext()"
+              *ngIf="isZoomed"
+              [ngClass]="{ disable: imageIndex >= imagesList.length - 1 }"
+            >
+              arrow_forward_ios
+            </span>
+          </div>
+          <p class="img_count_after" *ngIf="isZoomed">
+            <span class="material-icons">photo_camera</span>
             {{ imageIndex + 1 }} of {{ imagesList.length }}
           </p>
-          <p class="zoom-in" (click)="zoomIn()">
-            <span class="material-icons-outlined"> zoom_in </span>
-          </p>
-        </div>
-        <div class="zoom-controls">
-          <span
-            class="material-icons-outlined"
-            *ngIf="isZoomed"
-            (click)="closeZoom()"
-            >close</span
-          >
-        </div>
-        <div class="pg-arrows-after">
-          <span
-            class="material-icons pg_arrow_left_after"
-            (click)="showPrevious()"
-            *ngIf="isZoomed"
-            [ngClass]="{ disable: imageIndex <= 0 }"
-          >
-            arrow_back_ios_new
-          </span>
-          <span
-            class="material-icons pg_arrow_right_after"
-            (click)="showNext()"
-            *ngIf="isZoomed"
-            [ngClass]="{ disable: imageIndex >= imagesList.length - 1 }"
-          >
-            arrow_forward_ios
-          </span>
-        </div>
-        <p class="img_count_after" *ngIf="isZoomed">
-          <span class="material-icons">photo_camera</span>
-          {{ imageIndex + 1 }} of {{ imagesList.length }}
-        </p>
-      </mat-card>
-      <div class="col-5 h200 md-display-none">
-        <mat-card class="border-1 ml mb-2 pt-10 md-display-none">
-          <mat-card-title>
+        </mat-card>
+
+        <!-- Price card — mobile only -->
+        <mat-card class="border-1 mb-2 pd-price-card md-display-block">
+          <mat-card-title class="pd-price-title">
             ₹<span class="text-blue">{{
               formatPrice(postDetails?.price)
             }}</span>
-            |
-            <span class="date-added">
-              {{ formatDate(postDetails?.createdOn) }}</span
-            >
+            <span class="date-added-pill">{{
+              formatDate(postDetails?.createdOn)
+            }}</span>
           </mat-card-title>
           <mat-card-content class="description">
-            <p style="margin: 0">{{ postDetails?.title }}</p>
+            <p style="margin: 0" class="pd-listing-title">
+              {{ postDetails?.title }}
+            </p>
+            <p class="pd-listing-sub">
+              {{ postDetails?.year || "" }}
+              {{
+                postDetails?.kmDriven
+                  ? " - " + postDetails.kmDriven + " kms"
+                  : ""
+              }}
+            </p>
             <div class="loc-date">
+              <span class="material-icons-outlined pd-loc-icon"
+                >location_on</span
+              >
               <p class="loc">
                 {{ postDetails?.nearBy }}, {{ postDetails?.city }},
                 {{ postDetails?.state }}
               </p>
-              <!-- <p class="date">{{ formatDate(postDetails?.createdOn) }}</p> -->
             </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class="mt-10 border-1 ml mb-2 pt-10 md-display-none">
+
+        <!-- Description -->
+        <mat-card class="border-1 mb-2 pd-description-card">
+          <mat-card-title>Description</mat-card-title>
+          <mat-card-content class="mt-10">
+            <p
+              class="description-content"
+              [innerHTML]="postDetails?.discription"
+            ></p>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Seller card — mobile only -->
+        <mat-card class="border-1 mb-2 pd-seller-card md-display-block">
+          <mat-card-title>{{ postDetails?.name }}</mat-card-title>
+          <mat-card-content>
+            <div class="seller-phone">
+              <div class="seller-phone-reveal">
+                <div class="seller-phone-number">
+                  <span class="material-icons pd-phone-icon-circle">
+                    call
+                  </span>
+                  <h2 class="seller-phone-number-title">
+                    {{
+                      isPhoneNumberHidden
+                        ? postDetails?.mobile.slice(0, -4) + "XXXX"
+                        : postDetails?.mobile
+                    }}
+                  </h2>
+                </div>
+                <button
+                  class="button button--secondary reveal-button"
+                  (click)="revealPhoneNumber()"
+                  [disabled]="!isPhoneNumberHidden"
+                  [ngClass]="{ 'disabled-button': !isPhoneNumberHidden }"
+                >
+                  Reveal
+                </button>
+              </div>
+            </div>
+            <div>
+              <div class="action-btns">
+                <button
+                  class="button button--secondary reporter"
+                  (click)="toggleReportOptions()"
+                >
+                  <span class="material-icons-outlined rpt-icon-lg"
+                    >report</span
+                  >
+                  Report
+                  <span class="material-icons-outlined rpt-icon">{{
+                    iconName
+                  }}</span>
+                </button>
+              </div>
+              <p class="report-success-title" *ngIf="showSuccessMessage">
+                Your report has been successfully submited.
+              </p>
+              <div class="report-options" *ngIf="showReportOptions">
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="m-radio-two"
+                    value="1"
+                    [checked]="selectedRadioValue === 1"
+                    (click)="setAdsReportType(1)"
+                  />
+                  <label for="m-radio-two">This is illegal/fraudulent</label>
+                </div>
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="m-radio-six"
+                    value="2"
+                    [checked]="selectedRadioValue === 2"
+                    (click)="setAdsReportType(2)"
+                  />
+                  <label for="m-radio-six">This ad is spam</label>
+                </div>
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="m-radio-three"
+                    value="3"
+                    [checked]="selectedRadioValue === 3"
+                    (click)="setAdsReportType(3)"
+                  />
+                  <label for="m-radio-three">This ad is a duplicate</label>
+                </div>
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="m-radio-four"
+                    value="4"
+                    [checked]="selectedRadioValue === 4"
+                    (click)="setAdsReportType(4)"
+                  />
+                  <label for="m-radio-four"
+                    >This ad is in the wrong category</label
+                  >
+                </div>
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="m-radio-one"
+                    value="5"
+                    [checked]="selectedRadioValue === 5"
+                    (click)="setAdsReportType(5)"
+                  />
+                  <label for="m-radio-one"
+                    >The ad goes against <a>posting rules</a></label
+                  >
+                </div>
+                <div class="form-element form-element--input claxified-radio">
+                  <input
+                    type="radio"
+                    class="radio-switch hide-visually"
+                    id="m-radio-five"
+                    value="6"
+                    [checked]="selectedRadioValue === 6"
+                    (click)="setAdsReportType(6)"
+                  />
+                  <label for="m-radio-five">Others</label>
+                </div>
+                <textarea
+                  placeholder="Please provide more information"
+                  class="more-info"
+                  [(ngModel)]="reportDetail"
+                ></textarea>
+                <div class="display-warning" *ngIf="showOptionWarning">
+                  Please select one option.
+                </div>
+                <div class="action-btns">
+                  <button
+                    class="button button--secondary close-reporter"
+                    (click)="toggleReportOptions()"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="button button--secondary send-report"
+                    (click)="sendReport()"
+                  >
+                    Send Report
+                  </button>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Safety carousel — mobile only -->
+        <mat-card class="border-1 mb-2 pd-safety-card md-display-block">
+          <div class="text-carousel carousel">
+            <div class="text-carousel-title-container">
+              <div class="text-carousel-title">Stay Safe</div>
+              <div class="text-carousel-logo logo-image">
+                <span>Claxified</span>
+              </div>
+            </div>
+            <div class="loaded carousel-container">
+              <ul class="carousel-inner remove-outline-onfocus">
+                <li class="carousel-item np">
+                  <p>{{ carouselItems[currentSlideIndex] }}</p>
+                  <div class="slide-overlay"></div>
+                </li>
+              </ul>
+              <div class="carousel-controls-container">
+                <button
+                  class="slide-panel prev"
+                  [disabled]="currentSlideIndex === 0"
+                  (click)="prevItem()"
+                >
+                  <span class="material-icons-outlined pgns-icon"
+                    >chevron_left</span
+                  >
+                </button>
+                <button
+                  class="slide-panel next"
+                  (click)="nextItem()"
+                  [disabled]="currentSlideIndex === carouselItems.length - 1"
+                >
+                  <span class="material-icons-outlined pgns-icon"
+                    >chevron_right</span
+                  >
+                </button>
+              </div>
+              <div class="carousel-counter-container">
+                <div class="carousel-counter">
+                  {{ currentSlideIndex + 1 }} of {{ carouselItems.length }}
+                </div>
+              </div>
+            </div>
+            <div class="link carousel-link text-carousel-link">
+              <a routerLink="/user/account/help" target="_blank"
+                >Read All Safety Tips</a
+              >
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- Approve — mobile only, admin -->
+        <mat-card
+          class="border-1 mb-2 pd-approve-card md-display-block"
+          *ngIf="isAdmin && !postDetails.isVerified"
+        >
+          <button
+            class="approve-btn button--secondary"
+            (click)="
+              verifyAdd(postDetails.categoryId, postDetails.tableRefGuid)
+            "
+          >
+            Approve Now
+          </button>
+        </mat-card>
+      </div>
+
+      <!-- ============ SIDEBAR — desktop only ============ -->
+      <aside class="pd-sidebar md-display-none">
+        <mat-card class="border-1 mb-2 pd-price-card">
+          <mat-card-title class="pd-price-title">
+            ₹<span class="text-blue">{{
+              formatPrice(postDetails?.price)
+            }}</span>
+            <span class="date-added-pill">{{
+              formatDate(postDetails?.createdOn)
+            }}</span>
+          </mat-card-title>
+          <mat-card-content class="description">
+            <p style="margin: 0" class="pd-listing-title">
+              {{ postDetails?.title }}
+            </p>
+            <p class="pd-listing-sub">
+              {{ postDetails?.year || "" }}
+              {{
+                postDetails?.kmDriven
+                  ? " - " + postDetails.kmDriven + " kms"
+                  : ""
+              }}
+            </p>
+            <div class="loc-date">
+              <span class="material-icons-outlined pd-loc-icon"
+                >location_on</span
+              >
+              <p class="loc">
+                {{ postDetails?.nearBy }}, {{ postDetails?.city }},
+                {{ postDetails?.state }}
+              </p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="border-1 mb-2 pd-seller-card">
           <mat-card-title>{{ postDetails?.name }}</mat-card-title>
           <mat-card-content>
             <div class="seller-phone">
@@ -155,40 +432,29 @@
                     }}
                   </h2>
                 </div>
-                <a class="seller-phone-a"
-                  ><button
-                    class="button button--secondary reveal-button"
-                    (click)="revealPhoneNumber()"
-                    [disabled]="!isPhoneNumberHidden"
-                    [ngClass]="{ 'disabled-button': !isPhoneNumberHidden }"
-                  >
-                    Reveal
-                  </button></a
+                <button
+                  class="button button--secondary reveal-button"
+                  (click)="revealPhoneNumber()"
+                  [disabled]="!isPhoneNumberHidden"
+                  [ngClass]="{ 'disabled-button': !isPhoneNumberHidden }"
                 >
+                  Reveal
+                </button>
               </div>
             </div>
-            <!-- <button class="post w-100" mat-raised-button color="primary">
-              Chat with seller
-            </button> -->
-            <!-- <br />
-            <br /> -->
             <div>
               <div class="action-btns">
-                <!-- <button class="button button--secondary favourite">
-                  <span class="material-icons fvrt-icon"> favorite </span>
-                  Favourite
-                </button> -->
                 <button
                   class="button button--secondary reporter"
                   (click)="toggleReportOptions()"
                 >
-                  <span class="material-icons-outlined rpt-icon-lg">
-                    report
-                  </span>
+                  <span class="material-icons-outlined rpt-icon-lg"
+                    >report</span
+                  >
                   Report
-                  <span class="material-icons-outlined rpt-icon">
-                    {{ iconName }}
-                  </span>
+                  <span class="material-icons-outlined rpt-icon">{{
+                    iconName
+                  }}</span>
                 </button>
               </div>
               <p class="report-success-title" *ngIf="showSuccessMessage">
@@ -251,8 +517,8 @@
                     (click)="setAdsReportType(5)"
                   />
                   <label for="radio-one"
-                    >The ad goes against <a>posting rules</a>
-                  </label>
+                    >The ad goes against <a>posting rules</a></label
+                  >
                 </div>
                 <div class="form-element form-element--input claxified-radio">
                   <input
@@ -263,7 +529,7 @@
                     [checked]="selectedRadioValue === 6"
                     (click)="setAdsReportType(6)"
                   />
-                  <label for="radio-five">Others </label>
+                  <label for="radio-five">Others</label>
                 </div>
                 <textarea
                   placeholder="Please provide more information"
@@ -291,9 +557,8 @@
             </div>
           </mat-card-content>
         </mat-card>
-        <mat-card
-          class="mt-10 border-1 safe-ad-carousel ml mb-2 md-display-none"
-        >
+
+        <mat-card class="border-1 mb-2 pd-safety-card">
           <div class="text-carousel carousel">
             <div class="text-carousel-title-container">
               <div class="text-carousel-title">Stay Safe</div>
@@ -314,18 +579,18 @@
                   [disabled]="currentSlideIndex === 0"
                   (click)="prevItem()"
                 >
-                  <span class="material-icons-outlined pgns-icon">
-                    chevron_left
-                  </span>
+                  <span class="material-icons-outlined pgns-icon"
+                    >chevron_left</span
+                  >
                 </button>
                 <button
                   class="slide-panel next"
                   (click)="nextItem()"
                   [disabled]="currentSlideIndex === carouselItems.length - 1"
                 >
-                  <span class="material-icons-outlined pgns-icon">
-                    chevron_right
-                  </span>
+                  <span class="material-icons-outlined pgns-icon"
+                    >chevron_right</span
+                  >
                 </button>
               </div>
               <div class="carousel-counter-container">
@@ -335,12 +600,13 @@
               </div>
             </div>
             <div class="link carousel-link text-carousel-link">
-              <a routerLink="/help" target="_blank"> Read All Safety Tips </a>
+              <a routerLink="/help" target="_blank">Read All Safety Tips</a>
             </div>
           </div>
         </mat-card>
+
         <mat-card
-          class="mt-10 border-1 approve-btn-carousel ml md-display-none"
+          class="border-1 mb-2 pd-approve-card"
           *ngIf="isAdmin && !postDetails.isVerified"
         >
           <button
@@ -352,285 +618,7 @@
             Approve Now
           </button>
         </mat-card>
-      </div>
-      <mat-card class="border-1 mb-2 col-7 pt-10 md-display-block">
-        <mat-card-title>
-          ₹<span class="text-blue">{{ formatPrice(postDetails?.price) }}</span>
-          |
-          <span class="date-added">
-            {{ formatDate(postDetails?.createdOn) }}</span
-          >
-        </mat-card-title>
-        <mat-card-content class="description">
-          <p style="margin: 0">{{ postDetails?.title }}</p>
-          <div class="loc-date">
-            <p class="loc">
-              {{ postDetails?.nearBy }},{{ postDetails?.city }} ,
-              {{ postDetails?.state }}
-            </p>
-            <!-- <p class="date">{{ formatDate(postDetails?.createdOn) }}</p> -->
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="col-7 border-1 mb-2 pt-16">
-        <mat-card-title>Description</mat-card-title>
-        <mat-card-content class="mt-10">
-          <p
-            class="description-content"
-            [innerHTML]="postDetails?.discription"
-          ></p>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="border-1 mb-2 pt-16 col-7 md-display-block">
-        <mat-card-title>{{ postDetails?.name }}</mat-card-title>
-        <mat-card-content>
-          <div class="seller-phone">
-            <div class="seller-phone-reveal">
-              <div class="seller-phone-number">
-                <span class="material-icons phone-icon"> call </span>
-                <h2 class="seller-phone-number-title">
-                  {{
-                    isPhoneNumberHidden
-                      ? postDetails?.mobile.slice(0, -4) + "XXXX"
-                      : postDetails?.mobile
-                  }}
-                </h2>
-              </div>
-              <a class="seller-phone-a"
-                ><button
-                  class="button button--secondary reveal-button"
-                  (click)="revealPhoneNumber()"
-                  [disabled]="!isPhoneNumberHidden"
-                  [ngClass]="{ 'disabled-button': !isPhoneNumberHidden }"
-                >
-                  Reveal
-                </button></a
-              >
-            </div>
-          </div>
-          <!-- <button class="post w-100" mat-raised-button color="primary">
-            Chat with seller
-          </button> -->
-          <!-- <br />
-          <br /> -->
-          <div>
-            <div class="action-btns">
-              <!-- <button class="button button--secondary favourite">
-                <span class="material-icons fvrt-icon"> favorite </span>
-                Favourite
-              </button> -->
-              <button
-                class="button button--secondary reporter"
-                (click)="toggleReportOptions()"
-              >
-                <span class="material-icons-outlined rpt-icon-lg">
-                  report
-                </span>
-                Report
-                <span class="material-icons-outlined rpt-icon">
-                  {{ iconName }}
-                </span>
-              </button>
-            </div>
-            <p class="report-success-title" *ngIf="showSuccessMessage">
-              Your report has been successfully submited.
-            </p>
-            <div class="report-options" *ngIf="showReportOptions">
-              <div class="form-element form-element--input claxified-radio">
-                <input
-                  type="radio"
-                  class="radio-switch hide-visually"
-                  id="radio-two"
-                  value="1"
-                  [checked]="selectedRadioValue === 1"
-                  (click)="setAdsReportType(1)"
-                />
-                <label for="radio-two">This is illegal/fraudulent</label>
-              </div>
-              <div class="form-element form-element--input claxified-radio">
-                <input
-                  type="radio"
-                  class="radio-switch hide-visually"
-                  id="radio-six"
-                  value="2"
-                  [checked]="selectedRadioValue === 2"
-                  (click)="setAdsReportType(2)"
-                />
-                <label for="radio-six">This ad is spam</label>
-              </div>
-              <div class="form-element form-element--input claxified-radio">
-                <input
-                  type="radio"
-                  class="radio-switch hide-visually"
-                  id="radio-three"
-                  value="3"
-                  [checked]="selectedRadioValue === 3"
-                  (click)="setAdsReportType(3)"
-                />
-                <label for="radio-three">This ad is a duplicate</label>
-              </div>
-              <div class="form-element form-element--input claxified-radio">
-                <input
-                  type="radio"
-                  class="radio-switch hide-visually"
-                  id="radio-four"
-                  value="4"
-                  [checked]="selectedRadioValue === 4"
-                  (click)="setAdsReportType(4)"
-                />
-                <label for="radio-four">This ad is in the wrong category</label>
-              </div>
-              <div class="form-element form-element--input claxified-radio">
-                <input
-                  type="radio"
-                  class="radio-switch hide-visually"
-                  id="radio-one"
-                  value="5"
-                  [checked]="selectedRadioValue === 5"
-                  (click)="setAdsReportType(5)"
-                />
-                <label for="radio-one"
-                  >The ad goes against <a>posting rules</a>
-                </label>
-              </div>
-              <div class="form-element form-element--input claxified-radio">
-                <input
-                  type="radio"
-                  class="radio-switch hide-visually"
-                  id="radio-five"
-                  value="6"
-                  [checked]="selectedRadioValue === 6"
-                  (click)="setAdsReportType(6)"
-                />
-                <label for="radio-five">Others </label>
-              </div>
-              <textarea
-                placeholder="Please provide more information"
-                class="more-info"
-                [(ngModel)]="reportDetail"
-              ></textarea>
-              <div class="display-warning" *ngIf="showOptionWarning">
-                Please select one option.
-              </div>
-              <div class="action-btns">
-                <button
-                  class="button button--secondary close-reporter"
-                  (click)="toggleReportOptions()"
-                >
-                  Cancel
-                </button>
-                <button
-                  class="button button--secondary send-report"
-                  (click)="sendReport()"
-                >
-                  Send Report
-                </button>
-              </div>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="mt-10 border-1 safe-ad-carousel col-7 md-display-block">
-        <div class="text-carousel carousel">
-          <div class="text-carousel-title-container">
-            <div class="text-carousel-title">Stay Safe</div>
-            <div class="text-carousel-logo logo-image">
-              <span>Claxified</span>
-            </div>
-          </div>
-          <div class="loaded carousel-container">
-            <ul class="carousel-inner remove-outline-onfocus">
-              <li class="carousel-item np">
-                <p>{{ carouselItems[currentSlideIndex] }}</p>
-                <div class="slide-overlay"></div>
-              </li>
-            </ul>
-            <div class="carousel-controls-container">
-              <button
-                class="slide-panel prev"
-                [disabled]="currentSlideIndex === 0"
-                (click)="prevItem()"
-              >
-                <span class="material-icons-outlined pgns-icon">
-                  chevron_left
-                </span>
-              </button>
-              <button
-                class="slide-panel next"
-                (click)="nextItem()"
-                [disabled]="currentSlideIndex === carouselItems.length - 1"
-              >
-                <span class="material-icons-outlined pgns-icon">
-                  chevron_right
-                </span>
-              </button>
-            </div>
-            <div class="carousel-counter-container">
-              <div class="carousel-counter">
-                {{ currentSlideIndex + 1 }} of {{ carouselItems.length }}
-              </div>
-            </div>
-          </div>
-          <div class="link carousel-link text-carousel-link">
-            <a routerLink="/user/account/help" target="_blank">
-              Read All Safety Tips
-            </a>
-          </div>
-        </div>
-      </mat-card>
-      <mat-card
-        class="mt-10 border-1 approve-btn-carousel col-7 md-display-block"
-        *ngIf="isAdmin && !postDetails.isVerified"
-      >
-        <button
-          class="approve-btn button--secondary"
-          (click)="verifyAdd(postDetails.categoryId, postDetails.tableRefGuid)"
-        >
-          Approve Now
-        </button>
-      </mat-card>
-      <!-- <mat-card class="col-7 border-1 mb-2">
-        <mat-card-title>Relared Ads</mat-card-title>
-        <mat-card-content class="mt-10 flexi">
-          <img
-            class="cursor_prev"
-            src="../../../assets/left_arrow.svg"
-            alt=""
-            (click)="handlePrev()"
-            [ngClass]="{ disable: currentPage === 0 }"
-          />
-          <div class="flex ml-2 w-90">
-            <mat-card class="w-22" *ngFor="let card of displayedItems">
-              <img class="post_img" [src]="card.imageUrl" alt="" />
-              <mat-card-title class="title">{{
-                card?.price | currency : "INR"
-              }}</mat-card-title>
-              <mat-card-content class="description">
-                <p style="margin: 0">{{ card?.title }}</p>
-                <p *ngIf="card?.year">
-                  {{ card?.year || "" }} -
-                  {{ card?.kmDriven ? card.kmDriven + " kms" : "" }}
-                </p>
-                <div class="loc-date">
-                  <p class="loc">
-                    {{ card?.nearBy }},{{ card?.city }} , {{ card?.state }}
-                  </p>
-                  <p class="date">{{formatDate(card?.createdOn)}}</p>
-                </div>
-              </mat-card-content>
-            </mat-card>
-          </div>
-          <img
-            class="cursor_next"
-            src="../../../assets/right_arrow.svg"
-            alt=""
-            (click)="handleNext()"
-            [ngClass]="{
-              disable: currentPage >= relatedPosts.length / itemsPerPage - 1
-            }"
-          />
-        </mat-card-content>
-      </mat-card> -->
+      </aside>
     </div>
   </div>
 </div>

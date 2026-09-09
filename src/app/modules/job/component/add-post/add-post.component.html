@@ -385,8 +385,13 @@
     <div class="details">
       <h4>REVIEW YOUR DETAILS</h4>
       <div class="flx">
-        <div class="circle">
-          <img [src]="imageUrl" alt="Uploaded Image" />
+        <div class="avatar-wrapper">
+          <div class="circle">
+            <img [src]="imageUrl" alt="Uploaded Image" />
+          </div>
+          <button class="upload-button" (click)="selectProfilePicture()">
+            +
+          </button>
           <input
             type="file"
             id="upload"
@@ -394,9 +399,7 @@
             style="display: none"
           />
         </div>
-        <button class="upload-button" (click)="selectProfilePicture()">
-          +
-        </button>
+
         <div class="wd-300">
           <div class="wd-100">
             <p class="w-50">Name</p>

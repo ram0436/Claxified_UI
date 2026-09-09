@@ -13,9 +13,16 @@ import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { JwtInterceptor } from "./modules/auth/interceptor/JwtInterceptor";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { PagesModule } from "./pages/pages.module";
+import { MarketplaceComponent } from "./modules/marketplace/marketplace.component";
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
-  declarations: [AppComponent, DashboardComponent, PostMenuComponent],
+  declarations: [
+    AppComponent,
+    DashboardComponent,
+    PostMenuComponent,
+    MarketplaceComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -24,6 +31,7 @@ import { PagesModule } from "./pages/pages.module";
     SharedModule,
     DragDropModule,
     PagesModule,
+    FormsModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

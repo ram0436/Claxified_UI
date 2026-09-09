@@ -1,38 +1,49 @@
-import { Component, OnInit, HostListener, ElementRef } from "@angular/core";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { Router } from "@angular/router";
-import { UserService } from "src/app/modules/user/service/user.service";
-import { LoginComponent } from "../../../modules/user/component/login/login.component";
-import { SignupComponent } from "../../../modules/user/component/signup/signup.component";
-import { GadgetType } from "../../enum/GadgetType";
-import { VehicleType } from "../../enum/VehicleType";
-import { ElectronicApplianceType } from "../../enum/ElectronicApplianceType";
-import { FurnitureType } from "../../enum/FurnitureType";
-import { MatIconModule } from "@angular/material/icon";
-import { SportType } from "../../enum/SportType";
-import { PetType } from "../../enum/PetType";
-import { FashionType } from "../../enum/FashionType";
-import { BookType } from "../../enum/BookType";
-import { PropertyType } from "../../enum/PropertyType";
-import { JobType } from "../../enum/JobType";
-import { CommercialServiceType } from "../../enum/CommercialServiceType";
-import { Location } from "@angular/common";
-import { AdminDashboardService } from "src/app/modules/admin/service/admin-dashboard.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { CommonService } from "../../service/common.service";
+import {
+  Component,
+  OnInit,
+  HostListener,
+  ElementRef,
+  OnDestroy,
+} from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { UserService } from 'src/app/modules/user/service/user.service';
+import { LoginComponent } from '../../../modules/user/component/login/login.component';
+import { SignupComponent } from '../../../modules/user/component/signup/signup.component';
+import { GadgetType } from '../../enum/GadgetType';
+import { VehicleType } from '../../enum/VehicleType';
+import { ElectronicApplianceType } from '../../enum/ElectronicApplianceType';
+import { FurnitureType } from '../../enum/FurnitureType';
+import { MatIconModule } from '@angular/material/icon';
+import { SportType } from '../../enum/SportType';
+import { PetType } from '../../enum/PetType';
+import { FashionType } from '../../enum/FashionType';
+import { BookType } from '../../enum/BookType';
+import { PropertyType } from '../../enum/PropertyType';
+import { JobType } from '../../enum/JobType';
+import { CommercialServiceType } from '../../enum/CommercialServiceType';
+import { Location } from '@angular/common';
+import { AdminDashboardService } from 'src/app/modules/admin/service/admin-dashboard.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommonService } from '../../service/common.service';
+import { BusinessLoginComponent } from 'src/app/modules/business/components/business-login/business-login.component';
+import { BusinessService } from 'src/app/modules/business/service/business.service';
+import { BusinessListItem } from 'src/app/modules/business/model/Business';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: "app-header",
-  templateUrl: "./header.component.html",
-  styleUrls: ["./header.component.css"],
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit {
-  searchQuery: string = "";
-  locationSearchQuery: string = "";
+export class HeaderComponent implements OnInit, OnDestroy {
+  searchQuery: string = '';
+  locationSearchQuery: string = '';
   searchResults: any[] = [];
   allItems: any[] = [];
 
   isSlideVisible = false;
+  showCategories = false;
 
   mainCategories: any = [];
   subCategories: any = [];
@@ -52,9 +63,22 @@ export class HeaderComponent implements OnInit {
   isUserLogedIn: boolean = false;
   userData: any;
   imageUrl: string =
-    "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
+    'https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg';
+  defaultAvatar: string =
+    'https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg';
   dialogRef: MatDialogRef<any> | null = null;
   isAdmin: boolean = false;
+
+  // Business properties
+  businesses: BusinessListItem[] = [];
+  currentBusinessId: string = '';
+  showAllBusinesses: boolean = false;
+  showAllBusinessesMobile: boolean = false;
+  businessesMenuOpen: boolean = false;
+  private businessUpdatedSub!: Subscription;
+
+  hideSecondNav = false;
+
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -63,30 +87,28 @@ export class HeaderComponent implements OnInit {
     private AdminDashboardService: AdminDashboardService,
     private snackBar: MatSnackBar,
     private elRef: ElementRef,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private businessService: BusinessService,
   ) {
     this.userService.getData().subscribe((data) => {
-      var role = localStorage.getItem("role");
-      if (role != null && role == "Admin") this.isAdmin = true;
+      var role = localStorage.getItem('role');
+      if (role != null && role == 'Admin') this.isAdmin = true;
       else this.isAdmin = false;
     });
   }
 
-  hideSecondNav = false;
-
   // Function to handle the scroll event
-  @HostListener("window:scroll", [])
+  @HostListener('window:scroll', [])
   onWindowScroll() {
     const scrollPosition =
       window.pageYOffset ||
       document.documentElement.scrollTop ||
       document.body.scrollTop ||
       0;
-    // Adjust the value (e.g., 200) based on when you want the effect to trigger
     this.hideSecondNav = scrollPosition > 0;
   }
 
-  @HostListener("document:click", ["$event"])
+  @HostListener('document:click', ['$event'])
   handleDocumentClick(event: Event) {
     const clickedInside = this.elRef.nativeElement.contains(event.target);
     if (!clickedInside) {
@@ -95,11 +117,8 @@ export class HeaderComponent implements OnInit {
   }
 
   reloadApp() {
-    // Navigate to the root route (you can replace this with your desired route)
-    this.router.navigate(["/"]);
-
-    // Trigger a hard reload of the application
-    this.location.replaceState("/");
+    this.router.navigate(['/']);
+    this.location.replaceState('/');
     window.location.reload();
   }
 
@@ -107,33 +126,49 @@ export class HeaderComponent implements OnInit {
     this.isSlideVisible = !this.isSlideVisible;
   }
 
+  onImageError(event: any) {
+    const img = event.target;
+    img.style.display = 'none';
+    const parent = img.parentElement;
+    if (parent) {
+      let initials = parent.querySelector('.profile-initials');
+      if (!initials) {
+        initials = document.createElement('span');
+        initials.className = 'profile-initials';
+        initials.textContent = this.getUserInitials();
+        parent.appendChild(initials);
+      } else {
+        initials.style.display = 'flex';
+      }
+    }
+  }
+
   generateGadgetsLink(subCategory?: GadgetType) {
     if (subCategory) {
-      return "/Gadgets/view-posts?type=Gadget&sub=" + subCategory;
+      return '/Gadgets/view-posts?type=Gadget&sub=' + subCategory;
     } else {
-      return "/Gadgets/view-posts?type=Gadget";
+      return '/Gadgets/view-posts?type=Gadget';
     }
   }
 
   generateQueryParams() {
     const queryParams = {
-      type: "Gadget",
+      type: 'Gadget',
       sub: [
         this.gadgetsTypes.Mobiles,
         this.gadgetsTypes.Tablets,
         this.gadgetsTypes.Accessories,
       ],
     };
-
     return queryParams;
   }
 
   clearSearchText(): void {
-    this.searchQuery = "";
+    this.searchQuery = '';
   }
 
   clearLocationSearchText(): void {
-    this.locationSearchQuery = "";
+    this.locationSearchQuery = '';
   }
 
   getAllItems(): void {
@@ -141,7 +176,7 @@ export class HeaderComponent implements OnInit {
       (allItems: any[]) => {
         this.allItems = allItems;
       },
-      (error) => {}
+      (error) => {},
     );
   }
 
@@ -149,7 +184,7 @@ export class HeaderComponent implements OnInit {
     this.commonService.getAllCategory().subscribe((data: any) => {
       this.mainCategories = data;
       this.mainCategories.forEach((category: any) =>
-        this.getSubCategory(category)
+        this.getSubCategory(category),
       );
     });
   }
@@ -163,30 +198,30 @@ export class HeaderComponent implements OnInit {
   }
 
   getMaterialIconForCategory(categoryName: string): string {
-    if (categoryName === "Gadgets") {
-      return "devices_other";
-    } else if (categoryName === "Vehicles") {
-      return "directions_car_filled";
-    } else if (categoryName === "Properties") {
-      return "maps_home_work";
-    } else if (categoryName === "Jobs") {
-      return "work_outline";
-    } else if (categoryName === "Electronics") {
-      return "tv";
-    } else if (categoryName === "Furniture") {
-      return "bed";
-    } else if (categoryName === "Books") {
-      return "auto_stories";
-    } else if (categoryName === "Sports") {
-      return "sports_soccer";
-    } else if (categoryName === "Pets") {
-      return "cruelty_free";
-    } else if (categoryName === "Fashion") {
-      return "watch";
-    } else if (categoryName === "Commercial Services") {
-      return "electrical_services";
+    if (categoryName === 'Gadgets') {
+      return 'devices_other';
+    } else if (categoryName === 'Vehicles') {
+      return 'directions_car_filled';
+    } else if (categoryName === 'Properties') {
+      return 'maps_home_work';
+    } else if (categoryName === 'Jobs') {
+      return 'work_outline';
+    } else if (categoryName === 'Electronics') {
+      return 'tv';
+    } else if (categoryName === 'Furniture') {
+      return 'bed';
+    } else if (categoryName === 'Books') {
+      return 'auto_stories';
+    } else if (categoryName === 'Sports') {
+      return 'sports_soccer';
+    } else if (categoryName === 'Pets') {
+      return 'cruelty_free';
+    } else if (categoryName === 'Fashion') {
+      return 'watch';
+    } else if (categoryName === 'Commercial Services') {
+      return 'electrical_services';
     }
-    return "devices_other";
+    return 'devices_other';
   }
 
   getRouterLinkForCategory(categoryName: any) {
@@ -198,266 +233,265 @@ export class HeaderComponent implements OnInit {
   getRouterLinkForSubCategory(categoryName: string, subCategoryName: string) {
     const categoryRoutes: { [key: string]: { [key: string]: any } } = {
       Vehicles: {
-        Cars: { type: "Vehicles", sub: this.vehicleTypes.Car },
-        Bikes: { type: "Vehicles", sub: this.vehicleTypes.Bike },
-        Scooty: { type: "Vehicles", sub: this.vehicleTypes.Scooty },
-        Bicycle: { type: "Vehicles", sub: this.vehicleTypes.Bicycle },
-        "Spare parts": { type: "Vehicles", sub: this.vehicleTypes.SpareParts },
-        Others: { type: "Vehicles", sub: this.vehicleTypes.Others },
+        Cars: { type: 'Vehicles', sub: this.vehicleTypes.Car },
+        Bikes: { type: 'Vehicles', sub: this.vehicleTypes.Bike },
+        Scooty: { type: 'Vehicles', sub: this.vehicleTypes.Scooty },
+        Bicycle: { type: 'Vehicles', sub: this.vehicleTypes.Bicycle },
+        'Spare parts': { type: 'Vehicles', sub: this.vehicleTypes.SpareParts },
+        Others: { type: 'Vehicles', sub: this.vehicleTypes.Others },
       },
       Gadgets: {
-        Mobiles: { type: "Gadgets", sub: this.gadgetsTypes.Mobiles },
-        Tablets: { type: "Gadgets", sub: this.gadgetsTypes.Tablets },
-        Accessories: { type: "Gadgets", sub: this.gadgetsTypes.Accessories },
-        Others: { type: "Gadgets", sub: this.gadgetsTypes.Others },
+        Mobiles: { type: 'Gadgets', sub: this.gadgetsTypes.Mobiles },
+        Tablets: { type: 'Gadgets', sub: this.gadgetsTypes.Tablets },
+        Accessories: { type: 'Gadgets', sub: this.gadgetsTypes.Accessories },
+        Others: { type: 'Gadgets', sub: this.gadgetsTypes.Others },
       },
       Properties: {
-        "For Sale: Houses & Apartments": {
-          type: "Properties",
+        'For Sale: Houses & Apartments': {
+          type: 'Properties',
           sub: this.propertyTypes.ForSaleHousesApartments,
         },
-        "For Rent: Houses & Apartments": {
-          type: "Properties",
+        'For Rent: Houses & Apartments': {
+          type: 'Properties',
           sub: this.propertyTypes.ForRentHousesApartments,
         },
-        "Lands & Plot": {
-          type: "Properties",
+        'Lands & Plot': {
+          type: 'Properties',
           sub: this.propertyTypes.LandsAndPlot,
         },
-        "For Rent: Shop & Offices": {
-          type: "Properties",
+        'For Rent: Shop & Offices': {
+          type: 'Properties',
           sub: this.propertyTypes.ForRentShopOffices,
         },
-        "For Sale: Shops & Offices": {
-          type: "Properties",
+        'For Sale: Shops & Offices': {
+          type: 'Properties',
           sub: this.propertyTypes.ForSaleShopsOffices,
         },
-        "PG & Guest Houses": {
-          type: "Properties",
+        'PG & Guest Houses': {
+          type: 'Properties',
           sub: this.propertyTypes.PGAndGuestHouses,
         },
-        Others: { type: "Properties", sub: this.propertyTypes.Others },
+        Others: { type: 'Properties', sub: this.propertyTypes.Others },
       },
       Jobs: {
-        "Data Entry & Back Office": {
-          type: "Jobs",
+        'Data Entry & Back Office': {
+          type: 'Jobs',
           sub: this.jobTypes.DataEntryAndBackOffice,
         },
-        "Media & Entertainment": {
-          type: "Jobs",
+        'Media & Entertainment': {
+          type: 'Jobs',
           sub: this.jobTypes.MediaEntertainment,
         },
-        "Sales & Marketting": {
-          type: "Jobs",
+        'Sales & Marketting': {
+          type: 'Jobs',
           sub: this.jobTypes.SalesAndMarketting,
         },
-        "BPO & Telecaller": {
-          type: "Jobs",
+        'BPO & Telecaller': {
+          type: 'Jobs',
           sub: this.jobTypes.BPOAndTelecaller,
         },
-        "Health Care & Hospitility": {
-          type: "Jobs",
+        'Health Care & Hospitility': {
+          type: 'Jobs',
           sub: this.jobTypes.HealthCareAndHospitility,
         },
-        "Office Assistant": {
-          type: "Jobs",
+        'Office Assistant': {
+          type: 'Jobs',
           sub: this.jobTypes.OfficeAssistant,
         },
-        "Retail & Store Jobs": {
-          type: "Jobs",
+        'Retail & Store Jobs': {
+          type: 'Jobs',
           sub: this.jobTypes.RetailAndStore,
         },
-        "Delivery & Collection": {
-          type: "Jobs",
+        'Delivery & Collection': {
+          type: 'Jobs',
           sub: this.jobTypes.DeliveryAndCollection,
         },
-        Teacher: { type: "Jobs", sub: this.jobTypes.TeacherAndTrainer },
-        "Cook,driver & security": {
-          type: "Jobs",
+        Teacher: { type: 'Jobs', sub: this.jobTypes.TeacherAndTrainer },
+        'Cook,driver & security': {
+          type: 'Jobs',
           sub: this.jobTypes.CookAndDriverAndSecurity,
         },
-        "Receptionist & Front Office": {
-          type: "Jobs",
+        'Receptionist & Front Office': {
+          type: 'Jobs',
           sub: this.jobTypes.ReceptionistAndFrontOffice,
         },
-        "Operator & Technician": {
-          type: "Jobs",
+        'Operator & Technician': {
+          type: 'Jobs',
           sub: this.jobTypes.OperatorAndTechnician,
         },
-        "IT & Software": { type: "Jobs", sub: this.jobTypes.ITAndSoftware },
-        "Hotel & Travel": { type: "Jobs", sub: this.jobTypes.HotelAndTravel },
-        Accountant: { type: "Jobs", sub: this.jobTypes.FinanceAndAccounting },
-        Others: { type: "Jobs", sub: this.jobTypes.Others },
+        'IT & Software': { type: 'Jobs', sub: this.jobTypes.ITAndSoftware },
+        'Hotel & Travel': { type: 'Jobs', sub: this.jobTypes.HotelAndTravel },
+        Accountant: { type: 'Jobs', sub: this.jobTypes.FinanceAndAccounting },
+        Others: { type: 'Jobs', sub: this.jobTypes.Others },
       },
       Electronics: {
         TV: {
-          type: "Electronics",
+          type: 'Electronics',
           sub: this.ElectronicAppliancesTypes.TV,
         },
         Kitchen: {
-          type: "Electronics",
+          type: 'Electronics',
           sub: this.ElectronicAppliancesTypes.Kitchen,
         },
-        "Computer & Laptop": {
-          type: "Electronics",
+        'Computer & Laptop': {
+          type: 'Electronics',
           sub: this.ElectronicAppliancesTypes.Computer,
         },
-        "Camera & Lenses": {
-          type: "Electronics",
+        'Camera & Lenses': {
+          type: 'Electronics',
           sub: this.ElectronicAppliancesTypes.Camera,
         },
-        "Games & Entertainment": {
-          type: "Electronics",
+        'Games & Entertainment': {
+          type: 'Electronics',
           sub: this.ElectronicAppliancesTypes.GamesEntertainment,
         },
         Refrigrator: {
-          type: "Electronics",
+          type: 'Electronics',
           sub: this.ElectronicAppliancesTypes.Refrigrator,
         },
-        "Computer Accessories": {
-          type: "Electronics",
+        'Computer Accessories': {
+          type: 'Electronics',
           sub: this.ElectronicAppliancesTypes.ComputerAccessories,
         },
         AC: {
-          type: "Electronics",
+          type: 'Electronics',
           sub: this.ElectronicAppliancesTypes.AC,
         },
-        "Washing Machine": {
-          type: "Electronics",
+        'Washing Machine': {
+          type: 'Electronics',
           sub: this.ElectronicAppliancesTypes.WashingMachine,
         },
         Others: {
-          type: "Electronics",
+          type: 'Electronics',
           sub: this.ElectronicAppliancesTypes.Others,
         },
       },
       Furniture: {
-        "Sofa & Dining": {
-          type: "Furniture",
+        'Sofa & Dining': {
+          type: 'Furniture',
           sub: this.furnitureTypes.SofaAndDining,
         },
-        Beds: { type: "Furniture", sub: this.furnitureTypes.Beds },
-        "Kids Furniture": {
-          type: "Furniture",
+        Beds: { type: 'Furniture', sub: this.furnitureTypes.Beds },
+        'Kids Furniture': {
+          type: 'Furniture',
           sub: this.furnitureTypes.KidsFurniture,
         },
         Others: {
-          type: "Furniture",
+          type: 'Furniture',
           sub: this.furnitureTypes.OtherHouseholdItems,
         },
       },
       Books: {
-        "Science & Technology": {
-          type: "Books",
+        'Science & Technology': {
+          type: 'Books',
           sub: this.bookTypes.ScienceAndTechnology,
         },
-        "Business & Management": {
-          type: "Books",
+        'Business & Management': {
+          type: 'Books',
           sub: this.bookTypes.BusinessAndManagement,
         },
-        "School & College": {
-          type: "Books",
+        'School & College': {
+          type: 'Books',
           sub: this.bookTypes.SchoolAndCollege,
         },
-        Competative: { type: "Books", sub: this.bookTypes.Competative },
-        Art: { type: "Books", sub: this.bookTypes.Art },
-        Others: { type: "Books", sub: this.bookTypes.Others },
+        Competative: { type: 'Books', sub: this.bookTypes.Competative },
+        Art: { type: 'Books', sub: this.bookTypes.Art },
+        Others: { type: 'Books', sub: this.bookTypes.Others },
       },
       Sports: {
-        "Gym & Fitness": {
-          type: "Sports",
+        'Gym & Fitness': {
+          type: 'Sports',
           sub: this.sportTypes.GymAndFitness,
         },
-        "Musical Instruments": {
-          type: "Sports",
+        'Musical Instruments': {
+          type: 'Sports',
           sub: this.sportTypes.MusicalInstruments,
         },
-        "Sports Equipment": {
-          type: "Sports",
+        'Sports Equipment': {
+          type: 'Sports',
           sub: this.sportTypes.SportsEquipment,
         },
-        Others: { type: "Sports", sub: this.sportTypes.OtherHobbies },
+        Others: { type: 'Sports', sub: this.sportTypes.OtherHobbies },
       },
       Pets: {
-        "Fishes & Aquarium": {
-          type: "Pets",
+        'Fishes & Aquarium': {
+          type: 'Pets',
           sub: this.petTypes.FishesAndAquarium,
         },
-        "Pet Food & Accessories": {
-          type: "Pets",
+        'Pet Food & Accessories': {
+          type: 'Pets',
           sub: this.petTypes.PetFoodAndAccessories,
         },
-        Dogs: { type: "Pets", sub: this.petTypes.Dogs },
-        Others: { type: "Pets", sub: this.petTypes.OtherPets },
+        Dogs: { type: 'Pets', sub: this.petTypes.Dogs },
+        Others: { type: 'Pets', sub: this.petTypes.OtherPets },
       },
       Fashion: {
-        Men: { type: "Fashion", sub: this.fashionTypes.Men },
-        Women: { type: "Fashion", sub: this.fashionTypes.Women },
-        Kids: { type: "Fashion", sub: this.fashionTypes.Kids },
-        Others: { type: "Fashion", sub: this.fashionTypes.Men },
+        Men: { type: 'Fashion', sub: this.fashionTypes.Men },
+        Women: { type: 'Fashion', sub: this.fashionTypes.Women },
+        Kids: { type: 'Fashion', sub: this.fashionTypes.Kids },
+        Others: { type: 'Fashion', sub: this.fashionTypes.Men },
       },
-      "Commercial Services": {
-        "Finance & Management": {
-          type: "Commercial Services",
+      'Commercial Services': {
+        'Finance & Management': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.FinanceAndManagement,
         },
-        "Education & Classess": {
-          type: "Commercial Services",
+        'Education & Classess': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.EducationAndClassess,
         },
-        "IT & Software": {
-          type: "Commercial Services",
+        'IT & Software': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.ITAndSoftware,
         },
-        "Tour & Travel": {
-          type: "Commercial Services",
+        'Tour & Travel': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.TourAndTravel,
         },
-        "Sales & Marketting": {
-          type: "Commercial Services",
+        'Sales & Marketting': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.SalesAndMarketting,
         },
-        "Electronics Repair & Services": {
-          type: "Commercial Services",
+        'Electronics Repair & Services': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.ElectronicsRepairAndServices,
         },
-        "Security & Cleaning": {
-          type: "Commercial Services",
+        'Security & Cleaning': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.SecurityAndCleaning,
         },
-        "Health & Beauty": {
-          type: "Commercial Services",
+        'Health & Beauty': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.HealthAndBeauty,
         },
-        "Kids & Child care": {
-          type: "Commercial Services",
+        'Kids & Child care': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.KidsAndChildcare,
         },
-        "Property & Repair": {
-          type: "Commercial Services",
+        'Property & Repair': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.PropertyAndRepair,
         },
-        "Video & Photograpghy": {
-          type: "Commercial Services",
+        'Video & Photograpghy': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.VedioAndPhotograpghy,
         },
-        "Legal & Documentation Service": {
-          type: "Commercial Services",
+        'Legal & Documentation Service': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.LegalAndDocumentaionService,
         },
-        "Packers & Movers": {
-          type: "Commercial Services",
+        'Packers & Movers': {
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.PackersAndMovers,
         },
         Others: {
-          type: "Commercial Services",
+          type: 'Commercial Services',
           sub: this.commercialServicTypes.Others,
         },
       },
     };
 
-    const defaultSubCategory = { type: categoryName, sub: "Others" };
-
+    const defaultSubCategory = { type: categoryName, sub: 'Others' };
     const routeData =
       categoryRoutes[categoryName]?.[subCategoryName] || defaultSubCategory;
     const route = `/${categoryName}/view-posts`;
@@ -474,38 +508,149 @@ export class HeaderComponent implements OnInit {
     ) {
       this.AdminDashboardService.searchAds(
         this.searchQuery,
-        this.locationSearchQuery
+        this.locationSearchQuery,
       ).subscribe(
         (results: any[]) => {
           this.searchResults = results;
         },
-        (error) => {}
+        (error) => {},
       );
     } else {
-      this.showNotification("Search query should have at least 3 characters");
+      this.showNotification('Search query should have at least 3 characters');
     }
   }
 
   showNotification(message: string): void {
-    this.snackBar.open(message, "Close", {
+    this.snackBar.open(message, 'Close', {
       duration: 5000,
-      horizontalPosition: "end",
-      verticalPosition: "top",
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
     });
   }
 
   ngOnInit() {
-    if (localStorage.getItem("authToken") != null) {
+    if (localStorage.getItem('authToken') != null) {
       this.isUserLogedIn = true;
       this.getUserData();
+      this.loadUserBusinesses();
     }
     this.userService.getData().subscribe((data) => {
       this.getUserData();
     });
-    var role = localStorage.getItem("role");
-    if (role != null && role == "Admin") this.isAdmin = true;
+    var role = localStorage.getItem('role');
+    if (role != null && role == 'Admin') this.isAdmin = true;
     else this.isAdmin = false;
     this.getAllCategory();
+
+    // Subscribe to business updates
+    this.businessUpdatedSub = this.businessService.businessUpdated$.subscribe(
+      (update) => {
+        const match = this.businesses.find(
+          (b) =>
+            b.businessId === update.businessId ||
+            (b as any).id === update.businessId,
+        );
+        if (match) {
+          match.businessName = update.businessName;
+          if (update.logoUrl) {
+            match.logoUrl = update.logoUrl;
+          }
+        }
+      },
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.businessUpdatedSub) {
+      this.businessUpdatedSub.unsubscribe();
+    }
+  }
+
+  loadUserBusinesses(): void {
+    const userId = Number(localStorage.getItem('id'));
+    if (!userId) return;
+
+    this.businessService.getUserBusinesses(userId).subscribe(
+      (businesses: BusinessListItem[]) => {
+        this.businesses = businesses || [];
+        this.showAllBusinesses = false;
+        this.showAllBusinessesMobile = false;
+        if (this.businesses.length > 0) {
+          this.currentBusinessId = this.businesses[0].businessId;
+        }
+      },
+      (error) => {},
+    );
+  }
+
+  getDisplayedBusinesses(): BusinessListItem[] {
+    if (this.showAllBusinesses || this.showAllBusinessesMobile) {
+      return this.businesses;
+    }
+    return this.businesses.slice(0, 3);
+  }
+
+  toggleBusinessesMenu(): void {
+    this.businessesMenuOpen = !this.businessesMenuOpen;
+  }
+
+  toggleShowAllBusinesses(event: Event): void {
+    event.stopPropagation();
+    this.showAllBusinesses = !this.showAllBusinesses;
+  }
+
+  toggleShowAllBusinessesInMobile(event: Event): void {
+    event.stopPropagation();
+    this.showAllBusinessesMobile = !this.showAllBusinessesMobile;
+  }
+
+  getInitials(name: string): string {
+    if (!name) return '?';
+    const words = name.trim().split(/\s+/);
+    const initials =
+      words.length === 1 ? words[0].substring(0, 2) : words[0][0] + words[1][0];
+    return initials.toUpperCase();
+  }
+
+  avatarGradient(name: string): string {
+    const gradients = [
+      'linear-gradient(135deg, #0d475c 0%, #1f9254 100%)',
+      'linear-gradient(135deg, #e75462 0%, #f4a261 100%)',
+      'linear-gradient(135deg, #6c5ce7 0%, #0065ff 100%)',
+      'linear-gradient(135deg, #00b894 0%, #0d475c 100%)',
+      'linear-gradient(135deg, #e75462 0%, #6c5ce7 100%)',
+    ];
+    let hash = 0;
+    for (let i = 0; i < (name || '').length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % gradients.length;
+    return gradients[index];
+  }
+
+  switchBusiness(biz: BusinessListItem): void {
+    const tabRefGuid = biz.businessId;
+    if (!tabRefGuid) {
+      return;
+    }
+    this.currentBusinessId = biz.businessId;
+    this.router.navigate(['/business/profile', tabRefGuid]);
+  }
+
+  goToBusinessDashboard() {
+    this.router.navigate(['/business/dashboard']);
+  }
+
+  goToBusinessProfile() {
+    this.router.navigate(['/business/profile']);
+  }
+
+  goToAccountSettings() {
+    this.router.navigate(['/user/account']);
+  }
+
+  goToAttributeMapping(): void {
+    this.router.navigate(['/business/admin/attribute-mapping']);
   }
 
   openLoginModal() {
@@ -518,47 +663,89 @@ export class HeaderComponent implements OnInit {
     }
 
     this.dialogRef = this.dialog.open(LoginComponent, {
-      width: "400px",
-      panelClass: "custom-dialog-container",
+      width: '400px',
+      panelClass: 'custom-dialog-container',
     });
 
-    const dialogRefElement = document.querySelector(".custom-dialog-container");
+    const dialogRefElement = document.querySelector('.custom-dialog-container');
     if (dialogRefElement) {
-      dialogRefElement.setAttribute("style", "margin-top: 50px");
+      dialogRefElement.setAttribute('style', 'margin-top: 150px');
     }
 
     this.dialogRef.afterClosed().subscribe((result) => {
-      if (localStorage.getItem("authToken") != null) this.isUserLogedIn = true;
+      if (localStorage.getItem('authToken') != null) {
+        this.isUserLogedIn = true;
+        this.loadUserBusinesses();
+      }
     });
   }
+
   openSignUpModal() {
     if (this.dialogRef) {
       this.dialogRef.close();
     }
 
-    this.dialogRef = this.dialog.open(SignupComponent, { width: "500px" });
+    this.dialogRef = this.dialog.open(SignupComponent, { width: '500px' });
 
     this.dialogRef.afterClosed().subscribe((result) => {
       this.isUserLogedIn = false;
     });
   }
+
+  openBusinessLoginModal() {
+    if (this.isSlideVisible) {
+      this.isSlideVisible = false;
+    }
+
+    const dialogRef = this.dialog.open(BusinessLoginComponent, {
+      width: '800px',
+      maxWidth: '95vw',
+      panelClass: 'business-login-dialog-container',
+      autoFocus: false,
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      if (localStorage.getItem('authToken') != null) {
+        this.loadUserBusinesses();
+      }
+    });
+  }
+
+  getUserInitials(): string {
+    if (!this.userData?.firstName) return 'U';
+    const name = this.userData.firstName;
+    const words = name.trim().split(/\s+/);
+    if (words.length === 1) {
+      return words[0].substring(0, 2).toUpperCase();
+    }
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+
+  isActiveRoute(route: string): boolean {
+    return this.router.url === route || this.router.url.startsWith(route + '/');
+  }
+
   logout() {
     if (this.isSlideVisible) {
       this.isSlideVisible = !this.isSlideVisible;
     }
-    if (localStorage.getItem("authToken") != null) {
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("role");
-      localStorage.removeItem("id");
-      localStorage.removeItem("userId");
+    if (localStorage.getItem('authToken') != null) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('role');
+      localStorage.removeItem('id');
+      localStorage.removeItem('userId');
       this.isUserLogedIn = false;
-      this.router.navigate(["/"]);
+      this.businesses = [];
+      this.showAllBusinesses = false;
+      this.showAllBusinessesMobile = false;
+      this.router.navigate(['/']);
     }
   }
+
   getUserData() {
-    if (localStorage.getItem("id") != null) {
+    if (localStorage.getItem('id') != null) {
       this.userService
-        .getUserById(Number(localStorage.getItem("id")))
+        .getUserById(Number(localStorage.getItem('id')))
         .subscribe((userData: any) => {
           this.userData = userData[0];
           if (this.userData.userImageList.length > 0) {
@@ -574,9 +761,16 @@ export class HeaderComponent implements OnInit {
   toggleExpandIcons(): void {
     this.expandIconVisible = !this.expandIconVisible;
   }
+
   postAdd() {
-    if (localStorage.getItem("id") != null)
-      this.router.navigate(["/post-menu"]);
+    if (localStorage.getItem('id') != null)
+      this.router.navigate(['/post-menu']);
     else this.openLoginModal();
+  }
+
+  getBusinessButtonImage(): string {
+    return this.isActiveRoute('/business')
+      ? 'https://cfdblob.blob.core.windows.net/image/Claxified271498.png'
+      : 'https://cfdblob.blob.core.windows.net/image/Claxified15891.png';
   }
 }

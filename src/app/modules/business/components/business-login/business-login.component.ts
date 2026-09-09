@@ -1,14 +1,26 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import {
+  Component,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { MatDialogRef } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { UserService } from "../../../user/service/user.service";
 import { BusinessService } from "../../service/business.service";
-import { BusinessRegisterRequest } from "../../model/Business";
+import {
+  BusinessRegisterRequest,
+  BusinessSubCategoryMapping,
+} from "../../model/Business";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { CommonService } from "src/app/shared/service/common.service";
 import { Overlay } from "@angular/cdk/overlay";
-import { MAT_SELECT_SCROLL_STRATEGY } from "@angular/material/select";
+import {
+  MAT_SELECT_SCROLL_STRATEGY,
+  MatSelect,
+} from "@angular/material/select";
 
 export function selectRepositionScrollStrategy(overlay: Overlay) {
   return () => overlay.scrollStrategies.reposition();
@@ -28,6 +40,29 @@ export function selectRepositionScrollStrategy(overlay: Overlay) {
   ],
 })
 export class BusinessLoginComponent implements OnInit, OnDestroy {
+  @ViewChild("subCategorySelect") subCategorySelect?: MatSelect;
+
+  @HostListener("document:click", ["$event"])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.subCategorySelect || !this.subCategorySelect.panelOpen) {
+      return;
+    }
+
+    const target = event.target as HTMLElement;
+
+    // Was the click inside the select trigger itself?
+    const triggerEl = this.subCategorySelect._elementRef.nativeElement;
+    const clickedTrigger = triggerEl.contains(target);
+
+    // Was the click inside the overlay panel (checkboxes/options)?
+    const panelEl = document.querySelector(".subcategory-select-panel");
+    const clickedPanel = panelEl ? panelEl.contains(target) : false;
+
+    if (!clickedTrigger && !clickedPanel) {
+      this.subCategorySelect.close();
+    }
+  }
+
   // =========================================================
   // BASIC DETAILS
   // =========================================================
@@ -94,7 +129,7 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
 
   businessCategoryId: number = 0;
 
-  businessSubCategoryId: number = 0;
+  selectedBusinessSubCategoryIds: number[] = [];
 
   businessTypeId: number = 0;
 
@@ -337,9 +372,14 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
   // =========================================================
 
   onBusinessCategoryChange() {
-    this.businessSubCategoryId = 0;
+    // Clear previously selected subcategories
+    this.selectedBusinessSubCategoryIds = [];
 
+    // Clear old subcategory list
     this.businessSubCategories = [];
+
+    // Clear subcategory validation message
+    this.businessSubCategoryErrorMessage = false;
 
     if (!this.businessCategoryId) {
       return;
@@ -347,11 +387,27 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
 
     this.businessService
       .getBusinessSubCategories(this.businessCategoryId)
-      .subscribe((data: any) => {
-        this.businessSubCategories = data;
+      .subscribe({
+        next: (data: any) => {
+          this.businessSubCategories = data || [];
+        },
+        error: (error) => {
+          this.businessSubCategories = [];
+        },
       });
   }
 
+  // =========================================================
+  // BUSINESS SUB CATEGORY SELECTION
+  // =========================================================
+
+  onBusinessSubCategoryChange(selectedIds: number[]): void {
+    this.selectedBusinessSubCategoryIds = selectedIds;
+
+    // Remove validation message once at least one is selected
+    this.businessSubCategoryErrorMessage =
+      this.selectedBusinessSubCategoryIds.length === 0;
+  }
   // =========================================================
   // STEP 1
   // GO TO ADDITIONAL FIELDS
@@ -550,7 +606,10 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
     // BUSINESS SUB CATEGORY
     // =======================================================
 
-    if (!this.businessSubCategoryId) {
+    if (
+      !this.selectedBusinessSubCategoryIds ||
+      this.selectedBusinessSubCategoryIds.length === 0
+    ) {
       this.businessSubCategoryErrorMessage = true;
 
       return;
@@ -712,11 +771,35 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
 
     payload.business.businessCategoryId = this.businessCategoryId;
 
-    payload.business.businessSubCategoryId = this.businessSubCategoryId;
-
     payload.business.businessTypeId = this.businessTypeId;
 
     payload.business.sellerTypeId = this.sellerTypeId;
+
+    // =======================================================
+    // BUSINESS SUB CATEGORY MAPPINGS
+    // =======================================================
+
+    payload.business.businessSubCategoryMappings =
+      this.selectedBusinessSubCategoryIds.map((subCategoryId: number) => {
+        const mapping = new BusinessSubCategoryMapping();
+
+        mapping.id = 0;
+        mapping.businessId = 0;
+
+        mapping.businessSubCategoryId = subCategoryId;
+        mapping.businessCategoryId = this.businessCategoryId;
+
+        mapping.createdBy = this.loggedInUserId;
+        mapping.createdOn = nowShort;
+
+        mapping.modifiedBy = this.loggedInUserId;
+        mapping.modifiedOn = nowShort;
+
+        mapping.isDeleted = false;
+        mapping.deletedBy = 0;
+
+        return mapping;
+      });
 
     // =======================================================
     // BUSINESS CONTACT

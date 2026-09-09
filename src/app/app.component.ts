@@ -13,10 +13,10 @@ export class AppComponent {
   showCommonHeader = true;
 
   constructor(private router: Router) {
-    this.router.events
-      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe((e) => {
-        this.showCommonHeader = !e.urlAfterRedirects.startsWith("/business");
-      });
+    // this.router.events
+    //   .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+    //   .subscribe((e) => {
+    //     this.showCommonHeader = !e.urlAfterRedirects.startsWith("/business");
+    //   });
   }
 }

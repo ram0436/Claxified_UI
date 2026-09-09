@@ -1,35 +1,37 @@
-import { Component, ViewChild, EventEmitter, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Filter } from 'src/app/shared/model/Filter';
-import { CommonService } from 'src/app/shared/service/common.service';
-import { GadgetService } from '../../service/gadget.service';
-import { MatSelect } from '@angular/material/select';
-import { Observable, map, startWith } from 'rxjs';
-import { FormControl } from '@angular/forms';
-import { MatSelectionList } from '@angular/material/list';
-import { MatAutocomplete } from '@angular/material/autocomplete';
+import { Component, ViewChild, EventEmitter, Output } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { Filter } from "src/app/shared/model/Filter";
+import { CommonService } from "src/app/shared/service/common.service";
+import { GadgetService } from "../../service/gadget.service";
+import { MatSelect } from "@angular/material/select";
+import { Observable, map, startWith } from "rxjs";
+import { FormControl } from "@angular/forms";
+import { MatSelectionList } from "@angular/material/list";
+import { MatAutocomplete } from "@angular/material/autocomplete";
 
 @Component({
-  selector: 'app-gadget-filter',
-  templateUrl: './gadget-filter.component.html',
-  styleUrls: ['./gadget-filter.component.css']
+  selector: "app-gadget-filter",
+  templateUrl: "./gadget-filter.component.html",
+  styleUrls: [
+    "./gadget-filter.component.css",
+    "../../../modulefilter.component.css",
+  ],
 })
 export class GadgetFilterComponent {
-
   @Output() resetClicked: EventEmitter<void> = new EventEmitter<void>();
 
   stateControl = new FormControl("");
   cityControl = new FormControl("");
   nearByControl = new FormControl("");
-  filteredStates!: Observable<{ id: number; name: string; }[]>;
-  filteredCities!: Observable<{ id: number; name: string; }[]>;
-  filteredNearBy!: Observable<{ id: number; name: string; }[]>;
+  filteredStates!: Observable<{ id: number; name: string }[]>;
+  filteredCities!: Observable<{ id: number; name: string }[]>;
+  filteredNearBy!: Observable<{ id: number; name: string }[]>;
   priceRange: number = 0;
   country: any;
   districts: any = [];
   cities: any = [];
   nearByPlaces: any = [];
-  selectedBrand: string = '';
+  selectedBrand: string = "";
   fromPrice = 0;
   toPrice = 0;
   brands: any = [];
@@ -37,18 +39,21 @@ export class GadgetFilterComponent {
   mainCategory: string = "";
   filterObj = new Filter();
   appliedFilters: any = [];
-  @ViewChild('brandMultiSelect') brandMultiSelect!: MatSelect;
-  @ViewChild('stateMatAutocomplete') stateAutocomplete!: MatAutocomplete;
-  @ViewChild('cityMatAutocomplete') cityAutocomplete!: MatAutocomplete;
-  @ViewChild('nearByMatAutocomplete') nearByAutocomplete!: MatAutocomplete;
+  @ViewChild("brandMultiSelect") brandMultiSelect!: MatSelect;
+  @ViewChild("stateMatAutocomplete") stateAutocomplete!: MatAutocomplete;
+  @ViewChild("cityMatAutocomplete") cityAutocomplete!: MatAutocomplete;
+  @ViewChild("nearByMatAutocomplete") nearByAutocomplete!: MatAutocomplete;
   @ViewChild(MatSelectionList)
   matSelectionList!: MatSelectionList;
 
   // Changes made by Hamza
-  filtersSelected: boolean = false; 
+  filtersSelected: boolean = false;
 
-  constructor(private commonService: CommonService, private route: ActivatedRoute,
-    private gadgetService: GadgetService) { }
+  constructor(
+    private commonService: CommonService,
+    private route: ActivatedRoute,
+    private gadgetService: GadgetService
+  ) {}
 
   ngOnInit() {
     this.commonService.getCountry().subscribe((data: any) => {
@@ -58,8 +63,8 @@ export class GadgetFilterComponent {
     this.route.queryParams.subscribe((params: any) => {
       this.subCategory = params.sub;
       this.mainCategory = params.type;
-      if(this.subCategory !=undefined)
-      this.filterObj.subCategoryId = Number(params.sub);
+      if (this.subCategory != undefined)
+        this.filterObj.subCategoryId = Number(params.sub);
       switch (this.subCategory) {
         case "1": {
           this.getMobileBrands();
@@ -73,46 +78,60 @@ export class GadgetFilterComponent {
     });
   }
 
-  closeFilters(){
+  clearFilters() {
+    this.resetFilters();
+    this.filtersSelected = false;
+    this.stateControl.patchValue("");
+    this.cityControl.patchValue("");
+    this.nearByControl.patchValue("");
+    this.fromPrice = 0;
+    this.toPrice = 0;
+    this.appliedFilters = [];
+    window.location.reload();
     this.resetClicked.emit();
   }
 
   getAllStates() {
-    this.commonService.getStatesByCountry(this.country.id).subscribe(data => {
+    this.commonService.getStatesByCountry(this.country.id).subscribe((data) => {
       this.districts = data;
       this.getFilteredStates();
     });
   }
   onDistrictChange(event: any) {
-    this.filterObj.state = (event.option.value == null) ? null : event.option.value.name;
+    this.filterObj.state =
+      event.option.value == null ? null : event.option.value.name;
     this.commonService.setData(this.filterObj);
     this.updateAppliedFilters("state", this.filterObj.state);
     if (this.filterObj.state == null)
-      this.appliedFilters = this.appliedFilters.filter((item: any) => (item.name != 'city' && item.name != 'nearBy'));
-    else
-      this.getCities(event.option.value.id);
+      this.appliedFilters = this.appliedFilters.filter(
+        (item: any) => item.name != "city" && item.name != "nearBy"
+      );
+    else this.getCities(event.option.value.id);
 
     this.filtersSelected = true; //Changes made by Hamza
   }
   getCities(stateId: Number) {
-    this.commonService.getCitiesByState(stateId).subscribe(data => {
+    this.commonService.getCitiesByState(stateId).subscribe((data) => {
       this.cities = data;
       this.getFilteredCities();
     });
   }
   onCityChange(event: any) {
-    this.filterObj.city = (event.option.value == null) ? null : event.option.value.name;
+    this.filterObj.city =
+      event.option.value == null ? null : event.option.value.name;
     this.commonService.setData(this.filterObj);
     this.updateAppliedFilters("city", this.filterObj.city);
     if (this.filterObj.city == null)
-      this.appliedFilters = this.appliedFilters.filter((item: any) => (item.name != 'nearBy'));
-    else
-      this.getNearByPlaces(event.option.value.id);
+      this.appliedFilters = this.appliedFilters.filter(
+        (item: any) => item.name != "nearBy"
+      );
+    else this.getNearByPlaces(event.option.value.id);
 
     this.filtersSelected = true; //Changes made by Hamza
   }
   onNearByChange(event: any) {
-    this.filterObj.nearBy = (event.option.value == null) ? null : event.option.value.name;
+    this.filterObj.nearBy =
+      event.option.value == null ? null : event.option.value.name;
     this.updateAppliedFilters("nearBy", this.filterObj.nearBy);
     this.commonService.setData(this.filterObj);
     this.filtersSelected = true; //Changes made by Hamza
@@ -123,17 +142,24 @@ export class GadgetFilterComponent {
     prices.push(Number(this.toPrice));
     this.filterObj.price = prices;
     this.commonService.setData(this.filterObj);
-    this.updateAppliedFilters("price", this.formatAmount(this.fromPrice) + " - " + this.formatAmount(this.toPrice));
+    this.updateAppliedFilters(
+      "price",
+      this.formatAmount(this.fromPrice) +
+        " - " +
+        this.formatAmount(this.toPrice)
+    );
     this.filtersSelected = true; //Changes made by Hamza
   }
   getMobileBrands() {
-    this.gadgetService.getMobileBrands().subscribe(data => {
+    this.gadgetService.getMobileBrands().subscribe((data) => {
       this.brands = data;
     });
   }
   onBrandSelect(event: any) {
     let brandIds = [];
-    this.appliedFilters = this.appliedFilters.filter((item: any) => item.name != 'brands');
+    this.appliedFilters = this.appliedFilters.filter(
+      (item: any) => item.name != "brands"
+    );
     for (let value of event.value) {
       brandIds.push(value.id);
       this.updateAppliedFilters("brands", value.brandName);
@@ -143,19 +169,23 @@ export class GadgetFilterComponent {
     this.filtersSelected = true; //Changes made by Hamza
   }
   getTabletBrands() {
-    this.gadgetService.getTabletBrands().subscribe(data => {
+    this.gadgetService.getTabletBrands().subscribe((data) => {
       this.brands = data;
     });
   }
   removeItem(item: any): void {
-    if (item.name == 'state') {
-      const cityIndex = this.appliedFilters.findIndex((item: any) => item.name == 'city');
+    if (item.name == "state") {
+      const cityIndex = this.appliedFilters.findIndex(
+        (item: any) => item.name == "city"
+      );
       if (cityIndex >= 0) {
         this.appliedFilters.splice(cityIndex, 1);
       }
     }
-    if (item.name == 'state' || item.name == 'city') {
-      const nearByIndex = this.appliedFilters.findIndex((item: any) => item.name == 'nearBy');
+    if (item.name == "state" || item.name == "city") {
+      const nearByIndex = this.appliedFilters.findIndex(
+        (item: any) => item.name == "nearBy"
+      );
       if (nearByIndex >= 0) {
         this.appliedFilters.splice(nearByIndex, 1);
       }
@@ -167,9 +197,9 @@ export class GadgetFilterComponent {
     }
   }
   formatAmount(amount: number): string {
-    return amount.toLocaleString('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return amount.toLocaleString("en-IN", {
+      style: "currency",
+      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
@@ -177,14 +207,23 @@ export class GadgetFilterComponent {
   updateAppliedFilters(filterName: string, value: any) {
     let matchFound = false;
     for (let i = 0; i < this.appliedFilters.length; i++) {
-      if (this.appliedFilters[i].name == filterName && (filterName == 'state' || filterName == 'city' || filterName == 'nearBy' || filterName == 'price' || filterName == 'kms')) {
+      if (
+        this.appliedFilters[i].name == filterName &&
+        (filterName == "state" ||
+          filterName == "city" ||
+          filterName == "nearBy" ||
+          filterName == "price" ||
+          filterName == "kms")
+      ) {
         matchFound = true;
-        (value == null) ? this.appliedFilters.splice(i, 1) : this.appliedFilters[i].value = value;
+        value == null
+          ? this.appliedFilters.splice(i, 1)
+          : (this.appliedFilters[i].value = value);
         break;
       }
     }
     if (!matchFound)
-      this.appliedFilters.push({ name: filterName, value: value })
+      this.appliedFilters.push({ name: filterName, value: value });
   }
   displayLocation(brand: any): string {
     return brand?.name || "";
@@ -195,12 +234,13 @@ export class GadgetFilterComponent {
       map((value) => this.filterLocations(value || "", this.districts))
     );
   }
-  filterLocations(value: any, dataArray: any[]): { id: number; name: string }[] {
+  filterLocations(
+    value: any,
+    dataArray: any[]
+  ): { id: number; name: string }[] {
     var filterValue = "";
-    if (typeof value == 'object')
-      filterValue = value.name.toLowerCase();
-    else
-      filterValue = value.toLowerCase();
+    if (typeof value == "object") filterValue = value.name.toLowerCase();
+    else filterValue = value.toLowerCase();
     return dataArray.filter(
       (data: any) => data.name.toLowerCase().indexOf(filterValue) === 0
     );
@@ -208,7 +248,12 @@ export class GadgetFilterComponent {
   updateFilterColumns(filter: any) {
     switch (filter.name) {
       case "brands":
-        this.removeOptionFromArray(this.brandMultiSelect, (this.filterObj.vehicelBrandId || []), "brandName", filter.value);
+        this.removeOptionFromArray(
+          this.brandMultiSelect,
+          this.filterObj.vehicelBrandId || [],
+          "brandName",
+          filter.value
+        );
         break;
       case "state":
         this.resetFilters();
@@ -226,7 +271,12 @@ export class GadgetFilterComponent {
     this.commonService.setData(this.filterObj);
   }
 
-  removeOptionFromArray(select: any, dataArray: any[], key: string | null, value: any) {
+  removeOptionFromArray(
+    select: any,
+    dataArray: any[],
+    key: string | null,
+    value: any
+  ) {
     const selectedOptions = select.value as any[];
     const index = selectedOptions.findIndex((option: any) => {
       if (key) {
@@ -250,7 +300,7 @@ export class GadgetFilterComponent {
     this.stateControl.patchValue("");
     this.cityControl.patchValue("");
     this.nearByControl.patchValue("");
-    this.stateAutocomplete.options.forEach(option => option.deselect());
+    this.stateAutocomplete.options.forEach((option) => option.deselect());
     this.filterObj.state = null;
     this.filterObj.city = null;
     this.filterObj.nearBy = null;
@@ -259,7 +309,7 @@ export class GadgetFilterComponent {
   resetCityAndNearby() {
     this.cityControl.patchValue("");
     this.nearByControl.patchValue("");
-    this.cityAutocomplete.options.forEach(option => option.deselect());
+    this.cityAutocomplete.options.forEach((option) => option.deselect());
     this.filterObj.city = null;
     this.filterObj.nearBy = null;
   }
@@ -267,7 +317,7 @@ export class GadgetFilterComponent {
   resetNearBy() {
     this.nearByControl.patchValue("");
     this.filterObj.nearBy = null;
-    this.nearByAutocomplete.options.forEach(option => option.deselect());
+    this.nearByAutocomplete.options.forEach((option) => option.deselect());
   }
 
   resetPrice() {
@@ -288,10 +338,10 @@ export class GadgetFilterComponent {
     );
   }
   getNearByPlaces(cityId: Number) {
-    this.commonService.getNearPlacesByCity(cityId).subscribe(data => {
+    this.commonService.getNearPlacesByCity(cityId).subscribe((data) => {
       this.nearByPlaces = data;
       this.getFilteredNearBy();
-    })
+    });
   }
 
   universalReset() {
@@ -302,15 +352,14 @@ export class GadgetFilterComponent {
     this.nearByControl.patchValue("");
     this.fromPrice = 0;
     this.toPrice = 0;
-    this.selectedBrand = '';
+    this.selectedBrand = "";
     this.resetClicked.emit();
 
-    this.filterObj = new Filter();  // Reset to initial filters
+    this.filterObj = new Filter(); // Reset to initial filters
     this.appliedFilters = [];
 
     this.filtersSelected = false;
 
     window.location.reload();
-    
   }
 }

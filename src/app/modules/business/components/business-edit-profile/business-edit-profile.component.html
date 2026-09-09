@@ -134,6 +134,7 @@
         <div class="field-row">
           <div class="field-half">
             <label class="field-label">Business Category</label>
+
             <mat-form-field appearance="outline">
               <mat-select
                 [(ngModel)]="business.businessCategoryId"
@@ -143,24 +144,44 @@
                 <mat-option
                   *ngFor="let cat of businessCategories"
                   [value]="cat.id"
-                  >{{ cat.name }}</mat-option
                 >
+                  {{ cat.name }}
+                </mat-option>
               </mat-select>
             </mat-form-field>
           </div>
+
           <div class="field-half">
-            <label class="field-label">Business Sub-Category</label>
+            <label class="field-label">Business Sub-Categories</label>
+
             <mat-form-field appearance="outline">
               <mat-select
-                [(ngModel)]="business.businessSubCategoryId"
-                placeholder="Select sub-category"
+                #subCategorySelect
+                panelClass="subcategory-select-panel"
+                [compareWith]="compareSubCategoryIds"
+                placeholder="{{
+                  !business.businessCategoryId
+                    ? 'Select a business category first'
+                    : businessSubCategories.length === 0
+                    ? 'No subcategories available'
+                    : 'Select business sub categories'
+                }}"
+                [(ngModel)]="selectedBusinessSubCategoryIds"
+                [disabled]="
+                  !business.businessCategoryId ||
+                  businessSubCategories.length === 0
+                "
+                multiple
+                (selectionChange)="onBusinessSubCategoryChange($event.value)"
               >
                 <mat-option
                   *ngFor="let sub of businessSubCategories"
                   [value]="sub.id"
-                  >{{ sub.name }}</mat-option
                 >
+                  {{ sub.name }}
+                </mat-option>
               </mat-select>
+              <mat-icon matSuffix> checklist </mat-icon>
             </mat-form-field>
           </div>
         </div>

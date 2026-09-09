@@ -1,32 +1,35 @@
-<div class="grid .sidebar-container">
+<div class="grid sidebar-container">
   <div class="filters-head">
     <div class="filter-heading">Filters</div>
     <div
       class="clear-filters"
       *ngIf="filtersSelected && appliedFilters.length > 0"
-      (click)="universalReset()"
+      (click)="clearFilters()"
     >
       Reset
     </div>
     <span
       class="material-icons-outlined cancel-icon md-db-icon"
-      (click)="closeFilters()"
+      (click)="clearFilters()"
     >
       cancel
     </span>
+    <iframe id="hiddenFrame" style="display: none"></iframe>
   </div>
   <!-- Price Range Filter -->
   <div>
     <div class="selected-states-container">
       <mat-chip-listbox>
-        <mat-chip-option
-          *ngFor="let filter of appliedFilters"
-          (removed)="removeItem(filter)"
-          >{{ filter.value }}
-          <button matChipRemove aria-label="Remove orange">
-            <mat-icon>cancel</mat-icon>
-          </button></mat-chip-option
-        >
+        <div class="selected-states">
+          <mat-chip-option
+            *ngFor="let filter of appliedFilters"
+            (removed)="removeItem(filter)"
+            >{{ filter.value }}
+            <button matChipRemove aria-label="Remove orange">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-option>
+        </div>
       </mat-chip-listbox>
     </div>
   </div>
@@ -59,7 +62,6 @@
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
-
   <mat-form-field
     appearance="fill"
     *ngIf="filterObj?.state"
@@ -119,25 +121,7 @@
     </mat-autocomplete>
   </mat-form-field>
 
-  <!-- Brand Filter -->
-  <mat-form-field
-    appearance="fill"
-    class="form-field-w-100"
-    *ngIf="subCategory != undefined"
-  >
-    <mat-label>Brand</mat-label>
-    <mat-select
-      #brandMultiSelect
-      [(ngModel)]="selectedBrand"
-      multiple
-      (selectionChange)="onBrandSelect($event)"
-    >
-      <mat-option *ngFor="let brand of brands" [value]="brand">{{
-        brand.brandName
-      }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <div class="example-label-container" *ngIf="subCategory != undefined">
+  <div class="example-label-container">
     <label id="example-name-label" class="example-name-label">Price</label>
     <div class="pd-5">
       <label class="example-value-label">{{
@@ -148,11 +132,7 @@
       }}</label>
     </div>
   </div>
-  <div
-    style="display: flex"
-    class="price-slider"
-    *ngIf="subCategory != undefined"
-  >
+  <div style="display: flex" class="price-slider">
     <mat-slider
       class="example-margin"
       min="0"
@@ -178,7 +158,7 @@
       class="md-apply-btn"
       mat-raised-button
       color="primary"
-      (click)="closeFilters()"
+      (click)="clearFilters()"
     >
       Apply
     </button>

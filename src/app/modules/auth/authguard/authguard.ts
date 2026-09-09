@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): boolean | UrlTree {
     const userRole = localStorage.getItem("role");
-    const allowedAdminRoutes = ["admin-dashboard", "business"];
+    const allowedAdminRoutes = ["admin-dashboard"];
     const allowedUserRoutes = [""];
     const commonRoutes = [
       "post-menu",

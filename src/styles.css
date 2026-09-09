@@ -12,6 +12,27 @@ body {
   background-color: #f9f9f9;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --clx-purple: #4b2aad;
+  --clx-pink: #ee3f7b;
+  --clx-text: #1f1a2e;
+  --clx-muted: #635b76;
+  --clx-border: #e4e1ec;
+}
+
 .cdk-overlay-container {
   z-index: 2000;
 }

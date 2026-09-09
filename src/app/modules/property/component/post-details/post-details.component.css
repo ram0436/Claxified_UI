@@ -184,7 +184,7 @@
     justify-content: center;
     gap: 2px;
     z-index: 1100;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 16px;
 }
 
@@ -254,7 +254,6 @@
     cursor: pointer;
   } */
 
-
 /* .details-card{
     margin-top: 1rem;
     display: flex;
@@ -279,7 +278,7 @@
 }
 
 .details-content>span:nth-child(1){
-    font-weight: 500;
+    font-weight: 600;
 }
   
 .details-title{
@@ -317,7 +316,7 @@
     font-size: 18px;
     line-height: 28px;
     letter-spacing: .01em;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .seller-phone-a{

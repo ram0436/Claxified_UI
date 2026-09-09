@@ -1,112 +1,188 @@
-.col-4{
-    width: 30%;
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+  background-color: #ffffff;
 }
-.flex{
-    display: flex;
-    gap: 20px;
-}
-.mt-35{
-    margin-top: 35px;
-}
-.w-100{
-    width: 100%;
-}
-.mat-mdc-card-title{
-    padding: 17px 17px;
-}
-.col-6{
-    width: 50%;
-}
-.circle {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    overflow: hidden;
-    position: relative;
-  }
 
-  .circle img {
-    width: 100%;
-    height: 100px;
+.container h2 {
+  font-size: 26px;
+  font-weight: 600;
+  color: #1c1533;
+  margin: 0 0 20px 0;
+}
+
+.col-4 {
+  width: 30%;
+}
+.col-6 {
+  width: 50%;
+}
+.flex {
+  display: flex;
+  gap: 20px;
+}
+.mt-35 {
+  margin-top: 35px;
+}
+.w-100 {
+  width: 100%;
+}
+.p-17 {
+  padding: 17px 17px;
+}
+
+/* Profile card */
+mat-card.col-6 {
+  border-radius: 20px !important;
+  border: 1px solid #eee6fa;
+  box-shadow: 0 4px 18px rgba(108, 76, 224, 0.08) !important;
+  background: linear-gradient(120deg, #fdfcff 0%, #f6ecf6 140%);
+}
+
+.mat-mdc-card-title {
+  padding: 17px 17px;
+  color: #1c1533;
+  font-weight: 600;
+}
+
+.circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 10px rgba(108, 76, 224, 0.18);
+}
+
+.circle img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+}
+
+.upload-button {
+  position: absolute;
+  top: 80%;
+  left: 18%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(90deg, #e75462, #e93d82);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(231, 84, 98, 0.35);
+  transition: transform 0.2s ease;
+}
+
+.upload-button:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.upload-button input[type="file"] {
+  display: none;
+}
+
+.p-17 p {
+  margin: 0 0 4px 0;
+  color: #635b76;
+  font-size: 14px;
+}
+
+.p-17 a {
+  color: #e75462;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.p-17 a:hover {
+  text-decoration: underline;
+}
+
+/* Section cards (Personal Info / Security / etc.) */
+.fl-wrap-md mat-card.col-4,
+.flex.mt-35 mat-card {
+  border-radius: 14px !important;
+  border: 1px solid #e8e8e8;
+  box-shadow: none !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.flex.mt-35 mat-card:hover {
+  transform: translateY(-4px);
+  border-color: #e75462;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1) !important;
+}
+
+.flex.mt-35 mat-card a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.flex.mt-35 .mat-mdc-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1c1533;
+}
+
+.flex.mt-35 .mat-mdc-card-content p {
+  font-size: 13px;
+  color: #8b8299;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 750px) {
+  .col-6 {
+    width: 95.5%;
   }
 
   .upload-button {
-    position: absolute;
-    top: 80%;
+    left: 10%;
+  }
+}
+
+@media (max-width: 600px) {
+  .upload-button {
+    left: 15%;
+  }
+}
+
+@media (max-width: 500px) {
+  .fl-wrap-md {
+    flex-wrap: wrap !important;
+    row-gap: 20px;
+  }
+
+  .col-4 {
+    width: 45%;
+  }
+
+  .upload-button {
     left: 18%;
-    transform: translate(-50%, -50%);
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    cursor: pointer;
   }
+}
 
-  .upload-button:hover {
-    background-color: #0056b3;
-  }
-
-  .upload-button input[type="file"] {
-    display: none;
-  }
-  .p-17{
-    padding: 17px 17px;
-  }
-
-  @media (max-width: 750px) {
-    .sm-mt-175{
-      margin-top: 175px;
-    }
-
-    .col-6{
-      width: 95.5%;
-    }
-
-    .upload-button{
-      left: 10%;
-    }
-
-  }
-
-  @media (max-width: 600px){
-    .upload-button{
-      left: 15%;
-    }
-  }
-
-  @media (max-width: 500px){
-    .fl-wrap-md{
-      flex-wrap: wrap !important;
-      row-gap: 20px;
-    }
-
-    .col-4{
-      width: 45%;
-    }
-
-    .upload-button{
-      left: 18%;
-    }
-
-  }
-
-@media (max-width: 400px){
-  .col-4{
+@media (max-width: 400px) {
+  .col-4 {
     width: 100%;
   }
 
-  .col-6{
+  .col-6 {
     width: 97.5%;
   }
 
-  .upload-button{
+  .upload-button {
     left: 22%;
   }
-
 }

@@ -1,85 +1,82 @@
-  
-  .example-label-container {
-    /* display: flex; */
-    justify-content: space-between;
-    margin: 20px 10px 0;
-    max-width: 280px;
-  }
-  
-  .example-result-card .example-value-label {
-    font-weight: 600;
-  }
-  
-  .example-margin {
-    margin: 8px;
-    max-width: 284px;
-    min-width: 210px;
-  }
-  
-  .mat-slider-horizontal {
-    height: 48px;
-    min-width: 280px;
-  }
-  
-  .mat-mdc-form-field {
-    width: 220px;
-  }
-  
-  .wt-95 {
-    width: 95px;
-  }
-  
-  .toYear {
-    margin-right: 5px;
-    margin-left: 30px;
-  }
-  
-  .post {
-    margin-top: 10px;
-  }
-  
-  .fl-r {
-    float: right;
-  }
-  
-  .pd-5 {
-    padding: 5px 0;
-  }
+.example-label-container {
+  /* display: flex; */
+  justify-content: space-between;
+  margin: 20px 10px 0;
+  max-width: 280px;
+}
 
-  
-  /* Chagnes Made By Hamza */
+.example-result-card .example-value-label {
+  font-weight: 600;
+}
 
-  .filters-head{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 15px;
-    margin-right: 5px;
-    position: relative;
-  }
-  
-  .filter-heading{
-    font-size: 18px;
-    font-weight: 500;
-    color: #0d475c;
-  }
-  
-  .clear-filters{
-    color: #2874F0;
-    font-size: 15px;
-    font-weight: 500;
-  }
-  
-  
-  .clear-filters:hover{
-    cursor: pointer;
-  }
+.example-margin {
+  margin: 8px;
+  max-width: 284px;
+  min-width: 210px;
+}
 
-  .grid{
-    padding: 0 20px;
-    background-color: #fff;
-    /* z-index: 10000; */
-    /* position: sticky;
+.mat-slider-horizontal {
+  height: 48px;
+  min-width: 280px;
+}
+
+.mat-mdc-form-field {
+  width: 220px;
+}
+
+.wt-95 {
+  width: 95px;
+}
+
+.toYear {
+  margin-right: 5px;
+  margin-left: 30px;
+}
+
+.post {
+  margin-top: 10px;
+}
+
+.fl-r {
+  float: right;
+}
+
+.pd-5 {
+  padding: 5px 0;
+}
+
+/* Chagnes Made By Hamza */
+
+.filters-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+  margin-right: 5px;
+  position: relative;
+}
+
+.filter-heading {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0d475c;
+}
+
+.clear-filters {
+  color: #2874f0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.clear-filters:hover {
+  cursor: pointer;
+}
+
+.grid {
+  padding: 0 20px;
+  background-color: #fff;
+  /* z-index: 10000; */
+  /* position: sticky;
     top: 60px;
     height: calc(100vh - 95px);
     left: 0;
@@ -87,27 +84,26 @@
     overflow-y: scroll;
     scrollbar-width: 2px; 
     width: 24%; */
-  }
+}
 
-  .cancel-icon{
-    cursor: pointer;
-    font-size: 25px;
-    position: absolute;
-    top: 50px;
-    right: -15px;
-  }
+.cancel-icon {
+  cursor: pointer;
+  font-size: 25px;
+  position: absolute;
+  top: 50px;
+  right: -15px;
+}
 
-  .md-db-icon{
-    display: none;
-  }
+.md-db-icon {
+  display: none;
+}
 
+.sidebar-container::-webkit-scrollbar {
+  /* display: none; */
+  width: 3px;
+}
 
-  .sidebar-container::-webkit-scrollbar {
-    /* display: none; */
-    width: 3px;
-    }
-    
-    /* .sidebar-container::-webkit-scrollbar-thumb {
+/* .sidebar-container::-webkit-scrollbar-thumb {
       background-color: #cdc6c6;
       border-radius: 3px;
     }
@@ -116,7 +112,7 @@
       background-color: #f1f1f1;
     } */
 
-     /* .grid-container {
+/* .grid-container {
       max-height: calc(140vh - 110px);
       overflow-y: auto;
     }
@@ -125,149 +121,146 @@
       padding: 0 20px;
       background-color: #fff;
     } */
-    
-    .example-margin {
-    margin: 8px;
-    margin-left: 12px !important;
-    max-width: 284px;
-    min-width: 210px;
-    }
-    
-    .form-field-w-100{
-    width: 100%;
-    }
-    
-    .price-slider{
-    gap: 8px;
-    }
-    
-    .ml-8{
-    margin-left: 15px;
-    }
-    
-    .selected-states-container {
-    margin-top: 15px; 
-    }
-  
-    .filterSepreator{
-      margin-top: -10px;
-    }
 
-    .md-apply-btn{
-      display: none;
-      width: 90vw;
-    }
+.example-margin {
+  margin: 8px;
+  margin-left: 12px !important;
+  max-width: 284px;
+  min-width: 210px;
+}
 
-    .md-pb-10{
-      padding-bottom: 20px;
-      margin: 0;
-    }
+.form-field-w-100 {
+  width: 100%;
+}
 
-    @media (max-width: 1430px) {
-      .filters-head{
-        margin-top: 30px;
-      }
-    }
-    @media (max-width: 1200px){
-      .example-margin {
-        min-width: 186px !important;
-        }
-    }
+.price-slider {
+  gap: 8px;
+}
 
-    @media (max-width: 1105px) {
-      .filters-head{
-        margin-top: 50px;
-      }
-    }
+.ml-8 {
+  margin-left: 15px;
+}
 
+.selected-states-container {
+  margin-top: 15px;
+}
 
-    @media (max-width: 1050px){
-      .example-margin {
-        min-width: 150px !important;
-        }
-    }
+.filterSepreator {
+  margin-top: -10px;
+}
 
-    @media (max-width: 930px){
-      .example-margin {
-        min-width: 100px !important;
-        }
-    }
+.md-apply-btn {
+  display: none;
+  width: 90vw;
+}
 
-    @media (max-width: 768px) {
-      .filters-head{
-        padding-top: 50px;
-      }
-    }
+.md-pb-10 {
+  padding-bottom: 20px;
+  margin: 0;
+}
 
-    @media (max-width: 750px){
-      .grid{
-        /* min-height: calc(140vh - 110px) !important; */
-        /* position: fixed;
+@media (max-width: 1430px) {
+  .filters-head {
+    margin-top: 30px;
+  }
+}
+@media (max-width: 1200px) {
+  .example-margin {
+    min-width: 186px !important;
+  }
+}
+
+@media (max-width: 1105px) {
+  .filters-head {
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 1050px) {
+  .example-margin {
+    min-width: 150px !important;
+  }
+}
+
+@media (max-width: 930px) {
+  .example-margin {
+    min-width: 100px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .filters-head {
+    padding-top: 50px;
+  }
+}
+
+@media (max-width: 750px) {
+  .grid {
+    /* min-height: calc(140vh - 110px) !important; */
+    /* position: fixed;
         top: 120px;
         left: 0;
         overflow-y: auto; */
-        width: 100vw;
-        height: 89vh;
-        position: fixed;
-        overflow: auto;
-        margin-top: -16px;
-        box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
-        -webkit-box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
-        -moz-box-shadow: -1px 6px 5px -6px rgba(42,42,42,0.75);
-        /* bottom: -10px; */
-      }
+    width: 100vw;
+    height: 89vh;
+    position: fixed;
+    overflow: auto;
+    margin-top: -16px;
+    box-shadow: -1px 6px 5px -6px rgba(42, 42, 42, 0.75);
+    -webkit-box-shadow: -1px 6px 5px -6px rgba(42, 42, 42, 0.75);
+    -moz-box-shadow: -1px 6px 5px -6px rgba(42, 42, 42, 0.75);
+    /* bottom: -10px; */
+  }
 
-      .example-margin{
-        min-width: 84% !important;
-      }
+  .example-margin {
+    min-width: 84% !important;
+  }
 
-      .clear-filters{
-        margin-right: 30px;
-      }
+  .clear-filters {
+    margin-right: 30px;
+  }
 
-      .md-db-icon{
-        display: inline-block;
-      }
+  .md-db-icon {
+    display: inline-block;
+  }
 
-      .md-apply-btn{
-        display: block;
-      }
+  .md-apply-btn {
+    display: block;
+  }
+}
 
-    }
+@media (max-width: 750px) and (max-height: 650px) {
+  .grid {
+    height: 85vh;
+  }
+}
 
-    @media (max-width: 750px) and (max-height: 650px){
-      .grid{
-        height: 85vh;
-      }
-    }
+@media (max-width: 750px) and (max-height: 490px) {
+  .grid {
+    height: 81vh;
+  }
+}
 
-    @media (max-width: 750px) and (max-height: 490px){
-      .grid{
-        height: 81vh;
-      }
-    }
+@media (max-width: 750px) and (max-height: 350px) {
+  .grid {
+    height: 77vh;
+  }
+}
 
-    @media (max-width: 750px) and (max-height: 350px){
-      .grid{
-        height: 77vh;
-      }
-    }
+@media (max-width: 650px) {
+  .example-margin {
+    min-width: 78% !important;
+  }
+}
 
+@media (max-width: 450px) {
+  .example-margin {
+    min-width: 70% !important;
+  }
+}
 
-    @media (max-width: 650px){
-      .example-margin{
-        min-width: 78% !important;
-      }
-    }
-
-    @media (max-width: 450px){
-      .example-margin{
-        min-width: 70% !important;
-      }
-    }
-
-    @media (max-width: 330px){
-      .example-margin{
-        min-width: 60% !important;
-      }
-    }
+@media (max-width: 330px) {
+  .example-margin {
+    min-width: 60% !important;
+  }
+}

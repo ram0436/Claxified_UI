@@ -100,7 +100,7 @@
   cursor: pointer;
   color: #635b67;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   position: relative;
   transition: background 0.15s ease, color 0.15s ease;
 }
@@ -117,7 +117,7 @@
 .edit-tab-item.active {
   background: #eaf3f7;
   color: #0d475c;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .edit-tab-item.active .material-icons-outlined {
@@ -140,7 +140,7 @@
 
 .required-chip {
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
   background: #fdecea;
   color: #e75462;
   padding: 2px 7px;
@@ -237,7 +237,7 @@ mat-form-field {
 }
 
 .uplod-sectin h4 {
-  font-weight: 700;
+  font-weight: 600;
   margin: 0 0 20px 0;
   color: #3c3241;
   letter-spacing: 0.5px;
