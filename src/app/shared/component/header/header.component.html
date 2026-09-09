@@ -85,15 +85,8 @@
               [src]="imageUrl"
               alt="Profile"
               class="profile-avatar"
-              *ngIf="imageUrl !== defaultAvatar"
               (error)="onImageError($event)"
             />
-            <span class="profile-initials" *ngIf="imageUrl === defaultAvatar">
-              {{ getUserInitials() }}
-            </span>
-            <span class="profile-name">{{
-              userData?.firstName || "My Profile"
-            }}</span>
             <mat-icon class="expand" [class.rotated]="expandIconVisible">
               expand_more
             </mat-icon>
@@ -105,11 +98,12 @@
           <!-- List Business Button -->
           <button
             class="action-btn business-btn"
+            *ngIf="!isActiveRoute('/classified-ads')"
             (click)="openBusinessLoginModal()"
             aria-label="List Business"
           >
             <img
-              src="https://cfdblob.blob.core.windows.net/image/Claxified137426.png"
+              [src]="getBusinessButtonImage()"
               alt="List Business"
               class="action-btn-img"
             />
@@ -118,11 +112,12 @@
           <!-- Post Free Ad Button -->
           <button
             class="action-btn post-ad-btn"
+            *ngIf="!isActiveRoute('/business')"
             (click)="postAdd()"
             aria-label="Post Free Ad"
           >
             <img
-              src="https://cfdblob.blob.core.windows.net/image/Claxified250701.png"
+              src="https://cfdblob.blob.core.windows.net/image/Claxified120031.png"
               alt="Post Free Ad"
               class="action-btn-img"
             />

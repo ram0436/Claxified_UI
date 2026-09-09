@@ -252,6 +252,7 @@
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
+  margin-bottom: -6px;
 }
 
 .action-btn .material-icons-outlined {
@@ -260,30 +261,6 @@
 
 .btn-text {
   display: inline;
-}
-
-/* Business Button */
-.business-btn {
-  background: transparent;
-  color: #333;
-  border: 1.5px solid #e0e0e0;
-}
-
-.business-btn:hover {
-  background: #f5f5f5;
-  border-color: #ccc;
-}
-
-/* Post Ad Button */
-.post-ad-btn {
-  background: #e75462;
-  color: #fff;
-}
-
-.post-ad-btn:hover {
-  background: #d94857;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(231, 84, 98, 0.35);
 }
 
 .post-ad-btn .material-icons-outlined {
@@ -1475,4 +1452,8 @@
   .business-menu-attributes
   .material-icons-outlined {
   color: #6c5ce7 !important;
+}
+
+.business-btn img {
+  height: 70px !important;
 }
