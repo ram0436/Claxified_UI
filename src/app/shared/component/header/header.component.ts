@@ -771,6 +771,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   getBusinessButtonImage(): string {
     return this.isActiveRoute('/business')
       ? 'https://cfdblob.blob.core.windows.net/image/Claxified549100.png'
-      : 'https://cfdblob.blob.core.windows.net/image/Claxified308911.png';
+      : 'https://cfdblob.blob.core.windows.net/image/Claxified174494.png';
   }
 }
