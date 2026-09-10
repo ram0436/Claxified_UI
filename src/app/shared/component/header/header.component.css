@@ -252,7 +252,6 @@
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
-  margin-bottom: -6px;
 }
 
 .action-btn .material-icons-outlined {
@@ -1386,7 +1385,7 @@
 }
 
 .action-btn .action-btn-img {
-  height: 60px;
+  height: 40px;
   width: auto;
   object-fit: contain;
   display: block;
@@ -1452,8 +1451,4 @@
   .business-menu-attributes
   .material-icons-outlined {
   color: #6c5ce7 !important;
-}
-
-.business-btn img {
-  height: 70px !important;
 }
