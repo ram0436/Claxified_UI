@@ -142,11 +142,15 @@ export class BusinessProfileComponent implements OnInit {
   allowedOfferingTypes: Set<OfferingType> = new Set();
 
   get hasProductOffering(): boolean {
-    return this.allowedOfferingTypes.has(OfferingType.Product);
+    return this.availableOfferingTypes.some(
+      (t) => Number(t.value) === Number(OfferingType.Product),
+    );
   }
 
   get hasServiceOffering(): boolean {
-    return this.allowedOfferingTypes.has(OfferingType.Service);
+    return this.availableOfferingTypes.some(
+      (t) => Number(t.value) === Number(OfferingType.Service),
+    );
   }
 
   get offeringTypeFilterOptions(): { value: OfferingType; label: string }[] {
@@ -594,6 +598,8 @@ export class BusinessProfileComponent implements OnInit {
       offerings: hasOther
         ? this.businessService.getBusinessOfferingsByBusinessId(
             this.business.id,
+            this.selectedSubCategoryId,
+            null,
           )
         : of([]),
     }).subscribe(
@@ -815,8 +821,15 @@ export class BusinessProfileComponent implements OnInit {
     if (!this.business?.id) return;
     this.offeringsLoading = true;
 
+    const offeringType =
+      this.offeringFilter === 'all' ? null : this.offeringFilter;
+
     this.businessService
-      .getBusinessOfferingsByBusinessId(this.business.id)
+      .getBusinessOfferingsByBusinessId(
+        this.business.id,
+        this.selectedSubCategoryId,
+        offeringType,
+      )
       .subscribe(
         (data) => {
           this.offerings = data || [];
@@ -831,25 +844,8 @@ export class BusinessProfileComponent implements OnInit {
 
   get filteredOfferings(): BusinessOfferingDto[] {
     const term = this.offeringSearch.trim().toLowerCase();
-
-    return this.offerings.filter((item) => {
-      const matchesFilter =
-        this.offeringFilter === 'all' ||
-        item.offeringType === this.offeringFilter;
-
-      const matchesSubCategory =
-        this.selectedSubCategoryId === null ||
-        item.subCategoryId === this.selectedSubCategoryId;
-
-      const matchesSearch = !term || item.name.toLowerCase().includes(term);
-
-      return matchesFilter && matchesSubCategory && matchesSearch;
-    });
-  }
-
-  get hasAnyOfferingResults(): boolean {
-    return (
-      this.filteredCatalogItems.length > 0 || this.filteredOfferings.length > 0
+    return this.offerings.filter(
+      (item) => !term || item.name.toLowerCase().includes(term),
     );
   }
 
@@ -1041,5 +1037,51 @@ export class BusinessProfileComponent implements OnInit {
 
   getEmptyStarArray(rating: number): number[] {
     return Array(Math.min(5, 5 - Math.floor(rating))).fill(0);
+  }
+
+  get isOtherOfferingFilter(): boolean {
+    // true for 'all' minus product/service is handled separately;
+    // this is specifically "a concrete non-product/non-service type is selected"
+    return this.offeringFilter !== 'all' && !this.isProductOrServiceFilter;
+  }
+
+  get showCatalogSection(): boolean {
+    // Product/Service grid should show for 'all' or when explicitly filtered to Product/Service
+    return this.offeringFilter === 'all' || this.isProductOrServiceFilter;
+  }
+
+  get showGenericOfferingsSection(): boolean {
+    // Generic offerings (Course, MedicalService, Event, etc.) should show for 'all'
+    // OR when the selected filter is anything other than Product/Service.
+    return this.offeringFilter === 'all' || this.isOtherOfferingFilter;
+  }
+
+  get isOfferingsSectionLoading(): boolean {
+    return this.catalogLoading || this.offeringsLoading;
+  }
+
+  get visibleCatalogItems(): CatalogItem[] {
+    return this.showCatalogSection ? this.filteredCatalogItems : [];
+  }
+
+  get visibleOfferingItems(): BusinessOfferingDto[] {
+    return this.showGenericOfferingsSection ? this.filteredOfferings : [];
+  }
+
+  get hasAnyOfferingResults(): boolean {
+    return (
+      this.visibleCatalogItems.length > 0 ||
+      this.visibleOfferingItems.length > 0
+    );
+  }
+
+  get emptyOfferingsMessage(): string {
+    if (this.offeringSearch) return 'No results match your search.';
+    if (this.isProductFilter) return 'No products listed yet.';
+    if (this.isServiceFilter) return 'No services listed yet.';
+    if (this.isOtherOfferingFilter) {
+      return `No ${this.currentFilterLabel.toLowerCase()} listed yet.`;
+    }
+    return 'No products or services listed yet.';
   }
 }

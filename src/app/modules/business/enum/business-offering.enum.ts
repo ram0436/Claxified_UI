@@ -10,5 +10,4 @@ export enum OfferingType {
   Event = 9,
   TourPackage = 10,
   MembershipPlan = 11,
-  ProductAndService = 0,
 }
