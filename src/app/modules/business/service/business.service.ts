@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, Observable, Subject } from 'rxjs';
+import { map, Observable, of, Subject, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {
   BusinessDirectoryItem,
@@ -27,6 +27,9 @@ import {
   OfferingTypeOptionDto,
 } from '../model/Business';
 import { EntityType } from '../enum/business-product.enum';
+import { OfferingType } from '../enum/business-offering.enum';
+import { catchError } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -275,10 +278,29 @@ export class BusinessService {
 
   getBusinessOfferingsByBusinessId(
     businessId: number,
+    subCategoryId?: number | null,
+    offeringType?: OfferingType | number | null,
   ): Observable<BusinessOfferingDto[]> {
-    return this.http.get<BusinessOfferingDto[]>(
-      `${this.baseUrl}Business/business-offering/businessId?businessId=${businessId}`,
-    );
+    let params = new HttpParams().set('businessId', businessId.toString());
+
+    if (subCategoryId !== null && subCategoryId !== undefined) {
+      params = params.set('subCategoryId', subCategoryId.toString());
+    }
+
+    if (offeringType !== null && offeringType !== undefined) {
+      params = params.set('offeringType', offeringType.toString());
+    }
+
+    return this.http
+      .get<
+        BusinessOfferingDto | BusinessOfferingDto[]
+      >(`${this.baseUrl}Business/business-offering`, { params })
+      .pipe(
+        map((res) => (Array.isArray(res) ? res : res ? [res] : [])),
+        catchError((err: HttpErrorResponse) =>
+          err.status === 404 ? of([]) : throwError(() => err),
+        ),
+      );
   }
 
   getBusinessOfferingById(id: number): Observable<BusinessOfferingDto> {

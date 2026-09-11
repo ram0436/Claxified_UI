@@ -171,6 +171,25 @@
         </mat-card>
 
         <!-- ---------- COURSE DETAILS ---------- -->
+        <!--
+          NOTE: Changed from `<form [formGroup]="courseForm">` to
+          `<div [formGroup]="courseForm">`.
+
+          HTML does not allow a <form> nested inside another <form>. The
+          outer <form [formGroup]="form"> already wraps this whole panel,
+          so this inner <form> was being silently dropped by the browser's
+          HTML parser during parsing - meaning it never existed as a real
+          DOM element. As a result, [formGroup]="courseForm" never bound,
+          and every formControlName inside it (courseType, doctorName,
+          etc.) lost its ControlContainer and never received user input.
+          courseForm.getRawValue() was therefore always returning the
+          form's initial default values (empty strings / 0 / false) on
+          save, regardless of what the user typed.
+
+          [formGroup] does not require a <form> element - any element
+          works as the host, so a <div> here is the correct fix and
+          preserves formControlName binding for all children.
+        -->
         <mat-card
           class="section-card"
           *ngIf="
@@ -180,7 +199,7 @@
         >
           <h3 class="section-title">Course Details</h3>
 
-          <form [formGroup]="courseForm">
+          <div [formGroup]="courseForm">
             <div class="field-row">
               <div class="field-half">
                 <label class="field-label">Course Type</label>
@@ -395,10 +414,17 @@
                 formControlName="courseHighlights"
               ></textarea>
             </mat-form-field>
-          </form>
+          </div>
         </mat-card>
 
         <!-- ---------- MEDICAL SERVICE DETAILS ---------- -->
+        <!--
+          NOTE: Changed from `<form [formGroup]="medicalForm">` to
+          `<div [formGroup]="medicalForm">`. Same nested-<form> issue as
+          above - this was the root cause of medicalForm.getRawValue()
+          always returning empty/default values on save, even though the
+          form fields appeared to render and accept typing in the UI.
+        -->
         <mat-card
           class="section-card"
           *ngIf="
@@ -408,7 +434,7 @@
         >
           <h3 class="section-title">Medical Service Details</h3>
 
-          <form [formGroup]="medicalForm">
+          <div [formGroup]="medicalForm">
             <div class="field-row">
               <div class="field-half">
                 <label class="field-label">Service Type</label>
@@ -595,7 +621,7 @@
                 formControlName="serviceHighlights"
               ></textarea>
             </mat-form-field>
-          </form>
+          </div>
         </mat-card>
 
         <!-- ---------- NO DETAIL FORM AVAILABLE YET ---------- -->
