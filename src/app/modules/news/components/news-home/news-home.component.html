@@ -1,0 +1,234 @@
+<div class="news-home-wrapper">
+  <!-- Hero -->
+  <section class="news-hero">
+    <div class="news-hero-inner">
+      <div class="news-hero-text">
+        <h1 class="news-hero-title">
+          News that <span class="hero-accent">Matters.</span>
+        </h1>
+        <p class="news-hero-subtitle">
+          Stay updated with the latest local, national and international news.
+        </p>
+
+        <div class="news-search">
+          <div class="quick-filter-row">
+            <a
+              *ngFor="let f of quickFilters"
+              [routerLink]="f.link"
+              class="quick-filter-card"
+            >
+              <span class="material-icons-outlined">{{ f.icon }}</span>
+              <div>
+                <h4>{{ f.title }}</h4>
+                <p>{{ f.subtitle }}</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="news-hero-illustration" aria-hidden="true">
+        <svg viewBox="0 0 420 320" xmlns="http://www.w3.org/2000/svg">
+          <g opacity="0.55">
+            <rect x="40" y="120" width="30" height="180" fill="#c9b8f5" />
+            <rect x="90" y="90" width="30" height="210" fill="#a993ef" />
+            <rect x="140" y="60" width="30" height="240" fill="#8B6CF1" />
+            <rect x="190" y="100" width="30" height="200" fill="#a993ef" />
+            <rect x="240" y="70" width="30" height="230" fill="#8B6CF1" />
+            <rect x="290" y="130" width="30" height="170" fill="#c9b8f5" />
+            <rect x="340" y="95" width="30" height="205" fill="#a993ef" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top Headlines -->
+  <section class="section-wrapper">
+    <div class="section-header">
+      <div class="section-title-group">
+        <h2 class="section-title">Top Headlines</h2>
+        <span class="live-badge"
+          ><span class="material-icons-outlined">podcasts</span> Live
+          Updates</span
+        >
+      </div>
+      <a routerLink="/news/headlines" class="view-all-link">
+        View all headlines
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="state-block" *ngIf="articlesLoading">
+      <div class="spinner"></div>
+      <p>Loading headlines&hellip;</p>
+    </div>
+
+    <div class="state-block" *ngIf="!articlesLoading && articlesError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load the news right now.</p>
+      <button class="retry-button" (click)="fetchArticles()">Try Again</button>
+    </div>
+
+    <div
+      class="headlines-grid"
+      *ngIf="!articlesLoading && !articlesError && articles.length > 0"
+    >
+      <!-- Top story + headline list -->
+      <div class="headlines-main">
+        <div
+          class="top-story-card"
+          *ngIf="topStory"
+          (click)="goToArticle(topStory)"
+        >
+          <span class="top-story-badge">TOP STORY</span>
+          <img
+            [src]="topStory.featuredImageUrl"
+            [alt]="topStory.featuredImageAltText || topStory.title"
+          />
+          <div class="top-story-overlay">
+            <h3>{{ topStory.title }}</h3>
+            <p>{{ topStory.shortDescription }}</p>
+            <span class="top-story-meta"
+              >Claxified News Desk &bull;
+              {{ timeAgo(topStory.publishedAt) }}</span
+            >
+          </div>
+        </div>
+
+        <div class="headline-list">
+          <div
+            class="headline-row"
+            *ngFor="let a of headlineList"
+            (click)="goToArticle(a)"
+          >
+            <img
+              [src]="a.featuredImageUrl"
+              [alt]="a.featuredImageAltText || a.title"
+            />
+            <div class="headline-row-body">
+              <h4>{{ a.title }}</h4>
+              <span class="headline-meta">{{ timeAgo(a.publishedAt) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trending sidebar -->
+      <aside class="trending-sidebar">
+        <div class="section-header inner">
+          <h3 class="section-title small">Trending Now</h3>
+          <a routerLink="/news/headlines" class="view-all-link"
+            >View all
+            <span class="material-icons-outlined">arrow_forward</span></a
+          >
+        </div>
+        <div
+          class="trending-row"
+          *ngFor="let a of trendingNow; let i = index"
+          (click)="goToArticle(a)"
+        >
+          <span class="trending-rank">{{ i + 1 }}</span>
+          <img [src]="a.featuredImageUrl" [alt]="a.title" />
+          <div class="trending-body">
+            <h5>{{ a.title }}</h5>
+            <span>{{ reads(a.viewCount) }}</span>
+          </div>
+        </div>
+
+        <div class="news-by-category-card">
+          <div class="section-header inner">
+            <h3 class="section-title small">News by Category</h3>
+            <a routerLink="/news/categories" class="view-all-link"
+              >View all
+              <span class="material-icons-outlined">arrow_forward</span></a
+            >
+          </div>
+          <div class="category-chip-row">
+            <a
+              *ngFor="let c of categories"
+              [routerLink]="['/news/categories', c.slug]"
+              class="category-chip"
+            >
+              {{ c.name }}
+            </a>
+          </div>
+        </div>
+
+        <div class="subscribe-card">
+          <h4>Stay Updated</h4>
+          <p>Get the latest news delivered to your inbox.</p>
+          <div class="subscribe-input-row">
+            <input type="email" placeholder="Enter your email" />
+            <button>Subscribe</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- News by Category tiles -->
+  <section class="section-wrapper">
+    <div class="section-header">
+      <h2 class="section-title">News by Category</h2>
+      <a routerLink="/news/categories" class="view-all-link">
+        View all categories
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="state-block" *ngIf="categoriesLoading">
+      <div class="spinner"></div>
+      <p>Loading categories&hellip;</p>
+    </div>
+
+    <div class="state-block" *ngIf="!categoriesLoading && categoriesError">
+      <span class="material-icons-outlined state-icon">wifi_off</span>
+      <p>We couldn't load the categories right now.</p>
+      <button class="retry-button" (click)="fetchCategories()">
+        Try Again
+      </button>
+    </div>
+
+    <div
+      class="category-tile-row"
+      *ngIf="!categoriesLoading && !categoriesError && categories.length > 0"
+    >
+      <div
+        class="category-tile"
+        *ngFor="let c of categories"
+        (click)="goToCategory(c)"
+      >
+        <img [src]="categoryImage(c)" [alt]="c.name" />
+        <div class="category-tile-overlay">
+          <span class="material-icons-outlined">label</span>
+          <h4>{{ c.name }}</h4>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Editor's Picks -->
+  <section class="section-wrapper">
+    <div class="section-header">
+      <h2 class="section-title">Editor's Picks</h2>
+      <a routerLink="/news/editors-picks" class="view-all-link">
+        View all picks
+        <span class="material-icons-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="editor-pick-strip" *ngIf="!articlesLoading && !articlesError">
+      <div
+        class="editor-pick-card"
+        *ngFor="let a of editorsPicks"
+        (click)="goToArticle(a)"
+      >
+        <img [src]="a.featuredImageUrl" [alt]="a.title" />
+        <span class="material-icons-outlined bookmark-icon"
+          >bookmark_border</span
+        >
+      </div>
+    </div>
+  </section>
+</div>

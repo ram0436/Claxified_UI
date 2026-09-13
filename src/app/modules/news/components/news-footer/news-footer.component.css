@@ -1,0 +1,36 @@
+.news-footer {
+  background: #1c1533;
+  color: #cdc6de;
+  margin-top: 40px;
+}
+
+.news-footer-inner {
+  max-width: 1536px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.footer-social {
+  display: flex;
+  gap: 10px;
+}
+
+.social-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-decoration: none;
+}
+
+.social-icon .material-icons-outlined {
+  font-size: 16px;
+}

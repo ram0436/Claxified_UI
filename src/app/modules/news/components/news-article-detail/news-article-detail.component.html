@@ -1,0 +1,188 @@
+<div class="article-detail-wrapper" *ngIf="!loading && !error && article">
+  <nav class="breadcrumb">
+    <a routerLink="/news">News</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <a [routerLink]="['/news/categories']">{{ article.newsSubCategory }}</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">{{ article.title }}</span>
+  </nav>
+
+  <div class="article-detail-layout">
+    <!-- Main article -->
+    <main class="article-main">
+      <span class="article-badge">{{
+        article.newsSubCategory | uppercase
+      }}</span>
+      <h1 class="article-title">{{ article.title }}</h1>
+      <p class="article-subtitle">{{ article.shortDescription }}</p>
+
+      <div class="article-byline">
+        <div class="byline-left">
+          <div class="author-avatar">{{ article.newsAuthor.charAt(0) }}</div>
+          <div>
+            <span class="author-name">By {{ article.newsAuthor }}</span>
+            <span class="author-desk">{{ article.newsSource }}</span>
+          </div>
+          <span class="byline-date"
+            >{{ formattedDate(article.publishedAt) }} &bull;
+            {{ article.readingTimeMinutes }} min read</span
+          >
+          <span class="byline-location"
+            ><span class="material-icons-outlined">place</span>
+            {{ article.newsCategory }}</span
+          >
+        </div>
+        <div class="byline-actions">
+          <button class="action-btn">
+            <span class="material-icons-outlined">bookmark_border</span> Save
+          </button>
+          <button class="action-btn">
+            <span class="material-icons-outlined">share</span> Share
+          </button>
+          <a
+            *ngFor="let s of socialLinks"
+            [href]="s.link"
+            target="_blank"
+            rel="noopener"
+            class="social-icon"
+            [ngClass]="s.className"
+          >
+            <span class="material-icons-outlined">{{ s.icon }}</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="article-image-wrapper">
+        <img
+          [src]="article.featuredImageUrl"
+          [alt]="article.featuredImageAltText || article.title"
+        />
+        <span class="article-image-caption">{{
+          article.featuredImageAltText
+        }}</span>
+      </div>
+
+      <div class="article-content">
+        <p *ngFor="let para of contentParagraphs">{{ para }}</p>
+      </div>
+
+      <div class="article-stats-row">
+        <span
+          ><span class="material-icons-outlined">visibility</span>
+          {{ reads(article.viewCount) }}</span
+        >
+        <span
+          ><span class="material-icons-outlined">share</span>
+          {{ article.shareCount }} shares</span
+        >
+      </div>
+    </main>
+
+    <!-- Right sidebar -->
+    <aside class="article-right-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-card-header">
+          <h3>Related News</h3>
+          <a routerLink="/news/headlines" class="view-all-link"
+            >View all
+            <span class="material-icons-outlined">arrow_forward</span></a
+          >
+        </div>
+        <div
+          class="related-row"
+          *ngFor="let a of relatedArticles"
+          (click)="goToArticle(a)"
+        >
+          <img [src]="a.featuredImageUrl" [alt]="a.title" />
+          <div>
+            <h5>{{ a.title }}</h5>
+            <span>{{ timeAgo(a.publishedAt) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>
+          <span class="material-icons-outlined trend-icon"
+            >local_fire_department</span
+          >
+          Trending Now
+        </h3>
+        <div
+          class="trending-row"
+          *ngFor="let a of trendingNow; let i = index"
+          (click)="goToArticle(a)"
+        >
+          <span class="trending-rank">{{ i + 1 }}</span>
+          <div>
+            <h5>{{ a.title }}</h5>
+            <span>{{ reads(a.viewCount) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="subscribe-card">
+        <h4>Stay Updated</h4>
+        <p>Get the latest news delivered to your inbox.</p>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          [(ngModel)]="email"
+        />
+        <button (click)="subscribe()">Subscribe</button>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Follow Claxified News</h3>
+        <div class="social-row">
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener"
+            class="social-icon-box"
+            ><span class="material-icons-outlined">public</span></a
+          >
+          <a
+            href="https://x.com"
+            target="_blank"
+            rel="noopener"
+            class="social-icon-box"
+            ><span class="material-icons-outlined">public</span></a
+          >
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener"
+            class="social-icon-box"
+            ><span class="material-icons-outlined">public</span></a
+          >
+          <a
+            href="https://youtube.com"
+            target="_blank"
+            rel="noopener"
+            class="social-icon-box"
+            ><span class="material-icons-outlined">public</span></a
+          >
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener"
+            class="social-icon-box"
+            ><span class="material-icons-outlined">public</span></a
+          >
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="state-block" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Loading article&hellip;</p>
+</div>
+
+<div class="state-block" *ngIf="!loading && error">
+  <span class="material-icons-outlined state-icon">wifi_off</span>
+  <p>We couldn't find or load this article.</p>
+  <button class="retry-button" routerLink="/news">Back to News</button>
+</div>

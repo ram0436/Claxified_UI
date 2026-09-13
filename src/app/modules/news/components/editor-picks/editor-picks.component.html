@@ -1,0 +1,199 @@
+<div class="picks-page-wrapper">
+  <!-- Hero -->
+  <section class="picks-hero">
+    <div class="picks-hero-text">
+      <h1>Editor&rsquo;s Picks</h1>
+      <p>
+        Handpicked stories by our editorial team. In-depth, insightful and worth
+        your time.
+      </p>
+    </div>
+    <div class="picks-hero-tagline">Good News<br />Brighter Tomorrow</div>
+  </section>
+
+  <nav class="breadcrumb">
+    <a routerLink="/news">News</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">Editor's Picks</span>
+  </nav>
+
+  <div class="picks-layout">
+    <!-- Sidebar filters -->
+    <aside class="picks-sidebar">
+      <div class="filter-card">
+        <button
+          class="filter-row"
+          [class.active]="activeCategoryId === null"
+          (click)="selectCategory(null)"
+        >
+          All Picks <span class="filter-count">{{ picks.length }}</span>
+        </button>
+        <button
+          class="filter-row"
+          *ngFor="let c of categories"
+          [class.active]="activeCategoryId === c.id"
+          (click)="selectCategory(c.id)"
+        >
+          {{ c.name }}
+          <span class="filter-count">{{ categoryCount(c.id) }}</span>
+        </button>
+      </div>
+
+      <div class="filter-card">
+        <h4>Date</h4>
+        <label class="radio-row">
+          <input
+            type="radio"
+            name="date"
+            [checked]="activeDateFilter === 'all'"
+            (change)="selectDateFilter('all')"
+          />
+          All Time
+        </label>
+        <label class="radio-row">
+          <input
+            type="radio"
+            name="date"
+            [checked]="activeDateFilter === '24h'"
+            (change)="selectDateFilter('24h')"
+          />
+          Last 24 Hours
+        </label>
+        <label class="radio-row">
+          <input
+            type="radio"
+            name="date"
+            [checked]="activeDateFilter === '7d'"
+            (change)="selectDateFilter('7d')"
+          />
+          Last 7 Days
+        </label>
+        <label class="radio-row">
+          <input
+            type="radio"
+            name="date"
+            [checked]="activeDateFilter === '30d'"
+            (change)="selectDateFilter('30d')"
+          />
+          Last 30 Days
+        </label>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="picks-main">
+      <div class="picks-main-header">
+        <h2>{{ filteredPicks.length }} Editor's Picks</h2>
+        <div class="sort-row">
+          Sort by:
+          <select>
+            <option>Latest</option>
+            <option>Most Viewed</option>
+            <option>Most Discussed</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="state-block" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading picks&hellip;</p>
+      </div>
+
+      <div class="state-block" *ngIf="!loading && error">
+        <span class="material-icons-outlined state-icon">wifi_off</span>
+        <p>We couldn't load editor's picks right now.</p>
+        <button class="retry-button" (click)="fetchPicks()">Try Again</button>
+      </div>
+
+      <div
+        class="state-block"
+        *ngIf="!loading && !error && filteredPicks.length === 0"
+      >
+        <span class="material-icons-outlined state-icon">bookmark_border</span>
+        <p>No picks match these filters.</p>
+      </div>
+
+      <div
+        class="picks-grid"
+        *ngIf="!loading && !error && pagedPicks.length > 0"
+      >
+        <div
+          class="pick-card"
+          *ngFor="let a of pagedPicks"
+          (click)="goToArticle(a)"
+        >
+          <div class="pick-card-image">
+            <img [src]="a.featuredImageUrl" [alt]="a.title" />
+            <span class="material-icons-outlined bookmark"
+              >bookmark_border</span
+            >
+          </div>
+          <div class="pick-card-body">
+            <div class="pick-card-meta">
+              <span class="pick-category">{{
+                categoryName(a.newsCategoryId)
+              }}</span>
+              <span class="pick-time">{{ timeAgo(a.publishedAt) }}</span>
+            </div>
+            <h4>{{ a.title }}</h4>
+            <p>{{ a.shortDescription }}</p>
+            <div class="pick-card-footer">
+              <span
+                ><span class="material-icons-outlined">visibility</span>
+                {{ a.viewCount }}</span
+              >
+              <span
+                ><span class="material-icons-outlined"
+                  >chat_bubble_outline</span
+                >
+                {{ a.shareCount }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="pagination-footer"
+        *ngIf="!loading && !error && filteredPicks.length > 0"
+      >
+        <span
+          >Showing {{ rangeStart }}-{{ rangeEnd }} of
+          {{ filteredPicks.length }} editor's picks</span
+        >
+        <div class="pagination-controls">
+          <button
+            class="page-arrow"
+            [disabled]="currentPage === 1"
+            (click)="goToPage(currentPage - 1)"
+          >
+            <span class="material-icons-outlined">chevron_left</span>
+          </button>
+          <button
+            *ngFor="let p of pageNumbers"
+            class="page-num"
+            [class.active]="p === currentPage"
+            (click)="goToPage(p)"
+          >
+            {{ p }}
+          </button>
+          <button
+            class="page-arrow"
+            [disabled]="currentPage === totalPages"
+            (click)="goToPage(currentPage + 1)"
+          >
+            <span class="material-icons-outlined">chevron_right</span>
+          </button>
+        </div>
+        <div class="items-per-page">
+          Items per page:
+          <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+            <option *ngFor="let n of itemsPerPageOptions" [value]="n">
+              {{ n }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
