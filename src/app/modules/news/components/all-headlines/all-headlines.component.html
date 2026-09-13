@@ -1,0 +1,241 @@
+<div class="headlines-page-wrapper">
+  <nav class="breadcrumb">
+    <a routerLink="/news">News</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">All Headlines</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="headlines-hero">
+    <div class="headlines-hero-text">
+      <h1>All Headlines</h1>
+      <p>
+        Stay updated with the latest local, national and international news.
+      </p>
+    </div>
+
+    <div class="headlines-search-row">
+      <div class="search-input-wrapper">
+        <span class="material-icons-outlined search-icon">search</span>
+        <input
+          type="text"
+          placeholder="Search news, topics, or keywords..."
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="performSearch()"
+        />
+      </div>
+      <div class="location-inline">
+        <span class="material-icons-outlined">location_on</span>
+        {{ location }}
+        <span class="material-icons-outlined expand-more">expand_more</span>
+      </div>
+      <button class="search-btn" (click)="performSearch()">Search</button>
+    </div>
+
+    <div class="tab-row">
+      <button
+        class="tab-pill"
+        [class.active]="activeCategoryId === null"
+        (click)="selectCategory(null)"
+      >
+        All News
+      </button>
+      <button
+        *ngFor="let c of tabCategories"
+        class="tab-pill"
+        [class.active]="activeCategoryId === c.id"
+        (click)="selectCategory(c.id)"
+      >
+        {{ c.name }}
+      </button>
+    </div>
+  </section>
+
+  <div class="headlines-layout">
+    <!-- Left: categories -->
+    <aside class="headlines-side-nav">
+      <h3>News Categories</h3>
+      <a
+        class="cat-nav-item"
+        [class.active]="activeCategoryId === null"
+        (click)="selectCategory(null)"
+      >
+        <span
+          ><span class="material-icons-outlined">bolt</span> All Headlines</span
+        >
+        <span class="count">{{ articles.length }}</span>
+      </a>
+      <a
+        class="cat-nav-item"
+        *ngFor="let c of categories"
+        [class.active]="activeCategoryId === c.id"
+        (click)="selectCategory(c.id)"
+      >
+        <span
+          ><span class="material-icons-outlined">label</span> {{ c.name }}</span
+        >
+        <span class="count">{{ categoryCount(c.id) }}</span>
+      </a>
+    </aside>
+
+    <!-- Main list -->
+    <div class="headlines-main">
+      <div class="results-row">
+        <span>{{ filteredArticles.length }} News Articles</span>
+        <div class="sort-row">
+          Sort by:
+          <select>
+            <option>Latest First</option>
+            <option>Most Viewed</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="state-block" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading headlines&hellip;</p>
+      </div>
+
+      <div class="state-block" *ngIf="!loading && error">
+        <span class="material-icons-outlined state-icon">wifi_off</span>
+        <p>We couldn't load the news right now.</p>
+        <button class="retry-button" (click)="fetchData()">Try Again</button>
+      </div>
+
+      <div
+        class="state-block"
+        *ngIf="!loading && !error && filteredArticles.length === 0"
+      >
+        <span class="material-icons-outlined state-icon">search_off</span>
+        <p>No articles match your search.</p>
+      </div>
+
+      <div
+        class="headline-item"
+        *ngFor="let a of pagedArticles"
+        (click)="goToArticle(a)"
+      >
+        <img [src]="a.featuredImageUrl" [alt]="a.title" />
+        <div class="headline-item-body">
+          <span class="headline-tag" [class.breaking]="a.isBreaking">{{
+            categoryName(a.newsCategoryId)
+          }}</span>
+          <h3>{{ a.title }}</h3>
+          <p>{{ a.shortDescription }}</p>
+          <div class="headline-item-meta">
+            <span
+              ><span class="material-icons-outlined">schedule</span>
+              {{ timeAgo(a.publishedAt) }}</span
+            >
+            <span
+              ><span class="material-icons-outlined">place</span>
+              {{ location }}</span
+            >
+            <span
+              ><span class="material-icons-outlined">visibility</span>
+              {{ reads(a.viewCount) }}</span
+            >
+          </div>
+        </div>
+        <span class="material-icons-outlined bookmark-icon"
+          >bookmark_border</span
+        >
+      </div>
+
+      <div class="pagination-row" *ngIf="!loading && !error && totalPages > 1">
+        <button
+          class="page-arrow"
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
+        >
+          <span class="material-icons-outlined">chevron_left</span>
+        </button>
+        <button
+          *ngFor="let p of pageNumbers"
+          class="page-num"
+          [class.active]="p === currentPage"
+          (click)="goToPage(p)"
+        >
+          {{ p }}
+        </button>
+        <span class="page-ellipsis" *ngIf="totalPages > pageNumbers.length"
+          >&hellip;</span
+        >
+        <button
+          class="page-num"
+          *ngIf="totalPages > pageNumbers.length"
+          (click)="goToPage(totalPages)"
+        >
+          {{ totalPages }}
+        </button>
+        <button
+          class="page-arrow"
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)"
+        >
+          <span class="material-icons-outlined">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right sidebar -->
+    <aside class="headlines-right-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-card-header">
+          <h3>
+            <span class="material-icons-outlined trend-icon"
+              >local_fire_department</span
+            >
+            Trending Now
+          </h3>
+          <a routerLink="/news/editors-picks" class="view-all-link">View all</a>
+        </div>
+        <div
+          class="trending-row"
+          *ngFor="let a of trendingNow; let i = index"
+          (click)="goToArticle(a)"
+        >
+          <span class="trending-rank">{{ i + 1 }}</span>
+          <img [src]="a.featuredImageUrl" [alt]="a.title" />
+          <div>
+            <h5>{{ a.title }}</h5>
+            <span>{{ reads(a.viewCount) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Popular Topics</h3>
+        <div class="topic-chip-row">
+          <span class="topic-chip" *ngFor="let t of popularTopics">{{
+            t
+          }}</span>
+        </div>
+      </div>
+
+      <div class="subscribe-card">
+        <h4>Stay Updated</h4>
+        <p>Get the latest news delivered to your inbox.</p>
+        <div class="subscribe-input-row">
+          <input type="email" placeholder="Enter your email" />
+          <button>Subscribe</button>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Follow Claxified News</h3>
+        <div class="social-row">
+          <a
+            *ngFor="let s of socialLinks"
+            [href]="s.link"
+            target="_blank"
+            rel="noopener"
+            class="social-icon"
+          >
+            <span class="material-icons-outlined">public</span>
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

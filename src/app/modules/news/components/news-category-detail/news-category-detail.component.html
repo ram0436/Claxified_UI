@@ -1,0 +1,246 @@
+<div class="cat-detail-wrapper" *ngIf="currentCategory">
+  <nav class="breadcrumb">
+    <a routerLink="/news">News</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <a routerLink="/news/categories">Categories</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">{{ currentCategory.name }}</span>
+  </nav>
+
+  <!-- Hero -->
+  <section
+    class="cat-hero"
+    [style.backgroundImage]="
+      'linear-gradient(120deg, rgba(20,20,50,0.75), rgba(20,20,50,0.35)), url(' +
+      heroImage +
+      ')'
+    "
+  >
+    <div class="cat-hero-text">
+      <h1>{{ currentCategory.name }} <span class="hero-accent">News</span></h1>
+      <p>{{ currentCategory.description }}</p>
+      <div class="cat-hero-stats">
+        <span
+          ><span class="material-icons-outlined">description</span>
+          {{ articles.length }}+ Articles</span
+        >
+        <span
+          ><span class="material-icons-outlined">groups</span> 50+ Sources</span
+        >
+        <span
+          ><span class="material-icons-outlined">bolt</span> Real-time
+          Updates</span
+        >
+      </div>
+    </div>
+  </section>
+
+  <div class="cat-detail-layout">
+    <!-- Left: category nav -->
+    <aside class="cat-side-nav">
+      <h3>News Categories</h3>
+      <a
+        *ngFor="let c of allCategories"
+        class="cat-nav-item"
+        [class.active]="c.id === currentCategory.id"
+        (click)="goToCategory(c)"
+      >
+        {{ c.name }}
+        <span class="material-icons-outlined">chevron_right</span>
+      </a>
+    </aside>
+
+    <!-- Main -->
+    <div class="cat-main">
+      <div class="tab-row">
+        <button
+          class="tab-pill"
+          [class.active]="activeSubCategoryId === null"
+          (click)="selectSubCategory(null)"
+        >
+          All
+        </button>
+        <button
+          *ngFor="let sc of subCategories"
+          class="tab-pill"
+          [class.active]="activeSubCategoryId === sc.id"
+          (click)="selectSubCategory(sc.id)"
+        >
+          {{ sc.name }}
+        </button>
+      </div>
+
+      <div class="results-row">
+        <span
+          >{{ filteredArticles.length }}+ {{ currentCategory.name }} News
+          Articles</span
+        >
+      </div>
+
+      <div class="state-block" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading articles&hellip;</p>
+      </div>
+
+      <div class="state-block" *ngIf="!loading && error">
+        <span class="material-icons-outlined state-icon">wifi_off</span>
+        <p>We couldn't load this category right now.</p>
+        <button
+          class="retry-button"
+          (click)="loadCategory(currentCategory.slug)"
+        >
+          Try Again
+        </button>
+      </div>
+
+      <div
+        class="state-block"
+        *ngIf="!loading && !error && filteredArticles.length === 0"
+      >
+        <span class="material-icons-outlined state-icon">article</span>
+        <p>No articles in this category yet.</p>
+      </div>
+
+      <ng-container *ngIf="!loading && !error && filteredArticles.length > 0">
+        <!-- Featured + side headlines -->
+        <div class="featured-row">
+          <div
+            class="featured-card"
+            *ngIf="featuredArticle"
+            (click)="goToArticle(featuredArticle)"
+          >
+            <span class="featured-badge">FEATURED</span>
+            <img
+              [src]="featuredArticle.featuredImageUrl"
+              [alt]="featuredArticle.title"
+            />
+            <div class="featured-overlay">
+              <h3>{{ featuredArticle.title }}</h3>
+              <p>{{ featuredArticle.shortDescription }}</p>
+              <span class="featured-meta">
+                {{ timeAgo(featuredArticle.publishedAt) }} &bull;
+                {{ currentCategory.name }} &bull;
+                {{ reads(featuredArticle.viewCount) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="side-headline-list">
+            <div
+              class="side-headline-row"
+              *ngFor="let a of sideHeadlines"
+              (click)="goToArticle(a)"
+            >
+              <img [src]="a.featuredImageUrl" [alt]="a.title" />
+              <div>
+                <h4>{{ a.title }}</h4>
+                <span
+                  >{{ timeAgo(a.publishedAt) }} &bull;
+                  {{ reads(a.viewCount) }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="article-grid">
+          <div
+            class="article-card"
+            *ngFor="let a of gridArticles"
+            (click)="goToArticle(a)"
+          >
+            <img [src]="a.featuredImageUrl" [alt]="a.title" />
+            <div class="article-card-body">
+              <h4>{{ a.title }}</h4>
+              <span class="article-card-time">{{
+                timeAgo(a.publishedAt)
+              }}</span>
+              <div
+                class="article-card-tags"
+                *ngIf="a.isBreaking || a.isTrending"
+              >
+                <span class="tag" *ngIf="a.isBreaking">Breaking</span>
+                <span class="tag" *ngIf="a.isTrending">Trending</span>
+              </div>
+              <span class="article-card-reads">{{ reads(a.viewCount) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-row" *ngIf="totalPages > 1">
+          <button
+            class="page-arrow"
+            [disabled]="currentPage === 1"
+            (click)="goToPage(currentPage - 1)"
+          >
+            <span class="material-icons-outlined">chevron_left</span>
+          </button>
+          <button
+            *ngFor="let p of pageNumbers"
+            class="page-num"
+            [class.active]="p === currentPage"
+            (click)="goToPage(p)"
+          >
+            {{ p }}
+          </button>
+          <button
+            class="page-arrow"
+            [disabled]="currentPage === totalPages"
+            (click)="goToPage(currentPage + 1)"
+          >
+            <span class="material-icons-outlined">chevron_right</span>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Right sidebar -->
+    <aside class="cat-right-sidebar">
+      <div class="sidebar-card">
+        <h3>
+          <span class="material-icons-outlined trend-icon"
+            >local_fire_department</span
+          >
+          Trending in {{ currentCategory.name }}
+        </h3>
+        <div
+          class="trending-row"
+          *ngFor="let a of trendingInCategory; let i = index"
+          (click)="goToArticle(a)"
+        >
+          <span class="trending-rank">{{ i + 1 }}</span>
+          <img [src]="a.featuredImageUrl" [alt]="a.title" />
+          <div>
+            <h5>{{ a.title }}</h5>
+            <span>{{ reads(a.viewCount) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="subscribe-card">
+        <h4>Stay Updated</h4>
+        <p>
+          Get the latest {{ currentCategory.name.toLowerCase() }} news delivered
+          to your inbox.
+        </p>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          [(ngModel)]="email"
+        />
+        <button (click)="subscribe()">Subscribe</button>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Related Topics</h3>
+        <div class="topic-chip-row">
+          <span class="topic-chip" *ngFor="let sc of subCategories">{{
+            sc.name
+          }}</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

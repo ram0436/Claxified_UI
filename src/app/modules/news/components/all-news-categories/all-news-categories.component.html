@@ -1,0 +1,139 @@
+<div class="categories-page-wrapper">
+  <nav class="breadcrumb">
+    <a routerLink="/news">News</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">Categories</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="categories-hero">
+    <div class="categories-hero-text">
+      <h1>News <span class="hero-accent">Categories</span></h1>
+      <p>
+        Explore the latest news from local, national and international sources
+        across a wide range of categories.
+      </p>
+    </div>
+    <div class="categories-hero-tagline">Stay Informed<br />Stay Ahead</div>
+  </section>
+
+  <div class="categories-layout">
+    <!-- Main -->
+    <div class="categories-main">
+      <div class="categories-main-header">
+        <h2>
+          All News Categories
+          <span class="count-chip">{{ categories.length }} Categories</span>
+        </h2>
+      </div>
+
+      <div class="state-block" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading categories&hellip;</p>
+      </div>
+
+      <div class="state-block" *ngIf="!loading && error">
+        <span class="material-icons-outlined state-icon">wifi_off</span>
+        <p>We couldn't load the categories right now.</p>
+        <button class="retry-button" (click)="fetchCategories()">
+          Try Again
+        </button>
+      </div>
+
+      <div
+        class="state-block"
+        *ngIf="!loading && !error && filteredCategories.length === 0"
+      >
+        <span class="material-icons-outlined state-icon">search_off</span>
+        <p>No categories match "{{ searchQuery }}".</p>
+      </div>
+
+      <div
+        class="categories-grid"
+        *ngIf="!loading && !error && filteredCategories.length > 0"
+      >
+        <div
+          class="category-card"
+          *ngFor="let c of filteredCategories"
+          (click)="goToCategory(c)"
+        >
+          <div class="category-card-image">
+            <img [src]="categoryImage(c)" [alt]="c.name" />
+          </div>
+          <div class="category-card-body">
+            <div class="category-card-icon">
+              <span class="material-icons-outlined">{{ categoryIcon(c) }}</span>
+            </div>
+            <div>
+              <h4>{{ c.name }}</h4>
+              <p>{{ articleCount(c) }}</p>
+            </div>
+            <span class="material-icons-outlined chevron">chevron_right</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="categories-sidebar">
+      <div class="search-box">
+        <span class="material-icons-outlined">search</span>
+        <input
+          type="text"
+          placeholder="Search news categories..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+        />
+      </div>
+
+      <div class="sidebar-card">
+        <h3>
+          <span class="material-icons-outlined">bar_chart</span> Popular News
+          Categories
+        </h3>
+        <div
+          class="popular-row"
+          *ngFor="let c of popularCategories; let i = index"
+          (click)="goToCategory(c)"
+        >
+          <span class="popular-rank">{{ i + 1 }}</span>
+          <div class="popular-body">
+            <h5>{{ c.name }}</h5>
+            <span>{{ articleCount(c) }}</span>
+          </div>
+          <span class="material-icons-outlined chevron">chevron_right</span>
+        </div>
+      </div>
+
+      <div class="subscribe-card">
+        <span class="material-icons-outlined subscribe-icon">mail</span>
+        <h4>Stay Updated</h4>
+        <p>Get the latest news delivered to your inbox.</p>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          [(ngModel)]="email"
+        />
+        <button (click)="subscribe()">Subscribe</button>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Follow Claxified News</h3>
+        <div class="social-row">
+          <a
+            *ngFor="let s of socialLinks"
+            [href]="s.link"
+            target="_blank"
+            rel="noopener"
+            class="social-icon"
+          >
+            <span class="material-icons-outlined">public</span>
+          </a>
+        </div>
+        <p class="social-caption">
+          Get the latest updates on our social channels.
+        </p>
+      </div>
+    </aside>
+  </div>
+</div>
