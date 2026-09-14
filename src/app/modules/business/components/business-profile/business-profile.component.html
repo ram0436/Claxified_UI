@@ -211,12 +211,15 @@
     </span>
   </div>
 
-  <!-- Sub-category tabs: only meaningful for the Offerings tab, since that's
-       the only place items are scoped by sub-category. -->
   <div
     class="subcategory-tab-strip"
     *ngIf="activeTab === 'offerings' && subCategoryTabs.length > 0"
   >
+    <span class="subcategory-tab-label">
+      <span class="material-icons-outlined">apps</span>
+      Business Sub Categories
+    </span>
+
     <span
       class="subcat-tab-item"
       *ngFor="let sc of subCategoryTabs"
@@ -433,120 +436,135 @@
     <div class="products-toolbar">
       <div class="products-toolbar-top">
         <div class="products-toolbar-left">
-          <h3>
-            {{
-              isProductFilter
-                ? "Products"
-                : isServiceFilter
-                  ? "Services"
-                  : "Offerings"
-            }}
-          </h3>
-
-          <div class="offering-type-tabs">
-            <span
-              class="offering-tab-item"
-              *ngFor="let tab of visibleOfferingTypeTabs"
-              [class.active]="isOfferingTypeActive(tab.value)"
-              (click)="selectOfferingFilter(tab.value)"
-            >
-              {{ tab.name }}
-              <span class="offering-tab-count">{{
-                getOfferingTypeCount(tab.value)
-              }}</span>
-            </span>
-
-            <div class="offering-more-dropdown" *ngIf="hasOverflowOfferingTabs">
-              <span
-                class="offering-tab-item offering-more-btn"
-                [class.active]="isMoreTabActive"
-                (click)="toggleMoreOfferingMenu(); $event.stopPropagation()"
-              >
-                More
-                <span class="material-icons-outlined dropdown-caret">
-                  {{ moreOfferingMenuOpen ? "expand_less" : "expand_more" }}
-                </span>
-              </span>
-
-              <div
-                class="offering-more-menu"
-                *ngIf="moreOfferingMenuOpen"
-                (click)="$event.stopPropagation()"
-              >
-                <div
-                  class="offering-more-menu-item"
-                  *ngFor="let tab of overflowOfferingTypeTabs"
-                  [class.active]="isOfferingTypeActive(tab.value)"
-                  (click)="selectOfferingFilter(tab.value, $event)"
-                >
-                  <span>{{ tab.name }}</span>
-                  <span class="offering-tab-count">{{
-                    getOfferingTypeCount(tab.value)
-                  }}</span>
-                </div>
-              </div>
-            </div>
+          <span class="offerings-icon-badge">
+            <span class="material-icons-outlined">shopping_bag</span>
+          </span>
+          <div class="offerings-heading">
+            <h3>
+              {{
+                isProductFilter
+                  ? "Products"
+                  : isServiceFilter
+                    ? "Services"
+                    : "Offerings"
+              }}
+            </h3>
+            <p class="offerings-subtitle">
+              Products, services, courses, events and more offered by this
+              business.
+            </p>
           </div>
         </div>
 
-        <ng-container *ngIf="isOwner && !viewingAsPublic">
-          <div class="add-offering-dropdown">
-            <button
-              class="btn-primary btn-sm"
-              (click)="toggleAddOfferingMenu(); $event.stopPropagation()"
-            >
-              <span class="material-icons-outlined">add</span> Add Offering
-              <span class="material-icons-outlined dropdown-caret">
-                {{ addOfferingMenuOpen ? "expand_less" : "expand_more" }}
-              </span>
-            </button>
+        <div class="products-toolbar-right">
+          <div class="search-box">
+            <span class="material-icons-outlined">search</span>
+            <input
+              type="text"
+              placeholder="Search offerings..."
+              [(ngModel)]="offeringSearch"
+            />
+          </div>
 
-            <div
-              class="add-offering-menu"
-              *ngIf="addOfferingMenuOpen"
-              (click)="$event.stopPropagation()"
-            >
-              <div
-                class="add-offering-menu-item"
-                (click)="selectAddOfferingType(OfferingType.Product, $event)"
+          <ng-container *ngIf="isOwner && !viewingAsPublic">
+            <div class="add-offering-dropdown">
+              <button
+                class="btn-primary btn-sm"
+                (click)="toggleAddOfferingMenu(); $event.stopPropagation()"
               >
-                <span class="material-icons-outlined">{{
-                  getOfferingTypeIcon(OfferingType.Product)
-                }}</span>
-                Product
-              </div>
+                <span class="material-icons-outlined">add</span> Add Offering
+              </button>
+
               <div
-                class="add-offering-menu-item"
-                (click)="selectAddOfferingType(OfferingType.Service, $event)"
+                class="add-offering-menu"
+                *ngIf="addOfferingMenuOpen"
+                (click)="$event.stopPropagation()"
               >
-                <span class="material-icons-outlined">{{
-                  getOfferingTypeIcon(OfferingType.Service)
-                }}</span>
-                Service
-              </div>
-              <div
-                class="add-offering-menu-item"
-                *ngFor="let t of otherOfferingTypeOptions"
-                (click)="selectAddOfferingType(t.value, $event)"
-              >
-                <span class="material-icons-outlined">{{
-                  getOfferingTypeIcon(t.value)
-                }}</span>
-                {{ t.name }}
+                <div
+                  class="add-offering-menu-item"
+                  (click)="selectAddOfferingType(OfferingType.Product, $event)"
+                >
+                  <span class="material-icons-outlined">{{
+                    getOfferingTypeIcon(OfferingType.Product)
+                  }}</span>
+                  Product
+                </div>
+                <div
+                  class="add-offering-menu-item"
+                  (click)="selectAddOfferingType(OfferingType.Service, $event)"
+                >
+                  <span class="material-icons-outlined">{{
+                    getOfferingTypeIcon(OfferingType.Service)
+                  }}</span>
+                  Service
+                </div>
+                <div
+                  class="add-offering-menu-item"
+                  *ngFor="let t of otherOfferingTypeOptions"
+                  (click)="selectAddOfferingType(t.value, $event)"
+                >
+                  <span class="material-icons-outlined">{{
+                    getOfferingTypeIcon(t.value)
+                  }}</span>
+                  {{ t.name }}
+                </div>
               </div>
             </div>
-          </div>
-        </ng-container>
+          </ng-container>
+        </div>
       </div>
 
-      <div class="products-toolbar-bottom">
-        <div class="search-box">
-          <span class="material-icons-outlined">search</span>
-          <input
-            type="text"
-            placeholder="Search"
-            [(ngModel)]="offeringSearch"
-          />
+      <div class="offering-type-tabs">
+        <span
+          class="offering-tab-item"
+          *ngFor="let tab of visibleOfferingTypeTabs"
+          [class.active]="isOfferingTypeActive(tab.value)"
+          (click)="selectOfferingFilter(tab.value)"
+        >
+          <span class="material-icons-outlined offering-tab-icon">{{
+            getOfferingTabIcon(tab.value)
+          }}</span>
+          {{ tab.name }}
+          <span class="offering-tab-count">{{
+            getOfferingTypeCount(tab.value)
+          }}</span>
+        </span>
+
+        <div class="offering-more-dropdown" *ngIf="hasOverflowOfferingTabs">
+          <span
+            class="offering-tab-item offering-more-btn"
+            [class.active]="isMoreTabActive"
+            (click)="toggleMoreOfferingMenu(); $event.stopPropagation()"
+          >
+            <span class="material-icons-outlined offering-tab-icon"
+              >more_horiz</span
+            >
+            More
+            <span class="material-icons-outlined dropdown-caret">
+              {{ moreOfferingMenuOpen ? "expand_less" : "expand_more" }}
+            </span>
+          </span>
+
+          <div
+            class="offering-more-menu"
+            *ngIf="moreOfferingMenuOpen"
+            (click)="$event.stopPropagation()"
+          >
+            <div
+              class="offering-more-menu-item"
+              *ngFor="let tab of overflowOfferingTypeTabs"
+              [class.active]="isOfferingTypeActive(tab.value)"
+              (click)="selectOfferingFilter(tab.value, $event)"
+            >
+              <span class="material-icons-outlined offering-tab-icon">{{
+                getOfferingTabIcon(tab.value)
+              }}</span>
+              <span>{{ tab.name }}</span>
+              <span class="offering-tab-count">{{
+                getOfferingTypeCount(tab.value)
+              }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
