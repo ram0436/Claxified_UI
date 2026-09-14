@@ -1,69 +1,70 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
   RouterStateSnapshot,
   UrlTree,
   Router,
-} from "@angular/router";
+} from '@angular/router';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    state: RouterStateSnapshot,
   ): boolean | UrlTree {
-    const userRole = localStorage.getItem("role");
-    const allowedAdminRoutes = ["admin-dashboard"];
-    const allowedUserRoutes = [""];
+    const userRole = localStorage.getItem('role');
+    const allowedAdminRoutes = ['admin-dashboard'];
+    const allowedUserRoutes = [''];
     const commonRoutes = [
-      "post-menu",
-      "Gadgets",
-      "add-post",
-      "view-posts",
-      "post-details/:id",
-      "Vehicles",
-      "Electronics & Appliances",
-      "Furniture",
-      "Sports & Hobbies",
-      "Fashion",
-      "Books",
-      "user",
-      "account",
-      "account/personal",
-      "account/myadds",
-      "account/security",
+      'post-menu',
+      'Gadgets',
+      'add-post',
+      'view-posts',
+      'post-details/:id',
+      'Vehicles',
+      'Electronics & Appliances',
+      'Furniture',
+      'Sports & Hobbies',
+      'Fashion',
+      'Books',
+      'user',
+      'account',
+      'account/personal',
+      'account/myadds',
+      'account/security',
     ];
-    const requestedRoute = route.routeConfig?.path || "";
-    const isBusinessRoute = state.url.startsWith("/business");
-    if (userRole == "Admin") {
-      if (allowedAdminRoutes.includes(requestedRoute) || isBusinessRoute) {
+    const requestedRoute = route.routeConfig?.path || '';
+    const isBusinessRoute = state.url.startsWith('/business');
+
+    if (userRole == 'Admin') {
+      if (isBusinessRoute || allowedAdminRoutes.includes(requestedRoute)) {
         return true;
       } else if (commonRoutes.includes(requestedRoute)) return true;
       else {
-        this.router.navigate(["/"]);
+        this.router.navigate(['/']);
         return false;
       }
-    } else if (userRole == "User") {
-      if (allowedUserRoutes.includes(requestedRoute)) {
+    } else if (userRole == 'User') {
+      if (isBusinessRoute || allowedUserRoutes.includes(requestedRoute)) {
         return true;
       } else if (commonRoutes.includes(requestedRoute)) return true;
       else {
-        this.router.navigate(["/"]);
+        this.router.navigate(['/']);
         return false;
       }
-    } else if (userRole == "AppSupport") {
-      if (allowedUserRoutes.includes(requestedRoute)) {
+    } else if (userRole == 'AppSupport') {
+      if (isBusinessRoute || allowedUserRoutes.includes(requestedRoute)) {
         return true;
       } else if (commonRoutes.includes(requestedRoute)) return true;
       else {
-        this.router.navigate(["/"]);
+        this.router.navigate(['/']);
         return false;
       }
     } else {
-      this.router.navigate(["/"]);
+      this.router.navigate(['/']);
       return false;
     }
   }

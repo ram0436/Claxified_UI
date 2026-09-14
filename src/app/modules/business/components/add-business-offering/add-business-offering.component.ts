@@ -39,6 +39,8 @@ export class AddBusinessOfferingComponent implements OnInit {
 
   @Input() offering: BusinessOfferingDto | null = null;
 
+  @Input() presetType: OfferingType | null = null;
+
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<void>();
 
@@ -97,8 +99,12 @@ export class AddBusinessOfferingComponent implements OnInit {
     icon: string;
     required?: boolean;
   }[] {
-    return [
-      { id: 'type', label: 'Offering Type', icon: 'category', required: true },
+    const rest: {
+      id: SectionId;
+      label: string;
+      icon: string;
+      required?: boolean;
+    }[] = [
       {
         id: 'basic',
         label: 'Basic Details',
@@ -108,6 +114,21 @@ export class AddBusinessOfferingComponent implements OnInit {
       { id: 'details', label: this.detailsSectionLabel, icon: 'tune' },
       { id: 'image', label: 'Image', icon: 'photo_library', required: true },
     ];
+
+    // In edit mode the type is always shown/locked; in add mode, only show
+    // the "type" picker step if the caller didn't already pass a presetType.
+    if (this.isEditMode || !this.presetType) {
+      return [
+        {
+          id: 'type',
+          label: 'Offering Type',
+          icon: 'category',
+          required: true,
+        },
+        ...rest,
+      ];
+    }
+    return rest;
   }
 
   constructor(
@@ -134,6 +155,12 @@ export class AddBusinessOfferingComponent implements OnInit {
           : fallbackSubCategoryId;
 
       this.form.patchValue({ subCategoryId });
+
+      if (this.presetType !== null) {
+        this.form.patchValue({ offeringType: this.presetType });
+        this.form.get('offeringType')?.disable();
+        this.activeSection = 'basic';
+      }
     }
   }
 
@@ -253,7 +280,7 @@ export class AddBusinessOfferingComponent implements OnInit {
   }
 
   goToNextSection(): void {
-    const order: SectionId[] = ['type', 'basic', 'details', 'image'];
+    const order: SectionId[] = this.sections.map((s) => s.id);
     const current = this.sections.find((s) => s.id === this.activeSection);
 
     if (current?.required && !this.isSectionFilled(this.activeSection)) {

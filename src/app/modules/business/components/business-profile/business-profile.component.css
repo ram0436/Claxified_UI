@@ -880,30 +880,6 @@ button {
   outline-offset: 2px;
 }
 
-/* ---------- Products & Services ---------- */
-.products-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.products-toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-}
-
-.products-toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 .filter-pills {
   display: flex;
   gap: 6px;
@@ -1811,4 +1787,194 @@ button {
 .subcat-tab-item.active {
   background: #0d475c;
   color: #fff;
+}
+
+/* ---------- Offering type tabs ---------- */
+.offering-type-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.offering-tab-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #635b67;
+  background: #f2f2f2;
+  padding: 7px 16px;
+  border-radius: 20px;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+  white-space: nowrap;
+}
+
+.offering-tab-item:hover {
+  color: #3c3241;
+}
+
+.offering-tab-item.active {
+  background: #0d475c;
+  color: #fff;
+}
+
+.offering-tab-count {
+  font-size: 11.5px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.25);
+  color: inherit;
+  border-radius: 10px;
+  padding: 1px 7px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.offering-tab-item:not(.active) .offering-tab-count {
+  background: #e2e6e8;
+  color: #635b67;
+}
+
+/* ---------- Add Offering dropdown ---------- */
+.add-offering-dropdown {
+  position: relative;
+}
+
+.add-offering-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 200px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 20;
+  overflow: hidden;
+}
+
+.add-offering-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: #3c3241;
+  cursor: pointer;
+}
+
+.add-offering-menu-item .material-icons-outlined {
+  font-size: 18px;
+  color: #0d475c;
+}
+
+.add-offering-menu-item:hover {
+  background: #f0f4f6;
+}
+
+.offering-more-dropdown {
+  position: relative;
+}
+
+.offering-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.offering-more-btn .dropdown-caret {
+  font-size: 18px;
+}
+
+.offering-more-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 190px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 20;
+  overflow: hidden;
+}
+
+.offering-more-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #3c3241;
+  cursor: pointer;
+}
+
+.offering-more-menu-item:hover {
+  background: #f0f4f6;
+}
+
+.offering-more-menu-item.active {
+  background: #eaf3f7;
+  color: #0d475c;
+}
+
+.offering-more-menu-item .offering-tab-count {
+  background: #e2e6e8;
+  color: #635b67;
+}
+
+.offering-more-menu-item.active .offering-tab-count {
+  background: #0d475c;
+  color: #fff;
+}
+
+/* ---------- Products & Services ---------- */
+
+.products-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.products-toolbar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.products-toolbar-bottom {
+  display: flex;
+}
+
+.products-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  min-width: 260px;
+  max-width: 340px;
+}
+
+@media (max-width: 700px) {
+  .products-toolbar-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .add-offering-dropdown {
+    align-self: flex-start;
+  }
+  .search-box {
+    max-width: none;
+  }
 }

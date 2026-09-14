@@ -431,57 +431,115 @@
   <!-- ---------- OFFERINGS (includes Product & Service mode) ---------- -->
   <div class="content-card products-card" *ngIf="activeTab === 'offerings'">
     <div class="products-toolbar">
-      <div class="products-toolbar-left">
-        <h3>
-          {{
-            isProductFilter
-              ? "Products"
-              : isServiceFilter
-                ? "Services"
-                : "Offerings"
-          }}
-        </h3>
+      <div class="products-toolbar-top">
+        <div class="products-toolbar-left">
+          <h3>
+            {{
+              isProductFilter
+                ? "Products"
+                : isServiceFilter
+                  ? "Services"
+                  : "Offerings"
+            }}
+          </h3>
 
-        <div class="filter-dropdown">
-          <button
-            class="btn-outline btn-sm filter-toggle-btn"
-            (click)="toggleOfferingFilterDropdown(); $event.stopPropagation()"
-            [disabled]="
-              offeringTypesLoading || availableOfferingTypes.length === 0
-            "
-          >
-            <span class="material-icons-outlined">filter_list</span>
-            {{ currentFilterLabel }}
-            <span class="material-icons-outlined dropdown-caret">
-              {{ offeringFilterOpen ? "expand_less" : "expand_more" }}
+          <div class="offering-type-tabs">
+            <span
+              class="offering-tab-item"
+              *ngFor="let tab of visibleOfferingTypeTabs"
+              [class.active]="isOfferingTypeActive(tab.value)"
+              (click)="selectOfferingFilter(tab.value)"
+            >
+              {{ tab.name }}
+              <span class="offering-tab-count">{{
+                getOfferingTypeCount(tab.value)
+              }}</span>
             </span>
-          </button>
 
-          <div
-            class="filter-dropdown-panel"
-            *ngIf="offeringFilterOpen"
-            (click)="$event.stopPropagation()"
-          >
-            <div
-              class="filter-dropdown-item"
-              [class.active]="isOfferingTypeActive('all')"
-              (click)="selectOfferingFilter('all', $event)"
-            >
-              All
-            </div>
-            <div
-              class="filter-dropdown-item"
-              *ngFor="let opt of availableOfferingTypes"
-              [class.active]="isOfferingTypeActive(opt.value)"
-              (click)="selectOfferingFilter(opt.value, $event)"
-            >
-              {{ opt.name }}
+            <div class="offering-more-dropdown" *ngIf="hasOverflowOfferingTabs">
+              <span
+                class="offering-tab-item offering-more-btn"
+                [class.active]="isMoreTabActive"
+                (click)="toggleMoreOfferingMenu(); $event.stopPropagation()"
+              >
+                More
+                <span class="material-icons-outlined dropdown-caret">
+                  {{ moreOfferingMenuOpen ? "expand_less" : "expand_more" }}
+                </span>
+              </span>
+
+              <div
+                class="offering-more-menu"
+                *ngIf="moreOfferingMenuOpen"
+                (click)="$event.stopPropagation()"
+              >
+                <div
+                  class="offering-more-menu-item"
+                  *ngFor="let tab of overflowOfferingTypeTabs"
+                  [class.active]="isOfferingTypeActive(tab.value)"
+                  (click)="selectOfferingFilter(tab.value, $event)"
+                >
+                  <span>{{ tab.name }}</span>
+                  <span class="offering-tab-count">{{
+                    getOfferingTypeCount(tab.value)
+                  }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
+        <ng-container *ngIf="isOwner && !viewingAsPublic">
+          <div class="add-offering-dropdown">
+            <button
+              class="btn-primary btn-sm"
+              (click)="toggleAddOfferingMenu(); $event.stopPropagation()"
+            >
+              <span class="material-icons-outlined">add</span> Add Offering
+              <span class="material-icons-outlined dropdown-caret">
+                {{ addOfferingMenuOpen ? "expand_less" : "expand_more" }}
+              </span>
+            </button>
+
+            <div
+              class="add-offering-menu"
+              *ngIf="addOfferingMenuOpen"
+              (click)="$event.stopPropagation()"
+            >
+              <div
+                class="add-offering-menu-item"
+                (click)="selectAddOfferingType(OfferingType.Product, $event)"
+              >
+                <span class="material-icons-outlined">{{
+                  getOfferingTypeIcon(OfferingType.Product)
+                }}</span>
+                Product
+              </div>
+              <div
+                class="add-offering-menu-item"
+                (click)="selectAddOfferingType(OfferingType.Service, $event)"
+              >
+                <span class="material-icons-outlined">{{
+                  getOfferingTypeIcon(OfferingType.Service)
+                }}</span>
+                Service
+              </div>
+              <div
+                class="add-offering-menu-item"
+                *ngFor="let t of otherOfferingTypeOptions"
+                (click)="selectAddOfferingType(t.value, $event)"
+              >
+                <span class="material-icons-outlined">{{
+                  getOfferingTypeIcon(t.value)
+                }}</span>
+                {{ t.name }}
+              </div>
+            </div>
+          </div>
+        </ng-container>
       </div>
 
-      <div class="products-toolbar-right">
+      <div class="products-toolbar-bottom">
         <div class="search-box">
           <span class="material-icons-outlined">search</span>
           <input
@@ -490,32 +548,6 @@
             [(ngModel)]="offeringSearch"
           />
         </div>
-
-        <ng-container *ngIf="isOwner && !viewingAsPublic">
-          <button
-            class="btn-outline btn-sm"
-            *ngIf="isProductFilter"
-            (click)="addProduct()"
-          >
-            <span class="material-icons-outlined">add</span> Add Product
-          </button>
-
-          <button
-            class="btn-outline btn-sm"
-            *ngIf="isServiceFilter"
-            (click)="addService()"
-          >
-            <span class="material-icons-outlined">add</span> Add Service
-          </button>
-
-          <button
-            class="btn-outline btn-sm"
-            *ngIf="!isProductOrServiceFilter"
-            (click)="addOffering()"
-          >
-            <span class="material-icons-outlined">add</span> Add Offering
-          </button>
-        </ng-container>
       </div>
     </div>
 
@@ -997,6 +1029,7 @@
     [businessSubCategories]="businessSubCategories"
     [selectedSubCategoryId]="selectedSubCategoryId"
     [offering]="editingOffering"
+    [presetType]="addOfferingPresetType"
     (close)="closeAddOfferingPanel()"
     (saved)="onOfferingSaved()"
   ></app-add-business-offering>
