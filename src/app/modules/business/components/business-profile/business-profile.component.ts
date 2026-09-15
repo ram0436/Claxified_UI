@@ -425,6 +425,11 @@ export class BusinessProfileComponent implements OnInit {
     }
   }
 
+  getOfferingTabIcon(value: OfferingType | 'all'): string {
+    if (value === 'all') return 'apps';
+    return this.getOfferingTypeIcon(value as OfferingType);
+  }
+
   getOfferingTypeIcon(type: OfferingType): string {
     switch (Number(type)) {
       case Number(this.OfferingType.Product):
