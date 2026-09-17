@@ -12,6 +12,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { ComingSoonComponent } from './components/coming-soon/coming-soon.component';
 import { PackagesBillingComponent } from './components/packages-billing/packages-billing.component';
 import { AdminOverviewComponent } from './components/admin-overview/admin-overview.component';
+import { AttributeMappingComponent } from './components/attribute-mapping/attribute-mapping.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { AdminOverviewComponent } from './components/admin-overview/admin-overvi
     ComingSoonComponent,
     PackagesBillingComponent,
     AdminOverviewComponent,
+    AttributeMappingComponent,
   ],
   imports: [
     CommonModule,

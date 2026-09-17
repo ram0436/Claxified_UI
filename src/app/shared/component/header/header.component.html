@@ -178,168 +178,6 @@
 
       <div class="side-nav-divider"></div>
 
-      <!-- My Businesses in Mobile Menu -->
-      <ng-container *ngIf="isUserLogedIn && businesses.length > 0">
-        <!-- <div class="side-nav-section-title">My Businesses</div>
-        <a
-          *ngFor="let biz of getDisplayedBusinesses()"
-          (click)="switchBusiness(biz); toggleSlideVisibility()"
-          class="side-nav-link side-nav-business-item"
-        >
-          <div
-            class="side-nav-business-avatar"
-            [style.background]="avatarGradient(biz.businessName)"
-          >
-            {{ getInitials(biz.businessName) }}
-          </div>
-          <span class="side-nav-business-name">{{ biz.businessName }}</span>
-          <span
-            class="side-nav-business-check"
-            *ngIf="biz.businessId === currentBusinessId"
-          >
-            <span class="material-icons-outlined">check</span>
-          </span>
-        </a>
-        <a
-          *ngIf="businesses.length > 3"
-          (click)="toggleShowAllBusinessesInMobile($event)"
-          class="side-nav-link side-nav-show-all"
-        >
-          <span class="material-icons-outlined">{{
-            showAllBusinessesMobile ? "expand_less" : "expand_more"
-          }}</span>
-          <span>{{
-            showAllBusinessesMobile ? "Show Less" : "Show All Businesses"
-          }}</span>
-        </a> -->
-
-        <!-- NEW: Business Dashboard / Profile / Settings -->
-        <!-- <a
-          (click)="goToBusinessDashboard(); toggleSlideVisibility()"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">dashboard</span>
-          Business Dashboard
-        </a>
-        <a
-          (click)="goToBusinessProfile(); toggleSlideVisibility()"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">storefront</span>
-          Business Profile
-        </a>
-
-        <a
-          *ngIf="isAdmin"
-          (click)="goToAttributeMapping(); toggleSlideVisibility()"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">tune</span>
-          Manage Attributes
-        </a> -->
-
-        <!-- <a
-          (click)="goToAccountSettings(); toggleSlideVisibility()"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">settings</span>
-          Account Settings
-        </a> -->
-
-        <!-- <div class="side-nav-divider"></div> -->
-      </ng-container>
-
-      <!-- User Links -->
-      <!-- <ng-container *ngIf="isUserLogedIn">
-        <a
-          (click)="toggleSlideVisibility()"
-          routerLink="/my-claxified/settings/personal"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">person_outline</span>
-          Go to Profile
-        </a>
-        <a
-          (click)="toggleSlideVisibility()"
-          routerLink="/my-claxified/settings/myadds"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">upload_file</span>
-          Manage My Ads
-        </a>
-        <a
-          (click)="toggleSlideVisibility()"
-          routerLink="/my-claxified/settings/saved"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">favorite_border</span>
-          My Wishlist
-        </a>
-        <a
-          (click)="toggleSlideVisibility()"
-          routerLink="/my-claxified/settings/feedback"
-          class="side-nav-link"
-          *ngIf="isUserLogedIn"
-        >
-          <span class="material-icons-outlined">reviews</span>
-          Feedback
-        </a>
-        <a
-          (click)="toggleSlideVisibility()"
-          routerLink="/my-claxified/settings"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">settings</span>
-          Account & Settings
-        </a>
-        <a
-          (click)="toggleSlideVisibility()"
-          routerLink="/help"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">help_outline</span>
-          Help & Contact
-        </a>
-
-        <div class="side-nav-divider"></div>
-
-        <a
-          (click)="logout(); toggleSlideVisibility()"
-          class="side-nav-link side-nav-logout"
-        >
-          <span class="material-icons-outlined">logout</span>
-          Logout
-        </a>
-      </ng-container>
-
-      <ng-container *ngIf="!isUserLogedIn">
-        <a
-          (click)="openLoginModal(); toggleSlideVisibility()"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">login</span>
-          Login
-        </a>
-        <a
-          (click)="openSignUpModal(); toggleSlideVisibility()"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">person_add</span>
-          Register
-        </a>
-        <a
-          (click)="toggleSlideVisibility()"
-          routerLink="/help"
-          class="side-nav-link"
-        >
-          <span class="material-icons-outlined">help_outline</span>
-          Help & Contact
-        </a>
-      </ng-container>
-
-      <div class="side-nav-divider"></div> -->
-
-      <!-- Action Buttons in Side Nav -->
       <a
         (click)="openBusinessLoginModal(); toggleSlideVisibility()"
         class="side-nav-link side-nav-business"
@@ -392,6 +230,28 @@
     </div>
 
     <hr class="menu-divider" />
+
+    <!-- <button
+      mat-menu-item
+      class="menu-item"
+      routerLink="/my-claxified/admin-overview"
+      *ngIf="isAdmin"
+    >
+      <span class="material-icons-outlined">shield</span>
+      <span>Admin Overview</span>
+    </button>
+
+    <button
+      mat-menu-item
+      class="menu-item"
+      routerLink="/my-claxified/attribute-mapping"
+      *ngIf="isAdmin"
+    >
+      <span class="material-icons-outlined">account_tree</span>
+      <span>Attribute Mapping</span>
+    </button>
+
+    <hr class="menu-divider" /> -->
 
     <button
       mat-menu-item

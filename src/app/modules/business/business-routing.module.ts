@@ -1,46 +1,46 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { BusinessLayoutComponent } from "./components/business-layout/business-layout.component";
-import { BusinessLandingComponent } from "./components/business-landing/business-landing.component";
-import { BusinessRegisterComponent } from "./components/business-register/business-register.component";
-import { BusinessDashboardComponent } from "./components/business-dashboard/business-dashboard.component";
-import { BusinessEditProfileComponent } from "./components/business-edit-profile/business-edit-profile.component";
-import { BusinessPublicProfileComponent } from "./components/business-public-profile/business-public-profile.component";
-import { BusinessProfileComponent } from "./components/business-profile/business-profile.component";
-import { BusinessDirectoriesComponent } from "./components/business-directories/business-directories.component";
-import { BusinessPageComponent } from "./components/business-page/business-page.component";
-import { BusinessProductDetailComponent } from "./components/business-product-detail/business-product-detail.component";
-import { BusinessServiceDetailComponent } from "./components/business-service-detail/business-service-detail.component";
-import { BusinessAttributeMappingComponent } from "./components/business-attribute-mapping/business-attribute-mapping.component";
-import { AuthGuard } from "../auth/authguard/authguard";
-import { BusinessHomeComponent } from "./components/business-home/business-home.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { BusinessLayoutComponent } from './components/business-layout/business-layout.component';
+import { BusinessLandingComponent } from './components/business-landing/business-landing.component';
+import { BusinessRegisterComponent } from './components/business-register/business-register.component';
+import { BusinessDashboardComponent } from './components/business-dashboard/business-dashboard.component';
+import { BusinessEditProfileComponent } from './components/business-edit-profile/business-edit-profile.component';
+import { BusinessPublicProfileComponent } from './components/business-public-profile/business-public-profile.component';
+import { BusinessProfileComponent } from './components/business-profile/business-profile.component';
+import { BusinessDirectoriesComponent } from './components/business-directories/business-directories.component';
+import { BusinessPageComponent } from './components/business-page/business-page.component';
+import { BusinessProductDetailComponent } from './components/business-product-detail/business-product-detail.component';
+import { BusinessServiceDetailComponent } from './components/business-service-detail/business-service-detail.component';
+import { BusinessAttributeMappingComponent } from './components/business-attribute-mapping/business-attribute-mapping.component';
+import { AuthGuard } from '../auth/authguard/authguard';
+import { BusinessHomeComponent } from './components/business-home/business-home.component';
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: BusinessLayoutComponent,
     children: [
-      { path: "", component: BusinessHomeComponent },
-      { path: "directories", component: BusinessDirectoriesComponent },
-      { path: "profile", component: BusinessProfileComponent },
-      { path: "profile/edit", component: BusinessEditProfileComponent },
-      { path: "profile/:tabRefGuid", component: BusinessProfileComponent },
+      { path: '', component: BusinessHomeComponent },
+      { path: 'directories', component: BusinessDirectoriesComponent },
+      { path: 'profile', component: BusinessProfileComponent },
+      { path: 'profile/edit', component: BusinessEditProfileComponent },
+      { path: 'profile/:tabRefGuid', component: BusinessProfileComponent },
       {
-        path: "product/:productId",
+        path: 'product/:productId',
         component: BusinessProductDetailComponent,
       },
       {
-        path: "service/:serviceId",
+        path: 'service/:serviceId',
         component: BusinessServiceDetailComponent,
       },
-      { path: "page/:slug", component: BusinessPageComponent },
+      { path: 'page/:slug', component: BusinessPageComponent },
+      // {
+      //   path: "admin/attribute-mapping",
+      //   component: BusinessAttributeMappingComponent,
+      //   canActivate: [AuthGuard],
+      // },
       {
-        path: "admin/attribute-mapping",
-        component: BusinessAttributeMappingComponent,
-        canActivate: [AuthGuard],
-      },
-      {
-        path: ":location/:businessName",
+        path: ':location/:businessName',
         component: BusinessPublicProfileComponent,
       },
     ],
