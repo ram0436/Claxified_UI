@@ -1,0 +1,192 @@
+<div class="page-head">
+  <nav class="breadcrumb">
+    <span>My Claxified</span>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">My Businesses</span>
+  </nav>
+  <h1>My Businesses</h1>
+  <p>Manage all your business profiles, listings and services in one place.</p>
+</div>
+
+<div class="card">
+  <!-- Tabs -->
+  <div class="biz-tabs">
+    <button
+      class="biz-tab"
+      [class.active]="activeTab === 'all'"
+      (click)="setTab('all')"
+    >
+      <span class="material-icons-outlined">grid_view</span> All Businesses
+    </button>
+    <button
+      class="biz-tab"
+      [class.active]="activeTab === 'active'"
+      (click)="setTab('active')"
+    >
+      <span class="dot active"></span> Active
+    </button>
+    <button
+      class="biz-tab"
+      [class.active]="activeTab === 'pending'"
+      (click)="setTab('pending')"
+    >
+      <span class="material-icons-outlined">schedule</span> Pending
+    </button>
+    <button
+      class="biz-tab"
+      [class.active]="activeTab === 'draft'"
+      (click)="setTab('draft')"
+    >
+      <span class="material-icons-outlined">description</span> Drafts
+    </button>
+    <button
+      class="biz-tab"
+      [class.active]="activeTab === 'archived'"
+      (click)="setTab('archived')"
+    >
+      <span class="material-icons-outlined">archive</span> Archived
+    </button>
+  </div>
+
+  <!-- Filter row -->
+  <div class="filter-row">
+    <div class="search-input">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+        <line
+          x1="21"
+          y1="21"
+          x2="16.65"
+          y2="16.65"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+      <input
+        type="text"
+        placeholder="Search businesses..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+    <!-- <select class="select">
+      <option>All Status</option>
+      <option>Active</option>
+      <option>Pending</option>
+      <option>Draft</option>
+      <option>Archived</option>
+    </select>
+    <select class="select">
+      <option>Sort by: Latest</option>
+      <option>Sort by: Name</option>
+    </select> -->
+    <div class="view-toggle">
+      <button class="tg-btn active">
+        <span class="material-icons-outlined">grid_view</span>
+      </button>
+      <button class="tg-btn">
+        <span class="material-icons-outlined">view_list</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="spinner-wrap" *ngIf="isLoading">
+    <mat-spinner diameter="36"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!isLoading">
+    <div class="biz-list" *ngIf="filteredBusinesses.length; else emptyState">
+      <div class="biz-card" *ngFor="let biz of filteredBusinesses">
+        <div class="biz-logo">
+          <img
+            [src]="getLogo(biz)"
+            (error)="
+              biz.logoUrl = '../../../../../assets/image_not_available.jpg'
+            "
+            alt=""
+          />
+        </div>
+
+        <div class="biz-info">
+          <div class="biz-head">
+            <h3>{{ biz.businessName }}</h3>
+            <span class="status" [ngClass]="statusClass(biz.status)">
+              <span class="dot"></span> {{ biz.status || "Active" }}
+            </span>
+          </div>
+          <div class="biz-type">
+            {{ biz.categoryName || biz.businessType || "Business" }}
+          </div>
+          <div class="biz-loc">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <circle
+                cx="12"
+                cy="9"
+                r="2.5"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            {{ biz.city || biz.address || "—" }}
+          </div>
+        </div>
+
+        <div class="biz-stats">
+          <div class="bs">
+            <div class="bs-val">{{ biz.productCount ?? 0 }}</div>
+            <div class="bs-lbl">Products</div>
+          </div>
+          <div class="bs">
+            <div class="bs-val">{{ biz.profileViews ?? 0 }}</div>
+            <div class="bs-lbl">Profile Views</div>
+          </div>
+          <div class="bs">
+            <div class="bs-val">{{ biz.enquiryCount ?? 0 }}</div>
+            <div class="bs-lbl">Enquiries</div>
+          </div>
+        </div>
+
+        <div class="biz-actions">
+          <button class="manage-btn" (click)="manageBusiness(biz)">
+            Manage Business →
+          </button>
+          <!-- <button class="icon-btn">
+            <span class="material-icons-outlined">more_vert</span>
+          </button> -->
+        </div>
+      </div>
+    </div>
+
+    <ng-template #emptyState>
+      <div class="empty">
+        <span
+          class="material-icons-outlined"
+          style="font-size: 44px; color: #c9c2dd"
+          >storefront</span
+        >
+        <p>You haven't added any businesses yet.</p>
+        <!-- <button class="btn-primary" (click)="addNewBusiness()">
+          + Add New Business
+        </button> -->
+      </div>
+    </ng-template>
+
+    <div class="table-footer" *ngIf="filteredBusinesses.length">
+      <span class="muted"
+        >Showing 1 to {{ filteredBusinesses.length }} of
+        {{ filteredBusinesses.length }} businesses</span
+      >
+      <div class="pages">
+        <button disabled>‹</button>
+        <button class="active">1</button>
+        <button disabled>›</button>
+      </div>
+    </div>
+  </ng-container>
+</div>

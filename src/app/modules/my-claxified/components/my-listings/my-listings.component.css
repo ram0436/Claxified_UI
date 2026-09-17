@@ -1,0 +1,143 @@
+/* Component-specific overrides — shared styles live in src/styles.css */
+/* =========================================================
+   Shared table footer / pagination (My Listings + My Businesses)
+   ========================================================= */
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 18px;
+  margin-top: 8px;
+  border-top: 1px solid #f4f1fb;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.muted {
+  color: #8b8299;
+  font-size: 13px;
+}
+
+.pages-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.pages-scroll-btn {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #e7e9f3;
+  background: #fff;
+  color: #1e2138;
+  cursor: pointer;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+.pages-scroll-btn:hover:not(:disabled) {
+  background: #f6f3fd;
+  border-color: #d6c8fb;
+  color: #7c3aed;
+}
+.pages-scroll-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pages {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  min-width: 0;
+
+  /* Hide native scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* old Edge/IE */
+}
+.pages::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, new Edge */
+}
+
+.pages button {
+  flex-shrink: 0;
+  min-width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid #e7e9f3;
+  background: #fff;
+  color: #1e2138;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.pages button:hover:not(:disabled):not(.active) {
+  background: #f6f3fd;
+  border-color: #d6c8fb;
+  color: #7c3aed;
+}
+
+.pages button.active {
+  background: linear-gradient(90deg, #7b2ff7, #f72585);
+  color: #fff;
+  border: none;
+}
+
+.pages button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.col-details .title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.col-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0; /* already correct */
+}
+.col-details img {
+  width: 46px;
+  height: 46px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #f1f2f8;
+}
+
+.col-details > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.col-details .title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #1e2138;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

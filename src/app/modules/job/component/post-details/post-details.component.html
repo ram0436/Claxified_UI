@@ -419,8 +419,8 @@
                       postDetails?.mobile.toLowerCase() === "string"
                         ? "Not Available"
                         : isPhoneNumberHidden
-                        ? postDetails?.mobile.slice(0, -4) + "XXXX"
-                        : postDetails?.mobile
+                          ? postDetails?.mobile.slice(0, -4) + "XXXX"
+                          : postDetails?.mobile
                     }}
                   </h2>
                 </div>
@@ -592,7 +592,7 @@
               </div>
             </div>
             <div class="link carousel-link text-carousel-link">
-              <a routerLink="/user/account/help" target="_blank"
+              <a routerLink="/my-claxified/settings/help" target="_blank"
                 >Read All Safety Tips</a
               >
             </div>

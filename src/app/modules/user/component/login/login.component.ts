@@ -1,22 +1,22 @@
-import { Component } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { MatDialogRef } from "@angular/material/dialog";
-import { Router } from "@angular/router";
-import { UserService } from "../../service/user.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { NgForm } from "@angular/forms";
+import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { UserService } from '../../service/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgForm } from '@angular/forms';
 
 @Component({
-  selector: "app-login",
-  templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.css"],
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  email: string = "";
-  phoneNumber: string = "";
-  password: string = "";
-  otp: string = "";
-  firstName: string = "";
+  email: string = '';
+  phoneNumber: string = '';
+  password: string = '';
+  otp: string = '';
+  firstName: string = '';
   otpSent: boolean = false;
   otpMessage: boolean = false;
   otpFailed: boolean = false;
@@ -42,7 +42,7 @@ export class LoginComponent {
     private userService: UserService,
     private router: Router,
     private dialogRef: MatDialogRef<LoginComponent>,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {}
 
   validatePhoneNumber(): boolean {
@@ -94,14 +94,14 @@ export class LoginComponent {
   signIn() {
     let payload = { userId: this.email, password: this.password };
     this.userService.login(payload).subscribe((data: any) => {
-      localStorage.setItem("role", data.role);
-      localStorage.setItem("authToken", data.authToken);
-      localStorage.setItem("id", data.id);
+      localStorage.setItem('role', data.role);
+      localStorage.setItem('authToken', data.authToken);
+      localStorage.setItem('id', data.id);
       this.dialogRef.close();
-      this.userService.setData("login");
-      if (data.role == "Admin")
-        this.router.navigate(["/Admin/admin-dashboard"]);
-      else this.router.navigate(["/user/account"]);
+      this.userService.setData('login');
+      if (data.role == 'Admin')
+        this.router.navigate(['/my-claxidied/dashboard']);
+      else this.router.navigate(['/my-claxidied/dashboard']);
     });
   }
 
@@ -124,7 +124,7 @@ export class LoginComponent {
     }
 
     this.httpClient
-      .get("https://api64.ipify.org?format=json")
+      .get('https://api64.ipify.org?format=json')
       .subscribe((ipInfo: any) => {
         const ipAddress = ipInfo.ip;
         const createdOn = new Date().toISOString();
@@ -144,7 +144,7 @@ export class LoginComponent {
               setTimeout(() => {
                 this.otpFailed = false;
               }, 5000);
-            }
+            },
           );
       });
   }
@@ -184,36 +184,36 @@ export class LoginComponent {
         .OTPLogin(
           requestPayload.mobileNo,
           requestPayload.otp,
-          requestPayload.firstName
+          requestPayload.firstName,
         )
         .subscribe(
           (data: any) => {
             this.loginSuccessfull = true;
-            localStorage.setItem("role", data.role);
-            localStorage.setItem("authToken", data.authToken);
-            localStorage.setItem("id", data.id);
-            localStorage.setItem("firstName", data.firstName);
+            localStorage.setItem('role', data.role);
+            localStorage.setItem('authToken', data.authToken);
+            localStorage.setItem('id', data.id);
+            localStorage.setItem('firstName', data.firstName);
             this.dialogRef.close();
-            this.userService.setData("login");
-            if (data.role == "Admin")
-              this.router.navigate(["/Admin/admin-dashboard"]);
-            else this.router.navigate(["/user/account"]);
+            this.userService.setData('login');
+            if (data.role == 'Admin')
+              this.router.navigate(['/my-claxified/admin-overview']);
+            else this.router.navigate(['/my-claxified/settings']);
           },
           (error) => {
             this.unauthorizedUser = true;
             setTimeout(() => {
               this.unauthorizedUser = false;
             }, 5000);
-          }
+          },
         );
     }
   }
 
   showNotification(message: string): void {
-    this.snackBar.open(message, "Close", {
+    this.snackBar.open(message, 'Close', {
       duration: 2000,
-      horizontalPosition: "end",
-      verticalPosition: "top",
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
     });
   }
 

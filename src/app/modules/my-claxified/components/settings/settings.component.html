@@ -1,0 +1,119 @@
+<div class="page-head">
+  <div>
+    <h1>Settings</h1>
+    <p>Manage your account, preferences and notifications.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="spinner-wrap" *ngIf="isLoading">
+    <mat-spinner diameter="36"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!isLoading">
+    <div class="profile-header">
+      <div class="avatar-upload">
+        <img
+          *ngIf="profileImageUrl !== defaultAvatar"
+          [src]="profileImageUrl"
+          class="avatar-lg-img"
+          alt="Profile photo"
+        />
+        <span class="avatar-lg" *ngIf="profileImageUrl === defaultAvatar">{{
+          initials
+        }}</span>
+
+        <label
+          class="avatar-edit-btn"
+          [class.disabled]="isUploadingPhoto"
+          title="Change photo"
+        >
+          <span class="material-icons-outlined" *ngIf="!isUploadingPhoto"
+            >photo_camera</span
+          >
+          <mat-spinner diameter="14" *ngIf="isUploadingPhoto"></mat-spinner>
+          <input
+            type="file"
+            accept="image/*"
+            hidden
+            class="visually-hidden-file-input"
+            [disabled]="isUploadingPhoto"
+            (change)="onPhotoSelected($event)"
+          />
+        </label>
+      </div>
+
+      <div>
+        <h3 style="margin: 0">{{ form.firstName }} {{ form.lastName }}</h3>
+        <p style="margin: 2px 0 0; color: #6b7280; font-size: 13px">
+          {{ form.email }}
+        </p>
+      </div>
+
+      <button
+        class="btn-secondary edit-toggle"
+        *ngIf="!isEditing"
+        (click)="startEditing()"
+      >
+        <span
+          class="material-icons-outlined"
+          style="font-size: 16px; vertical-align: -3px"
+          >edit</span
+        >
+        Edit Profile
+      </button>
+    </div>
+
+    <fieldset [disabled]="!isEditing" class="form-grid">
+      <div class="form-field">
+        <label>First Name *</label>
+        <input type="text" [(ngModel)]="form.firstName" name="firstName" />
+      </div>
+      <div class="form-field">
+        <label>Last Name</label>
+        <input type="text" [(ngModel)]="form.lastName" name="lastName" />
+      </div>
+      <div class="form-field">
+        <label>Email Address *</label>
+        <input type="email" [(ngModel)]="form.email" name="email" />
+      </div>
+      <div class="form-field">
+        <label>Mobile Number *</label>
+        <input type="text" [(ngModel)]="form.mobileNo" name="mobileNo" />
+      </div>
+      <div class="form-field">
+        <label>WhatsApp Number</label>
+        <input
+          type="text"
+          [(ngModel)]="form.watsAppNo"
+          name="watsAppNo"
+          placeholder="Enter WhatsApp number"
+        />
+      </div>
+    </fieldset>
+
+    <div class="form-field" style="margin-top: 16px">
+      <label>About You</label>
+      <textarea
+        rows="4"
+        maxlength="500"
+        [disabled]="!isEditing"
+        [(ngModel)]="form.aboutMe"
+        placeholder="Tell us a little about yourself..."
+      ></textarea>
+    </div>
+
+    <div class="form-actions" *ngIf="isEditing">
+      <button
+        class="btn-secondary"
+        [disabled]="isSaving"
+        (click)="cancelEditing()"
+      >
+        Cancel
+      </button>
+      <button class="btn-primary" [disabled]="isSaving" (click)="saveChanges()">
+        {{ isSaving ? "Saving..." : "Save Changes" }}
+      </button>
+    </div>
+  </ng-container>
+</div>

@@ -1,16 +1,16 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { Router } from "@angular/router";
-import { BusinessLoginComponent } from "../business-login/business-login.component";
-import { LoginComponent } from "src/app/modules/user/component/login/login.component";
-import { BusinessService } from "../../service/business.service";
-import { BusinessListItem } from "./../../model/Business";
-import { Subscription } from "rxjs";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { BusinessLoginComponent } from '../business-login/business-login.component';
+import { LoginComponent } from 'src/app/modules/user/component/login/login.component';
+import { BusinessService } from '../../service/business.service';
+import { BusinessListItem } from './../../model/Business';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: "app-business-header",
-  templateUrl: "./business-header.component.html",
-  styleUrls: ["./business-header.component.css"],
+  selector: 'app-business-header',
+  templateUrl: './business-header.component.html',
+  styleUrls: ['./business-header.component.css'],
 })
 export class BusinessHeaderComponent implements OnInit, OnDestroy {
   dialogRef!: MatDialogRef<BusinessLoginComponent>;
@@ -22,9 +22,9 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
   expandIconVisible: boolean = true;
 
   businesses: BusinessListItem[] = [];
-  currentBusinessName: string = "My Business";
+  currentBusinessName: string = 'My Business';
   currentBusinessLogo: string =
-    "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
+    'https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg';
 
   showAllBusinesses: boolean = false;
 
@@ -33,15 +33,15 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private router: Router,
-    private businessService: BusinessService
+    private businessService: BusinessService,
   ) {}
 
   private businessUpdatedSub!: Subscription;
 
   ngOnInit() {
-    if (localStorage.getItem("authToken") != null) {
+    if (localStorage.getItem('authToken') != null) {
       this.isUserLogedIn = true;
-      this.isAdmin = localStorage.getItem("role") === "Admin";
+      this.isAdmin = localStorage.getItem('role') === 'Admin';
       this.loadUserBusinesses();
     }
 
@@ -50,7 +50,7 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
         const match = this.businesses.find(
           (b) =>
             b.businessId === update.businessId ||
-            (b as any).id === update.businessId
+            (b as any).id === update.businessId,
         );
         if (match) {
           match.businessName = update.businessName;
@@ -66,11 +66,11 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
 
         if (isCurrentlyShown || this.businesses.length === 0) {
           this.currentBusinessName = update.businessName;
-          if (update.logoUrl && update.logoUrl.trim() !== "") {
+          if (update.logoUrl && update.logoUrl.trim() !== '') {
             this.currentBusinessLogo = update.logoUrl;
           }
         }
-      }
+      },
     );
   }
 
@@ -81,11 +81,11 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
   }
 
   goToAttributeMapping(): void {
-    this.router.navigate(["/business/admin/attribute-mapping"]);
+    this.router.navigate(['/business/admin/attribute-mapping']);
   }
 
   loadUserBusinesses(): void {
-    const userId = Number(localStorage.getItem("id"));
+    const userId = Number(localStorage.getItem('id'));
     if (!userId) return;
 
     this.businessService.getUserBusinesses(userId).subscribe(
@@ -97,13 +97,13 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
           this.currentBusinessName = this.businesses[0].businessName;
           if (
             this.businesses[0].logoUrl &&
-            this.businesses[0].logoUrl.trim() !== ""
+            this.businesses[0].logoUrl.trim() !== ''
           ) {
             this.currentBusinessLogo = this.businesses[0].logoUrl;
           }
         }
       },
-      (error) => {}
+      (error) => {},
     );
   }
 
@@ -118,7 +118,7 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
   }
 
   getInitials(name: string): string {
-    if (!name) return "?";
+    if (!name) return '?';
     const words = name.trim().split(/\s+/);
     const initials =
       words.length === 1 ? words[0].substring(0, 2) : words[0][0] + words[1][0];
@@ -127,14 +127,14 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
 
   avatarGradient(name: string): string {
     const gradients = [
-      "linear-gradient(135deg, #0d475c 0%, #1f9254 100%)",
-      "linear-gradient(135deg, #e75462 0%, #f4a261 100%)",
-      "linear-gradient(135deg, #6c5ce7 0%, #0065ff 100%)",
-      "linear-gradient(135deg, #00b894 0%, #0d475c 100%)",
-      "linear-gradient(135deg, #e75462 0%, #6c5ce7 100%)",
+      'linear-gradient(135deg, #0d475c 0%, #1f9254 100%)',
+      'linear-gradient(135deg, #e75462 0%, #f4a261 100%)',
+      'linear-gradient(135deg, #6c5ce7 0%, #0065ff 100%)',
+      'linear-gradient(135deg, #00b894 0%, #0d475c 100%)',
+      'linear-gradient(135deg, #e75462 0%, #6c5ce7 100%)',
     ];
     let hash = 0;
-    for (let i = 0; i < (name || "").length; i++) {
+    for (let i = 0; i < (name || '').length; i++) {
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
     const index = Math.abs(hash) % gradients.length;
@@ -147,10 +147,10 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
       return;
     }
     this.currentBusinessName = biz.businessName;
-    if (biz.logoUrl && biz.logoUrl.trim() !== "") {
+    if (biz.logoUrl && biz.logoUrl.trim() !== '') {
       this.currentBusinessLogo = biz.logoUrl;
     }
-    this.router.navigate(["/business/profile", tabRefGuid]);
+    this.router.navigate(['/business/profile', tabRefGuid]);
   }
 
   openLoginModal() {
@@ -161,17 +161,17 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
       this.loginDialogRef.close();
     }
     this.loginDialogRef = this.dialog.open(LoginComponent, {
-      width: "400px",
-      panelClass: "custom-dialog-container",
+      width: '400px',
+      panelClass: 'custom-dialog-container',
     });
 
-    const dialogRefElement = document.querySelector(".custom-dialog-container");
+    const dialogRefElement = document.querySelector('.custom-dialog-container');
     if (dialogRefElement) {
-      dialogRefElement.setAttribute("style", "margin-top: 50px");
+      dialogRefElement.setAttribute('style', 'margin-top: 50px');
     }
 
     this.loginDialogRef.afterClosed().subscribe(() => {
-      if (localStorage.getItem("authToken") != null) {
+      if (localStorage.getItem('authToken') != null) {
         this.isUserLogedIn = true;
         this.loadUserBusinesses();
       }
@@ -183,49 +183,49 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
       this.dialogRef.close();
     }
     this.dialogRef = this.dialog.open(BusinessLoginComponent, {
-      width: "800px",
-      maxWidth: "95vw",
-      panelClass: "business-login-dialog-container",
+      width: '800px',
+      maxWidth: '95vw',
+      panelClass: 'business-login-dialog-container',
       autoFocus: false,
     });
     this.dialogRef.afterClosed().subscribe(() => {});
   }
 
   goToBusinessDashboard() {
-    this.router.navigate(["/business/dashboard"]);
+    this.router.navigate(['/business/dashboard']);
   }
   goToBusinessProfile() {
-    this.router.navigate(["/business/profile"]);
+    this.router.navigate(['/business/profile']);
   }
   goToListing() {
-    this.router.navigate(["/business/listing"]);
+    this.router.navigate(['/business/listing']);
   }
   goToAnalytics() {
-    this.router.navigate(["/business/analytics"]);
+    this.router.navigate(['/business/analytics']);
   }
   goToLead() {
-    this.router.navigate(["/business/lead"]);
+    this.router.navigate(['/business/lead']);
   }
   goToOwnerProfile() {
-    this.router.navigate(["/user/account/personal"]);
+    this.router.navigate(['/my-claxified/settings/personal']);
   }
   goToMyBusiness() {
-    this.router.navigate(["/business/profile"]);
+    this.router.navigate(['/business/profile']);
   }
   goToAccountSettings() {
-    this.router.navigate(["/business/account-settings"]);
+    this.router.navigate(['/business/account-settings']);
   }
 
   logout() {
-    if (localStorage.getItem("authToken") != null) {
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("role");
-      localStorage.removeItem("id");
-      localStorage.removeItem("userId");
+    if (localStorage.getItem('authToken') != null) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('role');
+      localStorage.removeItem('id');
+      localStorage.removeItem('userId');
       this.isUserLogedIn = false;
       this.businesses = [];
       this.showAllBusinesses = false;
-      this.router.navigate(["/"]);
+      this.router.navigate(['/']);
     }
   }
 }
