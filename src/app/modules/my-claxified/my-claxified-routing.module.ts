@@ -9,6 +9,7 @@ import { ComingSoonComponent } from './components/coming-soon/coming-soon.compon
 import { PackagesBillingComponent } from './components/packages-billing/packages-billing.component';
 import { AdminOverviewComponent } from './components/admin-overview/admin-overview.component';
 import { AuthGuard } from '../auth/authguard/authguard';
+import { AttributeMappingComponent } from './components/attribute-mapping/attribute-mapping.component';
 
 const routes: Routes = [
   {
@@ -42,6 +43,11 @@ const routes: Routes = [
       {
         path: 'admin-overview',
         component: AdminOverviewComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'attribute-mapping',
+        component: AttributeMappingComponent,
         canActivate: [AuthGuard],
       },
     ],

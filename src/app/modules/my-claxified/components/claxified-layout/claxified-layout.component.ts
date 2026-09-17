@@ -18,11 +18,14 @@ export class ClaxifiedLayoutComponent implements OnInit {
     { label: 'Settings', icon: 'settings', route: 'settings' },
   ];
 
-  adminNavItem = {
-    label: 'Admin Overview',
-    icon: 'admin',
-    route: 'admin-overview',
-  };
+  adminNavItems = [
+    { label: 'Admin Overview', icon: 'admin', route: 'admin-overview' },
+    {
+      label: 'Attribute Mapping',
+      icon: 'attributes',
+      route: 'attribute-mapping',
+    },
+  ];
 
   get isAdmin(): boolean {
     return this.userRole?.toLowerCase() === 'admin';
