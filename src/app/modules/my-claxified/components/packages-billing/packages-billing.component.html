@@ -1,0 +1,123 @@
+<div class="page-head">
+  <nav class="breadcrumb">
+    <span>My Claxified</span>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">Packages &amp; Billing</span>
+  </nav>
+  <h1>Packages &amp; Billing</h1>
+  <p>
+    Choose the right plan, manage your payments and view your invoices — all in
+    one place.
+  </p>
+</div>
+
+<!-- Tabs -->
+<div class="billing-tabs">
+  <button class="btab" [class.active]="tab === 'plans'" (click)="tab = 'plans'">
+    <span class="material-icons-outlined">inventory_2</span>
+    <div>
+      <div class="bt-title">Plans &amp; Packages</div>
+      <div class="bt-sub">Find the right plan for your needs</div>
+    </div>
+  </button>
+  <button
+    class="btab"
+    [class.active]="tab === 'billing'"
+    (click)="tab = 'billing'"
+  >
+    <span class="material-icons-outlined">credit_card</span>
+    <div>
+      <div class="bt-title">Billing &amp; Payments</div>
+      <div class="bt-sub">Manage your payments</div>
+    </div>
+  </button>
+  <button
+    class="btab"
+    [class.active]="tab === 'invoices'"
+    (click)="tab = 'invoices'"
+  >
+    <span class="material-icons-outlined">description</span>
+    <div>
+      <div class="bt-title">Invoices</div>
+      <div class="bt-sub">View and download invoices</div>
+    </div>
+  </button>
+</div>
+
+<!-- PLANS -->
+<div *ngIf="tab === 'plans'">
+  <div class="plans-head">
+    <div class="ph-icon">
+      <span class="material-icons-outlined">inventory_2</span>
+    </div>
+    <div>
+      <h3 class="ph-title">Plans &amp; Packages</h3>
+      <p class="ph-sub">
+        Choose a plan that fits your goals. Upgrade, downgrade or switch
+        anytime.
+      </p>
+    </div>
+    <a class="link">Compare Plans →</a>
+  </div>
+
+  <div class="plans-grid">
+    <div class="plan-card" *ngFor="let p of plans" [class.popular]="p.popular">
+      <div class="plan-head">
+        <div class="plan-icon">
+          <span class="material-icons-outlined">{{ planIcon(p.name) }}</span>
+        </div>
+        <span class="pop-badge" *ngIf="p.popular">Most Popular</span>
+      </div>
+      <h3 class="plan-name">{{ p.name }}</h3>
+      <p class="plan-tag">{{ p.tagline }}</p>
+      <div class="plan-price">
+        <span class="currency">₹</span>
+        <span class="amount">{{ p.price }}</span>
+        <span class="period">{{ p.period }}</span>
+      </div>
+      <div class="save-tag" *ngIf="p.price > 0">Save 17%</div>
+      <ul class="plan-features">
+        <li *ngFor="let f of p.features">
+          <span class="material-icons-outlined">check_circle</span> {{ f }}
+        </li>
+      </ul>
+      <button class="plan-btn" [class.current]="p.current">
+        {{ p.current ? "Current Plan" : "Upgrade Now →" }}
+      </button>
+    </div>
+  </div>
+
+  <div class="help-banner">
+    <div class="hb-icon">
+      <span class="material-icons-outlined">lightbulb_outline</span>
+    </div>
+    <div class="hb-body">
+      <div class="hb-title">Need help choosing the right plan?</div>
+      <div class="hb-sub">
+        Our team is here to help you find the best plan for your goals.
+      </div>
+    </div>
+    <button class="btn-secondary">
+      <span
+        class="material-icons-outlined"
+        style="font-size: 16px; vertical-align: -3px"
+        >headset_mic</span
+      >
+      Contact Support
+    </button>
+  </div>
+</div>
+
+<!-- BILLING (placeholder) -->
+<div *ngIf="tab === 'billing'" class="card">
+  <p style="color: #6b7280; text-align: center; padding: 60px 0; margin: 0">
+    Billing &amp; Payments content — coming soon.
+  </p>
+</div>
+
+<!-- INVOICES (placeholder) -->
+<div *ngIf="tab === 'invoices'" class="card">
+  <p style="color: #6b7280; text-align: center; padding: 60px 0; margin: 0">
+    Invoices content — coming soon.
+  </p>
+</div>

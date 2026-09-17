@@ -37,6 +37,14 @@ const routes: Routes = [
   },
   { path: 'post-menu', component: PostMenuComponent, canActivate: [AuthGuard] },
   {
+    path: 'my-claxified',
+    loadChildren: () =>
+      import('./modules/my-claxified/my-claxified.module').then(
+        (m) => m.MyClaxifiedModule,
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'Admin',
     loadChildren: () =>
       import('./modules/admin/admin.module').then((m) => m.AdminModule),

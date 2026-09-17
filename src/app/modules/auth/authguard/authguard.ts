@@ -7,6 +7,7 @@ import {
   Router,
 } from '@angular/router';
 
+// authguard.ts
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
   constructor(private router: Router) {}
@@ -16,9 +17,10 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot,
   ): boolean | UrlTree {
     const userRole = localStorage.getItem('role');
-    const allowedAdminRoutes = ['admin-dashboard'];
+    const allowedAdminRoutes = ['admin-dashboard', 'admin-overview'];
     const allowedUserRoutes = [''];
     const commonRoutes = [
+      'my-claxified',
       'post-menu',
       'Gadgets',
       'add-post',

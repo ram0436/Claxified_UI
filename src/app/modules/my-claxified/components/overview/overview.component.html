@@ -1,0 +1,95 @@
+<div class="page-head">
+  <div>
+    <h1>Welcome back, {{ userName }} 👋</h1>
+    <p>Here's what's happening with your listings and businesses on Claxified.</p>
+  </div>
+  <button class="btn-primary" (click)="createListing()"><span>+</span> Create New Listing</button>
+</div>
+
+<div class="spinner-wrap" *ngIf="isLoading">
+  <mat-spinner diameter="36"></mat-spinner>
+</div>
+
+<ng-container *ngIf="!isLoading">
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span class="stat-icon" style="background:#eef2ff;color:#4f46e5;">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="2"/><line x1="8" y1="8" x2="16" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      <div>
+        <div class="stat-value">{{ totalListings }}</div>
+        <div class="stat-label">Total Listings</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-icon" style="background:#e5f9ee;color:#0f9d58;">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div>
+        <div class="stat-value">{{ activeCount }}</div>
+        <div class="stat-label">Active Listings</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-icon" style="background:#fff4e5;color:#b25e00;">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      <div>
+        <div class="stat-value">{{ pendingCount }}</div>
+        <div class="stat-label">Pending Approval</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-icon" style="background:#fde7f0;color:#d6006e;">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div>
+        <div class="stat-value">{{ totalBusinesses }}</div>
+        <div class="stat-label">My Businesses</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
+      <h3>Recent Listings</h3>
+      <a (click)="goToListings()">View all →</a>
+    </div>
+
+    <div class="recent-list" *ngIf="recentAds.length; else noAds">
+      <div class="recent-row" *ngFor="let ad of recentAds" (click)="viewDetails(ad)">
+        <img [src]="ad.__image" (error)="ad.__image = '../../../../../assets/image_not_available.jpg'" alt="" />
+        <div class="recent-info">
+          <div class="recent-title">{{ ad.__title }}</div>
+          <div class="recent-sub">{{ ad.__category }} · {{ ad.__location }}</div>
+        </div>
+        <span
+          class="status"
+          [class.status-active]="ad.__status === 'Active'"
+          [class.status-pending]="ad.__status === 'Pending Approval'"
+          [class.status-inactive]="ad.__status === 'Inactive'"
+        >
+          <i></i>{{ ad.__status }}
+        </span>
+      </div>
+    </div>
+
+    <ng-template #noAds>
+      <div class="empty">
+        <p>You haven't created any listings yet.</p>
+        <button class="btn-primary" (click)="createListing()">+ Create New Listing</button>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="promo-strip">
+    <div>
+      <h4>Reach More People with a Featured Listing!</h4>
+      <p>Get more views, enquiries and faster results by upgrading to a featured listing.</p>
+    </div>
+    <a routerLink="/my-claxified/billing" class="btn-secondary">View Packages</a>
+  </div>
+</ng-container>

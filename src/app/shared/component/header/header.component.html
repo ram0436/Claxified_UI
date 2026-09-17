@@ -55,55 +55,45 @@
         </li>
       </ul>
 
-      <!-- Right Section: Login & Action Buttons -->
+      <!-- Right Section: My Claxified unified dropdown -->
       <div class="header-right">
-        <!-- Login/Register -->
-        <div class="header-auth" *ngIf="!isUserLogedIn">
+        <ng-container *ngIf="!isUserLogedIn">
           <button class="auth-btn" (click)="openLoginModal()">
             <span class="material-icons-outlined">person_outline</span>
             <span class="auth-text">Login / Register</span>
           </button>
-        </div>
+        </ng-container>
 
-        <!-- User Profile & Businesses (when logged in) -->
-        <div class="header-auth" *ngIf="isUserLogedIn">
-          <!-- My Businesses Dropdown -->
+        <ng-container *ngIf="isUserLogedIn">
           <button
-            class="auth-btn businesses-btn"
-            [matMenuTriggerFor]="businessesMenu"
-            #businessesMenuTrigger="matMenuTrigger"
-            (click)="toggleBusinessesMenu()"
-            *ngIf="businesses.length > 0"
+            class="my-claxified-trigger"
+            [matMenuTriggerFor]="myClaxifiedMenu"
+            #myClaxifiedTrigger="matMenuTrigger"
+            (click)="toggleMyClaxified()"
           >
-            <span class="material-icons-outlined">storefront</span>
-            <span class="businesses-text">My Businesses</span>
-            <mat-icon class="expand" [class.rotated]="businessesMenuOpen">
+            <div class="mct-avatar">
+              <img
+                *ngIf="imageUrl && imageUrl !== defaultAvatar"
+                [src]="imageUrl"
+                alt="Profile"
+                (error)="onImageError($event)"
+              />
+              <span *ngIf="!imageUrl || imageUrl === defaultAvatar">{{
+                getUserInitials()
+              }}</span>
+            </div>
+            <span class="mct-label">My Claxified</span>
+            <span
+              class="material-icons-outlined expand"
+              [class.rotated]="myClaxifiedOpen"
+            >
               expand_more
-            </mat-icon>
+            </span>
           </button>
+        </ng-container>
 
-          <!-- Profile Button -->
-          <button
-            class="auth-btn profile-btn"
-            [matMenuTriggerFor]="userMenu"
-            #menuTrigger="matMenuTrigger"
-            (click)="toggleExpandIcons()"
-          >
-            <img
-              [src]="imageUrl"
-              alt="Profile"
-              class="profile-avatar"
-              (error)="onImageError($event)"
-            />
-            <mat-icon class="expand" [class.rotated]="expandIconVisible">
-              expand_more
-            </mat-icon>
-          </button>
-        </div>
-
-        <!-- Action Buttons -->
+        <!-- Action buttons unchanged -->
         <div class="header-actions">
-          <!-- List Business Button -->
           <button
             class="action-btn business-btn"
             *ngIf="!isActiveRoute('/classified-ads')"
@@ -117,7 +107,6 @@
             />
           </button>
 
-          <!-- Post Free Ad Button -->
           <button
             class="action-btn post-ad-btn"
             *ngIf="!isActiveRoute('/business')"
@@ -191,7 +180,7 @@
 
       <!-- My Businesses in Mobile Menu -->
       <ng-container *ngIf="isUserLogedIn && businesses.length > 0">
-        <div class="side-nav-section-title">My Businesses</div>
+        <!-- <div class="side-nav-section-title">My Businesses</div>
         <a
           *ngFor="let biz of getDisplayedBusinesses()"
           (click)="switchBusiness(biz); toggleSlideVisibility()"
@@ -222,10 +211,10 @@
           <span>{{
             showAllBusinessesMobile ? "Show Less" : "Show All Businesses"
           }}</span>
-        </a>
+        </a> -->
 
         <!-- NEW: Business Dashboard / Profile / Settings -->
-        <a
+        <!-- <a
           (click)="goToBusinessDashboard(); toggleSlideVisibility()"
           class="side-nav-link"
         >
@@ -247,7 +236,7 @@
         >
           <span class="material-icons-outlined">tune</span>
           Manage Attributes
-        </a>
+        </a> -->
 
         <!-- <a
           (click)="goToAccountSettings(); toggleSlideVisibility()"
@@ -257,14 +246,14 @@
           Account Settings
         </a> -->
 
-        <div class="side-nav-divider"></div>
+        <!-- <div class="side-nav-divider"></div> -->
       </ng-container>
 
       <!-- User Links -->
-      <ng-container *ngIf="isUserLogedIn">
+      <!-- <ng-container *ngIf="isUserLogedIn">
         <a
           (click)="toggleSlideVisibility()"
-          routerLink="/user/account/personal"
+          routerLink="/my-claxified/settings/personal"
           class="side-nav-link"
         >
           <span class="material-icons-outlined">person_outline</span>
@@ -272,7 +261,7 @@
         </a>
         <a
           (click)="toggleSlideVisibility()"
-          routerLink="/user/account/myadds"
+          routerLink="/my-claxified/settings/myadds"
           class="side-nav-link"
         >
           <span class="material-icons-outlined">upload_file</span>
@@ -280,7 +269,7 @@
         </a>
         <a
           (click)="toggleSlideVisibility()"
-          routerLink="/user/account/saved"
+          routerLink="/my-claxified/settings/saved"
           class="side-nav-link"
         >
           <span class="material-icons-outlined">favorite_border</span>
@@ -288,7 +277,7 @@
         </a>
         <a
           (click)="toggleSlideVisibility()"
-          routerLink="/user/account/feedback"
+          routerLink="/my-claxified/settings/feedback"
           class="side-nav-link"
           *ngIf="isUserLogedIn"
         >
@@ -297,7 +286,7 @@
         </a>
         <a
           (click)="toggleSlideVisibility()"
-          routerLink="/user/account"
+          routerLink="/my-claxified/settings"
           class="side-nav-link"
         >
           <span class="material-icons-outlined">settings</span>
@@ -348,7 +337,7 @@
         </a>
       </ng-container>
 
-      <div class="side-nav-divider"></div>
+      <div class="side-nav-divider"></div> -->
 
       <!-- Action Buttons in Side Nav -->
       <a
@@ -369,34 +358,36 @@
   </div>
 
   <!-- ========================================================= -->
-  <!-- USER MENU (MatMenu) -->
+  <!--  UNIFIED "MY CLAXIFIED" DROPDOWN                          -->
   <!-- ========================================================= -->
-
   <mat-menu
-    #userMenu="matMenu"
+    #myClaxifiedMenu="matMenu"
     xPosition="before"
     yPosition="below"
     overlapTrigger="false"
-    class="user-menu-panel"
+    class="my-claxified-panel"
   >
     <div class="menu-header">
-      <div class="menu-avatar-wrapper">
+      <div class="menu-avatar-wrap">
         <img
+          *ngIf="imageUrl && imageUrl !== defaultAvatar"
           [src]="imageUrl"
           alt="Profile"
           class="menu-avatar"
-          *ngIf="imageUrl !== defaultAvatar"
           (error)="onImageError($event)"
         />
-        <span class="menu-avatar-initials" *ngIf="imageUrl === defaultAvatar">
+        <span
+          *ngIf="!imageUrl || imageUrl === defaultAvatar"
+          class="menu-avatar-initials"
+        >
           {{ getUserInitials() }}
         </span>
       </div>
       <div class="menu-user-info">
         <p class="menu-user-name">{{ userData?.firstName || "User" }}</p>
-        <a routerLink="/user/account/personal" class="menu-profile-link"
-          >Go to Profile</a
-        >
+        <span class="menu-user-role">{{
+          isAdmin ? "Admin" : "Business Owner"
+        }}</span>
       </div>
     </div>
 
@@ -405,38 +396,58 @@
     <button
       mat-menu-item
       class="menu-item"
-      routerLink="/Admin/admin-dashboard"
-      *ngIf="isAdmin"
+      routerLink="/my-claxified/dashboard"
     >
-      <span class="material-icons-outlined">admin_panel_settings</span>
-      <span>Admin Dashboard</span>
+      <span class="material-icons-outlined">home</span>
+      <span>Dashboard</span>
     </button>
 
-    <button mat-menu-item class="menu-item" routerLink="/user/account/myadds">
-      <span class="material-icons-outlined">upload_file</span>
-      <span>Manage Ads</span>
+    <button
+      mat-menu-item
+      class="menu-item"
+      routerLink="/my-claxified/my-listings"
+    >
+      <span class="material-icons-outlined">description</span>
+      <span>My Listings</span>
     </button>
 
-    <button mat-menu-item class="menu-item" routerLink="/user/account/saved">
-      <span class="material-icons-outlined">favorite_border</span>
-      <span>My Wishlist</span>
+    <button
+      mat-menu-item
+      class="menu-item"
+      routerLink="/my-claxified/my-businesses"
+    >
+      <span class="material-icons-outlined">storefront</span>
+      <span>My Businesses</span>
     </button>
 
-    <button mat-menu-item class="menu-item" routerLink="/help">
-      <span class="material-icons-outlined">help_outline</span>
-      <span>Help Manual</span>
+    <button
+      mat-menu-item
+      class="menu-item"
+      routerLink="/my-claxified/enquiries"
+    >
+      <span class="material-icons-outlined">chat_bubble_outline</span>
+      <span>Enquiries & Leads</span>
     </button>
 
-    <button mat-menu-item class="menu-item" routerLink="/user/account/feedback">
-      <span class="material-icons-outlined">reviews</span>
-      <span>Feedback</span>
+    <button
+      mat-menu-item
+      class="menu-item"
+      routerLink="/my-claxified/analytics"
+    >
+      <span class="material-icons-outlined">bar_chart</span>
+      <span>Analytics</span>
     </button>
 
     <hr class="menu-divider" />
 
-    <button mat-menu-item class="menu-item" routerLink="/user/account">
+    <button mat-menu-item class="menu-item" routerLink="/my-claxified/billing">
+      <span class="material-icons-outlined">credit_card</span>
+      <span>Packages &amp; Billing</span>
+    </button>
+
+    <button mat-menu-item class="menu-item" routerLink="/my-claxified/settings">
       <span class="material-icons-outlined">settings</span>
-      <span>Account & Settings</span>
+      <span>Settings</span>
     </button>
 
     <hr class="menu-divider" />
@@ -445,93 +456,5 @@
       <span class="material-icons-outlined">logout</span>
       <span>Logout</span>
     </button>
-  </mat-menu>
-
-  <!-- ========================================================= -->
-  <!-- BUSINESSES MENU (MatMenu) -->
-  <!-- ========================================================= -->
-
-  <mat-menu
-    #businessesMenu="matMenu"
-    xPosition="before"
-    yPosition="below"
-    overlapTrigger="false"
-    class="businesses-menu-panel"
-  >
-    <div class="businesses-menu-list">
-      <button
-        mat-menu-item
-        *ngFor="let biz of getDisplayedBusinesses()"
-        class="business-menu-item"
-        (click)="switchBusiness(biz)"
-      >
-        <div
-          class="business-item-avatar"
-          [style.background]="avatarGradient(biz.businessName)"
-        >
-          {{ getInitials(biz.businessName) }}
-        </div>
-        <span class="business-item-name">{{ biz.businessName }}</span>
-        <span
-          class="business-item-check"
-          *ngIf="biz.businessId === currentBusinessId"
-        >
-          <span class="material-icons-outlined">check</span>
-        </span>
-      </button>
-
-      <button
-        mat-menu-item
-        *ngIf="businesses.length > 3"
-        class="business-menu-item business-menu-show-all"
-        (click)="toggleShowAllBusinesses($event)"
-      >
-        <span class="material-icons-outlined">{{
-          showAllBusinesses ? "expand_less" : "expand_more"
-        }}</span>
-        <span>{{
-          showAllBusinesses ? "Show Less" : "Show All Businesses"
-        }}</span>
-      </button>
-    </div>
-
-    <hr class="businesses-menu-divider" />
-
-    <button
-      mat-menu-item
-      class="business-menu-item business-menu-dashboard"
-      (click)="goToBusinessDashboard()"
-    >
-      <span class="material-icons-outlined">dashboard</span>
-      <span>Business Dashboard</span>
-    </button>
-
-    <button
-      mat-menu-item
-      class="business-menu-item business-menu-profile"
-      (click)="goToBusinessProfile()"
-    >
-      <span class="material-icons-outlined">storefront</span>
-      <span>Business Profile</span>
-    </button>
-
-    <button
-      mat-menu-item
-      class="business-menu-item business-menu-attributes"
-      *ngIf="isAdmin"
-      (click)="goToAttributeMapping()"
-    >
-      <span class="material-icons-outlined">tune</span>
-      <span>Manage Attributes</span>
-    </button>
-
-    <!-- <button
-      mat-menu-item
-      class="business-menu-item business-menu-settings"
-      (click)="goToAccountSettings()"
-    >
-      <span class="material-icons-outlined">settings</span>
-      <span>Account Settings</span>
-    </button> -->
   </mat-menu>
 </header>

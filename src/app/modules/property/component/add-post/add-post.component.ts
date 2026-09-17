@@ -1,59 +1,59 @@
-import { DOCUMENT } from "@angular/common";
+import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
   Component,
   ElementRef,
   Inject,
   ViewChild,
-} from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Observable, map, startWith } from "rxjs";
-import { UserService } from "src/app/modules/user/service/user.service";
-import { ConstructionStatus } from "src/app/shared/enum/ConstructionStatus";
-import { FacingType } from "src/app/shared/enum/FacingType";
-import { FurnishingStatus } from "src/app/shared/enum/FurnishingStatus";
-import { HouseType } from "src/app/shared/enum/HouseType";
-import { ListedBy } from "src/app/shared/enum/ListBy";
-import { Common } from "src/app/shared/model/CommonPayload";
-import { CommonService } from "src/app/shared/service/common.service";
-import { PropertyService } from "../../service/property.service";
-import { ServiceType } from "src/app/shared/enum/ServiceType";
-import { PGType } from "src/app/shared/enum/PGType";
-import { AdminDashboardService } from "./../../../admin/service/admin-dashboard.service";
-import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
+} from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, map, startWith } from 'rxjs';
+import { UserService } from 'src/app/modules/user/service/user.service';
+import { ConstructionStatus } from 'src/app/shared/enum/ConstructionStatus';
+import { FacingType } from 'src/app/shared/enum/FacingType';
+import { FurnishingStatus } from 'src/app/shared/enum/FurnishingStatus';
+import { HouseType } from 'src/app/shared/enum/HouseType';
+import { ListedBy } from 'src/app/shared/enum/ListBy';
+import { Common } from 'src/app/shared/model/CommonPayload';
+import { CommonService } from 'src/app/shared/service/common.service';
+import { PropertyService } from '../../service/property.service';
+import { ServiceType } from 'src/app/shared/enum/ServiceType';
+import { PGType } from 'src/app/shared/enum/PGType';
+import { AdminDashboardService } from './../../../admin/service/admin-dashboard.service';
+import { MatRadioGroup, MatRadioButton } from '@angular/material/radio';
 import {
   MatAutocomplete,
   MatAutocompleteTrigger,
-} from "@angular/material/autocomplete";
-import { MatSelectionList } from "@angular/material/list";
-import { Filter } from "src/app/shared/model/Filter";
+} from '@angular/material/autocomplete';
+import { MatSelectionList } from '@angular/material/list';
+import { Filter } from 'src/app/shared/model/Filter';
 
 @Component({
-  selector: "app-add-post",
-  templateUrl: "./add-post.component.html",
+  selector: 'app-add-post',
+  templateUrl: './add-post.component.html',
   styleUrls: [
-    "./add-post.component.css",
-    "../../../moduleaddpost.component.css",
+    './add-post.component.css',
+    '../../../moduleaddpost.component.css',
   ],
 })
 export class AddPostComponent implements AfterViewInit {
-  @ViewChild("descriptionEditor")
+  @ViewChild('descriptionEditor')
   descriptionEditorRef?: ElementRef<HTMLDivElement>;
-  brandControl = new FormControl("");
-  modelControl = new FormControl("");
+  brandControl = new FormControl('');
+  modelControl = new FormControl('');
   filteredBrands!: Observable<{ id: number; brandName: string }[]>;
   filteredModels!: Observable<{ id: number; model: string }[]>;
   cardsCount: any[] = new Array(10);
   currentImageIndex: any = 0;
   numericValue: number = 0;
   brands: any = [];
-  selectedImage: string = "";
+  selectedImage: string = '';
   commonPayload: Common = new Common();
-  subCategory: string = "";
-  mainCategory: string = "";
-  selectedFuelType: string = "";
+  subCategory: string = '';
+  mainCategory: string = '';
+  selectedFuelType: string = '';
   currentUploadImageIndex: number = 0;
   houseTypes = Object.keys(HouseType).map((key: any) => ({
     label: key,
@@ -84,17 +84,17 @@ export class AddPostComponent implements AfterViewInit {
     id: PGType[key],
   }));
   bachelorsAllowed = [
-    { label: "No", value: false },
-    { label: "Yes", value: true },
+    { label: 'No', value: false },
+    { label: 'Yes', value: true },
   ];
   mealsIncluded = [
-    { label: "No", value: false },
-    { label: "Yes", value: true },
+    { label: 'No', value: false },
+    { label: 'Yes', value: true },
   ];
   numberOfBedRooms = [1, 2, 3, 4];
   numberOfBathRooms = [1, 2, 3, 4];
   carParking = [1, 2, 3, 4];
-  selectedFuel: string = "";
+  selectedFuel: string = '';
   selectedTransmission: any;
   selectedOwnerNumber: Number = 0;
   allUploadedFiles: any = [];
@@ -116,14 +116,14 @@ export class AddPostComponent implements AfterViewInit {
     floorNumber: 0,
     carParking: 0,
     facingType: 0,
-    projectName: "",
+    projectName: '',
     plotArea: 0,
     lenght: 0, // spll misatake
     breadth: 0,
     isMealIncluded: true,
     pgType: 0,
   };
-  imageUrl: string = "../../../../../assets/img_not_available.png";
+  imageUrl: string = '../../../../../assets/img_not_available.png';
   carModels: any;
   carModelId: any;
 
@@ -134,83 +134,83 @@ export class AddPostComponent implements AfterViewInit {
   firstImageUploaded: boolean = false; // Changes made by Hamza
   isFromAdmin: boolean = false;
   houseApartmentsSale = [
-    "HouseType",
-    "Bedrooms",
-    "Bathrooms",
-    "Furnishing",
-    "Construction Status",
-    "Listed by",
-    "Super Builtup area",
-    "Carpet Area",
-    "Maintenance",
-    "Total Floors",
-    "Floor No",
-    "Car Parking",
-    "Facing",
-    "Project Name",
+    'HouseType',
+    'Bedrooms',
+    'Bathrooms',
+    'Furnishing',
+    'Construction Status',
+    'Listed by',
+    'Super Builtup area',
+    'Carpet Area',
+    'Maintenance',
+    'Total Floors',
+    'Floor No',
+    'Car Parking',
+    'Facing',
+    'Project Name',
   ];
   houseApartmentsRent = [
-    "HouseType",
-    "Bedrooms",
-    "Bathrooms",
-    "Furnishing",
-    "Construction Status",
-    "Listed by",
-    "Super Builtup area",
-    "Carpet Area",
-    "Bachelors Allowed",
-    "Maintenance",
-    "Total Floors",
-    "Floor No",
-    "Car Parking",
-    "Facing",
-    "Project Name",
+    'HouseType',
+    'Bedrooms',
+    'Bathrooms',
+    'Furnishing',
+    'Construction Status',
+    'Listed by',
+    'Super Builtup area',
+    'Carpet Area',
+    'Bachelors Allowed',
+    'Maintenance',
+    'Total Floors',
+    'Floor No',
+    'Car Parking',
+    'Facing',
+    'Project Name',
   ];
   landsAndPlots = [
-    "ServiceType",
-    "Listed by",
-    "Plot Area",
-    "Length",
-    "Breadth",
-    "Facing",
-    "Project Name",
+    'ServiceType',
+    'Listed by',
+    'Plot Area',
+    'Length',
+    'Breadth',
+    'Facing',
+    'Project Name',
   ];
   shopsAndOfcRent = [
-    "Furnishing",
-    "Listed by",
-    "Super Builtup area",
-    "Carpet Area",
-    "Maintenance",
-    "Car Parking",
-    "Bathrooms",
-    "Project Name",
+    'Furnishing',
+    'Listed by',
+    'Super Builtup area',
+    'Carpet Area',
+    'Maintenance',
+    'Car Parking',
+    'Bathrooms',
+    'Project Name',
   ];
   shopsAndOfcSale = [
-    "Furnishing",
-    "Construction Status",
-    "Listed by",
-    "Super Builtup area",
-    "Carpet Area",
-    "Maintenance",
-    "Car Parking",
-    "Bathrooms",
-    "Project Name",
+    'Furnishing',
+    'Construction Status',
+    'Listed by',
+    'Super Builtup area',
+    'Carpet Area',
+    'Maintenance',
+    'Car Parking',
+    'Bathrooms',
+    'Project Name',
   ];
   pgAndGuestHouses = [
-    "SubType",
-    "Furnishing",
-    "Listed by",
-    "Car Parking",
-    "Meals Included",
+    'SubType',
+    'Furnishing',
+    'Listed by',
+    'Car Parking',
+    'Meals Included',
   ];
   fieldsToShow: any = [];
   mode: any;
 
-  locationConfirmationType: "pincode" | "manual" = "pincode";
+  locationConfirmationType: 'pincode' | 'manual' = 'pincode';
 
-  stateControl = new FormControl("");
-  cityControl = new FormControl("");
-  nearByControl = new FormControl("");
+  stateControl = new FormControl('');
+  cityControl = new FormControl('');
+  nearByControl = new FormControl('');
   filteredStates!: Observable<{ id: number; name: string }[]>;
   filteredCities!: Observable<{ id: number; name: string }[]>;
   filteredNearBy!: Observable<{ id: number; name: string }[]>;
@@ -224,9 +224,9 @@ export class AddPostComponent implements AfterViewInit {
 
   filterObj = new Filter();
 
-  @ViewChild("stateMatAutocomplete") stateAutocomplete!: MatAutocomplete;
-  @ViewChild("cityMatAutocomplete") cityAutocomplete!: MatAutocomplete;
-  @ViewChild("nearByMatAutocomplete") nearByAutocomplete!: MatAutocomplete;
+  @ViewChild('stateMatAutocomplete') stateAutocomplete!: MatAutocomplete;
+  @ViewChild('cityMatAutocomplete') cityAutocomplete!: MatAutocomplete;
+  @ViewChild('nearByMatAutocomplete') nearByAutocomplete!: MatAutocomplete;
   @ViewChild(MatSelectionList)
   matSelectionList!: MatSelectionList;
 
@@ -265,69 +265,69 @@ export class AddPostComponent implements AfterViewInit {
     private AdminDashboardService: AdminDashboardService,
     @Inject(DOCUMENT) private document: Document,
     private userService: UserService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
-    var role = localStorage.getItem("role");
-    if (role != null && role == "AppSupport") this.isAppSupport = true;
+    var role = localStorage.getItem('role');
+    if (role != null && role == 'AppSupport') this.isAppSupport = true;
     else this.isAppSupport = false;
-    this.canUseAIDetails = role === "Admin" || role === "AppSupport";
+    this.canUseAIDetails = role === 'Admin' || role === 'AppSupport';
     this.commonService.getCountry().subscribe((data: any) => {
       this.country = data[0];
       this.getAllStates();
     });
     this.route.queryParams.subscribe((params) => {
-      this.isFromAdmin = params["fromAdmin"] === "true";
+      this.isFromAdmin = params['fromAdmin'] === 'true';
     });
     this.getUserData();
     this.houseTypes = this.houseTypes.slice(this.houseTypes.length / 2);
     this.furnishingStatus = this.furnishingStatus.slice(
-      this.furnishingStatus.length / 2
+      this.furnishingStatus.length / 2,
     );
     this.constructionStatus = this.constructionStatus.slice(
-      this.constructionStatus.length / 2
+      this.constructionStatus.length / 2,
     );
     this.facingTypes = this.facingTypes.slice(this.facingTypes.length / 2);
     this.listedBy = this.listedBy.slice(this.listedBy.length / 2);
     this.serviceTypes = this.serviceTypes.slice(this.serviceTypes.length / 2);
     this.pgTypes = this.pgTypes.slice(this.pgTypes.length / 2);
     for (var i = 0; i < this.cardsCount.length; i++) {
-      this.cardsCount[i] = "";
+      this.cardsCount[i] = '';
     }
     this.route.queryParams.subscribe((params) => {
-      this.subCategory = params["sub"].replaceAll("%20", "");
+      this.subCategory = params['sub'].replaceAll('%20', '');
       switch (this.subCategory) {
-        case "For Sale: Houses & Apartments": {
+        case 'For Sale: Houses & Apartments': {
           this.fieldsToShow = this.houseApartmentsSale;
           break;
         }
-        case "For Rent: Houses & Apartments": {
+        case 'For Rent: Houses & Apartments': {
           this.fieldsToShow = this.houseApartmentsRent;
           break;
         }
-        case "Lands & Plot": {
+        case 'Lands & Plot': {
           this.fieldsToShow = this.landsAndPlots;
           break;
         }
-        case "For Rent: Shop & Offices": {
+        case 'For Rent: Shop & Offices': {
           this.fieldsToShow = this.shopsAndOfcRent;
           break;
         }
-        case "For Sale: Shops & Offices": {
+        case 'For Sale: Shops & Offices': {
           this.fieldsToShow = this.shopsAndOfcSale;
           break;
         }
-        case "PG & Guest Houses": {
+        case 'PG & Guest Houses': {
           this.fieldsToShow = this.pgAndGuestHouses;
           break;
         }
       }
-      this.mainCategory = params["main"];
+      this.mainCategory = params['main'];
       this.setCategoryId();
-      this.mode = params["mode"];
+      this.mode = params['mode'];
       if (this.mode != undefined) {
-        let guid = localStorage.getItem("guid");
+        let guid = localStorage.getItem('guid');
         this.propertyService.getPropertyPostById(guid).subscribe((res: any) => {
           this.commonPayload = res[0];
           Object.keys(this.propertyData).forEach((key) => {
@@ -349,13 +349,13 @@ export class AddPostComponent implements AfterViewInit {
     setTimeout(() => {
       if (this.descriptionEditorRef) {
         this.descriptionEditorRef.nativeElement.innerHTML = String(
-          this.commonPayload.discription || ""
+          this.commonPayload.discription || '',
         );
       }
     });
   }
 
-  exec(command: string, value: string = ""): void {
+  exec(command: string, value: string = ''): void {
     document.execCommand(command, false, value);
     this.descriptionEditorRef?.nativeElement.focus();
     if (this.descriptionEditorRef) {
@@ -364,9 +364,9 @@ export class AddPostComponent implements AfterViewInit {
   }
 
   insertLink(): void {
-    const url = window.prompt("Enter a URL");
+    const url = window.prompt('Enter a URL');
     if (url) {
-      this.exec("createLink", url);
+      this.exec('createLink', url);
     }
   }
 
@@ -375,39 +375,39 @@ export class AddPostComponent implements AfterViewInit {
   }
 
   private stripHtml(html: string): string {
-    const tmp = this.document.createElement("div");
-    tmp.innerHTML = html || "";
-    return tmp.textContent || tmp.innerText || "";
+    const tmp = this.document.createElement('div');
+    tmp.innerHTML = html || '';
+    return tmp.textContent || tmp.innerText || '';
   }
 
   getAIDetails() {
     const city =
-      this.locationConfirmationType === "manual"
+      this.locationConfirmationType === 'manual'
         ? this.selectedCity?.name || this.commonPayload.city
         : this.commonPayload.city;
 
     const nearBy =
-      this.locationConfirmationType === "manual"
+      this.locationConfirmationType === 'manual'
         ? this.selectedNearBy?.name || this.commonPayload.nearBy
         : this.commonPayload.nearBy;
 
     const selectedFurnishing = this.furnishingStatus.find(
-      (f) => f.id === this.propertyData.furnishingStatus
+      (f) => f.id === this.propertyData.furnishingStatus,
     );
 
     const category = `${this.mainCategory}/${this.subCategory}`;
 
-    const isOthersCategory = category === "Properties/Others";
-    const isPGCategory = category === "Properties/PG & Guest Houses";
+    const isOthersCategory = category === 'Properties/Others';
+    const isPGCategory = category === 'Properties/PG & Guest Houses';
     const isShopSaleCategory =
-      category === "Properties/For Sale: Shops & Offices";
+      category === 'Properties/For Sale: Shops & Offices';
     const isShopRentCategory =
-      category === "Properties/For Rent: Shop & Offices";
+      category === 'Properties/For Rent: Shop & Offices';
 
     // Base requirement, common to every category
     if (!this.commonPayload.price || !city || !nearBy) {
       this.showNotification(
-        "Please fill Price and Location before generating AI details"
+        'Please fill Price and Location before generating AI details',
       );
       return;
     }
@@ -419,7 +419,7 @@ export class AddPostComponent implements AfterViewInit {
       // Properties/PG & Guest Houses: price, city, nearBy, furnishing, carParking required
       if (!selectedFurnishing || !this.propertyData.carParking) {
         this.showNotification(
-          "Please fill Furnishing, Car Parking, Price and Location before generating AI details"
+          'Please fill Furnishing, Car Parking, Price and Location before generating AI details',
         );
         return;
       }
@@ -432,7 +432,7 @@ export class AddPostComponent implements AfterViewInit {
         !this.propertyData.carParking
       ) {
         this.showNotification(
-          "Please fill Furnishing, Bathrooms, Area, Car Parking, Price and Location before generating AI details"
+          'Please fill Furnishing, Bathrooms, Area, Car Parking, Price and Location before generating AI details',
         );
         return;
       }
@@ -447,7 +447,7 @@ export class AddPostComponent implements AfterViewInit {
         !this.propertyData.carParking
       ) {
         this.showNotification(
-          "Please fill Furnishing, Bedrooms, Bathrooms, Area, Floor No, Car Parking, Price and Location before generating AI details"
+          'Please fill Furnishing, Bedrooms, Bathrooms, Area, Floor No, Car Parking, Price and Location before generating AI details',
         );
         return;
       }
@@ -489,26 +489,26 @@ export class AddPostComponent implements AfterViewInit {
         this.commonPayload.title = res.title;
         this.commonPayload.discription = res.description;
         this.showNotification(
-          "AI details generated. Review and edit if needed."
+          'AI details generated. Review and edit if needed.',
         );
       },
       error: () => {
         this.loadingAIDetails = false;
         this.showNotification(
-          "Failed to generate AI details, please try again"
+          'Failed to generate AI details, please try again',
         );
       },
     });
   }
 
   clearSearchText(formControl: FormControl, fieldName: string): void {
-    formControl.setValue("");
+    formControl.setValue('');
 
-    if (fieldName === "state") {
+    if (fieldName === 'state') {
       this.isInputDisabledState = false;
-    } else if (fieldName === "city") {
+    } else if (fieldName === 'city') {
       this.isInputDisabledCity = false;
-    } else if (fieldName === "nearBy") {
+    } else if (fieldName === 'nearBy') {
       this.isInputDisabledNearBy = false;
     }
   }
@@ -522,19 +522,19 @@ export class AddPostComponent implements AfterViewInit {
 
   getFilteredStates() {
     this.filteredStates = this.stateControl.valueChanges.pipe(
-      startWith(""),
-      map((value) => this.filterLocations(value || "", this.districts))
+      startWith(''),
+      map((value) => this.filterLocations(value || '', this.districts)),
     );
   }
   filterLocations(
     value: any,
-    dataArray: any[]
+    dataArray: any[],
   ): { id: number; name: string }[] {
-    var filterValue = "";
-    if (typeof value == "object") filterValue = value.name.toLowerCase();
+    var filterValue = '';
+    if (typeof value == 'object') filterValue = value.name.toLowerCase();
     else filterValue = value.toLowerCase();
     return dataArray.filter(
-      (data: any) => data.name.toLowerCase().indexOf(filterValue) === 0
+      (data: any) => data.name.toLowerCase().indexOf(filterValue) === 0,
     );
   }
 
@@ -543,13 +543,13 @@ export class AddPostComponent implements AfterViewInit {
     this.filterObj.state =
       event.option.value == null ? null : event.option.value.name;
     this.isInputDisabledState = true;
-    this.cityControl.setValue("");
+    this.cityControl.setValue('');
     this.isInputDisabledCity = false;
     this.commonService.setData(this.filterObj);
-    this.updateAppliedFilters("state", this.filterObj.state);
+    this.updateAppliedFilters('state', this.filterObj.state);
     if (this.filterObj.state == null)
       this.appliedFilters = this.appliedFilters.filter(
-        (item: any) => item.name != "city" && item.name != "nearBy"
+        (item: any) => item.name != 'city' && item.name != 'nearBy',
       );
     else this.getCities(event.option.value.id);
 
@@ -565,10 +565,10 @@ export class AddPostComponent implements AfterViewInit {
       event.option.value == null ? null : event.option.value.name;
     this.isInputDisabledCity = true;
     this.commonService.setData(this.filterObj);
-    this.updateAppliedFilters("city", this.filterObj.city);
+    this.updateAppliedFilters('city', this.filterObj.city);
     if (this.filterObj.city == null)
       this.appliedFilters = this.appliedFilters.filter(
-        (item: any) => item.name != "nearBy"
+        (item: any) => item.name != 'nearBy',
       );
     else this.getNearByPlaces(event.option.value.id);
     this.filtersSelected = true; //Changes made by Hamza
@@ -578,7 +578,7 @@ export class AddPostComponent implements AfterViewInit {
     this.filterObj.nearBy =
       event.option.value == null ? null : event.option.value.name;
     this.isInputDisabledNearBy = true;
-    this.updateAppliedFilters("nearBy", this.filterObj.nearBy);
+    this.updateAppliedFilters('nearBy', this.filterObj.nearBy);
     this.commonService.setData(this.filterObj);
     this.filtersSelected = true; //Changes made by Hamza
   }
@@ -588,11 +588,11 @@ export class AddPostComponent implements AfterViewInit {
     for (let i = 0; i < this.appliedFilters.length; i++) {
       if (
         this.appliedFilters[i].name == filterName &&
-        (filterName == "state" ||
-          filterName == "city" ||
-          filterName == "nearBy" ||
-          filterName == "price" ||
-          filterName == "kms")
+        (filterName == 'state' ||
+          filterName == 'city' ||
+          filterName == 'nearBy' ||
+          filterName == 'price' ||
+          filterName == 'kms')
       ) {
         matchFound = true;
         value == null
@@ -606,7 +606,7 @@ export class AddPostComponent implements AfterViewInit {
   }
 
   displayLocation(brand: any): string {
-    return brand?.name || "";
+    return brand?.name || '';
   }
 
   getCities(stateId: Number) {
@@ -618,14 +618,14 @@ export class AddPostComponent implements AfterViewInit {
 
   getFilteredCities() {
     this.filteredCities = this.cityControl.valueChanges.pipe(
-      startWith(""),
-      map((value) => this.filterLocations(value || "", this.cities))
+      startWith(''),
+      map((value) => this.filterLocations(value || '', this.cities)),
     );
   }
   getFilteredNearBy() {
     this.filteredNearBy = this.nearByControl.valueChanges.pipe(
-      startWith(""),
-      map((value) => this.filterLocations(value || "", this.nearByPlaces))
+      startWith(''),
+      map((value) => this.filterLocations(value || '', this.nearByPlaces)),
     );
   }
   getNearByPlaces(cityId: Number) {
@@ -651,16 +651,16 @@ export class AddPostComponent implements AfterViewInit {
   }
 
   resetManualLocationInputs() {
-    this.stateControl.setValue("");
-    this.cityControl.setValue("");
-    this.nearByControl.setValue("");
+    this.stateControl.setValue('');
+    this.cityControl.setValue('');
+    this.nearByControl.setValue('');
     this.selectedState = null;
     this.selectedCity = null;
     this.selectedNearBy = null;
   }
 
   onLocationConfirmationTypeChange() {
-    if (this.locationConfirmationType === "pincode") {
+    if (this.locationConfirmationType === 'pincode') {
       this.resetManualLocationInputs();
     }
   }
@@ -675,7 +675,7 @@ export class AddPostComponent implements AfterViewInit {
   allowOnlyNumbers(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const inputValue = inputElement.value;
-    const numericInput = inputValue.replace(/[^0-9]/g, "");
+    const numericInput = inputValue.replace(/[^0-9]/g, '');
     inputElement.value = numericInput;
     this.numericValue = parseFloat(numericInput);
 
@@ -684,7 +684,7 @@ export class AddPostComponent implements AfterViewInit {
 
   selectFile() {
     if (this.document) {
-      const uploadElement = this.document.getElementById("fileUpload");
+      const uploadElement = this.document.getElementById('fileUpload');
       if (uploadElement) {
         uploadElement.click();
       }
@@ -695,7 +695,7 @@ export class AddPostComponent implements AfterViewInit {
     const formData = new FormData();
     this.progress = true;
     for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
+      formData.append('files', files[i]);
     }
     this.propertyService
       .uploadPropertyImages(formData)
@@ -709,7 +709,7 @@ export class AddPostComponent implements AfterViewInit {
           j < this.cardsCount.length && dataIndex < data.length;
           j++
         ) {
-          if (this.cardsCount[j] === "") {
+          if (this.cardsCount[j] === '') {
             this.cardsCount[j] = data[dataIndex];
             dataIndex++;
             imagesLength--;
@@ -726,7 +726,7 @@ export class AddPostComponent implements AfterViewInit {
     for (let i = index; i < this.cardsCount.length - 1; i++) {
       this.cardsCount[i] = this.cardsCount[i + 1];
     }
-    this.cardsCount[this.cardsCount.length - 1] = "";
+    this.cardsCount[this.cardsCount.length - 1] = '';
   }
   postAdd() {
     this.commonPayload.isPremium = true;
@@ -756,29 +756,29 @@ export class AddPostComponent implements AfterViewInit {
     // var payload = this.addSpecificPayload(this.commonPayload);
     if (this.isFromAdmin) {
       this.route.queryParams.subscribe((params) => {
-        const categoryId = params["categoryId"];
-        const tableRefGuid = params["tableRefGuid"];
+        const categoryId = params['categoryId'];
+        const tableRefGuid = params['tableRefGuid'];
 
         this.AdminDashboardService.verifyAd(categoryId, tableRefGuid).subscribe(
           (response: any) => {
             // console.log('API Response:', response);
-            this.adVerifiedNotification("Ad verified successfully");
+            this.adVerifiedNotification('Ad verified successfully');
           },
           (error: any) => {
             // console.error('API Error:', error);
-          }
+          },
         );
       });
     }
   }
 
   adVerifiedNotification(message: string): void {
-    this.snackBar.open(message, "Close", {
+    this.snackBar.open(message, 'Close', {
       duration: 5000,
-      horizontalPosition: "end",
-      verticalPosition: "top",
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
     });
-    this.router.navigateByUrl("/Admin/admin-dashboard");
+    this.router.navigateByUrl('/my-claxified/admin-overview');
   }
 
   getAddress(event: any) {
@@ -801,10 +801,10 @@ export class AddPostComponent implements AfterViewInit {
   }
 
   showNotification(message: string): void {
-    this.snackBar.open(message, "Close", {
+    this.snackBar.open(message, 'Close', {
       duration: 5000,
-      horizontalPosition: "end",
-      verticalPosition: "top",
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
     });
   }
   selectHouseType(house: any) {
@@ -874,8 +874,8 @@ export class AddPostComponent implements AfterViewInit {
     var imageList: { propertyId: number; imageId: string; imageURL: any }[] =
       [];
     this.cardsCount.forEach((imageURL) => {
-      if (imageURL != "")
-        imageList.push({ propertyId: 0, imageId: "100", imageURL: imageURL });
+      if (imageURL != '')
+        imageList.push({ propertyId: 0, imageId: '100', imageURL: imageURL });
     });
     var payload = Object.assign({}, commonPayload, this.propertyData, {
       propertyImageList: imageList,
@@ -884,19 +884,19 @@ export class AddPostComponent implements AfterViewInit {
   }
   savePropertyPost(payload: any) {
     if (this.validatePostForm(payload)) {
-      if (this.locationConfirmationType === "manual") {
+      if (this.locationConfirmationType === 'manual') {
         payload.state = this.selectedState ? this.selectedState.name : null;
         payload.city = this.selectedCity ? this.selectedCity.name : null;
         payload.nearBy = this.selectedNearBy ? this.selectedNearBy.name : null;
       }
       this.propertyService.savePropertyPost(payload).subscribe((data) => {
-        this.showNotification("Post added succesfully");
-        this.router.navigateByUrl("/post-menu");
+        this.showNotification('Post added succesfully');
+        this.router.navigateByUrl('/post-menu');
       });
     }
   }
   getUserData() {
-    let userId = localStorage.getItem("id");
+    let userId = localStorage.getItem('id');
     if (userId != null) {
       this.userService.getUserById(Number(userId)).subscribe((res: any) => {
         this.userData = res[0];
@@ -912,20 +912,20 @@ export class AddPostComponent implements AfterViewInit {
     var files = event.target.files;
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
+      formData.append('files', files[i]);
     }
     this.userService.uploadProfilePicture(formData).subscribe((data: any) => {
       if (data.length > 0) {
         this.imageUrl = data[0];
         this.userService
-          .getUserById(Number(localStorage.getItem("id")))
+          .getUserById(Number(localStorage.getItem('id')))
           .subscribe((userData: any) => {
             if (userData.length > 0) {
               userData[0].userImageList.push({
                 id: 0,
-                imageId: "st",
+                imageId: 'st',
                 imageURL: data[0],
-                usersId: Number(localStorage.getItem("id")),
+                usersId: Number(localStorage.getItem('id')),
               });
               this.userService.updateUser(userData[0]).subscribe((res) => {});
             }
@@ -935,43 +935,43 @@ export class AddPostComponent implements AfterViewInit {
   }
   validatePostForm(payload: any): boolean {
     let flag = false;
-    if (payload.title == "") this.showNotification("Title is required");
+    if (payload.title == '') this.showNotification('Title is required');
     else if (payload.title.length < 15 || payload.title.length > 80)
-      this.showNotification("Title should be min 15 and max of 80 charecters");
-    else if (payload.discription == "")
-      this.showNotification("Description is required");
+      this.showNotification('Title should be min 15 and max of 80 charecters');
+    else if (payload.discription == '')
+      this.showNotification('Description is required');
     else if (
       payload.discription.length < 15 ||
       payload.discription.length > 500
     )
       this.showNotification(
-        "Description should be min 15 and max 500 charecters"
+        'Description should be min 15 and max 500 charecters',
       );
-    else if (payload.price == 0) this.showNotification("Price is rerquired");
+    else if (payload.price == 0) this.showNotification('Price is rerquired');
     else if (payload.price < 10)
-      this.showNotification("Price should be min 10");
+      this.showNotification('Price should be min 10');
     else if (payload.price.length < 2)
-      this.showNotification("Price should be contain a minimum of two digits");
+      this.showNotification('Price should be contain a minimum of two digits');
     else if (payload.propertyImageList.length <= 0)
-      this.showNotification("In upload photo, at least 1 photo is required.");
+      this.showNotification('In upload photo, at least 1 photo is required.');
     else if (
-      this.locationConfirmationType === "pincode" &&
+      this.locationConfirmationType === 'pincode' &&
       payload.pincode.length < 6
     )
-      this.showNotification("Pincode should be 6 digits");
+      this.showNotification('Pincode should be 6 digits');
     else if (
-      this.locationConfirmationType === "manual" &&
+      this.locationConfirmationType === 'manual' &&
       (!payload.state || !payload.city || !payload.nearBy)
     ) {
       this.showNotification(
-        "State, City, and Near By are required for manual location entry"
+        'State, City, and Near By are required for manual location entry',
       );
     } else flag = true;
     return flag;
   }
   selectProfilePicture() {
     if (this.document) {
-      const uploadElement = this.document.getElementById("upload");
+      const uploadElement = this.document.getElementById('upload');
       if (uploadElement) {
         uploadElement.click();
       }
@@ -980,27 +980,27 @@ export class AddPostComponent implements AfterViewInit {
   allowOnlyNumbersInInput(event: Event, input: string): void {
     const inputElement = event.target as HTMLInputElement;
     const inputValue = inputElement.value;
-    const numericInput = inputValue.replace(/[^0-9.-]/g, "");
+    const numericInput = inputValue.replace(/[^0-9.-]/g, '');
     inputElement.value = numericInput;
     this.propertyData[input] = Number(numericInput);
   }
   allowOnlyNumbersPincode(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const inputValue = inputElement.value;
-    const numericInput = inputValue.replace(/[^0-9.-]/g, "");
+    const numericInput = inputValue.replace(/[^0-9.-]/g, '');
     inputElement.value = numericInput;
     this.numericValue = parseFloat(numericInput);
   }
   updatePropertyPost(payload: any) {
     if (this.validatePostForm(payload)) {
-      if (this.locationConfirmationType === "manual") {
+      if (this.locationConfirmationType === 'manual') {
         payload.state = this.selectedState ? this.selectedState.name : null;
         payload.city = this.selectedCity ? this.selectedCity.name : null;
         payload.nearBy = this.selectedNearBy ? this.selectedNearBy.name : null;
       }
       this.propertyService.updatePropertyPost(payload).subscribe((data) => {
-        this.showNotification("Post updated succesfully");
-        this.router.navigateByUrl("/post-menu");
+        this.showNotification('Post updated succesfully');
+        this.router.navigateByUrl('/post-menu');
       });
     }
   }

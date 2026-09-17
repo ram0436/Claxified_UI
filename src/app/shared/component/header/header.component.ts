@@ -79,6 +79,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   hideSecondNav = false;
 
+  myClaxifiedOpen = false;
+
+  toggleMyClaxified(): void {
+    this.myClaxifiedOpen = !this.myClaxifiedOpen;
+  }
+
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -646,7 +652,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   goToAccountSettings() {
-    this.router.navigate(['/user/account']);
+    this.router.navigate(['/my-claxified/settings']);
   }
 
   goToAttributeMapping(): void {

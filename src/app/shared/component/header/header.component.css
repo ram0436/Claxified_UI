@@ -1452,3 +1452,179 @@
   .material-icons-outlined {
   color: #6c5ce7 !important;
 }
+
+/* ============ MY CLAXIFIED UNIFIED TRIGGER ============ */
+.my-claxified-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 50px;
+  background: #f8f6fd;
+  border: 1px solid #ece4fb;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.my-claxified-trigger:hover {
+  background: #f2ecfe;
+  border-color: #d6c8fb;
+}
+.mct-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #e75462);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.mct-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mct-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1c1533;
+}
+.my-claxified-trigger .expand {
+  font-size: 20px;
+  color: #8b8299;
+  transition: transform 0.25s ease;
+}
+.my-claxified-trigger .expand.rotated {
+  transform: rotate(180deg);
+}
+
+/* ============ UNIFIED DROPDOWN PANEL ============ */
+::ng-deep .my-claxified-panel {
+  min-width: 290px !important;
+  max-width: 340px !important;
+  border-radius: 14px !important;
+  margin-top: 8px !important;
+  padding: 8px 0 !important;
+  background: #ffffff !important;
+  border: 1px solid #eef0f6 !important;
+  box-shadow: 0 12px 40px rgba(28, 21, 51, 0.14) !important;
+  overflow: hidden !important;
+}
+::ng-deep .my-claxified-panel .menu-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+}
+::ng-deep .my-claxified-panel .menu-avatar-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+::ng-deep .my-claxified-panel .menu-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+::ng-deep .my-claxified-panel .menu-avatar-initials {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #e75462);
+  color: #fff;
+  font-weight: 700;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+::ng-deep .my-claxified-panel .menu-user-info {
+  flex: 1;
+  min-width: 0;
+}
+::ng-deep .my-claxified-panel .menu-user-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1c1533;
+}
+::ng-deep .my-claxified-panel .menu-user-role {
+  font-size: 12px;
+  color: #8b8299;
+  margin-top: 2px;
+  display: block;
+}
+::ng-deep .my-claxified-panel .menu-divider {
+  margin: 4px 14px !important;
+  border: none;
+  border-top: 1px solid #eef0f6;
+}
+::ng-deep .my-claxified-panel .mat-mdc-menu-item {
+  display: flex !important;
+  align-items: center !important;
+  padding: 10px 18px !important;
+  min-height: 44px !important;
+  height: auto !important;
+}
+::ng-deep .my-claxified-panel .mat-mdc-menu-item .mdc-list-item__primary-text {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #2c2540 !important;
+}
+::ng-deep .my-claxified-panel .mat-mdc-menu-item .material-icons-outlined {
+  font-size: 20px !important;
+  color: #7a7389 !important;
+  flex-shrink: 0 !important;
+}
+::ng-deep .my-claxified-panel .mat-mdc-menu-item:hover {
+  background: #f6f3fd !important;
+}
+::ng-deep
+  .my-claxified-panel
+  .mat-mdc-menu-item:hover
+  .mdc-list-item__primary-text,
+::ng-deep
+  .my-claxified-panel
+  .mat-mdc-menu-item:hover
+  .material-icons-outlined {
+  color: #7c3aed !important;
+}
+::ng-deep .my-claxified-panel .menu-logout .mdc-list-item__primary-text,
+::ng-deep .my-claxified-panel .menu-logout .material-icons-outlined {
+  color: #d14343 !important;
+}
+::ng-deep .my-claxified-panel .menu-logout:hover {
+  background: #fdecec !important;
+}
+
+/* Responsive */
+@media (max-width: 820px) {
+  .mct-label {
+    display: none;
+  }
+  .my-claxified-trigger {
+    padding: 4px;
+  }
+}
+@media (max-width: 480px) {
+  .mct-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+}

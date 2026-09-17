@@ -1,0 +1,192 @@
+<div class="page-head">
+  <div>
+    <h1>My Listings</h1>
+    <p>
+      Manage all your listings across Claxified. Create, edit and track
+      performance.
+    </p>
+  </div>
+  <button class="btn-primary" (click)="createListing()">
+    <span>+</span> Create New Listing
+  </button>
+</div>
+
+<div class="card">
+  <div class="tabs">
+    <button
+      *ngFor="let tab of tabs"
+      class="tab"
+      [class.active]="activeTab === tab.key"
+      (click)="setTab(tab.key)"
+    >
+      {{ tab.label }} <span class="count">{{ countFor(tab.key) }}</span>
+    </button>
+  </div>
+
+  <div class="filters">
+    <div class="search-input">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+        <line
+          x1="21"
+          y1="21"
+          x2="16.65"
+          y2="16.65"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+      <input
+        type="text"
+        placeholder="Search listings..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onFilterChange()"
+      />
+    </div>
+
+    <select [(ngModel)]="categoryFilter" (ngModelChange)="onFilterChange()">
+      <option value="all">All Categories</option>
+      <option *ngFor="let c of mainCategories" [value]="c.categoryName">
+        {{ c.categoryName }}
+      </option>
+    </select>
+  </div>
+
+  <div class="spinner-wrap" *ngIf="isLoading">
+    <mat-spinner diameter="36"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!isLoading">
+    <div class="table-scroll">
+      <div class="table" *ngIf="filteredAds.length; else emptyState">
+        <div class="table-header">
+          <span class="col-details">Listing Details</span>
+          <span class="col-module">Module</span>
+          <span class="col-category">Category</span>
+          <span class="col-status">Status</span>
+          <span class="col-date">Published On</span>
+          <span class="col-actions">Actions</span>
+        </div>
+
+        <div class="table-row" *ngFor="let ad of pagedAds">
+          <div class="col-details">
+            <img
+              [src]="ad.__image"
+              (error)="
+                ad.__image = '../../../../../assets/image_not_available.jpg'
+              "
+              alt=""
+            />
+            <div>
+              <div class="title" (click)="viewDetails(ad)">
+                {{ ad.__title }}
+              </div>
+              <div class="location">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <circle
+                    cx="12"
+                    cy="9"
+                    r="2.5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                </svg>
+                {{ ad.__location }}
+              </div>
+            </div>
+          </div>
+
+          <div class="col-module">
+            <span
+              class="pill"
+              [class.pill-blue]="ad.__module === 'Marketplace'"
+              >{{ ad.__module }}</span
+            >
+          </div>
+
+          <div class="col-category">{{ ad.__category }}</div>
+
+          <div class="col-status">
+            <span
+              class="status"
+              [class.status-active]="ad.__status === 'Active'"
+              [class.status-pending]="ad.__status === 'Pending Approval'"
+              [class.status-inactive]="ad.__status === 'Inactive'"
+            >
+              <i></i>{{ ad.__status }}
+            </span>
+          </div>
+
+          <div class="col-date">{{ ad.createdOn | date: "dd MMM yyyy" }}</div>
+
+          <div class="col-actions">
+            <button class="more-btn" (click)="toggleMenu(ad.id)">⋯</button>
+            <div class="dropdown" *ngIf="openMenuId === ad.id">
+              <a (click)="viewDetails(ad)">View</a>
+              <a (click)="editAd(ad)">Edit</a>
+              <a class="danger" (click)="confirmDelete(ad)">Delete</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #emptyState>
+        <div class="empty">
+          <p>
+            No listings found{{
+              searchTerm ? ' for "' + searchTerm + '"' : ""
+            }}.
+          </p>
+          <button class="btn-primary" (click)="createListing()">
+            + Create New Listing
+          </button>
+        </div>
+      </ng-template>
+
+      <div class="table-footer" *ngIf="filteredAds.length">
+        <span class="muted">
+          Showing {{ (currentPage - 1) * pageSize + 1 }}–{{
+            (currentPage - 1) * pageSize + pagedAds.length
+          }}
+          of {{ filteredAds.length }} listings
+        </span>
+
+        <div class="pages-wrap">
+          <button
+            class="pages-scroll-btn"
+            (click)="scrollPages('left')"
+            [disabled]="!canScrollLeft"
+            aria-label="Scroll page numbers left"
+          >
+            ‹
+          </button>
+
+          <div class="pages" #pagesScroll (scroll)="onPagesScroll()">
+            <button
+              *ngFor="let p of pageNumbers"
+              [class.active]="p === currentPage"
+              (click)="goToPage(p)"
+            >
+              {{ p }}
+            </button>
+          </div>
+
+          <button
+            class="pages-scroll-btn"
+            (click)="scrollPages('right')"
+            [disabled]="!canScrollRight"
+            aria-label="Scroll page numbers right"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

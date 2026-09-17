@@ -1,0 +1,238 @@
+<div class="page-head">
+  <div>
+    <h1>Admin Overview</h1>
+    <p>Browse listings by category and manage the public dashboard message.</p>
+  </div>
+  <button class="btn-primary" (click)="toggleMessagePanel()">
+    <span>{{ showMessagePanel ? "×" : "+" }}</span>
+    {{ showMessagePanel ? "Close" : "Dashboard Message" }}
+  </button>
+</div>
+
+<div class="spinner-wrap" *ngIf="isLoading">
+  <mat-spinner diameter="36"></mat-spinner>
+</div>
+
+<ng-container *ngIf="!isLoading">
+  <!-- Dashboard message panel -->
+  <div class="card" *ngIf="showMessagePanel" style="margin-bottom: 22px">
+    <div class="section-head">
+      <h3>Post a Dashboard Message</h3>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1">
+        <label>Title</label>
+        <input
+          type="text"
+          [(ngModel)]="title"
+          placeholder="Message title (optional)"
+        />
+      </div>
+
+      <div class="form-field" style="grid-column: 1 / -1">
+        <label>Message</label>
+        <textarea
+          rows="4"
+          [(ngModel)]="message"
+          placeholder="Write the message to display..."
+        ></textarea>
+        <span
+          *ngIf="validDescriptionMessage"
+          style="color: #e11d48; font-size: 12.5px"
+        >
+          Message cannot be empty.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button
+        class="btn-secondary"
+        (click)="toggleMessagePanel()"
+        [disabled]="isSendingMessage"
+      >
+        Cancel
+      </button>
+      <button
+        class="btn-primary"
+        (click)="onSubmitMessage()"
+        [disabled]="isSendingMessage"
+      >
+        {{ isSendingMessage ? "Sending..." : "Send Message" }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Category summary -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span class="stat-icon" style="background: #eef2ff; color: #4f46e5">
+        <svg viewBox="0 0 24 24" fill="none">
+          <rect
+            x="4"
+            y="3"
+            width="16"
+            height="18"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+          <line
+            x1="8"
+            y1="8"
+            x2="16"
+            y2="8"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <line
+            x1="8"
+            y1="12"
+            x2="16"
+            y2="12"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </span>
+      <div>
+        <div class="stat-value">{{ totalCategories }}</div>
+        <div class="stat-label">Total Categories</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-icon" style="background: #fde7f0; color: #d6006e">
+        <svg viewBox="0 0 24 24" fill="none">
+          <rect
+            x="2"
+            y="5"
+            width="20"
+            height="14"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+          <line
+            x1="2"
+            y1="10"
+            x2="22"
+            y2="10"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+        </svg>
+      </span>
+      <div>
+        <div class="stat-value">{{ selectedCategoryName || "—" }}</div>
+        <div class="stat-label">Selected Category</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-icon" style="background: #e5f9ee; color: #0f9d58">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path
+            d="M20 6L9 17l-5-5"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <div>
+        <div class="stat-value">{{ allCards.length }}</div>
+        <div class="stat-label">Ads in Category</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category tabs -->
+  <div class="card">
+    <div class="section-head">
+      <h3>Listings by Category</h3>
+    </div>
+
+    <div class="tabs">
+      <button
+        *ngFor="let cat of mainCategories"
+        class="tab"
+        [class.active]="cat.id === selectedCategoryId"
+        (click)="onCategoryChange(cat.id)"
+      >
+        {{ cat.categoryName }}
+      </button>
+    </div>
+
+    <div class="spinner-wrap" *ngIf="isAdsLoading">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+
+    <ng-container *ngIf="!isAdsLoading">
+      <div class="table-scroll" *ngIf="allCards.length; else noCards">
+        <div class="table">
+          <div class="table-header">
+            <div>Details</div>
+            <div>Category</div>
+            <div>Posted On</div>
+            <div>Ref</div>
+            <div>Status</div>
+            <div></div>
+          </div>
+
+          <div class="table-row" *ngFor="let card of allCards">
+            <div class="col-details">
+              <img [src]="getCardImageURL(card)" alt="" />
+              <div>
+                <div class="title" (click)="navigateToDetails(card)">
+                  {{ card.title || card.adTitle || "Untitled" }}
+                </div>
+                <div class="location">
+                  <span class="material-icons-outlined" style="font-size: 13px"
+                    >place</span
+                  >
+                  {{ card.location || card.city || "—" }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-category">{{ selectedCategoryName }}</div>
+
+            <div class="col-date">
+              {{ formatDate(card.createdOn || card.postedOn) }}
+            </div>
+
+            <div
+              class="col-date"
+              style="font-size: 11.5px; word-break: break-all"
+            >
+              {{ card.tableRefGuid }}
+            </div>
+
+            <div>
+              <span class="pill pill-blue">{{ card.status || "Active" }}</span>
+            </div>
+
+            <div class="col-actions">
+              <button class="more-btn" (click)="editCard(card)" title="Edit">
+                <span class="material-icons-outlined" style="font-size: 16px"
+                  >edit</span
+                >
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noCards>
+        <div class="empty">
+          <p>No ads found for this category.</p>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
+</ng-container>

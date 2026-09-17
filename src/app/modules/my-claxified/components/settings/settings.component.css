@@ -1,0 +1,222 @@
+/* ============ Settings — profile header ============ */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eef0f7;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+.profile-header .edit-toggle {
+  margin-left: auto;
+}
+
+/* avatar */
+.avatar-upload {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+}
+.avatar-lg-img,
+.profile-header .avatar-lg {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e75462, #f4a261);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 22px;
+  object-fit: cover;
+}
+.avatar-edit-btn {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e75462;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(231, 84, 98, 0.35);
+}
+.avatar-edit-btn .material-icons-outlined {
+  font-size: 14px;
+}
+.avatar-edit-btn.disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* form grid */
+fieldset.form-grid {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-field.full {
+  grid-column: 1 / -1;
+}
+.form-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e2138;
+}
+.form-field input,
+.form-field textarea {
+  border: 1px solid #e7e9f3;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  color: #1e2138;
+  font-family: inherit;
+  background: #fff;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.form-field input:focus,
+.form-field textarea:focus {
+  border-color: #d6c8fb;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+}
+.form-field input:disabled,
+.form-field textarea:disabled,
+fieldset.form-grid[disabled] input {
+  background: #f6f7fb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+@media (max-width: 760px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .profile-header {
+    flex-wrap: wrap;
+  }
+  .profile-header .edit-toggle {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* ============ Avatar Upload Block ============ */
+.avatar-upload {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
+}
+
+.avatar-lg-img,
+.profile-header .avatar-lg {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e75462, #f4a261);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 26px;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 14px rgba(28, 21, 51, 0.1);
+}
+
+/* Edit button — soft circular badge, bottom-right */
+.avatar-edit-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  color: #7c3aed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+  transition:
+    transform 0.15s,
+    background 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+}
+
+.avatar-edit-btn:hover {
+  background: linear-gradient(135deg, #7c3aed, #e75462);
+  color: #fff;
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(231, 84, 98, 0.35);
+}
+
+.avatar-edit-btn:active {
+  transform: scale(0.96);
+}
+
+.avatar-edit-btn .material-icons-outlined {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.avatar-edit-btn.disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Loading spinner inside edit button */
+.avatar-edit-btn mat-spinner {
+  --mdc-circular-progress-active-indicator-color: #7c3aed;
+}
+
+.avatar-upload {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
+  overflow: hidden; /* clip any stray native control */
+  border-radius: 50%; /* extra safety so nothing square pokes out */
+}
+
+/* Explicitly hide the file input — don't rely on the `hidden` attribute,
+   it's too low-specificity and gets overridden by global input styles */
+.avatar-upload input[type="file"] {
+  display: none !important;
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}

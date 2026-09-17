@@ -1,21 +1,21 @@
-import { Component } from "@angular/core";
-import { ApplianceService } from "../../service/appliance.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import * as moment from "moment";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { LoginComponent } from "../../../user/component/login/login.component";
-import { SignupComponent } from "../../../user/component/signup/signup.component";
-import { CommonService } from "src/app/shared/service/common.service";
-import { Location } from "@angular/common";
-import { UserService } from "src/app/modules/user/service/user.service";
-import { AdsReportType } from "src/app/shared/enum/AdsReportType";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { AdminDashboardService } from "src/app/modules/admin/service/admin-dashboard.service";
+import { Component } from '@angular/core';
+import { ApplianceService } from '../../service/appliance.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import * as moment from 'moment';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { LoginComponent } from '../../../user/component/login/login.component';
+import { SignupComponent } from '../../../user/component/signup/signup.component';
+import { CommonService } from 'src/app/shared/service/common.service';
+import { Location } from '@angular/common';
+import { UserService } from 'src/app/modules/user/service/user.service';
+import { AdsReportType } from 'src/app/shared/enum/AdsReportType';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AdminDashboardService } from 'src/app/modules/admin/service/admin-dashboard.service';
 
 @Component({
-  selector: "app-post-details",
-  templateUrl: "./post-details.component.html",
-  styleUrls: ["./post-details.component.css", "../../../module.component.css"],
+  selector: 'app-post-details',
+  templateUrl: './post-details.component.html',
+  styleUrls: ['./post-details.component.css', '../../../module.component.css'],
 })
 export class PostDetailsComponent {
   postDetails: any;
@@ -29,58 +29,58 @@ export class PostDetailsComponent {
   imageIndex: number = 0;
   relatedPosts: any = [
     {
-      title: "Iphonr 10",
+      title: 'Iphonr 10',
       price: 15000,
-      state: "Telangana",
-      city: "Hyderabad",
-      nearBy: "Erragadda",
+      state: 'Telangana',
+      city: 'Hyderabad',
+      nearBy: 'Erragadda',
       imageUrl:
-        "https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg",
+        'https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg',
     },
     {
-      title: "Iphonr 11",
+      title: 'Iphonr 11',
       price: 25000,
-      state: "Telangana",
-      city: "Hyderabad",
-      nearBy: "Moosapet",
+      state: 'Telangana',
+      city: 'Hyderabad',
+      nearBy: 'Moosapet',
       imageUrl:
-        "https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg",
+        'https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg',
     },
     {
-      title: "Iphonr 12",
+      title: 'Iphonr 12',
       price: 35000,
-      state: "Telangana",
-      city: "Hyderabad",
-      nearBy: "Ameerpet",
+      state: 'Telangana',
+      city: 'Hyderabad',
+      nearBy: 'Ameerpet',
       imageUrl:
-        "https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg",
+        'https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg',
     },
     {
-      title: "Iphonr 13",
+      title: 'Iphonr 13',
       price: 45000,
-      state: "Telangana",
-      city: "Hyderabad",
-      nearBy: "Punjagutta",
+      state: 'Telangana',
+      city: 'Hyderabad',
+      nearBy: 'Punjagutta',
       imageUrl:
-        "https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg",
+        'https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg',
     },
     {
-      title: "Iphonr 14",
+      title: 'Iphonr 14',
       price: 55000,
-      state: "Telangana",
-      city: "Hyderabad",
-      nearBy: "Ameerpet",
+      state: 'Telangana',
+      city: 'Hyderabad',
+      nearBy: 'Ameerpet',
       imageUrl:
-        "https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg",
+        'https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg',
     },
     {
-      title: "Iphonr 15",
+      title: 'Iphonr 15',
       price: 65000,
-      state: "Telangana",
-      city: "Hyderabad",
-      nearBy: "Punjagutta",
+      state: 'Telangana',
+      city: 'Hyderabad',
+      nearBy: 'Punjagutta',
       imageUrl:
-        "https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg",
+        'https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_UF1000,1000_QL80_.jpg',
     },
   ];
   itemsPerPage = 4;
@@ -89,7 +89,7 @@ export class PostDetailsComponent {
 
   reporterClicked = false;
 
-  iconName = "arrow_drop_down";
+  iconName = 'arrow_drop_down';
 
   isFavorite: boolean = false;
 
@@ -97,23 +97,23 @@ export class PostDetailsComponent {
   currentSlideIndex = 0;
   carouselItems = [
     "Beware of buyers asking to use 'Claxified delivery' or 'Payments on Claxified' for anything",
-    "Access Claxified portal from claxified.com and do not follow links sent by other users",
-    "Share photos and ask lots of questions about the items you are buying and selling",
+    'Access Claxified portal from claxified.com and do not follow links sent by other users',
+    'Share photos and ask lots of questions about the items you are buying and selling',
     "Don't reply to email addresses hidden in text and pictures",
     "Use the 'Report ad' button if something found illegal/unethical",
   ];
   mainCategories: any = [];
   subCategories: any = [];
 
-  reportDetail: string = "";
+  reportDetail: string = '';
   adsReportType: AdsReportType = AdsReportType.Others;
-  adTabRefGuid: string = "";
+  adTabRefGuid: string = '';
   showSuccessMessage: boolean = false;
   selectedRadioValue: number | null = null;
   showOptionWarning: boolean = false;
 
-  productId: string = "";
-  categoryId: string = "";
+  productId: string = '';
+  categoryId: string = '';
   favoriteStatus: { [key: string]: boolean } = {};
 
   isAdmin: boolean = false;
@@ -127,10 +127,10 @@ export class PostDetailsComponent {
     private location: Location,
     private UserService: UserService,
     private snackBar: MatSnackBar,
-    private AdminDashboardService: AdminDashboardService
+    private AdminDashboardService: AdminDashboardService,
   ) {
     this.route.paramMap.subscribe((params) => {
-      this.adTabRefGuid = params.get("id") || "";
+      this.adTabRefGuid = params.get('id') || '';
     });
   }
   verifyAdd(categoryId: number, tableRefGuid: string): void {
@@ -138,34 +138,34 @@ export class PostDetailsComponent {
       this.route.queryParams.subscribe((params) => {
         this.AdminDashboardService.verifyAd(categoryId, tableRefGuid).subscribe(
           (response: any) => {
-            this.adVerifiedNotification("Ad verified successfully");
+            this.adVerifiedNotification('Ad verified successfully');
           },
           (error: any) => {
-            this.adVerifiedNotification("Cannot verify this ad");
-          }
+            this.adVerifiedNotification('Cannot verify this ad');
+          },
         );
       });
     }
   }
 
   adVerifiedNotification(message: string): void {
-    this.snackBar.open(message, "Close", {
+    this.snackBar.open(message, 'Close', {
       duration: 5000,
-      horizontalPosition: "end",
-      verticalPosition: "top",
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
     });
-    this.router.navigateByUrl("/Admin/admin-dashboard");
+    this.router.navigateByUrl('/my-claxified/admin-overview');
   }
 
   ngOnInit() {
-    var role = localStorage.getItem("role");
-    if (role != null && role == "Admin") this.isAdmin = true;
+    var role = localStorage.getItem('role');
+    if (role != null && role == 'Admin') this.isAdmin = true;
     else this.isAdmin = false;
     this.getMainCategories();
     setTimeout(() => this.getSubCategory(this.postDetails.categoryId), 1000);
     var tableRefGuid;
     this.route.paramMap.subscribe((params) => {
-      tableRefGuid = params.get("id");
+      tableRefGuid = params.get('id');
     });
     if (tableRefGuid != null) {
       this.getElectronicAppliancePost(tableRefGuid);
@@ -197,20 +197,20 @@ export class PostDetailsComponent {
       return;
     }
 
-    const userId = localStorage.getItem("id");
+    const userId = localStorage.getItem('id');
 
     const reportPayload = {
       id: 0,
       adTabRefGuid: this.adTabRefGuid,
       adsReportType: this.adsReportType,
       reportDetail: this.reportDetail,
-      createdBy: localStorage.getItem("id"),
+      createdBy: localStorage.getItem('id'),
       createdOn: new Date().toISOString(),
     };
 
     this.UserService.AdReportByUser(reportPayload).subscribe(
       (response: any) => {
-        this.reportDetail = "";
+        this.reportDetail = '';
         this.selectedRadioValue = null;
         this.toggleReportOptions();
 
@@ -218,34 +218,34 @@ export class PostDetailsComponent {
         // setTimeout(() => {
         //   this.showSuccessMessage = false;
         // }, 3000);
-        this.showNotification("Your report has been successfully submitted.");
+        this.showNotification('Your report has been successfully submitted.');
       },
       (error: any) => {
         // Handle error response, if needed
         // console.error('Error sending report:', error);
-      }
+      },
     );
   }
 
   showNotification(message: string): void {
-    this.snackBar.open(message, "Close", {
+    this.snackBar.open(message, 'Close', {
       duration: 5000,
-      horizontalPosition: "end",
-      verticalPosition: "top",
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
     });
   }
 
   toggleReportOptions() {
-    if (localStorage.getItem("id") != null) {
+    if (localStorage.getItem('id') != null) {
       this.showReportOptions = !this.showReportOptions;
       this.reporterClicked = !this.reporterClicked;
       this.iconName = this.showReportOptions
-        ? "arrow_drop_up"
-        : "arrow_drop_down";
+        ? 'arrow_drop_up'
+        : 'arrow_drop_down';
       this.showOptionWarning = false;
       // this.showDetailWarning = false;
       this.selectedRadioValue = null;
-      this.reportDetail = "";
+      this.reportDetail = '';
     } else {
       this.openLoginModal();
     }
@@ -255,7 +255,7 @@ export class PostDetailsComponent {
     event.preventDefault();
     event.stopPropagation();
 
-    if (localStorage.getItem("id") != null) {
+    if (localStorage.getItem('id') != null) {
       // Check if the card has a favorite status, if not, set it to false
       this.favoriteStatus[productId] = this.favoriteStatus[productId] || false;
 
@@ -278,7 +278,7 @@ export class PostDetailsComponent {
       id: 0,
       productId: productId,
       categoryId: categoryId,
-      createdBy: localStorage.getItem("id"),
+      createdBy: localStorage.getItem('id'),
       createdOn: new Date().toISOString(),
     };
 
@@ -288,7 +288,7 @@ export class PostDetailsComponent {
       },
       (error: any) => {
         // console.error("Error adding to Wishlist:", error);
-      }
+      },
     );
   }
 
@@ -301,7 +301,7 @@ export class PostDetailsComponent {
   formatPrice(price: number): string {
     const roundedPrice = Math.round(price);
 
-    const formattedPrice = roundedPrice.toLocaleString("en-IN");
+    const formattedPrice = roundedPrice.toLocaleString('en-IN');
 
     return formattedPrice;
   }
@@ -323,15 +323,15 @@ export class PostDetailsComponent {
     const isFirstItem = this.currentSlideIndex === 0;
     const isLastItem = this.currentSlideIndex === this.carouselItems.length - 1;
 
-    const prevButton = document.querySelector(".prev");
-    const nextButton = document.querySelector(".next");
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
 
     if (prevButton) {
-      prevButton.classList.toggle("disabled", isFirstItem);
+      prevButton.classList.toggle('disabled', isFirstItem);
     }
 
     if (nextButton) {
-      nextButton.classList.toggle("disabled", isLastItem);
+      nextButton.classList.toggle('disabled', isLastItem);
     }
   }
 
@@ -345,17 +345,17 @@ export class PostDetailsComponent {
     this.isZoomed = !this.isZoomed;
 
     // Toggle a class to style the expanded image
-    const imgElement = document.querySelector(".postImgCont");
+    const imgElement = document.querySelector('.postImgCont');
     if (imgElement) {
-      imgElement.classList.toggle("zoomed");
+      imgElement.classList.toggle('zoomed');
     }
   }
 
   closeZoom() {
     this.isZoomed = false;
-    const imgElement = document.querySelector(".postImgCont");
+    const imgElement = document.querySelector('.postImgCont');
     if (imgElement) {
-      imgElement.classList.remove("zoomed");
+      imgElement.classList.remove('zoomed');
     }
   }
 
@@ -380,18 +380,18 @@ export class PostDetailsComponent {
   }
   formatDate(date: any): any {
     const inputDate: Date = new Date(date);
-    const daysAgo = moment(this.currentDate).diff(inputDate, "days");
+    const daysAgo = moment(this.currentDate).diff(inputDate, 'days');
 
     if (daysAgo >= 0 && daysAgo <= 7) {
       if (daysAgo === 0) {
-        return "Today";
+        return 'Today';
       } else if (daysAgo === 1) {
-        return "Yesterday";
+        return 'Yesterday';
       } else {
-        return daysAgo + " days ago";
+        return daysAgo + ' days ago';
       }
     } else {
-      return moment(inputDate).format("MMM DD");
+      return moment(inputDate).format('MMM DD');
     }
   }
   showPrevious() {
@@ -426,32 +426,32 @@ export class PostDetailsComponent {
     }
 
     this.dialogRef = this.dialog.open(LoginComponent, {
-      width: "400px",
-      panelClass: "custom-dialog-container",
+      width: '400px',
+      panelClass: 'custom-dialog-container',
     });
 
-    const dialogRefElement = document.querySelector(".custom-dialog-container");
+    const dialogRefElement = document.querySelector('.custom-dialog-container');
     if (dialogRefElement) {
-      dialogRefElement.setAttribute("style", "margin-top: 85px");
+      dialogRefElement.setAttribute('style', 'margin-top: 85px');
     }
 
     this.dialogRef.afterClosed().subscribe((result) => {
-      if (localStorage.getItem("authToken") != null) this.isUserLogedIn = true;
+      if (localStorage.getItem('authToken') != null) this.isUserLogedIn = true;
     });
   }
 
   revealPhoneNumber() {
-    if (localStorage.getItem("id") != null)
+    if (localStorage.getItem('id') != null)
       this.isPhoneNumberHidden = !this.isPhoneNumberHidden;
     else this.openLoginModal();
   }
   getMainCategoryName(id: number) {
     let mainCategory = this.mainCategories.find((cat: any) => cat.id == id);
-    return mainCategory != null ? mainCategory.categoryName : "";
+    return mainCategory != null ? mainCategory.categoryName : '';
   }
   getSubCategoryName(id: number) {
     let subCategory = this.subCategories.find((cat: any) => cat.id == id);
-    return subCategory != null ? subCategory.subCategoryName : "";
+    return subCategory != null ? subCategory.subCategoryName : '';
   }
   getMainCategories() {
     this.commonService.getAllCategory().subscribe((res) => {
