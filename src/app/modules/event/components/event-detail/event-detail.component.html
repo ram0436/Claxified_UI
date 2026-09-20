@@ -1,0 +1,418 @@
+<div class="event-detail-wrapper" *ngIf="!loading && !error && event">
+  <nav class="breadcrumb">
+    <a routerLink="/events">Events</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <a [routerLink]="['/events/categories', category.slug]" *ngIf="category">{{
+      category.name
+    }}</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">{{ event.name }}</span>
+  </nav>
+
+  <div class="event-detail-layout">
+    <!-- Main -->
+    <main class="event-main">
+      <div class="event-image-wrapper">
+        <img
+          [src]="event.featuredImageUrl"
+          [alt]="event.featuredImageAltText || event.name"
+        />
+        <span class="badge-free" *ngIf="event.isFree">Free Event</span>
+        <span class="badge-type" *ngIf="subCategory">{{
+          subCategory.name
+        }}</span>
+        <div class="image-actions">
+          <span class="material-icons-outlined icon-btn">favorite_border</span>
+          <span class="material-icons-outlined icon-btn">share</span>
+        </div>
+        <div class="image-overlay">
+          <h2>{{ event.name | uppercase }}</h2>
+          <p>{{ event.shortDescription }}</p>
+          <div class="overlay-meta">
+            <span
+              >{{ dayOf(event.startDateTime) }}
+              {{ monthOf(event.startDateTime) }}
+              {{ event.startDateTime | slice: 0 : 4 }}</span
+            >
+            <span>{{ timeRange() }}</span>
+            <span *ngIf="venue">{{ venue.name }}, {{ venue.city }}</span>
+          </div>
+        </div>
+      </div>
+
+      <h1 class="event-title">{{ event.name }}</h1>
+      <p class="event-subtitle">{{ event.shortDescription }}</p>
+
+      <div class="event-meta-row">
+        <span
+          ><span class="material-icons-outlined">event</span>
+          {{ formattedDate(event.startDateTime) }}<br /><small>{{
+            timeRange()
+          }}</small></span
+        >
+        <span *ngIf="venue"
+          ><span class="material-icons-outlined">place</span> {{ venue.name
+          }}<br /><small>{{ venue.city }}, {{ venue.state }}</small></span
+        >
+        <span *ngIf="category"
+          ><span class="material-icons-outlined">local_offer</span>
+          {{ category.name }}<br /><small>{{ subCategory?.name }}</small></span
+        >
+        <span
+          ><span class="material-icons-outlined">groups</span>
+          {{ event.viewCount > 100 ? "100+" : event.viewCount }}<br /><small
+            >People Interested</small
+          ></span
+        >
+      </div>
+
+      <div class="tab-row">
+        <button
+          class="tab-pill"
+          [class.active]="activeTab === 'overview'"
+          (click)="setTab('overview')"
+        >
+          Overview
+        </button>
+        <button
+          class="tab-pill"
+          [class.active]="activeTab === 'details'"
+          (click)="setTab('details')"
+        >
+          Event Details
+        </button>
+        <button
+          class="tab-pill"
+          [class.active]="activeTab === 'venue'"
+          (click)="setTab('venue')"
+        >
+          Venue
+        </button>
+        <button
+          class="tab-pill"
+          [class.active]="activeTab === 'organizer'"
+          (click)="setTab('organizer')"
+        >
+          Organizer
+        </button>
+        <button
+          class="tab-pill"
+          [class.active]="activeTab === 'faqs'"
+          (click)="setTab('faqs')"
+        >
+          FAQs
+        </button>
+        <button
+          class="tab-pill"
+          [class.active]="activeTab === 'reviews'"
+          (click)="setTab('reviews')"
+        >
+          Reviews
+        </button>
+      </div>
+
+      <!-- Overview -->
+      <div class="tab-content" *ngIf="activeTab === 'overview'">
+        <h3>About This Event</h3>
+        <div class="event-description" [innerHTML]="event.description"></div>
+
+        <blockquote class="event-quote" *ngIf="event.shortDescription">
+          <span class="material-icons-outlined">format_quote</span>
+          {{ event.shortDescription }}
+        </blockquote>
+
+        <h3>Event Highlights</h3>
+        <div class="highlights-grid">
+          <div class="highlight-item" *ngFor="let h of eventHighlights">
+            <span class="material-icons-outlined">{{ h.icon }}</span>
+            <span>{{ h.label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event Details -->
+      <div class="tab-content" *ngIf="activeTab === 'details'">
+        <h3>Event Details</h3>
+        <table class="detail-table">
+          <tr>
+            <td>Date</td>
+            <td>{{ formattedDate(event.startDateTime) }}</td>
+          </tr>
+          <tr>
+            <td>Time</td>
+            <td>{{ timeRange() }}</td>
+          </tr>
+          <tr>
+            <td>Venue</td>
+            <td>{{ venue?.name }}, {{ venue?.city }}</td>
+          </tr>
+          <tr>
+            <td>Category</td>
+            <td>{{ category?.name }} &gt; {{ subCategory?.name }}</td>
+          </tr>
+          <tr>
+            <td>Event Type</td>
+            <td>{{ event.isAllDay ? "All Day" : "Timed" }}</td>
+          </tr>
+          <tr>
+            <td>Registration</td>
+            <td>
+              {{ event.registrationRequired ? "Required" : "Not Required" }}
+            </td>
+          </tr>
+          <tr>
+            <td>Ticket</td>
+            <td>{{ event.ticketRequired ? priceLabel() : "Not Required" }}</td>
+          </tr>
+          <tr>
+            <td>Organizer</td>
+            <td>{{ organizer?.name }}</td>
+          </tr>
+          <tr>
+            <td>Contact</td>
+            <td>{{ organizer?.phone }} &nbsp;|&nbsp; {{ organizer?.email }}</td>
+          </tr>
+        </table>
+
+        <h3>Tags</h3>
+        <div class="tag-row">
+          <span class="tag-chip" *ngIf="category">{{ category.name }}</span>
+          <span class="tag-chip" *ngIf="subCategory">{{
+            subCategory.name
+          }}</span>
+          <span class="tag-chip" *ngIf="venue">{{ venue.city }}</span>
+          <span class="tag-chip" *ngIf="event.isFree">Free Entry</span>
+        </div>
+      </div>
+
+      <!-- Venue -->
+      <div class="tab-content" *ngIf="activeTab === 'venue' && venue">
+        <h3>Venue</h3>
+        <p>{{ venue.name }}</p>
+        <p class="muted">
+          {{ venue.address }}, {{ venue.city }}, {{ venue.state }}
+          {{ venue.postalCode }}, {{ venue.country }}
+        </p>
+        <a
+          class="map-link"
+          [href]="venue.mapUrl"
+          target="_blank"
+          rel="noopener"
+          *ngIf="venue.mapUrl"
+        >
+          View on Google Maps
+          <span class="material-icons-outlined">open_in_new</span>
+        </a>
+      </div>
+
+      <!-- Organizer -->
+      <div class="tab-content" *ngIf="activeTab === 'organizer' && organizer">
+        <h3>Organizer</h3>
+        <p>{{ organizer.description }}</p>
+        <p class="muted">
+          {{ organizer.phone }} &nbsp;|&nbsp;
+          {{ organizer.email }} &nbsp;|&nbsp; {{ organizer.websiteUrl }}
+        </p>
+      </div>
+
+      <!-- FAQs / Reviews placeholders -->
+      <div class="tab-content" *ngIf="activeTab === 'faqs'">
+        <h3>FAQs</h3>
+        <p class="muted">No FAQs have been added for this event yet.</p>
+      </div>
+
+      <div class="tab-content" *ngIf="activeTab === 'reviews'">
+        <h3>Reviews</h3>
+        <p class="muted">
+          No reviews yet. Be the first to attend and share your feedback.
+        </p>
+      </div>
+    </main>
+
+    <!-- Right sidebar -->
+    <aside class="event-right-sidebar">
+      <div class="ticket-card" [class.free]="event.isFree">
+        <div class="ticket-card-header">
+          <span class="material-icons-outlined">{{
+            event.isFree ? "confirmation_number" : "local_activity"
+          }}</span>
+          <h3>{{ event.isFree ? "Free Event" : "Get Your Ticket" }}</h3>
+        </div>
+        <p>{{ priceLabel() }}</p>
+        <a
+          class="interest-btn"
+          [href]="
+            event.registrationRequired ? event.registrationUrl : event.ticketUrl
+          "
+          target="_blank"
+          rel="noopener"
+        >
+          <span class="material-icons-outlined">groups</span>
+          {{ event.ticketRequired ? "Book Now" : "I'm Interested" }}
+        </a>
+        <p class="interest-count">
+          Join 100+ people who are interested in this event.
+        </p>
+
+        <ul class="ticket-checklist">
+          <li>
+            <span class="material-icons-outlined">check_circle</span>
+            {{ event.isFree ? "100% Free Entry" : "Instant Confirmation" }}
+          </li>
+          <li>
+            <span class="material-icons-outlined">check_circle</span> Open for
+            All
+          </li>
+          <li>
+            <span class="material-icons-outlined">check_circle</span> Limited
+            Seats &ndash; First Come, First Serve
+          </li>
+          <li>
+            <span class="material-icons-outlined">check_circle</span>
+            {{
+              event.registrationRequired
+                ? "Registration Required"
+                : "No Registration Required"
+            }}
+          </li>
+        </ul>
+
+        <div class="ticket-note" *ngIf="event.isFree">
+          <span class="material-icons-outlined">info</span>
+          <span
+            ><strong>Note:</strong> This is a free event. No payment or ticket
+            booking is required.</span
+          >
+        </div>
+      </div>
+
+      <div class="sidebar-card" *ngIf="organizer">
+        <h3>Organizer</h3>
+        <div class="organizer-row">
+          <div class="organizer-avatar">
+            <span class="material-icons-outlined">store</span>
+          </div>
+          <div class="organizer-info">
+            <h5>{{ organizer.name }}</h5>
+            <p>{{ organizer.description }}</p>
+          </div>
+        </div>
+        <button class="follow-btn">Follow</button>
+        <p class="organizer-desc">{{ organizer.description }}</p>
+        <div class="organizer-contact">
+          <span *ngIf="organizer.phone"
+            ><span class="material-icons-outlined">call</span>
+            {{ organizer.phone }}</span
+          >
+          <span *ngIf="organizer.email"
+            ><span class="material-icons-outlined">mail</span>
+            {{ organizer.email }}</span
+          >
+          <span *ngIf="organizer.websiteUrl"
+            ><span class="material-icons-outlined">language</span>
+            {{ organizer.websiteUrl }}</span
+          >
+        </div>
+        <button class="view-more-btn">View More Events</button>
+      </div>
+
+      <div class="sidebar-card" *ngIf="venue">
+        <div class="sidebar-card-header">
+          <h3>Location</h3>
+          <a
+            [href]="venue.mapUrl"
+            target="_blank"
+            rel="noopener"
+            class="view-all-link"
+          >
+            View on Google Maps
+            <span class="material-icons-outlined">open_in_new</span>
+          </a>
+        </div>
+        <div class="map-placeholder">
+          <span class="material-icons-outlined">map</span>
+        </div>
+        <p class="venue-name">{{ venue.name }}</p>
+        <p class="muted">
+          {{ venue.address }}, {{ venue.city }} {{ venue.postalCode }},
+          {{ venue.country }}
+        </p>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Share This Event</h3>
+        <div class="share-row">
+          <a
+            *ngFor="let s of shareLinks"
+            [href]="s.link"
+            target="_blank"
+            rel="noopener"
+            class="share-icon"
+            [ngClass]="s.className"
+          >
+            <span class="material-icons-outlined">{{ s.icon }}</span>
+          </a>
+          <span class="material-icons-outlined share-icon link-icon">link</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Similar events -->
+  <section class="similar-events-section" *ngIf="similarEvents.length > 0">
+    <div class="section-header">
+      <h2>Similar Events</h2>
+      <a
+        [routerLink]="['/events/categories', category?.slug]"
+        class="view-all-link"
+        >View All</a
+      >
+    </div>
+    <div class="similar-events-row">
+      <div
+        class="similar-event-card"
+        *ngFor="let e of similarEvents"
+        (click)="goToEvent(e)"
+      >
+        <div class="similar-event-image">
+          <img [src]="e.featuredImageUrl" [alt]="e.name" />
+          <span class="material-icons-outlined heart-icon"
+            >favorite_border</span
+          >
+          <div class="date-badge">
+            <span class="date-day">{{ dayOf(e.startDateTime) }}</span>
+            <span class="date-month">{{ monthOf(e.startDateTime) }}</span>
+          </div>
+        </div>
+        <div class="similar-event-body">
+          <h4>{{ e.name }}</h4>
+          <span class="muted">{{ subCategory?.name }}</span>
+          <div class="similar-event-meta">
+            <span
+              ><span class="material-icons-outlined">place</span>
+              {{ venue?.name }}</span
+            >
+            <span
+              ><span class="material-icons-outlined">schedule</span>
+              {{ timeRange() }}</span
+            >
+          </div>
+          <span class="price" [class.free]="e.isFree">{{
+            e.isFree ? "Free Entry" : "\u20B9" + e.price
+          }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="state-block" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Loading event&hellip;</p>
+</div>
+
+<div class="state-block" *ngIf="!loading && error">
+  <span class="material-icons-outlined state-icon">wifi_off</span>
+  <p>We couldn't find or load this event.</p>
+  <button class="retry-button" routerLink="/events">Back to Events</button>
+</div>
