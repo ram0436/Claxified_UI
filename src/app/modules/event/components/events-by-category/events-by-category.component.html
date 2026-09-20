@@ -1,0 +1,253 @@
+<div class="events-cat-wrapper" *ngIf="category">
+  <nav class="breadcrumb">
+    <a routerLink="/events">Events</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">{{ category.name }}</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="cat-hero">
+    <div class="cat-hero-icon">
+      <span class="material-icons-outlined">{{ categoryIcon() }}</span>
+    </div>
+    <div class="cat-hero-text">
+      <h1>{{ category.name }}</h1>
+      <p>{{ category.description }}</p>
+      <span class="cat-hero-count">{{ events.length }} Events</span>
+    </div>
+    <div class="cat-hero-tagline">Music Brings<br />People Together!</div>
+  </section>
+
+  <div class="cat-layout">
+    <!-- Filters -->
+    <aside class="filters-sidebar">
+      <div class="filters-header">
+        <h3>Filters</h3>
+        <button class="clear-all" (click)="clearFilters()">Clear All</button>
+      </div>
+
+      <div class="filter-group">
+        <h4>
+          <span class="material-icons-outlined">location_on</span> Location
+        </h4>
+        <select [(ngModel)]="location">
+          <option>Bengaluru</option>
+          <option>Mumbai</option>
+          <option>New Delhi</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <h4><span class="material-icons-outlined">event</span> Date Range</h4>
+        <div class="date-row">
+          <input type="date" [(ngModel)]="dateFrom" placeholder="From Date" />
+          <input type="date" [(ngModel)]="dateTo" placeholder="To Date" />
+        </div>
+      </div>
+
+      <div class="filter-group" *ngIf="subCategories.length > 0">
+        <h4>
+          <span class="material-icons-outlined">category</span> Event Type
+        </h4>
+        <label class="checkbox-row" *ngFor="let sc of subCategories">
+          <input
+            type="checkbox"
+            [checked]="selectedSubCategoryIds.has(sc.id)"
+            (change)="toggleSubCategory(sc.id)"
+          />
+          {{ sc.name }}
+          <span class="count">({{ subCategoryCount(sc.id) }})</span>
+        </label>
+      </div>
+
+      <div class="filter-group">
+        <h4>
+          <span class="material-icons-outlined">payments</span> Price Range
+        </h4>
+        <label class="checkbox-row" *ngFor="let b of priceBuckets">
+          <input
+            type="checkbox"
+            [checked]="selectedPriceBuckets.has(b.key)"
+            (change)="togglePriceBucket(b.key)"
+          />
+          {{ b.label }}
+        </label>
+      </div>
+
+      <div class="filter-group">
+        <h4><span class="material-icons-outlined">groups</span> Age Group</h4>
+        <label class="checkbox-row" *ngFor="let a of ageGroups">
+          <input
+            type="checkbox"
+            [checked]="selectedAgeGroups.has(a.key)"
+            (change)="toggleAgeGroup(a.key)"
+          />
+          {{ a.label }}
+        </label>
+      </div>
+
+      <button class="apply-filters-btn">Apply Filters</button>
+    </aside>
+
+    <!-- Main -->
+    <div class="cat-main">
+      <div class="search-sort-row">
+        <div class="search-input-wrapper">
+          <span class="material-icons-outlined search-icon">search</span>
+          <input
+            type="text"
+            placeholder="Search events, artists, venues..."
+            [(ngModel)]="searchQuery"
+          />
+        </div>
+        <div class="sort-select">
+          Sort by:
+          <select [(ngModel)]="sortBy">
+            <option value="date">Date (Soonest)</option>
+            <option value="price-asc">Price (Low to High)</option>
+            <option value="price-desc">Price (High to Low)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="results-row">
+        <span
+          >Showing {{ filteredEvents.length }} events in
+          {{ category.name }}</span
+        >
+        <div class="view-toggle">
+          <button
+            [class.active]="viewMode === 'grid'"
+            (click)="setViewMode('grid')"
+          >
+            <span class="material-icons-outlined">grid_view</span> Grid View
+          </button>
+          <button
+            [class.active]="viewMode === 'list'"
+            (click)="setViewMode('list')"
+          >
+            <span class="material-icons-outlined">view_list</span> List View
+          </button>
+        </div>
+      </div>
+
+      <div class="state-block" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading events&hellip;</p>
+      </div>
+
+      <div class="state-block" *ngIf="!loading && error">
+        <span class="material-icons-outlined state-icon">wifi_off</span>
+        <p>We couldn't load these events right now.</p>
+        <button class="retry-button" (click)="loadCategory(category.slug)">
+          Try Again
+        </button>
+      </div>
+
+      <div
+        class="state-block"
+        *ngIf="!loading && !error && filteredEvents.length === 0"
+      >
+        <span class="material-icons-outlined state-icon">event_busy</span>
+        <p>No events match these filters.</p>
+      </div>
+
+      <div
+        class="event-grid"
+        [class.list-mode]="viewMode === 'list'"
+        *ngIf="!loading && !error && pagedEvents.length > 0"
+      >
+        <div
+          class="event-card"
+          *ngFor="let e of pagedEvents"
+          (click)="goToEvent(e)"
+        >
+          <div class="event-card-image">
+            <img
+              [src]="e.featuredImageUrl"
+              [alt]="e.featuredImageAltText || e.name"
+            />
+            <span
+              class="event-badge"
+              *ngIf="eventBadge(e)"
+              [ngClass]="eventBadge(e)?.toLowerCase()"
+              >{{ eventBadge(e) }}</span
+            >
+            <span class="material-icons-outlined heart-icon"
+              >favorite_border</span
+            >
+            <div class="date-badge">
+              <span class="date-day">{{ dayOf(e.startDateTime) }}</span>
+              <span class="date-month">{{ monthOf(e.startDateTime) }}</span>
+            </div>
+          </div>
+          <div class="event-card-body">
+            <h4>{{ e.name }}</h4>
+            <div class="event-tags">
+              <span class="tag">{{
+                subCategoryName(e.eventSubCategoryId)
+              }}</span>
+            </div>
+            <div class="event-meta">
+              <span
+                ><span class="material-icons-outlined">place</span>
+                {{ e.name }}</span
+              >
+              <span
+                ><span class="material-icons-outlined">schedule</span>
+                {{ timeRange(e) }}</span
+              >
+            </div>
+            <div class="event-card-footer">
+              <span class="price" [class.free]="e.isFree">{{
+                priceLabel(e)
+              }}</span>
+              <button class="book-btn">
+                {{ e.ticketRequired ? "Book Now" : "View Details" }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination-row" *ngIf="!loading && !error && totalPages > 1">
+        <button
+          class="page-arrow"
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
+        >
+          <span class="material-icons-outlined">chevron_left</span>
+        </button>
+        <button
+          *ngFor="let p of pageNumbers"
+          class="page-num"
+          [class.active]="p === currentPage"
+          (click)="goToPage(p)"
+        >
+          {{ p }}
+        </button>
+        <span class="page-ellipsis" *ngIf="totalPages > pageNumbers.length"
+          >&hellip;</span
+        >
+        <button
+          class="page-num"
+          *ngIf="totalPages > pageNumbers.length"
+          (click)="goToPage(totalPages)"
+        >
+          {{ totalPages }}
+        </button>
+        <button
+          class="page-arrow"
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)"
+        >
+          <span class="material-icons-outlined">chevron_right</span>
+        </button>
+        <span class="page-summary"
+          >Showing 1&ndash;{{ pagedEvents.length }} of
+          {{ filteredEvents.length }} events</span
+        >
+      </div>
+    </div>
+  </div>
+</div>

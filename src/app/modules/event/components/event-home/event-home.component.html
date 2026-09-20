@@ -1,0 +1,219 @@
+<div class="event-home-wrapper">
+  <!-- Hero -->
+  <section class="event-hero">
+    <div class="event-hero-inner">
+      <div class="event-hero-text">
+        <h1>
+          Discover <span class="hero-accent-1">Events.</span>
+          <span class="hero-accent-2">Join Moments.</span>
+        </h1>
+        <p>
+          Explore local events, workshops, concerts, exhibitions and more
+          happening near you.
+        </p>
+
+        <div class="hero-search-row">
+          <div class="search-input-wrapper">
+            <span class="material-icons-outlined search-icon">search</span>
+            <input
+              type="text"
+              placeholder="Search events, concerts, workshops..."
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="performSearch()"
+            />
+          </div>
+          <button class="search-btn" (click)="performSearch()">Search</button>
+        </div>
+
+        <div class="popular-search-row">
+          <span class="popular-label">Popular Searches:</span>
+          <span class="popular-chip" *ngFor="let p of popularSearches">{{
+            p
+          }}</span>
+        </div>
+      </div>
+
+      <div class="event-hero-side">
+        <div class="quick-link-list">
+          <a
+            class="quick-link-row"
+            *ngFor="let q of quickLinks"
+            routerLink="/events/categories"
+          >
+            <span class="material-icons-outlined">{{ q.icon }}</span>
+            <div>
+              <h5>{{ q.title }}</h5>
+              <p>{{ q.subtitle }}</p>
+            </div>
+          </a>
+          <a routerLink="/events/categories" class="see-all-link">
+            See all categories
+            <span class="material-icons-outlined">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="state-block" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading events&hellip;</p>
+  </div>
+
+  <div class="state-block" *ngIf="!loading && error">
+    <span class="material-icons-outlined state-icon">wifi_off</span>
+    <p>We couldn't load events right now.</p>
+    <button class="retry-button" (click)="fetchData()">Try Again</button>
+  </div>
+
+  <ng-container *ngIf="!loading && !error">
+    <!-- Featured Events -->
+    <section class="section-wrapper">
+      <div class="section-header">
+        <h2 class="section-title">Featured Events</h2>
+        <a routerLink="/events/all" class="view-all-link"
+          >View all events
+          <span class="material-icons-outlined">arrow_forward</span></a
+        >
+      </div>
+
+      <div class="featured-event-row">
+        <div
+          class="featured-event-card"
+          *ngFor="let e of featuredEvents"
+          (click)="goToEvent(e)"
+        >
+          <div class="featured-event-image">
+            <img
+              [src]="e.featuredImageUrl"
+              [alt]="e.featuredImageAltText || e.name"
+            />
+            <span
+              class="event-badge"
+              *ngIf="eventBadge(e)"
+              [ngClass]="eventBadge(e)?.toLowerCase()"
+              >{{ eventBadge(e) }}</span
+            >
+            <span class="material-icons-outlined heart-icon"
+              >favorite_border</span
+            >
+            <div class="date-badge">
+              <span class="date-day">{{ dayOf(e.startDateTime) }}</span>
+              <span class="date-month">{{ monthOf(e.startDateTime) }}</span>
+            </div>
+          </div>
+          <div class="featured-event-body">
+            <h4>{{ e.name }}</h4>
+            <div class="featured-event-meta">
+              <span
+                ><span class="material-icons-outlined">place</span>
+                {{ e.name }}</span
+              >
+              <span
+                ><span class="material-icons-outlined">schedule</span>
+                {{ timeRange(e) }}</span
+              >
+            </div>
+            <div class="featured-event-footer">
+              <span class="price" [class.free]="e.isFree">{{
+                priceLabel(e)
+              }}</span>
+              <button class="book-btn">
+                {{ e.ticketRequired ? "Book Now" : "View Details" }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Events by Category -->
+    <section class="section-wrapper">
+      <div class="section-header">
+        <h2 class="section-title">Events by Category</h2>
+        <a routerLink="/events/categories" class="view-all-link"
+          >View all categories
+          <span class="material-icons-outlined">arrow_forward</span></a
+        >
+      </div>
+
+      <div class="category-icon-row">
+        <div
+          class="category-icon-card"
+          *ngFor="let c of categories"
+          (click)="goToCategory(c)"
+        >
+          <span class="material-icons-outlined">{{ categoryIcon(c) }}</span>
+          <h5>{{ c.name }}</h5>
+          <p>{{ categoryCount(c) }} Events</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top picks / Upcoming / Why list -->
+    <section class="section-wrapper three-col-wrapper">
+      <div class="mini-card">
+        <div class="mini-card-header">
+          <h3>
+            <span class="material-icons-outlined fire-icon"
+              >local_fire_department</span
+            >
+            Today's Top Picks
+          </h3>
+          <a routerLink="/events/all" class="view-all-link">View all</a>
+        </div>
+        <div
+          class="mini-event-row"
+          *ngFor="let e of topPicks"
+          (click)="goToEvent(e)"
+        >
+          <img [src]="e.featuredImageUrl" [alt]="e.name" />
+          <div class="mini-event-body">
+            <h5>{{ e.name }}</h5>
+            <span>{{ timeRange(e) }}</span>
+          </div>
+          <span class="mini-price">{{ priceLabel(e) }}</span>
+        </div>
+      </div>
+
+      <div class="mini-card">
+        <div class="mini-card-header">
+          <h3>Upcoming This Weekend</h3>
+          <a routerLink="/events/all" class="view-all-link">View all</a>
+        </div>
+        <div
+          class="mini-event-row"
+          *ngFor="let e of upcomingThisWeekend"
+          (click)="goToEvent(e)"
+        >
+          <img [src]="e.featuredImageUrl" [alt]="e.name" />
+          <div class="mini-event-body">
+            <h5>{{ e.name }}</h5>
+            <span
+              >{{ dayOf(e.startDateTime) }}
+              {{ monthOf(e.startDateTime) }} &bull; {{ timeRange(e) }}</span
+            >
+          </div>
+          <span class="mini-price">{{ priceLabel(e) }}</span>
+        </div>
+        <p class="empty-hint" *ngIf="upcomingThisWeekend.length === 0">
+          No events this weekend yet.
+        </p>
+      </div>
+
+      <div class="mini-card why-list-card">
+        <h3>Why List Your Event on Claxified?</h3>
+        <div class="why-grid">
+          <div class="why-item" *ngFor="let w of whyList">
+            <span class="material-icons-outlined">{{ w.icon }}</span>
+            <h6>{{ w.title }}</h6>
+            <p>{{ w.subtitle }}</p>
+          </div>
+        </div>
+        <button class="list-event-btn" routerLink="/events/register">
+          List Your Event Now
+        </button>
+      </div>
+    </section>
+  </ng-container>
+</div>

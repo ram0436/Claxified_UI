@@ -1,0 +1,411 @@
+<div class="add-event-wrapper">
+  <nav class="breadcrumb">
+    <a routerLink="/events">Events</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">List Your Event</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="add-event-hero">
+    <div>
+      <h1>List Your <span class="hero-accent">Event</span></h1>
+      <p>
+        Reach thousands of people on Claxified. Fill in the details below to
+        publish your event.
+      </p>
+    </div>
+  </section>
+
+  <div class="state-block" *ngIf="lookupsLoading">
+    <div class="spinner"></div>
+    <p>Loading form&hellip;</p>
+  </div>
+
+  <div class="state-block" *ngIf="!lookupsLoading && lookupsError">
+    <span class="material-icons-outlined state-icon">wifi_off</span>
+    <p>We couldn't load categories, venues and organizers right now.</p>
+    <button class="retry-button" (click)="fetchLookups()">Try Again</button>
+  </div>
+
+  <form
+    class="add-event-form"
+    *ngIf="!lookupsLoading && !lookupsError"
+    (ngSubmit)="submit(true)"
+  >
+    <!-- Basic Info -->
+    <section class="form-card">
+      <h3>
+        <span class="material-icons-outlined">edit_note</span> Basic Information
+      </h3>
+
+      <div class="form-row">
+        <label>Event Name <span class="required">*</span></label>
+        <input
+          type="text"
+          placeholder="e.g. Photography Workshop"
+          [(ngModel)]="model.name"
+          name="name"
+          (input)="onNameChange()"
+        />
+      </div>
+
+      <div class="form-row">
+        <label>URL Slug <span class="required">*</span></label>
+        <input
+          type="text"
+          placeholder="photography-workshop"
+          [(ngModel)]="model.slug"
+          name="slug"
+          (input)="onSlugEdited()"
+        />
+        <span class="hint"
+          >Used in the event's page URL &mdash; auto-generated from the name,
+          editable.</span
+        >
+      </div>
+
+      <div class="form-row">
+        <label>Short Description</label>
+        <input
+          type="text"
+          maxlength="180"
+          placeholder="One line summary shown on cards and listings"
+          [(ngModel)]="model.shortDescription"
+          name="shortDescription"
+        />
+      </div>
+
+      <div class="form-row">
+        <label>Full Description</label>
+
+        <div class="rte-wrapper">
+          <!-- mousedown preventDefault keeps the text selection while clicking toolbar buttons -->
+          <div class="rte-toolbar" (mousedown)="$event.preventDefault()">
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('bold')"
+              title="Bold"
+            >
+              <span class="material-icons-outlined">format_bold</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('italic')"
+              title="Italic"
+            >
+              <span class="material-icons-outlined">format_italic</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('underline')"
+              title="Underline"
+            >
+              <span class="material-icons-outlined">format_underlined</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('strikeThrough')"
+              title="Strikethrough"
+            >
+              <span class="material-icons-outlined">strikethrough_s</span>
+            </button>
+
+            <span class="rte-divider"></span>
+
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('insertUnorderedList')"
+              title="Bullet list"
+            >
+              <span class="material-icons-outlined">format_list_bulleted</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('insertOrderedList')"
+              title="Numbered list"
+            >
+              <span class="material-icons-outlined">format_list_numbered</span>
+            </button>
+
+            <span class="rte-divider"></span>
+
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="insertLink()"
+              title="Insert link"
+            >
+              <span class="material-icons-outlined">link</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('removeFormat')"
+              title="Clear formatting"
+            >
+              <span class="material-icons-outlined">format_clear</span>
+            </button>
+          </div>
+
+          <div
+            #descriptionEditor
+            class="rte-content"
+            contenteditable="true"
+            (input)="onDescriptionInput(descriptionEditor)"
+            (blur)="onDescriptionInput(descriptionEditor)"
+            data-placeholder="Tell attendees what to expect, agenda, who should attend..."
+          ></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category & Venue -->
+    <section class="form-card">
+      <h3>
+        <span class="material-icons-outlined">category</span> Category &amp;
+        Venue
+      </h3>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Category <span class="required">*</span></label>
+          <select
+            [(ngModel)]="model.eventCategoryId"
+            name="eventCategoryId"
+            (change)="onCategoryChange()"
+          >
+            <option [ngValue]="null" disabled>Select a category</option>
+            <option *ngFor="let c of categories" [ngValue]="c.id">
+              {{ c.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Sub-Category <span class="required">*</span></label>
+          <select
+            [(ngModel)]="model.eventSubCategoryId"
+            name="eventSubCategoryId"
+            [disabled]="!model.eventCategoryId"
+          >
+            <option [ngValue]="null" disabled>
+              {{
+                model.eventCategoryId
+                  ? "Select a sub-category"
+                  : "Select a category first"
+              }}
+            </option>
+            <option *ngFor="let sc of filteredSubCategories" [ngValue]="sc.id">
+              {{ sc.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Organizer <span class="required">*</span></label>
+          <select [(ngModel)]="model.eventOrganizerId" name="eventOrganizerId">
+            <option [ngValue]="null" disabled>Select an organizer</option>
+            <option *ngFor="let o of organizers" [ngValue]="o.id">
+              {{ o.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Venue <span class="required">*</span></label>
+          <select [(ngModel)]="model.eventVenueId" name="eventVenueId">
+            <option [ngValue]="null" disabled>Select a venue</option>
+            <option *ngFor="let v of venues" [ngValue]="v.id">
+              {{ v.name }}, {{ v.city }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Event Type</label>
+          <select [(ngModel)]="model.eventType" name="eventType">
+            <option *ngFor="let t of eventTypeOptions" [ngValue]="t.value">
+              {{ t.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Date & Time -->
+    <section class="form-card">
+      <h3>
+        <span class="material-icons-outlined">event</span> Date &amp; Time
+      </h3>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Start Date &amp; Time <span class="required">*</span></label>
+          <input
+            type="datetime-local"
+            [(ngModel)]="model.startDateTime"
+            name="startDateTime"
+          />
+        </div>
+        <div class="form-row">
+          <label>End Date &amp; Time <span class="required">*</span></label>
+          <input
+            type="datetime-local"
+            [(ngModel)]="model.endDateTime"
+            name="endDateTime"
+          />
+        </div>
+      </div>
+
+      <label class="checkbox-row">
+        <input type="checkbox" [(ngModel)]="model.isAllDay" name="isAllDay" />
+        This is an all-day event
+      </label>
+    </section>
+
+    <!-- Registration & Tickets -->
+    <section class="form-card">
+      <h3>
+        <span class="material-icons-outlined">confirmation_number</span>
+        Registration &amp; Tickets
+      </h3>
+
+      <label class="checkbox-row">
+        <input
+          type="checkbox"
+          [(ngModel)]="model.registrationRequired"
+          name="registrationRequired"
+        />
+        Registration is required to attend
+      </label>
+      <div class="form-row indent" *ngIf="model.registrationRequired">
+        <label>Registration URL <span class="required">*</span></label>
+        <input
+          type="url"
+          placeholder="https://example.com/register"
+          [(ngModel)]="model.registrationUrl"
+          name="registrationUrl"
+        />
+      </div>
+
+      <label class="checkbox-row">
+        <input type="checkbox" [(ngModel)]="model.isFree" name="isFree" />
+        This is a free event
+      </label>
+      <div class="form-row indent" *ngIf="!model.isFree">
+        <label>Price (\u20B9) <span class="required">*</span></label>
+        <input
+          type="number"
+          min="0"
+          placeholder="999"
+          [(ngModel)]="model.price"
+          name="price"
+        />
+      </div>
+
+      <label class="checkbox-row">
+        <input
+          type="checkbox"
+          [(ngModel)]="model.ticketRequired"
+          name="ticketRequired"
+        />
+        Attendees need a ticket to enter
+      </label>
+      <div class="form-row indent" *ngIf="model.ticketRequired">
+        <label>Ticket URL <span class="required">*</span></label>
+        <input
+          type="url"
+          placeholder="https://example.com/tickets"
+          [(ngModel)]="model.ticketUrl"
+          name="ticketUrl"
+        />
+      </div>
+    </section>
+
+    <!-- Media -->
+    <section class="form-card">
+      <h3><span class="material-icons-outlined">image</span> Featured Image</h3>
+
+      <div class="form-row">
+        <label>Image URL <span class="required">*</span></label>
+        <input
+          type="url"
+          placeholder="https://example.com/event-banner.jpg"
+          [(ngModel)]="model.featuredImageUrl"
+          name="featuredImageUrl"
+        />
+        <span class="hint"
+          >Paste a hosted image URL. Recommended size 1200&times;600px.</span
+        >
+      </div>
+
+      <div class="form-row">
+        <label>Image Alt Text</label>
+        <input
+          type="text"
+          placeholder="Describe the image for accessibility & SEO"
+          [(ngModel)]="model.featuredImageAltText"
+          name="featuredImageAltText"
+        />
+      </div>
+
+      <div class="image-preview" *ngIf="model.featuredImageUrl">
+        <img [src]="model.featuredImageUrl" alt="Preview" />
+      </div>
+    </section>
+
+    <!-- Visibility -->
+    <section class="form-card">
+      <h3>
+        <span class="material-icons-outlined">visibility</span> Visibility
+      </h3>
+
+      <label class="checkbox-row">
+        <input
+          type="checkbox"
+          [(ngModel)]="model.isFeatured"
+          name="isFeatured"
+        />
+        Request featured placement on the Events home page
+      </label>
+      <label class="checkbox-row">
+        <input
+          type="checkbox"
+          [(ngModel)]="model.isTrending"
+          name="isTrending"
+        />
+        Mark as trending
+      </label>
+    </section>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn-ghost"
+        (click)="resetForm()"
+        [disabled]="submitting"
+      >
+        Reset
+      </button>
+      <button
+        type="button"
+        class="btn-outline"
+        (click)="submit(false)"
+        [disabled]="submitting"
+      >
+        {{ submitting ? "Saving..." : "Save as Draft" }}
+      </button>
+      <button type="submit" class="btn-solid" [disabled]="submitting">
+        <span class="material-icons-outlined">publish</span>
+        {{ submitting ? "Publishing..." : "Publish Event" }}
+      </button>
+    </div>
+  </form>
+</div>

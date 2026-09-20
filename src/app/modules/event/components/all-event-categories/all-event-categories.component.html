@@ -1,0 +1,104 @@
+<div class="event-categories-wrapper">
+  <nav class="breadcrumb">
+    <a routerLink="/events">Events</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">All Categories</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="categories-hero">
+    <div class="categories-hero-text">
+      <h1>
+        Explore <span class="hero-accent-1">Event</span>
+        <span class="hero-accent-2">Categories</span>
+      </h1>
+      <p>
+        Find events, workshops, concerts, exhibitions and more from categories
+        you love.
+      </p>
+    </div>
+    <div class="categories-hero-tagline">Good Events<br />Brighter Days!</div>
+  </section>
+
+  <!-- Search row -->
+  <div class="search-row">
+    <div class="search-input-wrapper">
+      <span class="material-icons-outlined search-icon">search</span>
+      <input
+        type="text"
+        placeholder="Search event categories..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearchChange()"
+      />
+    </div>
+    <!-- <div class="location-inline">
+      <span class="material-icons-outlined">location_on</span>
+      {{ location }}
+      <span class="material-icons-outlined expand-more">expand_more</span>
+    </div> -->
+  </div>
+
+  <div class="results-row">
+    <span>Showing {{ filteredCategories.length }} event categories</span>
+    <div class="view-toggle">
+      <button
+        [class.active]="viewMode === 'grid'"
+        (click)="setViewMode('grid')"
+      >
+        <span class="material-icons-outlined">grid_view</span> Grid View
+      </button>
+      <button
+        [class.active]="viewMode === 'list'"
+        (click)="setViewMode('list')"
+      >
+        <span class="material-icons-outlined">view_list</span> List View
+      </button>
+    </div>
+  </div>
+
+  <div class="state-block" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading categories&hellip;</p>
+  </div>
+
+  <div class="state-block" *ngIf="!loading && error">
+    <span class="material-icons-outlined state-icon">wifi_off</span>
+    <p>We couldn't load the categories right now.</p>
+    <button class="retry-button" (click)="fetchData()">Try Again</button>
+  </div>
+
+  <div
+    class="state-block"
+    *ngIf="!loading && !error && filteredCategories.length === 0"
+  >
+    <span class="material-icons-outlined state-icon">search_off</span>
+    <p>No categories match "{{ searchQuery }}".</p>
+  </div>
+
+  <div
+    class="categories-grid"
+    [class.list-mode]="viewMode === 'list'"
+    *ngIf="!loading && !error && filteredCategories.length > 0"
+  >
+    <div
+      class="category-card"
+      *ngFor="let c of filteredCategories"
+      (click)="goToCategory(c)"
+    >
+      <div class="category-card-image">
+        <img [src]="categoryImage(c)" [alt]="c.name" />
+      </div>
+      <div class="category-card-icon">
+        <span class="material-icons-outlined">{{ categoryIcon(c) }}</span>
+      </div>
+      <div class="category-card-body">
+        <h4>{{ c.name }}</h4>
+        <span class="category-count">{{ categoryCount(c) }} Events</span>
+        <p>{{ c.description }}</p>
+        <a class="view-events-link" (click)="goToCategory(c)">
+          View Events <span class="material-icons-outlined">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -45,6 +45,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'events',
+    loadChildren: () =>
+      import('./modules/event/event.module').then((m) => m.EventModule),
+  },
+  {
     path: 'Admin',
     loadChildren: () =>
       import('./modules/admin/admin.module').then((m) => m.AdminModule),
