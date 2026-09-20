@@ -53,6 +53,14 @@
             >News</a
           >
         </li>
+        <li>
+          <a
+            routerLink="/events"
+            class="nav-link"
+            [class.active]="isActiveRoute('/events')"
+            >Events</a
+          >
+        </li>
       </ul>
 
       <!-- Right Section: My Claxified unified dropdown -->
@@ -174,6 +182,26 @@
       >
         <span class="material-icons-outlined">storefront</span>
         For Business
+      </a>
+
+      <a
+        (click)="toggleSlideVisibility()"
+        routerLink="/news"
+        class="side-nav-link"
+        [class.active]="isActiveRoute('/news')"
+      >
+        <span class="material-icons-outlined">article</span>
+        News
+      </a>
+
+      <a
+        (click)="toggleSlideVisibility()"
+        routerLink="/events"
+        class="side-nav-link"
+        [class.active]="isActiveRoute('/events')"
+      >
+        <span class="material-icons-outlined">event</span>
+        Events
       </a>
 
       <div class="side-nav-divider"></div>
