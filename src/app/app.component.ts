@@ -8,7 +8,7 @@ import { filter } from "rxjs/operators";
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent {
-  title = "Claxified - List Your Business | Events | Free Classified Ads";
+  title = "Claxified - List Your Business | News | Events | Free Classified Ads";
 
   showCommonHeader = true;
 
