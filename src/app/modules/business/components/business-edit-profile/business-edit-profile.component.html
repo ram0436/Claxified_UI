@@ -39,7 +39,7 @@
         <span class="material-icons-outlined">{{ s.icon }}</span>
         <span class="edit-tab-label">{{ s.label }}</span>
 
-        <span class="required-chip" *ngIf="s.required">Required</span>
+        <!-- <span class="required-chip" *ngIf="s.required">Required</span> -->
       </div>
     </nav>
 
@@ -163,8 +163,8 @@
                   !business.businessCategoryId
                     ? 'Select a business category first'
                     : businessSubCategories.length === 0
-                    ? 'No subcategories available'
-                    : 'Select business sub categories'
+                      ? 'No subcategories available'
+                      : 'Select business sub categories'
                 }}"
                 [(ngModel)]="selectedBusinessSubCategoryIds"
                 [disabled]="

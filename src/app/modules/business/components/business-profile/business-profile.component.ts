@@ -34,6 +34,30 @@ interface CatalogItem {
   subCategoryId: number;
 }
 
+/** Unified shape used to render a single card in the offerings grid,
+ * regardless of whether it originated from a Product, a Service, or a
+ * generic BusinessOfferingDto (Course, MedicalService, Event, etc). */
+interface OfferingCard {
+  key: string;
+  kind: 'product' | 'service' | 'offering';
+  refId: number;
+  name: string;
+  description?: string;
+  price: number;
+  finalPrice: number;
+  discountPercentage: number;
+  priceOnRequest: boolean;
+  priceUnit: string;
+  imageUrl: string;
+  icon: string;
+  badge: string;
+  subCategoryId?: number | null;
+  offeringType?: OfferingType;
+  sortIndex: number;
+}
+
+type SortOption = 'latest' | 'priceLow' | 'priceHigh' | 'name';
+
 @Component({
   selector: 'app-business-profile',
   templateUrl: './business-profile.component.html',
@@ -62,7 +86,7 @@ export class BusinessProfileComponent implements OnInit {
     | 'hours'
     | 'gallery'
     | 'offers'
-    | 'reviews' = 'overview';
+    | 'reviews' = 'offerings';
   tabRefGuid: string = '';
 
   skeletonItems = [1, 2, 3, 4, 5, 6];
@@ -120,6 +144,31 @@ export class BusinessProfileComponent implements OnInit {
   offeringsLoading: boolean = false;
   offeringFilter: OfferingType | 'all' | null = 'all';
   offeringSearch: string = '';
+  sortBy: SortOption = 'latest';
+  sortMenuOpen: boolean = false;
+
+  readonly sortOptions: { value: SortOption; label: string }[] = [
+    { value: 'latest', label: 'Latest' },
+    { value: 'priceLow', label: 'Price: Low to High' },
+    { value: 'priceHigh', label: 'Price: High to Low' },
+    { value: 'name', label: 'Name (A-Z)' },
+  ];
+
+  get sortLabel(): string {
+    return (
+      this.sortOptions.find((o) => o.value === this.sortBy)?.label || 'Latest'
+    );
+  }
+
+  toggleSortMenu(): void {
+    this.sortMenuOpen = !this.sortMenuOpen;
+  }
+
+  selectSort(value: SortOption): void {
+    this.sortBy = value;
+    this.sortMenuOpen = false;
+    this.onSortChange();
+  }
 
   availableOfferingTypes: OfferingTypeOptionDto[] = [];
   offeringTypesLoading: boolean = false;
@@ -185,12 +234,12 @@ export class BusinessProfileComponent implements OnInit {
   replyText: string = '';
 
   private readonly avatarPalette: string[] = [
-    '#0d475c',
-    '#e75462',
-    '#2f8f9d',
-    '#f2a154',
-    '#6a4c93',
-    '#3c3241',
+    '#5b31e0',
+    '#e5194f',
+    '#0f3b5f',
+    '#1fa971',
+    '#e5194f',
+    '#1c1f3f',
   ];
 
   private readonly dayNames = [
@@ -264,13 +313,17 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClickForOfferingFilter(event: MouseEvent): void {
-    if (!this.addOfferingMenuOpen && !this.moreOfferingMenuOpen) return;
-    const target = event.target as HTMLElement;
-    if (!this.elRef.nativeElement.contains(target)) {
-      this.addOfferingMenuOpen = false;
-      this.moreOfferingMenuOpen = false;
+  onDocumentClickForOfferingFilter(_event: MouseEvent): void {
+    if (
+      !this.addOfferingMenuOpen &&
+      !this.moreOfferingMenuOpen &&
+      !this.sortMenuOpen
+    ) {
+      return;
     }
+    this.addOfferingMenuOpen = false;
+    this.moreOfferingMenuOpen = false;
+    this.sortMenuOpen = false;
   }
 
   constructor(
@@ -464,11 +517,13 @@ export class BusinessProfileComponent implements OnInit {
     this.moreOfferingMenuOpen = false;
     if (this.offeringFilter === filter) return;
     this.offeringFilter = filter;
+    this.currentPage = 1;
   }
 
   selectSubCategoryTab(id: number): void {
     if (this.selectedSubCategoryId === id) return;
     this.selectedSubCategoryId = id;
+    this.currentPage = 1;
     this.loadAllOfferings();
   }
 
@@ -497,6 +552,10 @@ export class BusinessProfileComponent implements OnInit {
 
   openBusinessDashboard(): void {}
 
+  viewPhotos(): void {
+    this.setTab('gallery');
+  }
+
   backToList() {
     this.router.navigateByUrl('/business/profile');
   }
@@ -509,12 +568,39 @@ export class BusinessProfileComponent implements OnInit {
     return this.business?.logoUrl?.trim() || '';
   }
 
+  get videoUrl(): string {
+    return (this.business as any)?.videoUrl?.trim() || '';
+  }
+
   get fullAddress(): string {
     const addr = this.business?.businessAddressDto;
     if (!addr) return '';
     return [addr.area, addr.city, addr.state, addr.country, addr.pincode]
       .filter((v) => !!v)
       .join(', ');
+  }
+
+  /** Short "City, State" line used in the hero meta row. */
+  get shortLocation(): string {
+    const addr = this.business?.businessAddressDto;
+    if (!addr) return '';
+    return [addr.city, addr.state].filter((v) => !!v).join(', ');
+  }
+
+  /** "Category · Sub Category · Business Type" line under the business name
+   * in the hero, mirroring the target design's subtitle. */
+  get heroCategories(): string {
+    const parts = [
+      this.business?.businessCategory,
+      this.businessSubCategoryNames,
+    ].filter((v) => !!v && v.trim());
+    return parts.join(', ');
+  }
+
+  get averageRating(): string {
+    if (!this.reviews.length) return '0.0';
+    const total = this.reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+    return (total / this.reviews.length).toFixed(1);
   }
 
   get isBusinessVerified(): boolean {
@@ -623,6 +709,76 @@ export class BusinessProfileComponent implements OnInit {
     );
   }
 
+  // ================== Contact / CTA helpers ==================
+
+  get callHref(): string {
+    const mobile = this.business?.businessContactDto?.mobile;
+    return mobile ? `tel:${mobile}` : '';
+  }
+
+  get whatsappHref(): string {
+    const wa = this.business?.businessContactDto?.whatsApp;
+    if (!wa) return '';
+    const digits = String(wa).replace(/[^\d]/g, '');
+    return `https://wa.me/${digits}`;
+  }
+
+  get mailHref(): string {
+    const email = this.business?.businessContactDto?.email;
+    return email ? `mailto:${email}` : '';
+  }
+
+  get directionsHref(): string {
+    const url = this.business?.businessAddressDto?.googleMapURL;
+    if (url) return url;
+    if (this.fullAddress) {
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        this.fullAddress,
+      )}`;
+    }
+    return '';
+  }
+
+  /** Simple client-side "saved" toggle for the Save button; persistence is
+   * left to the parent/service layer wiring this component up. */
+  savedBusiness: boolean = false;
+
+  toggleSaved(): void {
+    this.savedBusiness = !this.savedBusiness;
+  }
+
+  /** Quick highlight chips shown in the left sidebar while browsing
+   * offerings - trust signals pulled from data already on the business. */
+  get highlights(): { icon: string; label: string }[] {
+    const items: { icon: string; label: string }[] = [];
+    if (this.isBusinessVerified) {
+      items.push({ icon: 'verified', label: 'Verified Business' });
+    }
+    if (this.business?.establishedYear) {
+      items.push({
+        icon: 'schedule',
+        label: `Trusted since ${this.business.establishedYear}`,
+      });
+    }
+    if (this.reviews.length > 0) {
+      items.push({
+        icon: 'star',
+        label: `${this.averageRating} rated by customers`,
+      });
+    }
+    if (this.business?.businessContactDto?.whatsApp) {
+      items.push({ icon: 'support_agent', label: 'Quick support' });
+    }
+    return items;
+  }
+
+  /** Opens the enquiry panel. For now this routes to the "Get a Quote"
+   * offer panel entry point; callers can pass along which offering the
+   * enquiry relates to. */
+  enquire(context?: string): void {
+    this.addOffer();
+  }
+
   // ================== Offering Types ==================
 
   loadOfferingTypes(): void {
@@ -694,6 +850,7 @@ export class BusinessProfileComponent implements OnInit {
         this.offerings = offerings || [];
         this.catalogLoading = false;
         this.offeringsLoading = false;
+        this.currentPage = 1;
       },
       () => {
         this.catalogItems = [];
@@ -979,6 +1136,207 @@ export class BusinessProfileComponent implements OnInit {
     this.loadAllOfferings();
   }
 
+  // ================== Unified offering cards + pagination ==================
+
+  readonly pageSize = 6;
+  currentPage = 1;
+
+  onOfferingSearchChange(): void {
+    this.currentPage = 1;
+  }
+
+  onSortChange(): void {
+    this.currentPage = 1;
+  }
+
+  private wishlist = new Set<string>();
+
+  private cardKey(kind: OfferingCard['kind'], id: number): string {
+    return `${kind}:${id}`;
+  }
+
+  isWishlisted(card: OfferingCard): boolean {
+    return this.wishlist.has(card.key);
+  }
+
+  toggleWishlist(card: OfferingCard, event: Event): void {
+    event.stopPropagation();
+    if (this.wishlist.has(card.key)) {
+      this.wishlist.delete(card.key);
+    } else {
+      this.wishlist.add(card.key);
+    }
+  }
+
+  /** All catalog items + generic offerings, narrowed by sub-category,
+   * search and the active offering-type tab, normalized into one shape so
+   * they can share a single grid, sort and pagination. */
+  get allCards(): OfferingCard[] {
+    const cards: OfferingCard[] = [];
+
+    this.visibleCatalogItems.forEach((item, i) => {
+      cards.push({
+        key: this.cardKey(item.type, item.id),
+        kind: item.type,
+        refId: item.id,
+        name: item.name,
+        description:
+          item.type === 'service' && item.pricingTypeDisplay
+            ? item.pricingTypeDisplay
+            : undefined,
+        price: item.price,
+        finalPrice: this.discountedPrice(item),
+        discountPercentage: item.discountPercentage,
+        priceOnRequest: item.priceOnRequest,
+        priceUnit: item.priceUnit,
+        imageUrl: item.imageUrl,
+        icon: item.type === 'product' ? 'inventory_2' : 'design_services',
+        badge: item.type === 'product' ? 'Product' : 'Service',
+        subCategoryId: item.subCategoryId,
+        sortIndex: i,
+      });
+    });
+
+    this.visibleOfferingItems.forEach((item, i) => {
+      cards.push({
+        key: this.cardKey('offering', item.id),
+        kind: 'offering',
+        refId: item.id,
+        name: item.name,
+        description: (item as any).description,
+        price: item.price,
+        finalPrice: item.price,
+        discountPercentage: 0,
+        priceOnRequest: false,
+        priceUnit: '',
+        imageUrl: (item as any).imageUrl || '',
+        icon: this.getOfferingTypeIcon(item.offeringType),
+        badge: this.getOfferingTypeLabel(item.offeringType),
+        offeringType: item.offeringType,
+        sortIndex: this.visibleCatalogItems.length + i,
+      });
+    });
+
+    return this.sortCards(cards);
+  }
+
+  private sortCards(cards: OfferingCard[]): OfferingCard[] {
+    const list = [...cards];
+    switch (this.sortBy) {
+      case 'priceLow':
+        return list.sort((a, b) => a.finalPrice - b.finalPrice);
+      case 'priceHigh':
+        return list.sort((a, b) => b.finalPrice - a.finalPrice);
+      case 'name':
+        return list.sort((a, b) => a.name.localeCompare(b.name));
+      case 'latest':
+      default:
+        return list.sort((a, b) => b.sortIndex - a.sortIndex);
+    }
+  }
+
+  get totalCards(): number {
+    return this.allCards.length;
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.totalCards / this.pageSize));
+  }
+
+  get currentPageSafe(): number {
+    return Math.min(Math.max(1, this.currentPage), this.totalPages);
+  }
+
+  get pagedCards(): OfferingCard[] {
+    const start = (this.currentPageSafe - 1) * this.pageSize;
+    return this.allCards.slice(start, start + this.pageSize);
+  }
+
+  get pageStart(): number {
+    return this.totalCards === 0
+      ? 0
+      : (this.currentPageSafe - 1) * this.pageSize + 1;
+  }
+
+  get pageEnd(): number {
+    return Math.min(this.currentPageSafe * this.pageSize, this.totalCards);
+  }
+
+  /** Compact page-number list with ellipses for large page counts, e.g.
+   * [1, 2, 3, -1, 9, 10] where -1 renders as "…". */
+  get pageNumbers(): number[] {
+    const total = this.totalPages;
+    const current = this.currentPageSafe;
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    const pages = new Set<number>([1, total, current]);
+    if (current - 1 > 1) pages.add(current - 1);
+    if (current + 1 < total) pages.add(current + 1);
+
+    const sorted = Array.from(pages).sort((a, b) => a - b);
+    const result: number[] = [];
+    for (let i = 0; i < sorted.length; i++) {
+      if (i > 0 && sorted[i] - sorted[i - 1] > 1) {
+        result.push(-1);
+      }
+      result.push(sorted[i]);
+    }
+    return result;
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+  }
+
+  trackByCard(_index: number, card: OfferingCard): string {
+    return card.key;
+  }
+
+  viewCard(card: OfferingCard): void {
+    if (card.kind === 'product') {
+      const product = this.rawProducts.find((p) => p.id === card.refId);
+      if (product) {
+        this.quickViewProduct = product;
+        this.quickViewOpen = true;
+      }
+    } else if (card.kind === 'service') {
+      const service = this.rawServices.find((s) => s.id === card.refId);
+      if (service) {
+        this.quickViewService = service;
+        this.quickViewServiceOpen = true;
+      }
+    } else {
+      const offering = this.offerings.find((o) => o.id === card.refId);
+      if (offering && this.isOwner && !this.viewingAsPublic) {
+        this.editOffering(offering);
+      }
+    }
+  }
+
+  editCard(card: OfferingCard): void {
+    if (card.kind === 'product') {
+      const product = this.rawProducts.find((p) => p.id === card.refId);
+      if (product) {
+        this.editingProduct = product;
+        this.addProductPanelOpen = true;
+      }
+    } else if (card.kind === 'service') {
+      const service = this.rawServices.find((s) => s.id === card.refId);
+      if (service) {
+        this.editingService = service;
+        this.addServicePanelOpen = true;
+      }
+    } else {
+      const offering = this.offerings.find((o) => o.id === card.refId);
+      if (offering) {
+        this.editOffering(offering);
+      }
+    }
+  }
+
   // ================== Offers ==================
 
   loadOffers(): void {
@@ -1122,10 +1480,7 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   get hasAnyOfferingResults(): boolean {
-    return (
-      this.visibleCatalogItems.length > 0 ||
-      this.visibleOfferingItems.length > 0
-    );
+    return this.totalCards > 0;
   }
 
   get emptyOfferingsMessage(): string {

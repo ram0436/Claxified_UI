@@ -1,5 +1,7 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { BusinessService } from 'src/app/modules/business/service/business.service';
 
 type BizTab = 'all' | 'active' | 'pending' | 'draft' | 'archived';
@@ -16,8 +18,6 @@ export class MyBusinessesComponent implements OnInit {
   searchTerm = '';
   activeTab: BizTab = 'all';
 
-  openMenuId: number | string | null = null;
-
   constructor(
     private businessService: BusinessService,
     private router: Router,
@@ -30,16 +30,55 @@ export class MyBusinessesComponent implements OnInit {
 
   loadBusinesses(): void {
     this.isLoading = true;
+
     this.businessService.getUserBusinesses(this.userId).subscribe({
-      next: (res: any) => {
-        this.businesses = (res || []).map((b: any) => ({
-          ...b,
-          status: b.status || 'Active',
-          productCount: b.productCount ?? 0,
-          profileViews: b.profileViews ?? 0,
-          enquiryCount: b.enquiryCount ?? 0,
-        }));
-        this.isLoading = false;
+      next: (list: any[]) => {
+        const items = list || [];
+
+        if (!items.length) {
+          this.businesses = [];
+          this.isLoading = false;
+          return;
+        }
+
+        // Fetch details for every business in parallel.
+        const detailCalls = items.map((b) =>
+          this.businessService.getBusinessByGuid(b.businessId).pipe(
+            catchError(() => of(null)), // one failure shouldn't kill all
+          ),
+        );
+
+        forkJoin(detailCalls).subscribe((details) => {
+          this.businesses = items.map((b, i) => {
+            const d: any = details[i];
+
+            const addr = d?.businessAddressDto;
+            const location = addr
+              ? [addr.city, addr.state].filter((v: any) => !!v).join(', ')
+              : '';
+
+            // Prefer logoUrl; fall back to coverImageUrl; then gallery; then placeholder
+            const image =
+              (b.logoUrl && b.logoUrl.trim()) ||
+              (d?.logoUrl && d.logoUrl.trim()) ||
+              (d?.coverImageUrl && d.coverImageUrl.trim()) ||
+              d?.businessGalleryDtoList?.[0]?.imageUrl ||
+              '../../../../../assets/image_not_available.jpg';
+
+            return {
+              ...b,
+              status: d?.status === 1 ? 'Active' : 'Pending',
+              categoryName: d?.businessCategory || '',
+              businessType: d?.businessType || '',
+              location,
+              imageUrl: image,
+              productCount: d?.productCount ?? 0,
+              profileViews: d?.profileViews ?? 0,
+              enquiryCount: d?.enquiryCount ?? 0,
+            };
+          });
+          this.isLoading = false;
+        });
       },
       error: () => {
         this.businesses = [];
@@ -73,18 +112,23 @@ export class MyBusinessesComponent implements OnInit {
         (b: any) =>
           b.businessName?.toLowerCase().includes(term) ||
           b.categoryName?.toLowerCase().includes(term) ||
-          b.city?.toLowerCase().includes(term),
+          b.location?.toLowerCase().includes(term),
       );
     }
     return list;
   }
 
   getLogo(business: any): string {
-    return (
-      business.logoUrl ||
-      business.coverImageUrl ||
-      '../../../../../assets/image_not_available.jpg'
-    );
+    return business.imageUrl || '../../../../../assets/image_not_available.jpg';
+  }
+
+  onImageError(event: Event): void {
+    (event.target as HTMLImageElement).src =
+      '../../../../../assets/image_not_available.jpg';
+  }
+
+  getLocation(business: any): string {
+    return business.location || '—';
   }
 
   statusClass(status: string): string {
@@ -98,9 +142,5 @@ export class MyBusinessesComponent implements OnInit {
 
   manageBusiness(business: any): void {
     this.router.navigateByUrl(`/business/profile/${business.businessId}`);
-  }
-
-  addNewBusiness(): void {
-    this.router.navigateByUrl('/business/profile/edit');
   }
 }
