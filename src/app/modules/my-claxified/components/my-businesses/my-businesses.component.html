@@ -99,13 +99,7 @@
     <div class="biz-list" *ngIf="filteredBusinesses.length; else emptyState">
       <div class="biz-card" *ngFor="let biz of filteredBusinesses">
         <div class="biz-logo">
-          <img
-            [src]="getLogo(biz)"
-            (error)="
-              biz.logoUrl = '../../../../../assets/image_not_available.jpg'
-            "
-            alt=""
-          />
+          <img [src]="getLogo(biz)" (error)="onImageError($event)" alt="" />
         </div>
 
         <div class="biz-info">
@@ -133,7 +127,7 @@
                 stroke-width="2"
               />
             </svg>
-            {{ biz.city || biz.address || "—" }}
+            {{ getLocation(biz) }}
           </div>
         </div>
 
