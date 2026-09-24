@@ -1,5 +1,5 @@
 .cat-detail-wrapper {
-  max-width: 1400px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 0 24px 60px;
 }
@@ -496,7 +496,7 @@
 }
 
 .subscribe-card {
-  background: linear-gradient(120deg, #7c3aed, #e75462);
+  background: linear-gradient(120deg, #b79cff 10%, #f68fc2 100%);
   border-radius: 14px;
   padding: 18px;
   color: #fff;

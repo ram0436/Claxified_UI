@@ -19,6 +19,7 @@
   margin: 24px 0 0;
   position: relative;
   overflow: hidden;
+  min-height: var(--hero-height);
 }
 
 .business-hero::before {
@@ -86,7 +87,9 @@
   border-radius: 50px;
   border: 1px solid #ece4fb;
   padding: 6px 6px 6px 18px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
   box-shadow: 0 4px 18px rgba(108, 76, 224, 0.08);
   max-width: 560px;
 }
@@ -206,7 +209,9 @@
   border-radius: 12px;
   border: 1px solid #f0eaf9;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .feature-card:hover {
@@ -529,7 +534,9 @@
   border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   position: relative;
 }
 
@@ -959,7 +966,9 @@
   background: #fff;
   border: 1px solid #e8e8e8;
   border-radius: 14px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .top-rated-card:hover {
@@ -1040,7 +1049,9 @@
   background: #fff;
   border: 1px solid #e8e8e8;
   border-radius: 12px;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
   flex: 1 1 220px;
   max-width: 280px;
 }
@@ -1118,7 +1129,9 @@
   border: 1px solid #e8e8e8;
   border-radius: 14px;
   background: #fff;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .offer-card:hover {
@@ -1504,4 +1517,19 @@
   .business-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.c-blue {
+  background: #e8f2fe;
+  color: #2f8de0;
+}
+
+.c-teal {
+  background: #e3f6f4;
+  color: #16a394;
+}
+
+.c-neutral {
+  background: #f4f4f6;
+  color: #8b8299;
 }

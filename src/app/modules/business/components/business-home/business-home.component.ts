@@ -1,12 +1,12 @@
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { MatDialog } from "@angular/material/dialog";
-import { forkJoin, of } from "rxjs";
-import { catchError } from "rxjs/operators";
-import { BusinessService } from "../../service/business.service";
-import { BusinessDirectoryItem, BusinessOfferDto } from "../../model/Business";
-import { BusinessLoginComponent } from "../business-login/business-login.component";
-import { CommonService } from "src/app/shared/service/common.service";
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { BusinessService } from '../../service/business.service';
+import { BusinessDirectoryItem, BusinessOfferDto } from '../../model/Business';
+import { BusinessLoginComponent } from '../business-login/business-login.component';
+import { CommonService } from 'src/app/shared/service/common.service';
 
 interface OfferViewModel extends BusinessOfferDto {
   businessName: string;
@@ -25,13 +25,13 @@ interface OfferViewModel extends BusinessOfferDto {
 }
 
 @Component({
-  selector: "app-business-home",
-  templateUrl: "./business-home.component.html",
-  styleUrls: ["./business-home.component.css"],
+  selector: 'app-business-home',
+  templateUrl: './business-home.component.html',
+  styleUrls: ['./business-home.component.css'],
 })
 export class BusinessHomeComponent implements OnInit {
   // Search
-  searchQuery: string = "";
+  searchQuery: string = '';
 
   // Businesses
   businesses: BusinessDirectoryItem[] = [];
@@ -47,7 +47,7 @@ export class BusinessHomeComponent implements OnInit {
   categoriesError: boolean = false;
   categoryDisplayLimit: number = 10;
 
-  private readonly BUSINESSES_PER_LOAD = 10;
+  private readonly BUSINESSES_PER_LOAD = 30;
   visibleBusinessesCount: number = this.BUSINESSES_PER_LOAD;
 
   offers: OfferViewModel[] = [];
@@ -58,65 +58,65 @@ export class BusinessHomeComponent implements OnInit {
   private readonly OFFER_DISPLAY_LIMIT = 6;
 
   offerColors: string[] = [
-    "#F0544E",
-    "#F0954B",
-    "#6C4CE0",
-    "#4C6FE0",
-    "#E93D82",
+    '#F0544E',
+    '#F0954B',
+    '#6C4CE0',
+    '#4C6FE0',
+    '#E93D82',
   ];
   offerBgColors: string[] = [
-    "#FDECEA",
-    "#FFF0E3",
-    "#EFE9FE",
-    "#EAF0FF",
-    "#FDE9F2",
+    '#FDECEA',
+    '#FFF0E3',
+    '#EFE9FE',
+    '#EAF0FF',
+    '#FDE9F2',
   ];
 
   categoryIcons: { [key: string]: string } = {
-    "Real Estate": "business_center",
-    "Home Services": "handyman",
-    Education: "school",
-    "Health & Care": "health_and_safety",
-    Automotive: "directions_car",
-    Electronics: "devices_other",
-    "Beauty & Wellness": "spa",
-    "Food & Restaurants": "restaurant",
-    Music: "music_note",
-    Fitness: "fitness_center",
-    Photography: "photo_camera",
-    Legal: "gavel",
+    'Real Estate': 'business_center',
+    'Home Services': 'handyman',
+    Education: 'school',
+    'Health & Care': 'health_and_safety',
+    Automotive: 'directions_car',
+    Electronics: 'devices_other',
+    'Beauty & Wellness': 'spa',
+    'Food & Restaurants': 'restaurant',
+    Music: 'music_note',
+    Fitness: 'fitness_center',
+    Photography: 'photo_camera',
+    Legal: 'gavel',
   };
 
   trustItems: TrustItem[] = [
     {
-      icon: "verified_user",
-      title: "Trusted & Verified",
-      subtitle: "Verified businesses you can trust",
-      colorClass: "c-purple",
+      icon: 'verified_user',
+      title: 'Trusted & Verified',
+      subtitle: 'Verified businesses you can trust',
+      colorClass: 'c-purple',
     },
     {
-      icon: "sell",
-      title: "Great Deals",
-      subtitle: "Find the best deals near you",
-      colorClass: "c-pink",
+      icon: 'sell',
+      title: 'Great Deals',
+      subtitle: 'Find the best deals near you',
+      colorClass: 'c-pink',
     },
     {
-      icon: "shield",
-      title: "Safe & Secure",
-      subtitle: "Your safety is our top priority",
-      colorClass: "c-orange",
+      icon: 'shield',
+      title: 'Safe & Secure',
+      subtitle: 'Your safety is our top priority',
+      colorClass: 'c-orange',
     },
     {
-      icon: "support_agent",
-      title: "24/7 Support",
+      icon: 'support_agent',
+      title: '24/7 Support',
       subtitle: "We're here to help you anytime",
-      colorClass: "c-green",
+      colorClass: 'c-green',
     },
     {
-      icon: "smartphone",
-      title: "Easy to Use",
-      subtitle: "Simple, fast and seamless experience",
-      colorClass: "c-indigo",
+      icon: 'smartphone',
+      title: 'Easy to Use',
+      subtitle: 'Simple, fast and seamless experience',
+      colorClass: 'c-indigo',
     },
   ];
 
@@ -124,7 +124,7 @@ export class BusinessHomeComponent implements OnInit {
     private businessService: BusinessService,
     private commonService: CommonService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -146,9 +146,9 @@ export class BusinessHomeComponent implements OnInit {
 
   performSearch(): void {
     this.visibleBusinessesCount = this.BUSINESSES_PER_LOAD;
-    const businessSection = document.getElementById("businesses-section");
+    const businessSection = document.getElementById('businesses-section');
     if (businessSection) {
-      businessSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      businessSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
@@ -173,7 +173,7 @@ export class BusinessHomeComponent implements OnInit {
         this.businessesLoading = false;
 
         this.fetchOffers(
-          activeBusinesses.slice(0, this.OFFER_SOURCE_BUSINESS_LIMIT)
+          activeBusinesses.slice(0, this.OFFER_SOURCE_BUSINESS_LIMIT),
         );
         this.updateCategoryCounts();
       },
@@ -182,7 +182,7 @@ export class BusinessHomeComponent implements OnInit {
         this.businessesLoading = false;
         this.offersLoading = false;
         this.offersError = true;
-      }
+      },
     );
   }
 
@@ -207,7 +207,7 @@ export class BusinessHomeComponent implements OnInit {
       () => {
         this.categoriesError = true;
         this.categoriesLoading = false;
-      }
+      },
     );
   }
 
@@ -217,7 +217,7 @@ export class BusinessHomeComponent implements OnInit {
     }
     this.businessCategories.forEach((category: any) => {
       category.count = this.allActiveBusinesses.filter(
-        (b) => b.businessCategoryId === category.id
+        (b) => b.businessCategoryId === category.id,
       ).length;
     });
   }
@@ -225,12 +225,12 @@ export class BusinessHomeComponent implements OnInit {
   getCategoryCountLabel(category: any): string {
     const count = category?.count;
     if (count === undefined || count === null) {
-      return "Loading…";
+      return 'Loading…';
     }
     if (count === 0) {
-      return "New on Claxified";
+      return 'New on Claxified';
     }
-    return `${count} ${count === 1 ? "Business" : "Businesses"}`;
+    return `${count} ${count === 1 ? 'Business' : 'Businesses'}`;
   }
 
   // =========================================================
@@ -250,7 +250,7 @@ export class BusinessHomeComponent implements OnInit {
     const offerRequests = businesses.map((business) =>
       this.businessService
         .getBusinessOffers(business.id)
-        .pipe(catchError(() => of([] as BusinessOfferDto[])))
+        .pipe(catchError(() => of([] as BusinessOfferDto[]))),
     );
 
     forkJoin(offerRequests).subscribe(
@@ -283,18 +283,18 @@ export class BusinessHomeComponent implements OnInit {
       () => {
         this.offersError = true;
         this.offersLoading = false;
-      }
+      },
     );
   }
 
   private getOfferIcon(offerType: number): string {
     const iconMap: { [key: number]: string } = {
-      1: "local_offer",
-      2: "discount",
-      3: "card_giftcard",
-      4: "restaurant",
+      1: 'local_offer',
+      2: 'discount',
+      3: 'card_giftcard',
+      4: 'restaurant',
     };
-    return iconMap[offerType] || "local_offer";
+    return iconMap[offerType] || 'local_offer';
   }
   private isOfferValid(offer: BusinessOfferDto): boolean {
     if (!offer.endDate) return true;
@@ -309,9 +309,9 @@ export class BusinessHomeComponent implements OnInit {
     const q = this.searchQuery.trim().toLowerCase();
     if (!q) return this.allActiveBusinesses;
     return this.allActiveBusinesses.filter((b: any) => {
-      const name = (b.businessName || "").toLowerCase();
-      const category = (b.businessCategory || "").toLowerCase();
-      const location = (this.getLocationLabel(b) || "").toLowerCase();
+      const name = (b.businessName || '').toLowerCase();
+      const category = (b.businessCategory || '').toLowerCase();
+      const location = (this.getLocationLabel(b) || '').toLowerCase();
       return name.includes(q) || category.includes(q) || location.includes(q);
     });
   }
@@ -339,7 +339,7 @@ export class BusinessHomeComponent implements OnInit {
 
   viewBusiness(business: BusinessDirectoryItem): void {
     if (!business.tabRefGUID) return;
-    this.router.navigate(["/business/profile", business.tabRefGUID]);
+    this.router.navigate(['/business/profile', business.tabRefGUID]);
   }
 
   trackByBusinessId(_index: number, business: BusinessDirectoryItem): number {
@@ -348,12 +348,12 @@ export class BusinessHomeComponent implements OnInit {
 
   getLocationLabel(business: BusinessDirectoryItem): string {
     const addr = business.businessAddressDto;
-    if (!addr) return "";
-    return [addr.area, addr.city].filter((part) => !!part).join(", ");
+    if (!addr) return '';
+    return [addr.area, addr.city].filter((part) => !!part).join(', ');
   }
 
   getInitials(name: string): string {
-    if (!name || !name.trim()) return "?";
+    if (!name || !name.trim()) return '?';
     const words = name.trim().split(/\s+/);
     if (words.length === 1) {
       return words[0].substring(0, 2).toUpperCase();
@@ -380,19 +380,19 @@ export class BusinessHomeComponent implements OnInit {
 
   private toMinutes(time: string): number | null {
     if (!time) return null;
-    const [h, m] = time.split(":").map((v) => parseInt(v, 10));
+    const [h, m] = time.split(':').map((v) => parseInt(v, 10));
     if (isNaN(h) || isNaN(m)) return null;
     return h * 60 + m;
   }
 
   getBusinessPhone(business: BusinessDirectoryItem): string {
     const b = business as any;
-    return b.contactNumber || b.phoneNumber || b.mobileNumber || "";
+    return b.contactNumber || b.phoneNumber || b.mobileNumber || '';
   }
 
   getWhatsAppLink(business: BusinessDirectoryItem): string {
-    const phone = this.getBusinessPhone(business).replace(/[^\d]/g, "");
-    return phone ? `https://wa.me/${phone}` : "";
+    const phone = this.getBusinessPhone(business).replace(/[^\d]/g, '');
+    return phone ? `https://wa.me/${phone}` : '';
   }
 
   // =========================================================
@@ -400,19 +400,218 @@ export class BusinessHomeComponent implements OnInit {
   // =========================================================
 
   getCategoryIcon(categoryName: string): string {
-    return this.categoryIcons[categoryName] || "category";
+    if (!categoryName) return 'category';
+    const key = categoryName.toLowerCase();
+
+    // Real estate / property
+    if (
+      key.includes('real estate') ||
+      key.includes('property') ||
+      key.includes('construction')
+    )
+      return 'apartment';
+
+    // Home services / repair
+    if (
+      key.includes('home service') ||
+      key.includes('repair') ||
+      key.includes('maintenance') ||
+      key.includes('plumb') ||
+      key.includes('electric') ||
+      key.includes('carpenter')
+    )
+      return 'handyman';
+
+    // Education / coaching
+    if (
+      key.includes('education') ||
+      key.includes('school') ||
+      key.includes('college') ||
+      key.includes('coaching') ||
+      key.includes('tutor') ||
+      key.includes('class')
+    )
+      return 'school';
+
+    // Health & medical
+    if (
+      key.includes('health') ||
+      key.includes('care') ||
+      key.includes('hospital') ||
+      key.includes('clinic') ||
+      key.includes('doctor') ||
+      key.includes('medical')
+    )
+      return 'health_and_safety';
+
+    // Automotive
+    if (
+      key.includes('automotive') ||
+      key.includes('car') ||
+      key.includes('vehicle') ||
+      key.includes('auto') ||
+      key.includes('bike') ||
+      key.includes('garage')
+    )
+      return 'directions_car';
+
+    // Electronics
+    if (
+      key.includes('electronic') ||
+      key.includes('gadget') ||
+      key.includes('mobile') ||
+      key.includes('computer') ||
+      key.includes('appliance')
+    )
+      return 'devices_other';
+
+    // Beauty / spa / salon
+    if (
+      key.includes('beauty') ||
+      key.includes('wellness') ||
+      key.includes('spa') ||
+      key.includes('salon') ||
+      key.includes('parlour') ||
+      key.includes('parlor')
+    )
+      return 'spa';
+
+    // Food / restaurant
+    if (
+      key.includes('food') ||
+      key.includes('restaurant') ||
+      key.includes('cafe') ||
+      key.includes('bakery') ||
+      key.includes('catering') ||
+      key.includes('hotel')
+    )
+      return 'restaurant';
+
+    // Music
+    if (key.includes('music') || key.includes('dj') || key.includes('band'))
+      return 'music_note';
+
+    // Fitness / gym / sports
+    if (
+      key.includes('fitness') ||
+      key.includes('gym') ||
+      key.includes('yoga') ||
+      key.includes('sport')
+    )
+      return 'fitness_center';
+
+    // Photography / video
+    if (
+      key.includes('photograph') ||
+      key.includes('photo') ||
+      key.includes('video') ||
+      key.includes('studio')
+    )
+      return 'photo_camera';
+
+    // Legal
+    if (
+      key.includes('legal') ||
+      key.includes('law') ||
+      key.includes('advocate') ||
+      key.includes('court')
+    )
+      return 'gavel';
+
+    // Finance / accounting / insurance
+    if (
+      key.includes('finance') ||
+      key.includes('account') ||
+      key.includes('insurance') ||
+      key.includes('bank') ||
+      key.includes('tax')
+    )
+      return 'account_balance';
+
+    // IT / software
+    if (
+      key.includes('software') ||
+      key.includes('it ') ||
+      key.includes('tech') ||
+      key.includes('web') ||
+      key.includes('app')
+    )
+      return 'computer';
+
+    // Travel / tour
+    if (key.includes('travel') || key.includes('tour') || key.includes('trip'))
+      return 'flight';
+
+    // Security
+    if (key.includes('security') || key.includes('guard')) return 'security';
+
+    // Cleaning
+    if (key.includes('clean') || key.includes('housekeeping'))
+      return 'cleaning_services';
+
+    // Marketing / advertising
+    if (
+      key.includes('market') ||
+      key.includes('advertis') ||
+      key.includes('brand')
+    )
+      return 'campaign';
+
+    // Events / wedding
+    if (
+      key.includes('event') ||
+      key.includes('wedding') ||
+      key.includes('party')
+    )
+      return 'celebration';
+
+    // Pets
+    if (key.includes('pet') || key.includes('vet') || key.includes('animal'))
+      return 'pets';
+
+    // Tailoring / fashion
+    if (
+      key.includes('fashion') ||
+      key.includes('cloth') ||
+      key.includes('tailor') ||
+      key.includes('boutique')
+    )
+      return 'checkroom';
+
+    return 'category';
+  }
+
+  private readonly categoryColorClasses: string[] = [
+    'c-purple',
+    'c-pink',
+    'c-orange',
+    'c-green',
+    'c-indigo',
+    'c-blue',
+    'c-teal',
+    'c-red',
+  ];
+
+  getCategoryColorClass(categoryName: string): string {
+    if (!categoryName) return 'c-neutral';
+    let hash = 0;
+    for (let i = 0; i < categoryName.length; i++) {
+      hash = categoryName.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % this.categoryColorClasses.length;
+    return this.categoryColorClasses[index];
   }
 
   navigateToCategory(category: any): void {
     const routeMap: { [key: string]: string } = {
-      "Real Estate": "Properties",
-      "Home Services": "Commercial Services",
-      Education: "Commercial Services",
-      "Health & Care": "Commercial Services",
-      Automotive: "Vehicles",
-      Electronics: "Electronics",
-      "Beauty & Wellness": "Fashion",
-      "Food & Restaurants": "Commercial Services",
+      'Real Estate': 'Properties',
+      'Home Services': 'Commercial Services',
+      Education: 'Commercial Services',
+      'Health & Care': 'Commercial Services',
+      Automotive: 'Vehicles',
+      Electronics: 'Electronics',
+      'Beauty & Wellness': 'Fashion',
+      'Food & Restaurants': 'Commercial Services',
     };
 
     const route = routeMap[category.name] || category.name;
@@ -426,16 +625,16 @@ export class BusinessHomeComponent implements OnInit {
   // =========================================================
 
   getOfferBadge(title: string): { value: string; suffix: string } {
-    if (!title) return { value: "OFFER", suffix: "" };
+    if (!title) return { value: 'OFFER', suffix: '' };
     const percentMatch = title.match(/(\d+)\s*%/);
     if (percentMatch) {
-      return { value: `${percentMatch[1]}%`, suffix: "OFF" };
+      return { value: `${percentMatch[1]}%`, suffix: 'OFF' };
     }
     const flatMatch = title.match(/₹\s*([\d,]+)/);
     if (flatMatch) {
-      return { value: `₹${flatMatch[1]}`, suffix: "OFF" };
+      return { value: `₹${flatMatch[1]}`, suffix: 'OFF' };
     }
-    return { value: "FREE", suffix: "" };
+    return { value: 'FREE', suffix: '' };
   }
 
   getOfferColor(index: number): string {
@@ -448,22 +647,22 @@ export class BusinessHomeComponent implements OnInit {
 
   openBusinessLoginModal(): void {
     this.dialog.open(BusinessLoginComponent, {
-      width: "800px",
-      maxWidth: "95vw",
-      panelClass: "business-login-dialog-container",
+      width: '800px',
+      maxWidth: '95vw',
+      panelClass: 'business-login-dialog-container',
       autoFocus: false,
     });
   }
 
   // Add this method to format offer validity date
   formatOfferValidity(endDate: string): string {
-    if (!endDate) return "";
+    if (!endDate) return '';
     // Using moment.js if available, or plain JS
     const date = new Date(endDate);
-    return date.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
+    return date.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
     });
   }
 }

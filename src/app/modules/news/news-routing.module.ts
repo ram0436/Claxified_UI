@@ -8,6 +8,7 @@ import { NewsCategoryDetailComponent } from './components/news-category-detail/n
 import { EditorPicksComponent } from './components/editor-picks/editor-picks.component';
 import { AllHeadlinesComponent } from './components/all-headlines/all-headlines.component';
 import { NewsArticleDetailComponent } from './components/news-article-detail/news-article-detail.component';
+import { AddNewsArticleComponent } from './components/add-news-article/add-news-article.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,7 @@ const routes: Routes = [
       { path: 'headlines', component: AllHeadlinesComponent },
       { path: 'editors-picks', component: EditorPicksComponent },
       { path: 'article/:slug', component: NewsArticleDetailComponent },
+      { path: 'add-article', component: AddNewsArticleComponent },
     ],
   },
 ];

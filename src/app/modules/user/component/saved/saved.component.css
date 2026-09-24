@@ -1,5 +1,5 @@
 .adds-conrainer {
-  max-width: 1400px;
+  max-width: 1440px;
   padding: 1rem;
   margin: auto;
   background-color: #ffffff;
@@ -42,7 +42,9 @@
   overflow: hidden;
   cursor: pointer;
   box-shadow: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .example-card.mat-mdc-card:hover {

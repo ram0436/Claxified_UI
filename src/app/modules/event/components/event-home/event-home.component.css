@@ -1,5 +1,5 @@
 .event-home-wrapper {
-  max-width: 1400px;
+  max-width: 1440px;
   margin: 0 auto;
   padding-bottom: 60px;
 }
@@ -8,8 +8,10 @@
 .event-hero {
   padding: 32px;
   background: linear-gradient(120deg, #f6f1e8 0%, #faeee0 100%);
-  border-radius: 20px;
+  border-radius: 24px;
   margin: 24px 0 0;
+  min-height: var(--hero-height);
+  padding: 56px 24px;
 }
 
 .event-hero-inner {

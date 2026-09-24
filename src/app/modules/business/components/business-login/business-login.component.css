@@ -1,602 +1,568 @@
 /* =========================================================
-   MAIN WRAPPER
+   SHARED AUTH DIALOG STYLES (used by login + business-login)
+   Paste at the top of each component's CSS file.
    ========================================================= */
 
-.business-login-wrapper {
+.auth-wrapper {
+  --grad: linear-gradient(90deg, #6d3df6 0%, #e83e9b 70%, #ff7a3d 100%);
+  --ink: #150f3d;
+  --muted: #6b6788;
+  --line: #dcd9ec;
+  --focus: #7c4dff;
+
   display: flex;
-  max-width: 90vw;
-  height: clamp(500px, 80vh, 80vh);
-
-  border-radius: 12px;
-
+  width: min(1000px, 94vw);
+  height: min(720px, 90vh);
+  border-radius: 20px;
   position: relative;
-
   overflow: hidden;
-
   background: #fff;
+  color: var(--ink);
+  font-family: "Plus Jakarta Sans", "Poppins", Roboto, "Segoe UI", sans-serif;
 }
-
-/* =========================================================
-     CLOSE ICON
-     ========================================================= */
 
 .login-cancel-icon {
-  cursor: pointer;
-
-  font-size: 25px;
-
   position: absolute;
-
-  top: 15px;
-
-  right: 15px;
-
-  color: #000;
-
+  top: 16px;
+  right: 16px;
   z-index: 10;
+  font-size: 26px;
+  cursor: pointer;
+  color: var(--ink);
 }
 
-/* =========================================================
-     BRAND PANEL
-     ========================================================= */
+/* ---------- gradient text ---------- */
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
-.business-login-brand-panel {
-  width: 45%;
-
-  background: linear-gradient(160deg, #0d475c, #1a1030);
-
-  color: #fff;
-
-  padding: 40px 30px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  justify-content: center;
-
-  align-items: center;
-
-  text-align: center;
-
-  overflow-y: auto;
-
-  height: 100%;
-
+/* ---------- brand panel ---------- */
+.brand-panel {
+  width: 46%;
+  flex: 0 0 46%;
   box-sizing: border-box;
-
-  border-radius: 12px 0 0 12px;
+  padding: 36px 34px;
+  background: linear-gradient(160deg, #f1eeff 0%, #fdeff7 100%);
+  overflow-y: auto;
 }
-
-/* =========================================================
-     LOGO
-     ========================================================= */
-
 .brand-logo {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  position: relative;
-
-  margin-bottom: 15px;
-
-  /*
-     * This helps the dark rectangular area of the logo
-     * blend into the dark gradient background.
-     */
-  mix-blend-mode: screen;
-}
-
-.brand-logo img {
-  height: 80px;
-
-  width: auto;
-
-  max-width: 270px;
-
+  width: 260px;
+  max-width: 100%;
+  height: auto;
   object-fit: contain;
-
   display: block;
-
-  /*
-     * Helps the logo's background blend with the
-     * brand panel background.
-     */
-  mix-blend-mode: screen;
 }
-
-/* =========================================================
-     BRAND HEADING
-     ========================================================= */
-
 .brand-heading {
-  font-weight: 600;
-
-  margin-bottom: 12px;
-
-  margin-top: 25px;
-
-  font-size: 30px;
-
-  line-height: 1.15;
-
-  max-width: 400px;
+  margin: 28px 0 14px;
+  font-size: 38px;
+  line-height: 1.08;
+  font-weight: 500;
+  letter-spacing: -0.5px;
 }
-
-/* =========================================================
-     BRAND SUBTEXT
-     ========================================================= */
-
 .brand-subtext {
-  font-size: 16px;
-
-  color: #d9edf3;
-
-  line-height: 1.6;
-
-  max-width: 420px;
-
-  margin: 0;
+  margin: 0 0 22px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 380px;
 }
 
-/* =========================================================
-     FORM PANEL
-     ========================================================= */
-
-.business-login-form-panel {
-  width: 55%;
-
+.feature-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
-
   flex-direction: column;
+  gap: 14px;
+}
+.feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.feature-list strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+}
+.feature-list small {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+}
+.feature-icon,
+.trust-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.feature-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+}
+.fi-orange {
+  background: #ffe9d9;
+  color: #f0762b;
+}
+.fi-pink {
+  background: #ffdfe9;
+  color: #e8306f;
+}
+.fi-purple {
+  background: #e6dcff;
+  color: #6d3df6;
+}
+.fi-blue {
+  background: #dbe8ff;
+  color: #2f6df6;
+}
 
-  height: 100%;
-
-  min-height: 0;
-
-  border-radius: 0 12px 12px 0;
-
-  overflow: hidden;
-
+/* ---------- form panel ---------- */
+.form-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   background: #fff;
 }
-
-/* =========================================================
-     FORM SCROLL
-     ========================================================= */
-
-mat-dialog-content.business-login-form-scroll,
-.business-login-form-panel .business-login-form-scroll.mat-mdc-dialog-content,
-.business-login-form-panel .business-login-form-scroll.mat-dialog-content {
-  overflow-y: auto !important;
-
-  padding: 50px 40px !important;
-
-  margin: 0 !important;
-
-  max-height: none !important;
-
-  flex: 1 1 auto !important;
-
-  min-height: 0 !important;
-
-  display: block !important;
-
+.form-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 44px 44px 30px;
   box-sizing: border-box;
 }
-
-/* =========================================================
-     SCROLLBAR
-     ========================================================= */
-
-.business-login-form-scroll::-webkit-scrollbar {
+.form-scroll::-webkit-scrollbar {
   width: 6px;
 }
-
-.business-login-form-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.business-login-form-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-
+.form-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
   border-radius: 3px;
 }
 
-/* =========================================================
-     FORM HEADING
-     ========================================================= */
-
 .form-heading {
-  font-weight: 600;
-
-  color: #3c3241;
-
-  margin-top: 0;
-
-  margin-bottom: 6px;
-
-  font-size: 30px;
-
-  line-height: 1.2;
+  margin: 0 0 6px;
+  font-size: 32px;
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: -0.4px;
 }
-
-/* =========================================================
-     FORM SUBHEADING
-     ========================================================= */
-
 .form-subheading {
-  color: #635b67;
-
-  font-size: 14px;
-
-  margin-top: 0;
-
-  margin-bottom: 25px;
-
+  margin: 0 0 24px;
+  font-size: 15px;
   line-height: 1.5;
+  color: var(--muted);
 }
-
-/* =========================================================
-     FIELD LABEL
-     ========================================================= */
 
 .field-label {
   display: block;
-
-  font-size: 13px;
-
-  font-weight: 600;
-
-  color: #3c3241;
-
-  margin-bottom: 4px;
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 500;
 }
-
-/* =========================================================
-     FORM FIELD
-     ========================================================= */
-
-.business-login-form mat-form-field {
-  width: 100%;
-
-  display: block;
-
-  margin-bottom: 4px;
+.field-label .req {
+  color: #e5213d;
+  margin-left: 3px;
 }
-
-/* =========================================================
-     FIELD ROW
-     ========================================================= */
 
 .field-row {
   display: flex;
-
   gap: 12px;
-
-  width: 100%;
 }
-
 .field-half {
   flex: 1;
-
   min-width: 0;
 }
 
-/* =========================================================
-     COUNTRY CODE
-     ========================================================= */
-
-.country-code {
-  padding-left: 12px;
-
-  color: #635b67;
+/* ---------- Material outline field restyle ---------- */
+.auth-wrapper mat-form-field {
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+  --mdc-outlined-text-field-outline-color: var(--line);
+  --mdc-outlined-text-field-hover-outline-color: #b9b3dc;
+  --mdc-outlined-text-field-focus-outline-color: var(--focus);
+  --mdc-outlined-text-field-container-shape: 12px;
+  --mat-form-field-container-height: 52px;
+  --mat-form-field-container-vertical-padding: 14px;
+}
+.auth-wrapper ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+.auth-wrapper ::ng-deep .mdc-notched-outline__leading {
+  border-radius: 12px 0 0 12px !important;
+}
+.auth-wrapper ::ng-deep .mdc-notched-outline__trailing {
+  border-radius: 0 12px 12px 0 !important;
+}
+.auth-wrapper ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #fff;
+}
+.auth-wrapper ::ng-deep .mat-mdc-form-field-icon-prefix > .mat-icon {
+  padding: 0 8px 0 14px;
+  color: var(--muted);
+}
+.auth-wrapper ::ng-deep .mat-mdc-form-field-icon-suffix > .mat-icon {
+  padding: 0 14px 0 8px;
+  color: var(--muted);
 }
 
-/* =========================================================
-     BACK BUTTON
-     ========================================================= */
+.country-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px 0 14px;
+  margin-right: 8px;
+  border-right: 1px solid var(--line);
+  height: 52px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.flag-in {
+  width: 24px;
+  height: 16px;
+  border-radius: 2px;
+  background: linear-gradient(#ff9933 33%, #fff 33% 66%, #138808 66%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+/* ---------- buttons ---------- */
+.auth-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 52px;
+  margin: 18px 0 0;
+  border-radius: 12px !important;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff !important;
+  background: var(--grad) !important;
+  transition: filter 0.15s;
+}
+.auth-button:hover:not([disabled]) {
+  filter: brightness(1.06);
+}
+.auth-button[disabled] {
+  opacity: 0.55;
+}
 
 .back-button {
   display: inline-flex;
-
   align-items: center;
-
-  gap: 5px;
-
+  gap: 4px;
   border: none;
-
   background: transparent;
-
-  color: #635b67;
-
-  font-size: 14px;
-
-  font-weight: 600;
-
   padding: 0;
-
-  margin: 0 0 25px 0;
-
+  margin: 0 0 20px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
   cursor: pointer;
 }
-
+.back-button:hover {
+  color: #e83e9b;
+}
 .back-button mat-icon {
   font-size: 20px;
-
   width: 20px;
-
   height: 20px;
 }
 
-.back-button:hover {
-  color: #e75462;
+/* ---------- OTP boxes ---------- */
+.otp-boxes {
+  display: flex;
+  gap: 14px;
+  margin: 4px 0 14px;
+}
+.otp-box {
+  width: 62px;
+  height: 66px;
+  box-sizing: border-box;
+  text-align: center;
+  font: inherit;
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.otp-box:focus {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 4px rgba(124, 77, 255, 0.14);
 }
 
-/* =========================================================
-     MAIN BUTTON
-     ========================================================= */
-
-.business-login-button {
-  display: block;
-
-  width: 100%;
-
-  margin: 25px 0 0 0;
-
-  color: #fff !important;
-
-  background-color: #e75462 !important;
-
-  height: 44px;
-
-  font-weight: 600;
-
-  font-size: 15px;
-
-  border-radius: 5px;
-}
-
-.business-login-button:hover {
-  background-color: #d94857 !important;
-}
-
-/* =========================================================
-     ERROR MESSAGE
-     ========================================================= */
-
+/* ---------- messages ---------- */
 .otp-failure-message {
-  margin: -2px 0 10px 0;
-
+  margin: -2px 0 10px;
   display: flex;
-
   align-items: center;
-
   gap: 5px;
-
-  font-weight: 600;
-
   font-size: 13px;
-
-  color: red;
-
+  font-weight: 500;
   line-height: 1.4;
+  color: #e5213d;
 }
-
-.otp-failure-message .material-icons-outlined {
-  font-size: 20px;
-}
-
-/* =========================================================
-     OTP SUCCESS
-     ========================================================= */
-
 .otp-send-message {
-  margin: 15px 0 0 0;
-
+  margin: 16px 0 0;
   display: flex;
-
   align-items: center;
-
-  gap: 5px;
-
   justify-content: center;
-
-  font-weight: 600;
-
+  gap: 5px;
   font-size: 13px;
-
+  font-weight: 500;
   color: #008c15;
 }
-
+.otp-failure-message .material-icons-outlined,
 .otp-send-message .material-icons-outlined {
   font-size: 20px;
 }
-
-/* =========================================================
-     RECEIVE OTP MESSAGE
-     ========================================================= */
-
 .receive-message {
-  margin: 0 0 15px 0;
-
-  color: #9e9798;
-
-  font-weight: 600;
-
+  margin: 0 0 14px;
   font-size: 13px;
+  font-weight: 500;
+  color: #9e9798;
 }
-
-/* =========================================================
-     COUNTDOWN
-     ========================================================= */
-
 .countdown-message {
   color: #172b4d;
 }
-
-/* =========================================================
-     RESEND
-     ========================================================= */
-
 .resend-link {
-  color: #0065ff;
-
-  cursor: pointer;
-
-  text-decoration: underline;
-
   margin-left: 5px;
+  color: #0065ff;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
-/* =========================================================
-     MOBILE
-     ========================================================= */
+/* ---------- trust row + terms ---------- */
+.trust-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 34px 0 26px;
+  text-align: center;
+}
+.trust-item strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.trust-item small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+.trust-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+}
+.ti-pink {
+  background: #ffe1ea;
+  color: #e8306f;
+}
+.ti-purple {
+  background: #e9e0ff;
+  color: #6d3df6;
+}
+.ti-blue {
+  background: #dde9ff;
+  color: #2f6df6;
+}
+.terms-text {
+  margin: 0;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.terms-link {
+  color: #5b2ef0;
+  cursor: pointer;
+}
+.terms-link.pink {
+  color: #e5246a;
+}
 
+.security-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f3f1fb;
+  color: var(--muted);
+  font-size: 13px;
+}
+.security-note mat-icon {
+  color: #6d3df6;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------- responsive ---------- */
 @media (max-width: 750px) {
-  .business-login-wrapper {
+  .auth-wrapper {
     flex-direction: column;
-
     width: 95vw;
-
-    max-width: 95vw;
-
     height: 95vh;
-
-    max-height: 95vh;
-
-    overflow: hidden;
   }
-
-  .business-login-brand-panel,
-  .business-login-form-panel {
+  .brand-panel {
     width: 100%;
-  }
-
-  .business-login-brand-panel {
-    padding: 30px 20px;
-
     flex: 0 0 auto;
-
-    height: auto;
-
-    min-height: 250px;
-
-    border-radius: 12px 12px 0 0;
+    padding: 20px 20px 16px;
+    overflow: visible;
   }
-
-  .brand-logo img {
-    height: 65px;
-
-    max-width: 230px;
-  }
-
   .brand-heading {
-    font-size: 23px;
-
-    margin-top: 15px;
+    font-size: 24px;
+    margin: 12px 0 0;
   }
-
-  .brand-subtext {
-    font-size: 14px;
-
-    max-width: 350px;
+  .brand-heading br {
+    display: none;
   }
-
-  .business-login-form-panel {
-    flex: 1;
-
-    min-height: 0;
-
-    height: auto;
-
-    border-radius: 0 0 12px 12px;
+  .brand-subtext,
+  .feature-list {
+    display: none;
   }
-
-  mat-dialog-content.business-login-form-scroll {
-    padding: 30px 20px !important;
+  .form-scroll {
+    padding: 24px 20px;
   }
-
   .form-heading {
-    font-size: 25px;
+    font-size: 26px;
   }
-
   .field-row {
     flex-direction: column;
-
     gap: 0;
   }
-
-  .field-half {
-    width: 100%;
+  .otp-box {
+    width: 54px;
+    height: 58px;
+  }
+  .trust-row {
+    margin: 24px 0 18px;
   }
 }
 
-/* =========================================================
-     SMALL MOBILE
-     ========================================================= */
-
-@media (max-width: 450px) {
-  .business-login-brand-panel {
-    min-height: 220px;
-
-    padding: 25px 15px;
-  }
-
-  .brand-logo img {
-    height: 55px;
-
-    max-width: 200px;
-  }
-
-  .brand-heading {
-    font-size: 20px;
-  }
-
-  .brand-subtext {
-    font-size: 13px;
-  }
-
-  mat-dialog-content.business-login-form-scroll {
-    padding: 25px 16px !important;
-  }
-}
-
-/* =========================================================
-   BUSINESS SUB CATEGORY CHECKBOXES
-   ========================================================= */
-
-.subcategory-checkbox-container {
-  width: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.23);
-  border-radius: 4px;
-  padding: 12px 14px;
+/* mat-dialog-content needs its defaults neutralised */
+mat-dialog-content.form-scroll {
+  display: block !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 44px 44px 30px !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
   box-sizing: border-box;
-  margin-bottom: 4px;
-  background: #fff;
-  min-height: 56px;
+}
+@media (max-width: 750px) {
+  mat-dialog-content.form-scroll {
+    padding: 24px 20px !important;
+  }
 }
 
-.subcategory-checkbox-list {
+/* =========================================================
+   BOTTOM TRUST STRIP (inside the form panel)
+   ========================================================= */
+.bottom-trust-strip {
+  flex: 0 0 auto; /* don't grow, don't shrink */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 20px 30px;
+  background: #faf8ff;
+  border-top: 1px solid #efeafd;
+}
+
+.bottom-trust-item {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
 }
 
-.subcategory-checkbox-list mat-checkbox {
-  width: 100%;
+.bottom-trust-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  flex: 0 0 auto;
 }
 
-.subcategory-placeholder {
-  color: #777;
-  font-size: 14px;
-  line-height: 30px;
+.bottom-trust-icon mat-icon {
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
 }
 
-.subcategory-checkbox-container.disabled {
-  background: #f5f5f5;
-  opacity: 0.6;
+.bti-pink {
+  background: #ffe1ea;
+  color: #e8306f;
+}
+.bti-purple {
+  background: #e9e0ff;
+  color: #6d3df6;
+}
+.bti-blue {
+  background: #dde9ff;
+  color: #2f6df6;
+}
+
+.bottom-trust-text strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bottom-trust-text small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* On mobile the form panel becomes full width — keep 3 columns but tighten */
+@media (max-width: 750px) {
+  .bottom-trust-strip {
+    padding: 10px 14px 12px;
+    gap: 6px;
+  }
+  .bottom-trust-icon {
+    width: 26px;
+    height: 26px;
+  }
+  .bottom-trust-icon mat-icon {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+  }
+  .bottom-trust-text strong {
+    font-size: 11.5px;
+  }
+  .bottom-trust-text small {
+    font-size: 10.5px;
+  }
 }

@@ -687,4 +687,47 @@ export class PostDetailsComponent {
       this.subCategories = res;
     });
   }
+
+  formatDetailLabel(label: string): string {
+    if (!label) return '';
+    return label
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+      .trim();
+  }
+
+  getDetailIcon(label: string): string {
+    const key = (label || '').toLowerCase();
+
+    if (key.includes('bed')) return 'king_bed';
+    if (key.includes('bath') || key.includes('toilet')) return 'bathtub';
+    if (key.includes('furnish')) return 'chair';
+    if (key.includes('listed') || key.includes('postedby')) return 'badge';
+    if (
+      key.includes('super') ||
+      key.includes('builtup') ||
+      key.includes('area')
+    )
+      return 'square_foot';
+    if (key.includes('carpet')) return 'crop_square';
+    if (key.includes('maintenance')) return 'build_circle';
+    if (key.includes('parking')) return 'local_parking';
+    if (key.includes('project')) return 'apartment';
+    if (key.includes('floor')) return 'layers';
+    if (key.includes('facing')) return 'explore';
+    if (key.includes('age')) return 'schedule';
+    if (key.includes('water')) return 'water_drop';
+    if (key.includes('power') || key.includes('backup')) return 'power';
+    if (key.includes('lift')) return 'elevator';
+    if (key.includes('security')) return 'security';
+    if (key.includes('gym')) return 'fitness_center';
+    if (key.includes('pool') || key.includes('swim')) return 'pool';
+    if (key.includes('garden') || key.includes('park')) return 'park';
+    if (key.includes('price') || key.includes('rent')) return 'sell';
+    if (key.includes('type')) return 'category';
+    if (key.includes('size')) return 'straighten';
+    if (key.includes('year')) return 'event';
+
+    return 'info';
+  }
 }

@@ -16,6 +16,7 @@ export class LoginComponent {
   phoneNumber: string = '';
   password: string = '';
   otp: string = '';
+  otpDigits: string[] = ['', '', '', ''];
   firstName: string = '';
   otpSent: boolean = false;
   otpMessage: boolean = false;
@@ -111,6 +112,13 @@ export class LoginComponent {
 
   sendOTP() {
     this.phoneNumberErrorMessage = false;
+    this.firstNameErrorMessage = false;
+
+    // Name is now entered on step 1
+    if (!/^[a-zA-Z][a-zA-Z ]+$/.test(this.firstName.trim())) {
+      this.firstNameErrorMessage = true;
+      return;
+    }
 
     const phoneNumberRegex = /^[0-9]{10}$/;
     if (!phoneNumberRegex.test(this.phoneNumber)) {
@@ -164,10 +172,6 @@ export class LoginComponent {
       this.firstNameErrorMessage = true;
       return;
     }
-
-    // if (this.otp.length !== 4) {
-    //   this.otpErrorMessage = true;
-    // }
 
     if (this.firstName.length < 2) {
       this.firstNameErrorMessage = true;
@@ -224,6 +228,7 @@ export class LoginComponent {
   startResendCountdown() {
     this.resendEnabled = false;
     this.resendCountdown = 30;
+    clearInterval(this.resendTimer);
     this.resendTimer = setInterval(() => {
       this.resendCountdown--;
       if (this.resendCountdown <= 0) {
@@ -235,7 +240,82 @@ export class LoginComponent {
 
   resendOTP() {
     if (this.resendEnabled) {
+      this.clearOtp();
       this.sendOTP();
     }
+  }
+
+  // =========================================================
+  // "CHANGE NUMBER" (back from OTP step)
+  // =========================================================
+
+  changeNumber(): void {
+    clearInterval(this.resendTimer);
+    this.otpSent = false;
+    this.otpMessage = false;
+    this.clearOtp();
+  }
+
+  // =========================================================
+  // OTP BOXES
+  // =========================================================
+
+  trackByIndex(index: number): number {
+    return index;
+  }
+
+  onOtpInput(event: Event, index: number): void {
+    const input = event.target as HTMLInputElement;
+    const digit = input.value.replace(/\D/g, '').slice(-1);
+    input.value = digit;
+    this.otpDigits[index] = digit;
+    this.syncOtp();
+    if (digit && index < this.otpDigits.length - 1) {
+      this.focusOtpBox(input, index + 1);
+    }
+  }
+
+  onOtpKeydown(event: KeyboardEvent, index: number): void {
+    const input = event.target as HTMLInputElement;
+    if (event.key === 'Backspace' && !input.value && index > 0) {
+      this.focusOtpBox(input, index - 1);
+    } else if (event.key === 'ArrowLeft' && index > 0) {
+      this.focusOtpBox(input, index - 1);
+    } else if (
+      event.key === 'ArrowRight' &&
+      index < this.otpDigits.length - 1
+    ) {
+      this.focusOtpBox(input, index + 1);
+    }
+  }
+
+  onOtpPaste(event: ClipboardEvent): void {
+    event.preventDefault();
+    const text = (event.clipboardData?.getData('text') || '')
+      .replace(/\D/g, '')
+      .slice(0, this.otpDigits.length);
+    if (!text) return;
+    this.otpDigits = this.otpDigits.map((_, i) => text[i] || '');
+    this.syncOtp();
+    this.focusOtpBox(
+      event.target as HTMLInputElement,
+      Math.min(text.length, this.otpDigits.length - 1),
+    );
+  }
+
+  private syncOtp(): void {
+    this.otp = this.otpDigits.join('');
+    this.validOTPMessage = false;
+    this.otpErrorMessage = false;
+  }
+
+  private focusOtpBox(from: HTMLInputElement, index: number): void {
+    const boxes = from.parentElement?.querySelectorAll('input');
+    (boxes?.[index] as HTMLInputElement | undefined)?.focus();
+  }
+
+  private clearOtp(): void {
+    this.otpDigits = ['', '', '', ''];
+    this.otp = '';
   }
 }

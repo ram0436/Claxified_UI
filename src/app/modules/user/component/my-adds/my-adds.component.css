@@ -1,5 +1,5 @@
 .adds-conrainer {
-  max-width: 1400px;
+  max-width: 1440px;
   padding: 1rem;
   margin: auto;
   background-color: #ffffff;
@@ -38,7 +38,9 @@
   line-height: 1.5;
   display: block;
   border-left: 5px solid transparent;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
   overflow: hidden;
 }
 
@@ -179,7 +181,9 @@
   font-weight: 600;
   font-size: 12.5px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .float-right:hover {
   transform: translateY(-1px);

@@ -296,11 +296,14 @@
           *ngFor="let category of businessCategories"
           (click)="navigateToCategory(category)"
         >
-          <!-- <div class="category-card-icon" [ngClass]="category.colorClass">
-             <span class="material-icons-outlined">{{
+          <div
+            class="category-card-icon"
+            [ngClass]="getCategoryColorClass(category.name)"
+          >
+            <span class="material-icons-outlined">{{
               getCategoryIcon(category.name)
             }}</span>
-          </div> -->
+          </div>
           <h4>{{ category.name }}</h4>
         </div>
       </div>

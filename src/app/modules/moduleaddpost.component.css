@@ -16,7 +16,7 @@
 .container {
   border: 1px solid #eee6fa;
   border-radius: 12px;
-  max-width: 1400px;
+  max-width: 1440px;
   width: 100%;
   margin: auto;
   margin-bottom: 50px;
@@ -501,7 +501,9 @@ button.selected {
   border-bottom: 1px solid #eee6fa;
   overflow: hidden;
   margin-bottom: 16px;
-  transition: background-color 0.2s ease, border-bottom-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-bottom-color 0.2s ease;
 }
 
 .rte-wrapper:hover {

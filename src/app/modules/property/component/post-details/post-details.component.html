@@ -150,6 +150,7 @@
         </mat-card>
 
         <!-- Details -->
+        <!-- Details -->
         <mat-card class="border-1 mb-2 pd-overview-card">
           <mat-card-title class="details-title">Details</mat-card-title>
           <mat-card-content>
@@ -158,10 +159,19 @@
                 *ngFor="let prop of getProperties(postDetails)"
                 class="pd-detail-item"
               >
-                <span class="pd-detail-label">{{
-                  capitalizeFirstWord(prop.label)
-                }}</span>
-                <span class="pd-detail-value">{{ prop.value }}</span>
+                <span class="pd-detail-icon">
+                  <span class="material-icons-outlined">{{
+                    getDetailIcon(prop.label)
+                  }}</span>
+                </span>
+                <div class="pd-detail-text">
+                  <span class="pd-detail-label">{{
+                    formatDetailLabel(prop.label)
+                  }}</span>
+                  <span class="pd-detail-value">{{
+                    prop.value ? prop.value : "—"
+                  }}</span>
+                </div>
               </div>
             </div>
           </mat-card-content>

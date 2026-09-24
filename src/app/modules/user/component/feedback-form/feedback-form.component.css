@@ -1,5 +1,5 @@
 .adds-conrainer {
-  max-width: 1400px;
+  max-width: 1440px;
   padding: 1rem;
   margin: auto;
   background-color: #ffffff;
@@ -55,7 +55,9 @@
   padding: 10px 0 !important;
   font-weight: 600;
   border: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .send-feedback:hover {
