@@ -381,7 +381,9 @@ button {
 }
 .card {
   border-radius: 4px;
-  box-shadow: 0 1px 3px 0 rgba(0, 47, 52, 0.2), 0 1px 3px 0 rgba(0, 47, 52, 0.2);
+  box-shadow:
+    0 1px 3px 0 rgba(0, 47, 52, 0.2),
+    0 1px 3px 0 rgba(0, 47, 52, 0.2);
   margin-bottom: 12px;
   font-size: 14px;
   text-decoration: none;
@@ -450,7 +452,7 @@ button {
   width: 70px;
 }
 .adds-conrainer {
-  max-width: 1400px;
+  max-width: 1440px;
   padding: 1rem;
   margin: auto;
 }
@@ -508,7 +510,9 @@ button {
 .menu-name {
   margin: 0;
   list-style: none;
-  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.12), 0 6px 6px 0 rgba(0, 0, 0, 0.24);
+  box-shadow:
+    0 0 6px 0 rgba(0, 0, 0, 0.12),
+    0 6px 6px 0 rgba(0, 0, 0, 0.24);
   padding: 8px 0;
 }
 .menu-item {

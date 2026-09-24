@@ -322,23 +322,38 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
   }
 
   getAddress(event: any) {
-    const pincode = event.target.value;
-    if (pincode.length === 6) {
-      this.commonService.getAddress(pincode).subscribe((data: any) => {
-        if (data[0].PostOffice != null) {
-          const address = data[0].PostOffice[0];
-          this.business.businessAddress.state = address.State;
-          this.business.businessAddress.city = address.District;
-          this.business.businessAddress.country = address.Country || 'India';
-          this.postOffices = data[0].PostOffice;
-          if (this.postOffices.length > 1) {
-            this.business.businessAddress.area = this.postOffices[0].Name;
-          } else {
-            this.business.businessAddress.area = address.Name;
-          }
-        }
-      });
+    const pincode = (event.target.value || '').trim();
+    if (pincode.length !== 6) {
+      this.postOffices = [];
+      return;
     }
+
+    this.commonService.getAddress(pincode).subscribe(
+      (data: any) => {
+        const postOffices = data?.[0]?.PostOffice;
+        if (!postOffices || postOffices.length === 0) {
+          this.postOffices = [];
+          return;
+        }
+
+        const first = postOffices[0];
+        this.business.businessAddress.state = first.State || '';
+        this.business.businessAddress.city = first.District || '';
+        this.business.businessAddress.country = first.Country || 'India';
+        this.postOffices = postOffices;
+
+        const currentArea = this.business.businessAddress.area;
+        const stillValid = postOffices.some(
+          (po: any) => po.Name === currentArea,
+        );
+        if (!currentArea || !stillValid) {
+          this.business.businessAddress.area = first.Name;
+        }
+      },
+      () => {
+        this.postOffices = [];
+      },
+    );
   }
 
   allowOnlyNumbersPincode(event: any) {
@@ -438,8 +453,36 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
             !!dto.businessAddressDto.isPrimary;
           this.business.businessAddress.googleMapURL =
             dto.businessAddressDto.googleMapURL || '';
-        }
 
+          const savedPincode = this.business.businessAddress.pincode;
+          if (savedPincode && savedPincode.length === 6) {
+            this.commonService.getAddress(savedPincode).subscribe(
+              (data: any) => {
+                if (data?.[0]?.PostOffice) {
+                  this.postOffices = data[0].PostOffice;
+
+                  const savedArea = this.business.businessAddress.area;
+                  const exists = this.postOffices.some(
+                    (po: any) => po.Name === savedArea,
+                  );
+                  if (savedArea && !exists) {
+                    this.postOffices = [
+                      { Name: savedArea },
+                      ...this.postOffices,
+                    ];
+                  }
+                }
+              },
+              () => {
+                this.postOffices = this.business.businessAddress.area
+                  ? [{ Name: this.business.businessAddress.area }]
+                  : [];
+              },
+            );
+          } else if (this.business.businessAddress.area) {
+            this.postOffices = [{ Name: this.business.businessAddress.area }];
+          }
+        }
         // ---------- Social Media ----------
         if (dto.businessSocialMediaDto) {
           this.business.businessSocialMedia.id =

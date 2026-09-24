@@ -1,107 +1,229 @@
-<mat-card class="mat-elevation-z12">
+<div class="auth-wrapper mat-elevation-z12">
   <span
     class="material-icons-outlined login-cancel-icon"
     (click)="closeDialog()"
+    >cancel</span
   >
-    cancel
-  </span>
-  <img
-    src="https://cfdblob.blob.core.windows.net/logo/CFD_Logo.png"
-    alt="Logo"
-    class="login-logo"
-  />
-  <mat-card-title style="text-align: center" class="login-title"
-    >Login with OTP</mat-card-title
-  >
-  <mat-card-content>
-    <form (ngSubmit)="otpSent ? loginWithOTP() : sendOTP()" class="login-form">
-      <mat-form-field>
-        <span matPrefix class="country-code">+91-</span>
-        <input
-          matInput
-          placeholder="Enter 10 digit mobile."
-          name="phoneNumber"
-          [(ngModel)]="phoneNumber"
-          (input)="validPhoneNumberMessage = !validatePhoneNumber()"
-        />
-        <mat-icon matSuffix>phone</mat-icon>
-      </mat-form-field>
-      <p class="otp-failure-message" *ngIf="validPhoneNumberMessage">
-        <span class="material-icons-outlined"> report </span>
-        Phone number should consist of only numbers*
-      </p>
-      <p class="otp-failure-message" *ngIf="phoneNumberErrorMessage">
-        <span class="material-icons-outlined"> report </span>
-        Please enter a valid 10-digit mobile number*
-      </p>
-      <p *ngIf="otpSent" class="receive-message">
-        Didn't receive the OTP yet?
-        <span *ngIf="!resendEnabled" class="countdown-message"
-          >Resend in {{ resendCountdown }}s</span
+
+  <!-- BRAND PANEL -->
+  <div class="brand-panel">
+    <img
+      class="brand-logo"
+      src="https://cfdblob.blob.core.windows.net/image/Claxified609065.png"
+      alt="Claxified"
+    />
+
+    <h2 class="brand-heading">
+      Discover.<br />
+      <span class="grad-text">Buy. Sell.</span><br />
+      Grow Locally.
+    </h2>
+
+    <p class="brand-subtext">
+      Find local businesses, discover great deals, buy and sell products, and
+      connect with people near you.
+    </p>
+
+    <ul class="feature-list">
+      <li>
+        <span class="feature-icon fi-orange"
+          ><mat-icon>storefront</mat-icon></span
         >
-        <span *ngIf="resendEnabled" class="resend-link" (click)="resendOTP()"
-          >Resend</span
+        <div>
+          <strong>Local Businesses</strong
+          ><small>Discover trusted businesses</small>
+        </div>
+      </li>
+      <li>
+        <span class="feature-icon fi-pink"><mat-icon>sell</mat-icon></span>
+        <div>
+          <strong>Classified Ads</strong
+          ><small>Buy, sell or find anything</small>
+        </div>
+      </li>
+      <li>
+        <span class="feature-icon fi-purple"><mat-icon>event</mat-icon></span>
+        <div><strong>Events</strong><small>Explore events near you</small></div>
+      </li>
+      <li>
+        <span class="feature-icon fi-blue"><mat-icon>newspaper</mat-icon></span>
+        <div>
+          <strong>News</strong><small>Stay updated with what matters</small>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+    <div class="form-scroll">
+      <h2 class="form-heading" *ngIf="!otpSent">
+        Welcome to <span class="grad-text">Claxified</span>
+      </h2>
+      <h2 class="form-heading" *ngIf="otpSent">Verify your number</h2>
+
+      <p class="form-subheading">
+        {{
+          otpSent
+            ? "Enter the 4-digit OTP sent to +91 " + phoneNumber
+            : "Login with your mobile number to continue"
+        }}
+      </p>
+
+      <form (ngSubmit)="otpSent ? loginWithOTP() : sendOTP()" class="auth-form">
+        <!-- STEP 1 : NAME + MOBILE -->
+        <ng-container *ngIf="!otpSent">
+          <label class="field-label">Your Name</label>
+          <mat-form-field appearance="outline">
+            <mat-icon matPrefix>person_outline</mat-icon>
+            <input
+              matInput
+              placeholder="Enter your name"
+              type="text"
+              name="firstName"
+              [(ngModel)]="firstName"
+              (input)="validFirstNameMessage = !validateFirstName()"
+            />
+          </mat-form-field>
+          <p class="otp-failure-message" *ngIf="validFirstNameMessage">
+            <span class="material-icons-outlined">report</span>
+            First Name should contain only alphabets*
+          </p>
+          <p class="otp-failure-message" *ngIf="firstNameErrorMessage">
+            <span class="material-icons-outlined">report</span>
+            First Name should at least contain 2 characters*
+          </p>
+
+          <label class="field-label">Mobile Number</label>
+          <mat-form-field appearance="outline">
+            <span matPrefix class="country-code">
+              <span class="flag-in"></span>+91
+            </span>
+            <input
+              matInput
+              placeholder="Enter your mobile number"
+              name="phoneNumber"
+              maxlength="10"
+              inputmode="numeric"
+              [(ngModel)]="phoneNumber"
+              (input)="validPhoneNumberMessage = !validatePhoneNumber()"
+            />
+          </mat-form-field>
+          <p class="otp-failure-message" *ngIf="validPhoneNumberMessage">
+            <span class="material-icons-outlined">report</span>
+            Phone number should consist of only numbers*
+          </p>
+          <p class="otp-failure-message" *ngIf="phoneNumberErrorMessage">
+            <span class="material-icons-outlined">report</span>
+            Please enter a valid 10-digit mobile number*
+          </p>
+        </ng-container>
+
+        <!-- STEP 2 : OTP -->
+        <ng-container *ngIf="otpSent">
+          <button type="button" class="back-button" (click)="changeNumber()">
+            <mat-icon>arrow_back</mat-icon> Change number
+          </button>
+
+          <label class="field-label">Enter OTP</label>
+          <div class="otp-boxes">
+            <input
+              *ngFor="
+                let digit of otpDigits;
+                let i = index;
+                trackBy: trackByIndex
+              "
+              class="otp-box"
+              type="text"
+              inputmode="numeric"
+              maxlength="1"
+              autocomplete="one-time-code"
+              [value]="digit"
+              (input)="onOtpInput($event, i)"
+              (keydown)="onOtpKeydown($event, i)"
+              (paste)="onOtpPaste($event)"
+            />
+          </div>
+
+          <p class="receive-message">
+            Didn't receive the OTP yet?
+            <span *ngIf="!resendEnabled" class="countdown-message"
+              >Resend in {{ resendCountdown }}s</span
+            >
+            <span
+              *ngIf="resendEnabled"
+              class="resend-link"
+              (click)="resendOTP()"
+              >Resend</span
+            >
+          </p>
+
+          <p class="otp-failure-message" *ngIf="validOTPMessage">
+            <span class="material-icons-outlined">report</span>
+            OTP should consist of only numbers*
+          </p>
+          <p class="otp-failure-message" *ngIf="otpErrorMessage">
+            <span class="material-icons-outlined">report</span>
+            Please enter a 4 digit OTP*
+          </p>
+          <p class="otp-failure-message" *ngIf="unauthorizedUser">
+            <span class="material-icons-outlined">report</span>
+            Unauthorized User*
+          </p>
+        </ng-container>
+
+        <p class="otp-failure-message" *ngIf="otpFailed">
+          <span class="material-icons-outlined">report</span> Error Sending OTP
+        </p>
+
+        <button
+          mat-raised-button
+          class="auth-button"
+          type="submit"
+          [disabled]="
+            (otpSent && !(phoneNumber && otp.length === 4 && firstName)) ||
+            disableSendOTPButton
+          "
         >
+          {{ otpSent ? "Login" : "Send OTP" }}
+          <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+        </button>
+
+        <p class="otp-send-message" *ngIf="otpMessage">
+          <span class="material-icons-outlined">verified</span>
+          OTP has been sent successfully
+        </p>
+      </form>
+
+      <!-- TRUST ROW -->
+      <div class="trust-row" *ngIf="!otpSent">
+        <div class="trust-item">
+          <span class="trust-icon ti-pink"
+            ><mat-icon>verified_user</mat-icon></span
+          >
+          <strong>Secure Login</strong><small>Only via OTP</small>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon ti-purple"><mat-icon>lock</mat-icon></span>
+          <strong>Your Data is Safe</strong
+          ><small>We respect your privacy</small>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon ti-blue"><mat-icon>bolt</mat-icon></span>
+          <strong>Quick &amp; Easy</strong><small>Login in seconds</small>
+        </div>
+      </div>
+
+      <p class="terms-text">
+        By continuing, you agree to our
+        <span class="terms-link" routerLink="/page/terms"
+          >Terms of Service</span
+        >
+        and
+        <span class="terms-link pink" routerLink="/page/privacy"
+          >Privacy Policy</span
+        >.
       </p>
-      <p class="otp-failure-message" *ngIf="otpFailed">
-        <span class="material-icons-outlined"> report </span> Error Sending OTP
-      </p>
-      <mat-form-field *ngIf="otpSent">
-        <input
-          matInput
-          placeholder="Enter OTP"
-          name="otp"
-          [(ngModel)]="otp"
-          (input)="validOTPMessage = !validateOTP()"
-        />
-        <mat-icon matSuffix>shield</mat-icon>
-      </mat-form-field>
-      <p class="otp-failure-message" *ngIf="validOTPMessage">
-        <span class="material-icons-outlined"> report </span>
-        OTP should consist of only numbers*
-      </p>
-      <p class="otp-failure-message" *ngIf="otpErrorMessage">
-        <span class="material-icons-outlined"> report </span>
-        Please enter a 4 digit OTP*
-      </p>
-      <mat-form-field *ngIf="otpSent">
-        <input
-          matInput
-          placeholder="Enter name"
-          type="text"
-          name="firstName"
-          [(ngModel)]="firstName"
-          (input)="validFirstNameMessage = !validateFirstName()"
-        />
-        <mat-icon matSuffix>person</mat-icon>
-      </mat-form-field>
-      <p class="otp-failure-message" *ngIf="validFirstNameMessage">
-        <span class="material-icons-outlined"> report </span>
-        First Name should contain only alphabets*
-      </p>
-      <p class="otp-failure-message" *ngIf="firstNameErrorMessage">
-        <span class="material-icons-outlined"> report </span>
-        First Name should at least contain 2 characters*
-      </p>
-      <p class="otp-failure-message" *ngIf="unauthorizedUser">
-        <span class="material-icons-outlined"> report </span> Unauthorized User*
-      </p>
-      <button
-        mat-raised-button
-        color="primary"
-        class="login-button"
-        type="submit"
-        [disabled]="
-          (otpSent && !(phoneNumber && otp && firstName)) ||
-          disableSendOTPButton
-        "
-      >
-        {{ otpSent ? "Login" : "Send OTP" }}
-      </button>
-      <p class="otp-send-message" *ngIf="otpMessage">
-        <span class="material-icons-outlined"> verified </span> OTP has been
-        sent successfully
-      </p>
-    </form>
-  </mat-card-content>
-</mat-card>
+    </div>
+  </div>
+</div>

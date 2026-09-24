@@ -18,6 +18,9 @@ export class MyBusinessesComponent implements OnInit {
   searchTerm = '';
   activeTab: BizTab = 'all';
 
+  readonly pageSize = 5;
+  currentPage = 1;
+
   constructor(
     private businessService: BusinessService,
     private router: Router,
@@ -89,6 +92,11 @@ export class MyBusinessesComponent implements OnInit {
 
   setTab(tab: BizTab): void {
     this.activeTab = tab;
+    this.currentPage = 1;
+  }
+
+  onSearchChange(): void {
+    this.currentPage = 1;
   }
 
   get filteredBusinesses(): any[] {
@@ -142,5 +150,68 @@ export class MyBusinessesComponent implements OnInit {
 
   manageBusiness(business: any): void {
     this.router.navigateByUrl(`/business/profile/${business.businessId}`);
+  }
+
+  get totalFilteredCount(): number {
+    return this.filteredBusinesses.length;
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.totalFilteredCount / this.pageSize));
+  }
+
+  get currentPageSafe(): number {
+    return Math.min(Math.max(1, this.currentPage), this.totalPages);
+  }
+
+  get pagedBusinesses(): any[] {
+    const start = (this.currentPageSafe - 1) * this.pageSize;
+    return this.filteredBusinesses.slice(start, start + this.pageSize);
+  }
+
+  get pageStart(): number {
+    return this.totalFilteredCount === 0
+      ? 0
+      : (this.currentPageSafe - 1) * this.pageSize + 1;
+  }
+
+  get pageEnd(): number {
+    return Math.min(
+      this.currentPageSafe * this.pageSize,
+      this.totalFilteredCount,
+    );
+  }
+
+  /** Compact page list with ellipses, e.g. [1, 2, 3, -1, 9, 10] */
+  get pageNumbers(): number[] {
+    const total = this.totalPages;
+    const current = this.currentPageSafe;
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    const pages = new Set<number>([1, total, current]);
+    if (current - 1 > 1) pages.add(current - 1);
+    if (current + 1 < total) pages.add(current + 1);
+
+    const sorted = Array.from(pages).sort((a, b) => a - b);
+    const result: number[] = [];
+    for (let i = 0; i < sorted.length; i++) {
+      if (i > 0 && sorted[i] - sorted[i - 1] > 1) {
+        result.push(-1);
+      }
+      result.push(sorted[i]);
+    }
+    return result;
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    // optional: scroll the card into view
+    document.querySelector('.card')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
   }
 }

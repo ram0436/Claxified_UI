@@ -347,3 +347,13 @@
     justify-content: space-between;
   }
 }
+
+.pages .page-ellipsis {
+  min-width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #8b8299;
+  font-size: 14px;
+}

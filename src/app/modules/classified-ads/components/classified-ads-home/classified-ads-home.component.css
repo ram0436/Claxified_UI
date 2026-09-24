@@ -19,6 +19,7 @@
   margin: 24px 0 0;
   position: relative;
   overflow: hidden;
+  min-height: var(--hero-height);
 }
 
 .ads-hero::before {
@@ -88,7 +89,9 @@
   border-radius: 50px;
   border: 1px solid #ece4fb;
   padding: 6px 6px 6px 18px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
   box-shadow: 0 4px 18px rgba(108, 76, 224, 0.08);
   max-width: 540px;
 }
@@ -464,7 +467,9 @@
   border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .ad-card:hover {

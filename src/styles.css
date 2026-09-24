@@ -31,6 +31,7 @@ h5 {
   --clx-text: #1f1a2e;
   --clx-muted: #635b76;
   --clx-border: #e4e1ec;
+  --hero-height: 340px;
 }
 
 .cdk-overlay-container {
@@ -873,4 +874,39 @@ textarea[disabled] {
 .pages button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.cdk-overlay-container {
+  z-index: 2000;
+}
+
+/* Center ALL dialogs (login, business-login, and any other modal) */
+.cdk-global-overlay-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.cdk-overlay-pane {
+  max-width: 95vw !important;
+  max-height: 95vh !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.mat-mdc-dialog-container {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  max-height: 90vh;
+}
+
+/* Remove any leftover margin hacks */
+.custom-dialog-container,
+.business-login-dialog-container {
+  margin: 0 !important;
 }

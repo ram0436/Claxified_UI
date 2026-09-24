@@ -1,6 +1,6 @@
 /* ================= PAGE CONTAINER ================= */
 .page-container {
-  max-width: 1400px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 40px 24px 60px;
   background-color: #fff;
@@ -38,7 +38,10 @@
   background: #fbfaff;
   border: 1px solid #eee6fa;
   box-shadow: 0 2px 10px rgba(28, 21, 51, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .section-card:hover {

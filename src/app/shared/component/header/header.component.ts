@@ -704,8 +704,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     const dialogRef = this.dialog.open(BusinessLoginComponent, {
-      width: '800px',
-      maxWidth: '95vw',
+      // width: '800px',
+      // maxWidth: '95vw',
       panelClass: 'business-login-dialog-container',
       autoFocus: false,
     });

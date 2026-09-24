@@ -1,5 +1,5 @@
 .article-detail-wrapper {
-  max-width: 1400px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 0 24px 60px;
 }
@@ -41,6 +41,14 @@
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: 28px;
+}
+
+.article-main {
+  background: #fff;
+  border: 1px solid #eee6fa;
+  border-radius: 14px;
+  padding: 24px 28px;
+  box-shadow: 0 1px 3px rgba(28, 21, 51, 0.03);
 }
 
 /* Main */
@@ -360,7 +368,7 @@
 }
 
 .subscribe-card {
-  background: linear-gradient(120deg, #7c3aed, #e75462);
+  background: linear-gradient(120deg, #b79cff 10%, #f68fc2 100%);
   border-radius: 14px;
   padding: 18px;
   color: #fff;

@@ -67,6 +67,7 @@
         type="text"
         placeholder="Search businesses..."
         [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
       />
     </div>
     <!-- <select class="select">
@@ -96,8 +97,8 @@
   </div>
 
   <ng-container *ngIf="!isLoading">
-    <div class="biz-list" *ngIf="filteredBusinesses.length; else emptyState">
-      <div class="biz-card" *ngFor="let biz of filteredBusinesses">
+    <div class="biz-list" *ngIf="pagedBusinesses.length; else emptyState">
+      <div class="biz-card" *ngFor="let biz of pagedBusinesses">
         <div class="biz-logo">
           <img [src]="getLogo(biz)" (error)="onImageError($event)" alt="" />
         </div>
@@ -171,15 +172,44 @@
       </div>
     </ng-template>
 
-    <div class="table-footer" *ngIf="filteredBusinesses.length">
-      <span class="muted"
-        >Showing 1 to {{ filteredBusinesses.length }} of
-        {{ filteredBusinesses.length }} businesses</span
-      >
-      <div class="pages">
-        <button disabled>‹</button>
-        <button class="active">1</button>
-        <button disabled>›</button>
+    <div class="table-footer" *ngIf="totalFilteredCount > 0">
+      <span class="muted">
+        Showing {{ pageStart }} to {{ pageEnd }} of
+        {{ totalFilteredCount }} business{{
+          totalFilteredCount === 1 ? "" : "es"
+        }}
+      </span>
+
+      <div class="pages" *ngIf="totalPages > 1">
+        <button
+          type="button"
+          [disabled]="currentPageSafe === 1"
+          (click)="goToPage(currentPageSafe - 1)"
+          aria-label="Previous page"
+        >
+          ‹
+        </button>
+
+        <ng-container *ngFor="let p of pageNumbers">
+          <span class="page-ellipsis" *ngIf="p === -1">…</span>
+          <button
+            type="button"
+            *ngIf="p !== -1"
+            [class.active]="p === currentPageSafe"
+            (click)="goToPage(p)"
+          >
+            {{ p }}
+          </button>
+        </ng-container>
+
+        <button
+          type="button"
+          [disabled]="currentPageSafe === totalPages"
+          (click)="goToPage(currentPageSafe + 1)"
+          aria-label="Next page"
+        >
+          ›
+        </button>
       </div>
     </div>
   </ng-container>

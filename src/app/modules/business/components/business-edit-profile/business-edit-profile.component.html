@@ -399,7 +399,10 @@
           </div>
         </div>
 
-        <div class="field-row" *ngIf="business.businessAddress.state">
+        <div
+          class="field-row"
+          *ngIf="business.businessAddress.state || postOffices.length > 0"
+        >
           <div class="field-half">
             <label class="field-label">State</label>
             <mat-form-field appearance="outline">

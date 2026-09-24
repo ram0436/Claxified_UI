@@ -1,4 +1,5 @@
-.add-event-wrapper {
+/* ============== Wrapper + Breadcrumb ============== */
+.add-news-wrapper {
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 24px 60px;
@@ -31,18 +32,18 @@
   font-weight: 600;
 }
 
-/* Hero */
-.add-event-hero {
+/* ============== Hero ============== */
+.add-news-hero {
   background: linear-gradient(120deg, #f3ecfb 0%, #fbeaf1 60%, #ffffff 100%);
   border-radius: 18px;
   padding: 26px 30px;
   margin-bottom: 22px;
 }
 
-.add-event-hero h1 {
+.add-news-hero h1 {
   margin: 0 0 6px 0;
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 600;
   color: #1c1533;
 }
 
@@ -53,13 +54,13 @@
   color: transparent;
 }
 
-.add-event-hero p {
+.add-news-hero p {
   margin: 0;
   font-size: 13.5px;
   color: #635b76;
 }
 
-/* State */
+/* ============== States ============== */
 .state-block {
   display: flex;
   flex-direction: column;
@@ -104,33 +105,7 @@
   cursor: pointer;
 }
 
-/* Banners */
-.banner {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 18px;
-}
-
-.banner.success {
-  background: #e6f7ec;
-  color: #1f9d55;
-}
-
-.banner.error {
-  background: #fdeceb;
-  color: #e6483f;
-}
-
-.banner .material-icons-outlined {
-  font-size: 18px;
-}
-
-/* Form cards */
+/* ============== Form Cards ============== */
 .form-card {
   background: #fff;
   border: 1px solid #eee6fa;
@@ -145,7 +120,7 @@
   gap: 8px;
   margin: 0 0 18px 0;
   font-size: 15.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1c1533;
 }
 
@@ -171,14 +146,9 @@
   margin-bottom: 0;
 }
 
-.form-row.indent {
-  margin-left: 26px;
-  margin-top: -8px;
-}
-
 .form-row label {
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #1c1533;
 }
 
@@ -204,10 +174,6 @@
 .form-row textarea:focus {
   outline: none;
   border-color: #7c3aed;
-}
-
-.form-row textarea {
-  resize: vertical;
 }
 
 .form-row select:disabled {
@@ -238,23 +204,24 @@
   height: 16px;
 }
 
+/* ============== Image Preview ============== */
 .image-preview {
   margin-top: 10px;
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid #eee6fa;
-  max-height: 220px;
+  max-height: 260px;
 }
 
 .image-preview img {
   width: 100%;
   height: 100%;
-  max-height: 220px;
+  max-height: 260px;
   object-fit: cover;
   display: block;
 }
 
-/* Actions */
+/* ============== Actions ============== */
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -268,7 +235,7 @@
   border-radius: 8px;
   padding: 11px 20px;
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   border: none;
   white-space: nowrap;
@@ -306,23 +273,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Responsive */
-@media (max-width: 640px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .form-actions {
-    flex-direction: column-reverse;
-  }
-
-  .form-actions button {
-    width: 100%;
-  }
-}
-
-/* ---------- Rich text editor (Full Description) ---------- */
-
+/* ============== Rich Text Editor ============== */
 .rte-wrapper {
   border: 1px solid #eee6fa;
   border-radius: 8px;
@@ -330,7 +281,6 @@ button:disabled {
   background: #fff;
 }
 
-/* Matches the focus style of the other inputs on this form */
 .rte-wrapper:focus-within {
   border-color: #7c3aed;
 }
@@ -376,19 +326,18 @@ button:disabled {
 }
 
 .rte-content {
-  min-height: 150px;
-  max-height: 350px;
+  min-height: 220px;
+  max-height: 500px;
   overflow-y: auto;
   padding: 12px 14px;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.6;
   color: #1c1533;
   background: #fff;
   outline: none;
   word-break: break-word;
 }
 
-/* Placeholder shown while the editor is empty */
 .rte-content:empty:before {
   content: attr(data-placeholder);
   color: #9a90b3;
@@ -404,4 +353,19 @@ button:disabled {
 .rte-content a {
   color: #7c3aed;
   text-decoration: underline;
+}
+
+/* ============== Responsive ============== */
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
 }

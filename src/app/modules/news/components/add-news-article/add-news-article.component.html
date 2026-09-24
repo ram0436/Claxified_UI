@@ -1,0 +1,322 @@
+<div class="add-news-wrapper">
+  <nav class="breadcrumb">
+    <a routerLink="/news">News</a>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">Write Article</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="add-news-hero">
+    <div>
+      <h1>Write an <span class="hero-accent">Article</span></h1>
+      <p>Share your story with thousands of readers on Claxified News.</p>
+    </div>
+  </section>
+
+  <!-- States -->
+  <div class="state-block" *ngIf="lookupsLoading">
+    <div class="spinner"></div>
+    <p>Loading form&hellip;</p>
+  </div>
+
+  <div class="state-block" *ngIf="!lookupsLoading && lookupsError">
+    <span class="material-icons-outlined state-icon">wifi_off</span>
+    <p>We couldn't load categories, sources and authors right now.</p>
+    <button class="retry-button" (click)="fetchLookups()">Try Again</button>
+  </div>
+
+  <form
+    class="add-news-form"
+    *ngIf="!lookupsLoading && !lookupsError"
+    (ngSubmit)="submit(true)"
+  >
+    <!-- Basic Info -->
+    <section class="form-card">
+      <h3>
+        <span class="material-icons-outlined">edit_note</span> Article Details
+      </h3>
+
+      <div class="form-row">
+        <label>Title <span class="required">*</span></label>
+        <input
+          type="text"
+          placeholder="e.g. Bengaluru Metro Phase 3 Cleared"
+          [(ngModel)]="model.title"
+          name="title"
+          (input)="onTitleChange()"
+        />
+      </div>
+
+      <div class="form-row">
+        <label>URL Slug <span class="required">*</span></label>
+        <input
+          type="text"
+          placeholder="bengaluru-metro-phase-3-cleared"
+          [(ngModel)]="model.slug"
+          name="slug"
+          (input)="onSlugEdited()"
+        />
+        <span class="hint">Auto-generated from title — editable.</span>
+      </div>
+
+      <div class="form-row">
+        <label>Short Description</label>
+        <input
+          type="text"
+          maxlength="200"
+          placeholder="One-line summary shown on cards and listings"
+          [(ngModel)]="model.shortDescription"
+          name="shortDescription"
+        />
+      </div>
+
+      <div class="form-row">
+        <label>Full Content <span class="required">*</span></label>
+        <div class="rte-wrapper">
+          <div class="rte-toolbar" (mousedown)="$event.preventDefault()">
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('bold')"
+              title="Bold"
+            >
+              <span class="material-icons-outlined">format_bold</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('italic')"
+              title="Italic"
+            >
+              <span class="material-icons-outlined">format_italic</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('underline')"
+              title="Underline"
+            >
+              <span class="material-icons-outlined">format_underlined</span>
+            </button>
+            <span class="rte-divider"></span>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('formatBlock', 'h2')"
+              title="Heading"
+            >
+              <span class="material-icons-outlined">title</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('insertUnorderedList')"
+              title="Bullet list"
+            >
+              <span class="material-icons-outlined">format_list_bulleted</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('insertOrderedList')"
+              title="Numbered list"
+            >
+              <span class="material-icons-outlined">format_list_numbered</span>
+            </button>
+            <span class="rte-divider"></span>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="insertLink()"
+              title="Insert link"
+            >
+              <span class="material-icons-outlined">link</span>
+            </button>
+            <button
+              type="button"
+              class="rte-btn"
+              (click)="exec('removeFormat')"
+              title="Clear formatting"
+            >
+              <span class="material-icons-outlined">format_clear</span>
+            </button>
+          </div>
+
+          <div
+            #contentEditor
+            class="rte-content"
+            contenteditable="true"
+            (input)="onContentInput(contentEditor)"
+            (blur)="onContentInput(contentEditor)"
+            data-placeholder="Write your full article here..."
+          ></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Classification -->
+    <section class="form-card">
+      <h3>
+        <span class="material-icons-outlined">category</span> Classification
+      </h3>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Category <span class="required">*</span></label>
+          <select
+            [(ngModel)]="model.newsCategoryId"
+            name="newsCategoryId"
+            (change)="onCategoryChange()"
+          >
+            <option [ngValue]="null" disabled>Select a category</option>
+            <option *ngFor="let c of categories" [ngValue]="c.id">
+              {{ c.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Sub-Category <span class="required">*</span></label>
+          <select
+            [(ngModel)]="model.newsSubCategoryId"
+            name="newsSubCategoryId"
+            [disabled]="!model.newsCategoryId"
+          >
+            <option [ngValue]="null" disabled>
+              {{
+                model.newsCategoryId
+                  ? "Select a sub-category"
+                  : "Select a category first"
+              }}
+            </option>
+            <option *ngFor="let sc of filteredSubCategories" [ngValue]="sc.id">
+              {{ sc.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Source <span class="required">*</span></label>
+          <select [(ngModel)]="model.newsSourceId" name="newsSourceId">
+            <option [ngValue]="null" disabled>Select a source</option>
+            <option *ngFor="let s of sources" [ngValue]="s.id">
+              {{ s.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Author <span class="required">*</span></label>
+          <select [(ngModel)]="model.newsAuthorId" name="newsAuthorId">
+            <option [ngValue]="null" disabled>Select an author</option>
+            <option *ngFor="let a of authors" [ngValue]="a.id">
+              {{ a.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Article Type</label>
+          <select [(ngModel)]="model.articleType" name="articleType">
+            <option *ngFor="let t of articleTypeOptions" [ngValue]="t.value">
+              {{ t.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Reading Time (minutes)</label>
+          <input
+            type="number"
+            min="1"
+            [(ngModel)]="model.readingTimeMinutes"
+            name="readingTimeMinutes"
+          />
+          <span class="hint"
+            >Auto-estimated from content; override if needed.</span
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Image -->
+    <section class="form-card">
+      <h3><span class="material-icons-outlined">image</span> Featured Image</h3>
+
+      <div class="form-row">
+        <label>Image URL <span class="required">*</span></label>
+        <input
+          type="url"
+          placeholder="https://example.com/article-banner.jpg"
+          [(ngModel)]="model.featuredImageUrl"
+          name="featuredImageUrl"
+        />
+        <span class="hint"
+          >Recommended 1200&times;630px for social sharing.</span
+        >
+      </div>
+
+      <div class="form-row">
+        <label>Image Alt Text</label>
+        <input
+          type="text"
+          placeholder="Describe the image for accessibility & SEO"
+          [(ngModel)]="model.featuredImageAltText"
+          name="featuredImageAltText"
+        />
+      </div>
+
+      <div class="image-preview" *ngIf="model.featuredImageUrl">
+        <img [src]="model.featuredImageUrl" alt="Preview" />
+      </div>
+    </section>
+
+    <!-- Visibility -->
+    <section class="form-card">
+      <h3>
+        <span class="material-icons-outlined">visibility</span> Visibility
+      </h3>
+
+      <label class="checkbox-row">
+        <input
+          type="checkbox"
+          [(ngModel)]="model.isFeatured"
+          name="isFeatured"
+        />
+        Feature this article on the News home page
+      </label>
+      <label class="checkbox-row">
+        <input
+          type="checkbox"
+          [(ngModel)]="model.isTrending"
+          name="isTrending"
+        />
+        Mark as Trending
+      </label>
+    </section>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn-ghost"
+        (click)="resetForm()"
+        [disabled]="submitting"
+      >
+        Reset
+      </button>
+      <button
+        type="button"
+        class="btn-outline"
+        (click)="submit(false)"
+        [disabled]="submitting"
+      >
+        {{ submitting ? "Saving..." : "Save as Draft" }}
+      </button>
+      <button type="submit" class="btn-solid" [disabled]="submitting">
+        <span class="material-icons-outlined">publish</span>
+        {{ submitting ? "Publishing..." : "Publish Article" }}
+      </button>
+    </div>
+  </form>
+</div>
