@@ -733,12 +733,33 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getBusinessPhone(business: BusinessDirectoryItem): string {
     const b = business as any;
-    return b.contactNumber || b.phoneNumber || b.mobileNumber || '';
+    const fromDto =
+      b?.businessContactDto?.mobile ||
+      b?.businessContactDto?.whatsApp ||
+      b?.businessContactDto?.phone;
+
+    if (fromDto) return String(fromDto).trim();
+
+    return (
+      b?.contactNumber || b?.phoneNumber || b?.mobileNumber || b?.mobile || ''
+    );
   }
 
   getWhatsAppLink(business: BusinessDirectoryItem): string {
-    const phone = this.getBusinessPhone(business).replace(/[^\d]/g, '');
-    return phone ? `https://wa.me/${phone}` : '';
+    const b = business as any;
+
+    const wa =
+      b?.businessContactDto?.whatsApp ||
+      b?.whatsApp ||
+      this.getBusinessPhone(business);
+
+    if (!wa) return '';
+
+    let digits = String(wa).replace(/[^\d]/g, '');
+    if (digits.length === 10) {
+      digits = '91' + digits;
+    }
+    return digits ? `https://wa.me/${digits}` : '';
   }
 
   // =========================================================
