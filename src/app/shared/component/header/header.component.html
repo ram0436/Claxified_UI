@@ -25,41 +25,56 @@
       <!-- Center Section: Navigation Links -->
       <ul class="header-nav-links">
         <li>
-          <a routerLink="/" class="nav-link" [class.active]="isActiveRoute('/')"
-            >Marketplace</a
+          <a
+            routerLink="/"
+            class="nav-link"
+            [class.active]="isActiveRoute('/')"
           >
+            <span class="material-icons-outlined nav-icon">storefront</span>
+            <span class="nav-text">Marketplace</span>
+          </a>
         </li>
         <li>
           <a
             routerLink="/classified-ads"
             class="nav-link"
             [class.active]="isActiveRoute('/classified-ads')"
-            >Claxified Ads</a
           >
+            <span class="material-icons-outlined nav-icon">list_alt</span>
+            <span class="nav-text">Claxified Ads</span>
+          </a>
         </li>
         <li>
           <a
             routerLink="/business"
             class="nav-link"
             [class.active]="isActiveRoute('/business')"
-            >Business</a
           >
+            <span class="material-icons-outlined nav-icon"
+              >business_center</span
+            >
+            <span class="nav-text">Business</span>
+          </a>
         </li>
         <li>
           <a
             routerLink="/news"
             class="nav-link"
             [class.active]="isActiveRoute('/news')"
-            >News</a
           >
+            <span class="material-icons-outlined nav-icon">newspaper</span>
+            <span class="nav-text">News</span>
+          </a>
         </li>
         <li>
           <a
             routerLink="/events"
             class="nav-link"
             [class.active]="isActiveRoute('/events')"
-            >Events</a
           >
+            <span class="material-icons-outlined nav-icon">event</span>
+            <span class="nav-text">Events</span>
+          </a>
         </li>
       </ul>
 
