@@ -377,8 +377,8 @@ export class BusinessProfileComponent implements OnInit {
     }
 
     this.dialogRef = this.dialog.open(BusinessLoginComponent, {
-      width: '800px',
-      maxWidth: '95vw',
+      // width: '800px',
+      // maxWidth: '95vw',
       panelClass: 'business-login-dialog-container',
       autoFocus: false,
     });

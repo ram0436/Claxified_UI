@@ -265,9 +265,7 @@ export class MarketplaceComponent implements OnInit {
   // =========================================================
 
   openBusinessLoginModal(): void {
-    this.dialog.open(BusinessLoginComponent, {
-      width: '800px',
-      maxWidth: '95vw',
+    const dialogRef = this.dialog.open(BusinessLoginComponent, {
       panelClass: 'business-login-dialog-container',
       autoFocus: false,
     });
@@ -278,7 +276,7 @@ export class MarketplaceComponent implements OnInit {
       this.router.navigate(['/post-menu']);
     } else {
       this.dialog.open(LoginComponent, {
-        width: '400px',
+        // width: '400px',
         panelClass: 'custom-dialog-container',
       });
     }
