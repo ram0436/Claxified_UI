@@ -9,59 +9,62 @@
 }
 
 /* =========================================================
-    BUSINESS HERO
+    BUSINESS HERO — full-bleed photo background
     ========================================================= */
 
 .business-hero {
-  padding: 40px 32px;
-  background: linear-gradient(120deg, #efe9fc 0%, #f6ecf6 45%, #ffffff 100%);
+  position: relative;
+  background-image: url("https://cfdblob.blob.core.windows.net/image/Claxified476803.png");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   border-radius: 24px;
   margin: 24px 0 0;
-  position: relative;
   overflow: hidden;
-  min-height: var(--hero-height);
+  aspect-ratio: 1520 / 360;
+  min-height: 0;
+  display: flex;
+  align-items: center;
 }
 
-.business-hero::before {
-  content: "";
+.business-hero-overlay {
   position: absolute;
-  top: -120px;
-  right: 10%;
-  width: 380px;
-  height: 380px;
-  background: radial-gradient(
-    circle,
-    rgba(108, 76, 224, 0.1) 0%,
-    transparent 70%
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 12, 40, 0.55) 0%,
+    rgba(20, 12, 40, 0.4) 45%,
+    rgba(20, 12, 40, 0.65) 100%
   );
   pointer-events: none;
 }
 
 .business-hero-inner {
   position: relative;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 32px;
+  justify-content: center;
   z-index: 1;
 }
 
 .business-hero-text {
-  max-width: 620px;
-  text-align: left;
+  max-width: 640px;
+  text-align: center;
 }
 
 .business-hero-title {
-  font-size: 38px;
-  font-weight: 600;
-  color: #1c1533;
+  font-size: 40px;
+  font-weight: 700;
+  color: #ffffff;
   margin: 0 0 12px 0;
   line-height: 1.2;
   letter-spacing: -0.5px;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
 }
 
 .hero-accent {
-  background: linear-gradient(90deg, #e75462 0%, #a855f7 55%, #ec4899 100%);
+  background: linear-gradient(90deg, #ffd86f 0%, #fc6262 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -69,15 +72,16 @@
 
 .business-hero-subtitle {
   font-size: 16px;
-  color: #635b76;
+  color: #f3eef9;
   max-width: 520px;
-  margin: 0 0 24px 0;
+  margin: 0 auto 26px;
   line-height: 1.6;
 }
 
 /* Business Search */
 .business-search {
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
 }
 
 .business-search .search-input-wrapper {
@@ -90,13 +94,14 @@
   transition:
     border-color 0.3s ease,
     box-shadow 0.3s ease;
-  box-shadow: 0 4px 18px rgba(108, 76, 224, 0.08);
-  max-width: 560px;
+  box-shadow: 0 10px 30px rgba(20, 12, 40, 0.25);
+  width: 100%;
+  max-width: 620px;
 }
 
 .business-search .search-input-wrapper:focus-within {
   border-color: #e75462;
-  box-shadow: 0 4px 20px rgba(108, 76, 224, 0.18);
+  box-shadow: 0 10px 30px rgba(231, 84, 98, 0.28);
 }
 
 .business-search .search-icon {
@@ -118,30 +123,6 @@
 
 .business-search .search-input::placeholder {
   color: #a79fbb;
-}
-
-.business-search .search-clear-btn {
-  border: none;
-  background: #f4f1fb;
-  color: #8b8299;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  margin-left: 4px;
-}
-
-.business-search .search-clear-btn .material-icons-outlined {
-  font-size: 14px;
-}
-
-.business-search .search-clear-btn:hover {
-  background: #ece4fb;
-  color: #e75462;
 }
 
 .business-search .search-divider {
@@ -175,7 +156,7 @@
 }
 
 .business-search .search-btn {
-  background: #e75462;
+  background: linear-gradient(90deg, #e75462, #e93d82);
   color: #fff;
   border: none;
   padding: 10px 24px;
@@ -183,21 +164,55 @@
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   white-space: nowrap;
   margin-left: 10px;
   flex-shrink: 0;
 }
 
 .business-search .search-btn:hover {
-  background: #5a3bd0;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(231, 84, 98, 0.32);
 }
 
-/* Feature Cards */
-.feature-cards {
+/* "Support Local Business" corner badge */
+.hero-support-badge {
+  position: absolute;
+  right: 28px;
+  bottom: 20px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 50px;
+}
+
+.hero-support-badge .material-icons-outlined {
+  font-size: 16px;
+}
+
+/* =========================================================
+    FEATURE STRIP (sits below hero image, white background)
+    ========================================================= */
+
+.feature-strip {
+  padding: 18px 0 0;
+}
+
+.feature-strip-inner {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
+  justify-content: center;
 }
 
 .feature-card {
@@ -272,20 +287,6 @@
   white-space: nowrap;
 }
 
-/* Decorative hero illustration */
-.business-hero-illustration {
-  flex-shrink: 0;
-  width: 340px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.business-hero-illustration svg {
-  width: 100%;
-  height: auto;
-}
-
 /* =========================================================
     SECTION WRAPPER
     ========================================================= */
@@ -312,22 +313,6 @@
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-}
-
-.section-title-chip {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #e75462;
-  background: #efe9fe;
-  padding: 4px 10px;
-  border-radius: 20px;
-}
-
-.section-title-chip .material-icons-outlined {
-  font-size: 15px;
 }
 
 .section-title {
@@ -369,6 +354,73 @@
 }
 
 /* =========================================================
+    BUSINESSES TOOLBAR — sort + view toggle
+    ========================================================= */
+
+.businesses-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.sort-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #635b76;
+}
+
+.sort-select {
+  border: 1px solid #eee6fa;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1c1533;
+  background: #fff;
+  cursor: pointer;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: #e75462;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 4px;
+  background: #f4f1fb;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.view-toggle-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8b8299;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.view-toggle-btn .material-icons-outlined {
+  font-size: 18px;
+}
+
+.view-toggle-btn.active {
+  background: #ffffff;
+  color: #e75462;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================================================
     SHARED COLOR VARIANTS (category icons, badges)
     ========================================================= */
 
@@ -376,42 +428,34 @@
   background: #eaf0ff;
   color: #4c6fe0;
 }
-
 .c-red {
   background: #fdeceb;
   color: #e6483f;
 }
-
 .c-pink {
   background: #fde9f2;
   color: #e93d82;
 }
-
 .c-green {
   background: #e6f7ec;
   color: #1f9d55;
 }
-
 .c-blue {
   background: #e8f2fe;
   color: #2f8de0;
 }
-
 .c-orange {
   background: #fff0e3;
   color: #f0954b;
 }
-
 .c-purple {
   background: #efe9fe;
   color: #e75462;
 }
-
 .c-teal {
   background: #e3f6f4;
   color: #16a394;
 }
-
 .c-neutral {
   background: #f4f4f6;
   color: #8b8299;
@@ -453,7 +497,7 @@
 }
 
 /* =========================================================
-    BROWSE / POPULAR CATEGORIES (horizontally scrollable)
+    POPULAR CATEGORIES — tab style (icon + label, horizontal)
     ========================================================= */
 
 .category-row-wrapper {
@@ -462,7 +506,7 @@
 
 .category-row {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   overflow-x: auto;
   scroll-behavior: smooth;
   padding: 2px 2px 10px;
@@ -473,8 +517,8 @@
   display: none;
 }
 
-.category-card {
-  flex: 0 0 132px;
+.category-tab {
+  flex: 0 0 128px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -482,32 +526,37 @@
   gap: 10px;
   padding: 16px 10px;
   background: #fff;
-  border: 1px solid #eee6fa;
+  border: 1.5px solid #eee6fa;
   border-radius: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.category-card:hover {
+.category-tab:hover {
   border-color: #e75462;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(108, 76, 224, 0.1);
 }
 
-.category-card-icon {
-  width: 42px;
-  height: 42px;
+.category-tab.active {
+  border-color: #e75462;
+  box-shadow: 0 6px 16px rgba(231, 84, 98, 0.16);
+}
+
+.category-tab-icon {
+  width: 44px;
+  height: 44px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.category-card-icon .material-icons-outlined {
-  font-size: 21px;
+.category-tab-icon .material-icons-outlined {
+  font-size: 22px;
 }
 
-.category-card h4 {
+.category-tab h4 {
   margin: 0;
   font-size: 12.5px;
   font-weight: 600;
@@ -519,35 +568,186 @@
 }
 
 /* =========================================================
+    BUSINESSES LAYOUT — sidebar + content
+    ========================================================= */
+
+.businesses-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* ---- Filters sidebar ---- */
+
+.filters-sidebar {
+  flex: 0 0 260px;
+  width: 260px;
+  background: #fff;
+  border: 1px solid #eee6fa;
+  border-radius: 16px;
+  padding: 18px 18px 22px;
+  position: sticky;
+  top: 16px;
+  box-shadow: 0 4px 20px rgba(108, 76, 224, 0.05);
+}
+
+.filters-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.filter-heading {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0d475c;
+}
+
+.clear-filters {
+  color: #e75462;
+  font-size: 12px;
+  font-weight: 600;
+  background: #fde9f2;
+  padding: 5px 12px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.clear-filters:hover {
+  background: #fcd7e5;
+}
+
+.filter-separator {
+  border: none;
+  border-top: 1px solid #eee6fa;
+  margin: 14px 0;
+}
+
+.filter-group-title {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1c1533;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #eee6fa;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #1c1533;
+  background: #f8f6fd;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #e75462;
+}
+
+.filter-checkbox-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 0;
+  cursor: pointer;
+  font-size: 13px;
+  color: #4a4358;
+}
+
+.filter-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-checkbox-row input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: #e75462;
+  cursor: pointer;
+}
+
+.filter-checkbox-count {
+  font-size: 11.5px;
+  color: #8b8299;
+}
+
+.rating-filter-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.rating-filter-stars .material-icons-outlined {
+  font-size: 14px;
+  color: #f5a623;
+}
+
+.show-more-btn {
+  margin-top: 4px;
+  border: none;
+  background: none;
+  color: #e75462;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.show-more-btn:hover {
+  text-decoration: underline;
+}
+
+/* ---- Results content ---- */
+
+.businesses-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* =========================================================
     BUSINESS GRID (Businesses Near You / Search Results)
     ========================================================= */
 
 .business-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 18px;
+  gap: 22px;
 }
 
+/* =========================================================
+   UPDATED BUSINESS CARD STYLES (Image Overlay + Larger Text)
+   ========================================================= */
+
 .business-card {
+  border-radius: 12px;
+  overflow: hidden; /* Important: keeps the overlay contained */
+  border: 1px solid #e7e7e7;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   background: #fff;
-  border: 1px solid #e8e8e8;
-  border-radius: 14px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   cursor: pointer;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
-  position: relative;
 }
 
 .business-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
+/* Taller image to accommodate the overlay text */
 .business-card-image-wrapper {
   position: relative;
-  height: 110px;
+  height: 160px; /* Increased from 82px */
+  width: 100%;
   background: #f5f6f8;
   overflow: hidden;
 }
@@ -573,40 +773,41 @@
   color: #8b6cf1;
 }
 
-.business-card-verified {
+/* Dark gradient overlay so white text is readable */
+.business-card-image-overlay {
   position: absolute;
-  top: 8px;
-  left: 8px;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 12, 40, 0.05) 0%,
+    rgba(20, 12, 40, 0.4) 50%,
+    rgba(20, 12, 40, 0.85) 100%
+  );
   display: flex;
-  align-items: center;
-  gap: 3px;
-  background: rgba(255, 255, 255, 0.95);
-  color: #1f9d55;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 8px 3px 6px;
-  border-radius: 20px;
+  align-items: flex-end;
+  padding: 12px;
+  gap: 12px;
+  pointer-events: none; /* Allows clicks to pass through to the card */
 }
 
-.business-card-verified .material-icons-outlined {
-  font-size: 12px;
-}
-
+/* Logo sits inside the overlay now */
 .business-card-logo {
-  position: absolute;
-  left: 12px;
-  top: 88px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  position: relative; /* Changed from absolute */
+  bottom: auto; /* Reset */
+  left: auto; /* Reset */
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
   overflow: hidden;
-  border: 3px solid #fff;
+  border: 2px solid #fff;
   background: #efe9fe;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   z-index: 2;
+  pointer-events: auto; /* Make logo clickable if needed */
 }
 
 .business-card-logo img {
@@ -616,170 +817,335 @@
 }
 
 .business-card-initials {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 18px; /* Increased size */
+  font-weight: 700;
   color: #e75462;
 }
 
-.business-card-body {
-  padding: 24px 14px 14px;
+/* Heading container inside the overlay */
+.business-card-image-overlay .business-card-heading {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 2px;
 }
 
-.business-name {
-  margin: 0 0 2px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #0d475c;
+.business-card-image-overlay .business-name {
+  margin: 0 0 4px 0;
+  font-size: 16px; /* Increased size */
+  font-weight: 700;
+  color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
-.business-category {
-  margin: 0 0 6px 0;
-  font-size: 12px;
-  color: #635b67;
-}
-
-.business-location {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 11px;
-  color: #888;
-  margin-bottom: 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.business-location .material-icons-outlined {
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
-.business-rating {
+.business-card-image-overlay .business-rating {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
-  margin-bottom: 12px;
+  font-size: 12px; /* Increased size */
+  color: #e0e0e0;
   flex-wrap: wrap;
 }
 
-.business-rating .rating-stars {
+.business-card-image-overlay .rating-stars {
   display: flex;
   align-items: center;
   gap: 2px;
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.business-rating .rating-stars .material-icons-outlined {
-  font-size: 15px;
+.business-card-image-overlay .rating-stars .material-icons-outlined {
+  font-size: 14px;
   color: #f5a623;
 }
 
-.business-rating .rating-count {
+.business-card-image-overlay .rating-count {
   font-size: 11px;
-  color: #888;
+  color: #ccc;
 }
 
-.business-rating .rating-divider {
-  color: #ddd;
+.business-card-image-overlay .rating-divider {
+  color: #888;
   margin: 0 1px;
 }
 
-.business-rating .business-years {
-  font-size: 11px;
-  color: #888;
-}
-
-.business-card-footer {
-  display: flex;
+.business-card-image-overlay .business-open-state {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-}
-
-.view-details-btn {
-  flex: 1;
-  padding: 8px 0;
-  background: #e75462;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 12px;
+  gap: 4px;
+  font-size: 11px;
   font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease;
+  color: #4ade80;
 }
 
-.view-details-btn:hover {
-  background: #5a3bd0;
+.business-card-image-overlay .business-open-state.closed {
+  color: #f87171;
 }
 
-.icon-btn {
-  width: 32px;
-  height: 32px;
+.business-card-image-overlay .open-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
+  background: currentColor;
+  display: inline-block;
+}
+
+/* Top badges */
+.business-card-verified {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e6483f;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #eaf0ff;
-  color: #4c6fe0;
-  flex-shrink: 0;
-  text-decoration: none;
-  transition: background 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 3;
 }
 
-.icon-btn .material-icons-outlined {
+.business-card-verified .material-icons-outlined {
+  font-size: 15px;
+}
+
+.business-card-favorite {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  color: #8b8299;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 3;
+}
+
+.business-card-favorite:hover {
+  transform: scale(1.1);
+}
+
+.business-card-favorite .material-icons-outlined {
   font-size: 16px;
 }
 
-.icon-btn:hover {
+.business-card-favorite.active {
+  color: #e75462;
+}
+
+/* =========================================================
+   CARD BODY (Only contains Category, Desc, Tags, Footer)
+   ========================================================= */
+.business-card-body {
+  padding: 12px 12px 12px; /* Adjusted padding since logo is no longer here */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.business-category {
+  margin: 0 0 4px 0;
+  font-size: 13px; /* Increased size */
+  font-weight: 700;
+  color: #4c6fe0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.business-desc {
+  margin: 0 0 10px 0;
+  font-size: 12px; /* Increased size */
+  color: #8b8299;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.business-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.business-tag {
+  font-size: 10px; /* Increased size */
+  font-weight: 600;
+  color: #4a4358;
+  background: #f4f1fb;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.business-tag.more {
+  color: #8b8299;
+  background: #f4f4f6;
+}
+
+/* =========================================================
+   FOOTER BUTTONS (Kept similar but slightly larger text)
+   ========================================================= */
+.business-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto; /* Pushes footer to bottom if content varies */
+}
+
+.view-details-btn {
+  flex: 1.4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 9px 0;
+  background: linear-gradient(90deg, #f12f72, #ff3d91);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 11px; /* Increased size */
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.view-details-btn .material-icons-outlined {
+  font-size: 14px;
+}
+
+.view-details-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(231, 84, 98, 0.28);
+}
+
+.pill-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 9px 6px;
+  border-radius: 8px;
+  font-size: 10.5px; /* Increased size */
+  font-weight: 700;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.pill-btn .material-icons-outlined {
+  font-size: 13px;
+}
+
+.pill-call {
+  color: #4c6fe0;
+  background: #eaf0ff;
+  border-color: #dce6ff;
+}
+
+.pill-call:hover {
   background: #dbe6ff;
 }
 
-.icon-btn.whatsapp {
-  background: #e6f7ec;
+.pill-whatsapp {
   color: #1f9d55;
+  background: #e6f7ec;
+  border-color: #d4f0dd;
 }
 
-.icon-btn.whatsapp:hover {
+.pill-whatsapp:hover {
   background: #d3f0dd;
 }
 
-/* View More */
-.view-more-wrapper {
+/* ---- List view variant ---- */
+
+.business-grid.list-view {
   display: flex;
-  justify-content: center;
-  margin-top: 28px;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.view-more-btn {
-  display: inline-flex;
+.business-grid.list-view .business-card {
+  display: flex;
+  align-items: stretch;
+}
+
+.business-grid.list-view .business-card-image-wrapper {
+  width: 200px;
+  height: auto;
+  flex-shrink: 0;
+  border-radius: 16px 0 0 16px;
+}
+
+.business-grid.list-view .business-card-logo {
+  left: 176px;
+  bottom: 14px;
+}
+
+.business-grid.list-view .business-card-body {
+  flex: 1;
+  padding: 14px 16px 14px 16px;
+}
+
+.business-grid.list-view .business-card-footer {
+  max-width: 420px;
+}
+
+/* =========================================================
+    INFINITE SCROLL
+    ========================================================= */
+
+.scroll-sentinel {
+  height: 1px;
+  width: 100%;
+}
+
+.infinite-loading-row {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  background: #fff;
-  border: 1.5px solid #e75462;
-  color: #e75462;
-  padding: 10px 26px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 13.5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  justify-content: center;
+  gap: 10px;
+  padding: 26px 0 6px;
+  color: #635b76;
+  font-size: 13px;
 }
 
-.view-more-btn:hover {
-  background: #e75462;
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(231, 84, 98, 0.25);
+.infinite-loading-row.hidden {
+  display: none;
 }
 
-.view-more-btn .material-icons-outlined {
-  font-size: 18px;
+.spinner.small {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+.end-of-results {
+  text-align: center;
+  padding: 20px 0 4px;
+  font-size: 12.5px;
+  color: #8b8299;
 }
 
 /* =========================================================
@@ -912,7 +1278,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #e75462;
+  background: linear-gradient(90deg, #e75462, #e93d82);
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -926,189 +1292,12 @@
 }
 
 .list-business-btn:hover {
-  background: #5a3bd0;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(108, 76, 224, 0.3);
+  box-shadow: 0 6px 18px rgba(231, 84, 98, 0.3);
 }
 
 .list-business-btn .material-icons-outlined {
   font-size: 18px;
-}
-
-/* =========================================================
-    TOP RATED ROW (kept for when that section is re-enabled)
-    ========================================================= */
-
-.top-rated-row-wrapper {
-  position: relative;
-}
-
-.top-rated-row {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 2px 2px 10px;
-  scrollbar-width: none;
-}
-
-.top-rated-row::-webkit-scrollbar {
-  display: none;
-}
-
-.top-rated-card {
-  flex: 0 0 160px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 18px 14px;
-  background: #fff;
-  border: 1px solid #e8e8e8;
-  border-radius: 14px;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.top-rated-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-}
-
-.top-rated-logo {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #fef0f2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-.top-rated-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.top-rated-initials {
-  font-size: 18px;
-  font-weight: 600;
-  color: #e75462;
-}
-
-.top-rated-name {
-  margin: 0 0 2px 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: #0d475c;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-.top-rated-category {
-  margin: 0 0 6px 0;
-  font-size: 11px;
-  color: #8b8299;
-}
-
-.top-rated-rating {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: #333;
-  font-weight: 600;
-}
-
-.top-rated-rating .material-icons-outlined {
-  font-size: 15px;
-  color: #f5a623;
-}
-
-/* =========================================================
-    OFFERS ROW
-    ========================================================= */
-
-.offers-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.offer-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  background: #fff;
-  border: 1px solid #e8e8e8;
-  border-radius: 12px;
-  transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
-  flex: 1 1 220px;
-  max-width: 280px;
-}
-
-.offer-card:hover {
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
-  transform: translateY(-2px);
-}
-
-.offer-badge {
-  flex-shrink: 0;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.1;
-}
-
-.offer-badge-value {
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.offer-badge-suffix {
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-.offer-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.offer-title {
-  margin: 0 0 2px 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1a1a1a;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.offer-description {
-  margin: 0;
-  font-size: 11px;
-  color: #635b67;
-}
-
-.offer-arrow {
-  color: #ccc;
-  font-size: 20px;
-  flex-shrink: 0;
 }
 
 /* =========================================================
@@ -1198,7 +1387,6 @@
   font-weight: 600;
 }
 
-/* Responsive adjustments for offers grid */
 @media (max-width: 1200px) {
   .offers-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -1281,7 +1469,6 @@
 }
 
 .trust-bar-inner {
-  /* max-width: 1440px; */
   margin: 0 auto;
   padding: 15px 0px;
   display: flex;
@@ -1321,22 +1508,18 @@
   background: #efe9fe;
   color: #6c4ce0;
 }
-
 .trust-icon.c-pink {
   background: #fde9f2;
   color: #e93d82;
 }
-
 .trust-icon.c-orange {
   background: #fff0e3;
   color: #f0954b;
 }
-
 .trust-icon.c-green {
   background: #e6f7ec;
   color: #1f9d55;
 }
-
 .trust-icon.c-indigo {
   background: #eaf0ff;
   color: #4c6fe0;
@@ -1363,20 +1546,13 @@
     ========================================================= */
 
 @media (max-width: 1100px) {
-  .business-hero-illustration {
-    width: 260px;
+  .filters-sidebar {
+    flex: 0 0 220px;
+    width: 220px;
   }
 }
 
 @media (max-width: 992px) {
-  .business-hero-inner {
-    flex-wrap: wrap;
-  }
-
-  .business-hero-illustration {
-    display: none;
-  }
-
   .why-list-content {
     flex-direction: column;
   }
@@ -1386,7 +1562,17 @@
   }
 
   .business-grid {
-    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+
+  .businesses-layout {
+    flex-direction: column;
+  }
+
+  .filters-sidebar {
+    position: static;
+    width: 100%;
+    flex: 1 1 auto;
   }
 }
 
@@ -1396,7 +1582,7 @@
   }
 
   .business-hero {
-    padding: 28px 18px;
+    padding: 40px 18px;
     margin-top: 16px;
     border-radius: 18px;
   }
@@ -1409,7 +1595,11 @@
     font-size: 15px;
   }
 
-  .feature-cards {
+  .hero-support-badge {
+    display: none;
+  }
+
+  .feature-strip-inner {
     gap: 10px;
   }
 
@@ -1445,7 +1635,26 @@
 
   .business-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 14px;
+  }
+
+  .business-grid.list-view .business-card {
+    flex-direction: column;
+  }
+
+  .business-grid.list-view .business-card-image-wrapper {
+    width: 100%;
+    height: 130px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .business-grid.list-view .business-card-logo {
+    left: 12px;
+    bottom: -26px;
+  }
+
+  .business-grid.list-view .business-card-body {
+    padding: 34px 14px 14px 78px;
   }
 
   .trust-bar-inner {
@@ -1493,18 +1702,14 @@
     flex: 1 1 100%;
   }
 
-  .category-card {
+  .category-tab {
     flex: 0 0 108px;
     padding: 12px 8px;
   }
 
   .business-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .top-rated-card {
-    flex: 0 0 140px;
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .offer-card {
@@ -1513,23 +1718,335 @@
   }
 }
 
-@media (max-width: 360px) {
+/* =========================================================
+   CLAXIFIED BUSINESS CARDS — COMPACT MARKETPLACE STYLE
+   Appended override: keeps existing HTML/Angular bindings intact.
+   Designed to match the supplied compact reference cards.
+   ========================================================= */
+
+.business-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.business-card {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e7e7e7;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background: #fff;
+}
+
+.business-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Short image/header like the reference */
+.business-card-image-wrapper {
+  height: 130px;
+  border-radius: 12px 12px 0 0;
+}
+
+.business-card-image {
+  object-fit: cover;
+}
+
+.business-card-image-placeholder .material-icons-outlined {
+  font-size: 26px;
+}
+
+/* Small favorite button */
+.business-card-favorite {
+  top: 6px;
+  right: 6px;
+  width: 25px;
+  height: 25px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.14);
+}
+
+.business-card-favorite .material-icons-outlined {
+  font-size: 15px;
+}
+
+/* Compact verified badge */
+.business-card-verified {
+  top: 6px;
+  left: 6px;
+  width: 24px;
+  height: 24px;
+}
+
+.business-card-verified .material-icons-outlined {
+  font-size: 14px;
+}
+
+.business-card-body {
+  padding: 9px 10px 9px;
+  min-height: 0;
+}
+
+.business-card-heading {
+  margin-bottom: 2px;
+}
+
+.business-name {
+  margin: 0 0 2px;
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #0d475c;
+}
+
+.business-rating {
+  gap: 3px;
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+
+.business-rating .rating-stars {
+  gap: 1px;
+  font-size: 10.5px;
+}
+
+.business-rating .rating-stars .material-icons-outlined {
+  font-size: 12px;
+}
+
+.business-rating .rating-count {
+  font-size: 10px;
+}
+
+.business-rating .rating-divider {
+  margin: 0;
+}
+
+.business-open-state {
+  gap: 3px;
+  font-size: 10px;
+}
+
+.open-dot {
+  width: 5px;
+  height: 5px;
+}
+
+.business-category {
+  margin: 5px 0 3px;
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #4c6fe0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* One compact line instead of a tall description block */
+.business-desc {
+  margin: 0 0 6px;
+  font-size: 11.5px;
+  line-height: 1.35;
+  -webkit-line-clamp: 1;
+}
+
+.business-tags {
+  gap: 4px;
+  margin-bottom: 8px;
+  min-height: 20px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.business-tag {
+  font-size: 10.5px;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.business-tag.more {
+  flex-shrink: 0;
+}
+
+/* Compact 3-button footer */
+.business-card-footer {
+  gap: 4px;
+}
+
+.view-details-btn,
+.pill-btn {
+  min-width: 0;
+  height: 28px;
+  padding: 0 5px;
+  border-radius: 7px;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.view-details-btn {
+  flex: 1.15;
+  gap: 2px;
+  background: linear-gradient(90deg, #f12f72, #ff3d91);
+}
+
+.view-details-btn .material-icons-outlined,
+.pill-btn .material-icons-outlined {
+  font-size: 11px;
+}
+
+.pill-btn {
+  flex: 1;
+  border-width: 1px;
+}
+
+.pill-call {
+  color: #4c6fe0;
+  background: #eef3ff;
+  border-color: #d9e4ff;
+}
+
+.pill-whatsapp {
+  color: #159447;
+  background: #e9f9ef;
+  border-color: #cfeeda;
+}
+
+/* =========================================================
+   RESPONSIVE — retain compact marketplace cards
+   ========================================================= */
+
+@media (max-width: 1200px) {
   .business-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-.c-blue {
-  background: #e8f2fe;
-  color: #2f8de0;
+@media (max-width: 992px) {
+  .business-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .business-card-image-wrapper {
+    height: 78px;
+  }
 }
 
-.c-teal {
-  background: #e3f6f4;
-  color: #16a394;
+@media (max-width: 768px) {
+  .business-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .business-card-image-wrapper {
+    height: 82px;
+  }
+
+  .business-card-body {
+    padding: 8px;
+  }
+
+  .business-name {
+    font-size: 12px;
+  }
+
+  .business-rating {
+    font-size: 9px;
+  }
+
+  .business-desc {
+    font-size: 9px;
+  }
+
+  .view-details-btn,
+  .pill-btn {
+    height: 27px;
+    font-size: 8.5px;
+  }
 }
 
-.c-neutral {
-  background: #f4f4f6;
-  color: #8b8299;
+@media (max-width: 480px) {
+  .business-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .business-card-image-wrapper {
+    height: 105px;
+  }
+
+  .business-card-body {
+    padding: 9px 10px;
+  }
+
+  .business-name {
+    font-size: 13px;
+  }
+
+  .business-rating,
+  .business-rating .rating-count,
+  .business-open-state {
+    font-size: 10px;
+  }
+
+  .business-desc {
+    font-size: 9.5px;
+  }
+
+  .business-tag {
+    font-size: 9px;
+  }
+
+  .view-details-btn,
+  .pill-btn {
+    height: 29px;
+    font-size: 9px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE ADJUSTMENTS
+   ========================================================= */
+@media (max-width: 768px) {
+  .business-card-image-wrapper {
+    height: 140px; /* Slightly shorter on mobile */
+  }
+
+  .business-card-image-overlay .business-name {
+    font-size: 14px; /* Slightly smaller on mobile but still readable */
+  }
+
+  .business-card-image-overlay .business-rating {
+    font-size: 11px;
+  }
+
+  .business-card-body {
+    padding: 10px;
+  }
+
+  .business-desc {
+    font-size: 11px;
+  }
+
+  .view-details-btn,
+  .pill-btn {
+    font-size: 9.5px;
+    padding: 8px 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .business-card-image-wrapper {
+    height: 150px;
+  }
+
+  .business-card-image-overlay .business-name {
+    font-size: 15px;
+  }
 }

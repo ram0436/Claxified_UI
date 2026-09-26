@@ -1,4 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { forkJoin, of } from 'rxjs';
@@ -10,6 +17,7 @@ import { CommonService } from 'src/app/shared/service/common.service';
 
 interface OfferViewModel extends BusinessOfferDto {
   businessName: string;
+  icon?: string;
 }
 
 interface TrustItem {
@@ -19,9 +27,14 @@ interface TrustItem {
   colorClass: string;
 }
 
-interface OfferViewModel extends BusinessOfferDto {
-  businessName: string;
-  icon?: string;
+interface FilterBucket {
+  value: string | number;
+  label: string;
+}
+
+interface CityOption {
+  city: string;
+  count: number;
 }
 
 @Component({
@@ -29,7 +42,10 @@ interface OfferViewModel extends BusinessOfferDto {
   templateUrl: './business-home.component.html',
   styleUrls: ['./business-home.component.css'],
 })
-export class BusinessHomeComponent implements OnInit {
+export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('scrollSentinel') scrollSentinel!: ElementRef<HTMLDivElement>;
+  private intersectionObserver?: IntersectionObserver;
+
   // Search
   searchQuery: string = '';
 
@@ -39,16 +55,41 @@ export class BusinessHomeComponent implements OnInit {
   businessesError: boolean = false;
   private allActiveBusinesses: BusinessDirectoryItem[] = [];
 
-  // Top Rated Businesses
-  topRatedBusinesses: any[] = [];
-
   businessCategories: any[] = [];
   categoriesLoading: boolean = true;
   categoriesError: boolean = false;
   categoryDisplayLimit: number = 10;
+  showAllCategories: boolean = false;
 
-  private readonly BUSINESSES_PER_LOAD = 30;
+  private readonly BUSINESSES_PER_LOAD = 12;
   visibleBusinessesCount: number = this.BUSINESSES_PER_LOAD;
+  isLoadingMore: boolean = false;
+
+  // View / sort state
+  viewMode: 'grid' | 'list' = 'grid';
+  sortBy: 'relevance' | 'rating' | 'reviews' | 'newest' = 'relevance';
+
+  // Filters
+  selectedCategoryIds: Set<number> = new Set();
+  selectedCity: string = '';
+  selectedRatingMin: number | null = null;
+  selectedExperience: string | null = null;
+  verifiedOnly: boolean = false;
+  cityOptions: CityOption[] = [];
+
+  favoriteIds: Set<number> = new Set();
+
+  ratingBuckets: FilterBucket[] = [
+    { value: 4.5, label: '4.5 & above' },
+    { value: 4.0, label: '4.0 & above' },
+    { value: 3.5, label: '3.5 & above' },
+  ];
+
+  experienceBuckets: FilterBucket[] = [
+    { value: '10+', label: '10+ years' },
+    { value: '5-10', label: '5 - 10 years' },
+    { value: '0-5', label: 'Under 5 years' },
+  ];
 
   offers: OfferViewModel[] = [];
   offersLoading: boolean = true;
@@ -56,21 +97,6 @@ export class BusinessHomeComponent implements OnInit {
 
   private readonly OFFER_SOURCE_BUSINESS_LIMIT = 100;
   private readonly OFFER_DISPLAY_LIMIT = 6;
-
-  offerColors: string[] = [
-    '#F0544E',
-    '#F0954B',
-    '#6C4CE0',
-    '#4C6FE0',
-    '#E93D82',
-  ];
-  offerBgColors: string[] = [
-    '#FDECEA',
-    '#FFF0E3',
-    '#EFE9FE',
-    '#EAF0FF',
-    '#FDE9F2',
-  ];
 
   categoryIcons: { [key: string]: string } = {
     'Real Estate': 'business_center',
@@ -120,6 +146,12 @@ export class BusinessHomeComponent implements OnInit {
     },
   ];
 
+  selectedBusinessTypes: Set<string> = new Set();
+  selectedSellerTypes: Set<string> = new Set();
+
+  businessTypeOptions: { value: string; count: number }[] = [];
+  sellerTypeOptions: { value: string; count: number }[] = [];
+
   constructor(
     private businessService: BusinessService,
     private commonService: CommonService,
@@ -132,6 +164,106 @@ export class BusinessHomeComponent implements OnInit {
     this.fetchCategories();
   }
 
+  ngAfterViewInit(): void {
+    this.setupInfiniteScroll();
+  }
+
+  ngOnDestroy(): void {
+    this.intersectionObserver?.disconnect();
+  }
+
+  private readonly htmlTagRegex = /<[^>]*>/g;
+
+  stripHtml(value: string | undefined | null): string {
+    if (!value) return '';
+    const withoutTags = value.replace(this.htmlTagRegex, ' ');
+    return withoutTags
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  getBusinessDescription(business: BusinessDirectoryItem): string {
+    const clean = this.stripHtml((business as any).description);
+    return (
+      clean ||
+      `${business.businessCategory || 'This business'} near you — quality service you can trust.`
+    );
+  }
+
+  // =========================================================
+  // INFINITE SCROLL (scroll-triggered "server-side style" pagination)
+  // =========================================================
+
+  private setupInfiniteScroll(): void {
+    if (!this.scrollSentinel || typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+    this.intersectionObserver?.disconnect();
+
+    this.intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.some((entry) => entry.isIntersecting);
+        if (visible) {
+          this.triggerLoadMore();
+        }
+      },
+      { root: null, rootMargin: '200px', threshold: 0 },
+    );
+    this.intersectionObserver.observe(this.scrollSentinel.nativeElement);
+  }
+
+  private triggerLoadMore(): void {
+    if (this.isLoadingMore || !this.hasMoreBusinesses) {
+      return;
+    }
+    this.isLoadingMore = true;
+    setTimeout(() => {
+      this.visibleBusinessesCount += this.BUSINESSES_PER_LOAD;
+      this.isLoadingMore = false;
+    }, 300);
+  }
+
+  private updateBusinessTypeOptions(): void {
+    const counts = new Map<string, number>();
+    this.allActiveBusinesses.forEach((b: any) => {
+      if (!b.businessType) return;
+      counts.set(b.businessType, (counts.get(b.businessType) || 0) + 1);
+    });
+    this.businessTypeOptions = Array.from(counts.entries())
+      .map(([value, count]) => ({ value, count }))
+      .sort((a, b) => b.count - a.count);
+  }
+
+  private updateOfferingTypeOptions(): void {
+    const counts = new Map<string, number>();
+    this.allActiveBusinesses.forEach((b: any) => {
+      if (!b.sellerType) return;
+      counts.set(b.sellerType, (counts.get(b.sellerType) || 0) + 1);
+    });
+    this.sellerTypeOptions = Array.from(counts.entries())
+      .map(([value, count]) => ({ value, count }))
+      .sort((a, b) => b.count - a.count);
+  }
+
+  toggleBusinessTypeFilter(value: string): void {
+    this.selectedBusinessTypes.has(value)
+      ? this.selectedBusinessTypes.delete(value)
+      : this.selectedBusinessTypes.add(value);
+    this.onFiltersChanged();
+  }
+
+  toggleSellerTypeFilter(value: string): void {
+    this.selectedSellerTypes.has(value)
+      ? this.selectedSellerTypes.delete(value)
+      : this.selectedSellerTypes.add(value);
+    this.onFiltersChanged();
+  }
+
+  loadMoreBusinesses(): void {
+    this.triggerLoadMore();
+  }
+
   // =========================================================
   // SEARCH
   // =========================================================
@@ -140,16 +272,20 @@ export class BusinessHomeComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input) {
       this.searchQuery = input.value;
-      this.visibleBusinessesCount = this.BUSINESSES_PER_LOAD;
+      this.resetPagination();
     }
   }
 
   performSearch(): void {
-    this.visibleBusinessesCount = this.BUSINESSES_PER_LOAD;
+    this.resetPagination();
     const businessSection = document.getElementById('businesses-section');
     if (businessSection) {
       businessSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  }
+
+  private resetPagination(): void {
+    this.visibleBusinessesCount = this.BUSINESSES_PER_LOAD;
   }
 
   // =========================================================
@@ -163,7 +299,7 @@ export class BusinessHomeComponent implements OnInit {
       (data: BusinessDirectoryItem[]) => {
         const activeBusinesses = (data || []).filter((b) => b.status !== 0);
         activeBusinesses.forEach((b) => {
-          (b as any).rating = (4 + Math.random() * 0.8).toFixed(1);
+          (b as any).rating = Number((4 + Math.random() * 0.8).toFixed(1));
           (b as any).reviewCount = Math.floor(Math.random() * 200) + 20;
           (b as any).establishedYear = 2015 + Math.floor(Math.random() * 10);
         });
@@ -176,6 +312,11 @@ export class BusinessHomeComponent implements OnInit {
           activeBusinesses.slice(0, this.OFFER_SOURCE_BUSINESS_LIMIT),
         );
         this.updateCategoryCounts();
+        this.updateCityOptions();
+        this.updateBusinessTypeOptions();
+        this.updateOfferingTypeOptions();
+
+        setTimeout(() => this.setupInfiniteScroll());
       },
       () => {
         this.businessesError = true;
@@ -220,6 +361,29 @@ export class BusinessHomeComponent implements OnInit {
         (b) => b.businessCategoryId === category.id,
       ).length;
     });
+  }
+
+  visibleCategoryFilters(): any[] {
+    if (this.showAllCategories) {
+      return this.businessCategories;
+    }
+    return this.businessCategories.slice(0, this.categoryDisplayLimit);
+  }
+
+  toggleShowAllCategories(): void {
+    this.showAllCategories = !this.showAllCategories;
+  }
+
+  private updateCityOptions(): void {
+    const counts = new Map<string, number>();
+    this.allActiveBusinesses.forEach((b) => {
+      const city = b.businessAddressDto?.city;
+      if (!city) return;
+      counts.set(city, (counts.get(city) || 0) + 1);
+    });
+    this.cityOptions = Array.from(counts.entries())
+      .map(([city, count]) => ({ city, count }))
+      .sort((a, b) => b.count - a.count);
   }
 
   getCategoryCountLabel(category: any): string {
@@ -296,6 +460,7 @@ export class BusinessHomeComponent implements OnInit {
     };
     return iconMap[offerType] || 'local_offer';
   }
+
   private isOfferValid(offer: BusinessOfferDto): boolean {
     if (!offer.endDate) return true;
     return new Date(offer.endDate).getTime() >= new Date().setHours(0, 0, 0, 0);
@@ -305,15 +470,183 @@ export class BusinessHomeComponent implements OnInit {
     return offer.id;
   }
 
+  // =========================================================
+  // FILTERING / SORTING
+  // =========================================================
+
   get filteredBusinesses(): BusinessDirectoryItem[] {
     const q = this.searchQuery.trim().toLowerCase();
-    if (!q) return this.allActiveBusinesses;
-    return this.allActiveBusinesses.filter((b: any) => {
-      const name = (b.businessName || '').toLowerCase();
-      const category = (b.businessCategory || '').toLowerCase();
-      const location = (this.getLocationLabel(b) || '').toLowerCase();
-      return name.includes(q) || category.includes(q) || location.includes(q);
+
+    let result = this.allActiveBusinesses.filter((b: any) => {
+      if (q) {
+        const name = (b.businessName || '').toLowerCase();
+        const category = (b.businessCategory || '').toLowerCase();
+        const location = (this.getLocationLabel(b) || '').toLowerCase();
+        if (
+          !name.includes(q) &&
+          !category.includes(q) &&
+          !location.includes(q)
+        ) {
+          return false;
+        }
+      }
+
+      if (
+        this.selectedCategoryIds.size > 0 &&
+        !this.selectedCategoryIds.has(b.businessCategoryId)
+      ) {
+        return false;
+      }
+
+      if (
+        this.selectedCity &&
+        b.businessAddressDto?.city !== this.selectedCity
+      ) {
+        return false;
+      }
+
+      if (
+        this.selectedRatingMin !== null &&
+        (b.rating || 0) < this.selectedRatingMin
+      ) {
+        return false;
+      }
+
+      if (this.selectedExperience) {
+        const years = this.getYearsInBusiness(b.establishedYear);
+        if (!this.matchesExperienceBucket(years, this.selectedExperience)) {
+          return false;
+        }
+      }
+
+      if (this.verifiedOnly && !b.businessVerificationDto?.isBusinessVerified) {
+        return false;
+      }
+
+      if (
+        this.selectedBusinessTypes.size > 0 &&
+        !this.selectedBusinessTypes.has((b as any).businessType)
+      ) {
+        return false;
+      }
+      if (
+        this.selectedSellerTypes.size > 0 &&
+        !this.selectedSellerTypes.has((b as any).sellerType)
+      ) {
+        return false;
+      }
+
+      return true;
     });
+
+    result = this.sortBusinesses(result);
+    return result;
+  }
+
+  private sortBusinesses(
+    list: BusinessDirectoryItem[],
+  ): BusinessDirectoryItem[] {
+    const sorted = [...list];
+    switch (this.sortBy) {
+      case 'rating':
+        sorted.sort((a: any, b: any) => (b.rating || 0) - (a.rating || 0));
+        break;
+      case 'reviews':
+        sorted.sort(
+          (a: any, b: any) => (b.reviewCount || 0) - (a.reviewCount || 0),
+        );
+        break;
+      case 'newest':
+        sorted.sort(
+          (a: any, b: any) =>
+            (b.establishedYear || 0) - (a.establishedYear || 0),
+        );
+        break;
+      default:
+        break; // relevance = server/original order
+    }
+    return sorted;
+  }
+
+  private matchesExperienceBucket(years: number, bucket: string): boolean {
+    if (bucket === '0-5') return years < 5;
+    if (bucket === '5-10') return years >= 5 && years < 10;
+    if (bucket === '10+') return years >= 10;
+    return true;
+  }
+
+  onSortChange(): void {
+    this.resetPagination();
+  }
+
+  onFiltersChanged(): void {
+    this.resetPagination();
+  }
+
+  toggleCategoryFilter(categoryId: number): void {
+    if (this.selectedCategoryIds.has(categoryId)) {
+      this.selectedCategoryIds.delete(categoryId);
+    } else {
+      this.selectedCategoryIds.add(categoryId);
+    }
+    this.onFiltersChanged();
+  }
+
+  toggleRatingFilter(value: number): void {
+    this.selectedRatingMin = this.selectedRatingMin === value ? null : value;
+    this.onFiltersChanged();
+  }
+
+  toggleExperienceFilter(value: string): void {
+    this.selectedExperience = this.selectedExperience === value ? null : value;
+    this.onFiltersChanged();
+  }
+
+  toggleVerifiedOnlyFilter(): void {
+    this.verifiedOnly = !this.verifiedOnly;
+    this.onFiltersChanged();
+  }
+
+  getRatingCount(minRating: number): number {
+    return this.allActiveBusinesses.filter(
+      (b: any) => (b.rating || 0) >= minRating,
+    ).length;
+  }
+
+  getExperienceCount(bucket: string): number {
+    return this.allActiveBusinesses.filter((b: any) =>
+      this.matchesExperienceBucket(
+        this.getYearsInBusiness(b.establishedYear),
+        bucket,
+      ),
+    ).length;
+  }
+
+  hasActiveFilters(): boolean {
+    return (
+      this.selectedCategoryIds.size > 0 ||
+      this.selectedBusinessTypes.size > 0 ||
+      this.selectedSellerTypes.size > 0 ||
+      !!this.selectedCity ||
+      this.selectedRatingMin !== null ||
+      !!this.selectedExperience ||
+      this.verifiedOnly
+    );
+  }
+
+  clearAllFilters(): void {
+    this.selectedCategoryIds.clear();
+    this.selectedBusinessTypes.clear();
+    this.selectedSellerTypes.clear();
+    this.selectedCity = '';
+    this.selectedRatingMin = null;
+    this.selectedExperience = null;
+    this.verifiedOnly = false;
+    this.onFiltersChanged();
+  }
+
+  setViewMode(mode: 'grid' | 'list'): void {
+    this.viewMode = mode;
   }
 
   get displayedBusinesses(): BusinessDirectoryItem[] {
@@ -324,8 +657,21 @@ export class BusinessHomeComponent implements OnInit {
     return this.visibleBusinessesCount < this.filteredBusinesses.length;
   }
 
-  loadMoreBusinesses(): void {
-    this.visibleBusinessesCount += this.BUSINESSES_PER_LOAD;
+  // =========================================================
+  // FAVORITES (client-side only)
+  // =========================================================
+
+  toggleFavorite(business: BusinessDirectoryItem, event: Event): void {
+    event.stopPropagation();
+    if (this.favoriteIds.has(business.id)) {
+      this.favoriteIds.delete(business.id);
+    } else {
+      this.favoriteIds.add(business.id);
+    }
+  }
+
+  isFavorite(business: BusinessDirectoryItem): boolean {
+    return this.favoriteIds.has(business.id);
   }
 
   // =========================================================
@@ -387,12 +733,33 @@ export class BusinessHomeComponent implements OnInit {
 
   getBusinessPhone(business: BusinessDirectoryItem): string {
     const b = business as any;
-    return b.contactNumber || b.phoneNumber || b.mobileNumber || '';
+    const fromDto =
+      b?.businessContactDto?.mobile ||
+      b?.businessContactDto?.whatsApp ||
+      b?.businessContactDto?.phone;
+
+    if (fromDto) return String(fromDto).trim();
+
+    return (
+      b?.contactNumber || b?.phoneNumber || b?.mobileNumber || b?.mobile || ''
+    );
   }
 
   getWhatsAppLink(business: BusinessDirectoryItem): string {
-    const phone = this.getBusinessPhone(business).replace(/[^\d]/g, '');
-    return phone ? `https://wa.me/${phone}` : '';
+    const b = business as any;
+
+    const wa =
+      b?.businessContactDto?.whatsApp ||
+      b?.whatsApp ||
+      this.getBusinessPhone(business);
+
+    if (!wa) return '';
+
+    let digits = String(wa).replace(/[^\d]/g, '');
+    if (digits.length === 10) {
+      digits = '91' + digits;
+    }
+    return digits ? `https://wa.me/${digits}` : '';
   }
 
   // =========================================================
@@ -403,7 +770,6 @@ export class BusinessHomeComponent implements OnInit {
     if (!categoryName) return 'category';
     const key = categoryName.toLowerCase();
 
-    // Real estate / property
     if (
       key.includes('real estate') ||
       key.includes('property') ||
@@ -411,7 +777,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'apartment';
 
-    // Home services / repair
     if (
       key.includes('home service') ||
       key.includes('repair') ||
@@ -422,7 +787,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'handyman';
 
-    // Education / coaching
     if (
       key.includes('education') ||
       key.includes('school') ||
@@ -433,7 +797,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'school';
 
-    // Health & medical
     if (
       key.includes('health') ||
       key.includes('care') ||
@@ -444,7 +807,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'health_and_safety';
 
-    // Automotive
     if (
       key.includes('automotive') ||
       key.includes('car') ||
@@ -455,7 +817,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'directions_car';
 
-    // Electronics
     if (
       key.includes('electronic') ||
       key.includes('gadget') ||
@@ -465,7 +826,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'devices_other';
 
-    // Beauty / spa / salon
     if (
       key.includes('beauty') ||
       key.includes('wellness') ||
@@ -476,7 +836,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'spa';
 
-    // Food / restaurant
     if (
       key.includes('food') ||
       key.includes('restaurant') ||
@@ -487,11 +846,9 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'restaurant';
 
-    // Music
     if (key.includes('music') || key.includes('dj') || key.includes('band'))
       return 'music_note';
 
-    // Fitness / gym / sports
     if (
       key.includes('fitness') ||
       key.includes('gym') ||
@@ -500,7 +857,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'fitness_center';
 
-    // Photography / video
     if (
       key.includes('photograph') ||
       key.includes('photo') ||
@@ -509,7 +865,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'photo_camera';
 
-    // Legal
     if (
       key.includes('legal') ||
       key.includes('law') ||
@@ -518,7 +873,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'gavel';
 
-    // Finance / accounting / insurance
     if (
       key.includes('finance') ||
       key.includes('account') ||
@@ -528,7 +882,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'account_balance';
 
-    // IT / software
     if (
       key.includes('software') ||
       key.includes('it ') ||
@@ -538,18 +891,14 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'computer';
 
-    // Travel / tour
     if (key.includes('travel') || key.includes('tour') || key.includes('trip'))
       return 'flight';
 
-    // Security
     if (key.includes('security') || key.includes('guard')) return 'security';
 
-    // Cleaning
     if (key.includes('clean') || key.includes('housekeeping'))
       return 'cleaning_services';
 
-    // Marketing / advertising
     if (
       key.includes('market') ||
       key.includes('advertis') ||
@@ -557,7 +906,6 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'campaign';
 
-    // Events / wedding
     if (
       key.includes('event') ||
       key.includes('wedding') ||
@@ -565,11 +913,9 @@ export class BusinessHomeComponent implements OnInit {
     )
       return 'celebration';
 
-    // Pets
     if (key.includes('pet') || key.includes('vet') || key.includes('animal'))
       return 'pets';
 
-    // Tailoring / fashion
     if (
       key.includes('fashion') ||
       key.includes('cloth') ||
@@ -637,14 +983,6 @@ export class BusinessHomeComponent implements OnInit {
     return { value: 'FREE', suffix: '' };
   }
 
-  getOfferColor(index: number): string {
-    return this.offerColors[index % this.offerColors.length];
-  }
-
-  getOfferBgColor(index: number): string {
-    return this.offerBgColors[index % this.offerBgColors.length];
-  }
-
   openBusinessLoginModal(): void {
     this.dialog.open(BusinessLoginComponent, {
       width: '800px',
@@ -654,10 +992,8 @@ export class BusinessHomeComponent implements OnInit {
     });
   }
 
-  // Add this method to format offer validity date
   formatOfferValidity(endDate: string): string {
     if (!endDate) return '';
-    // Using moment.js if available, or plain JS
     const date = new Date(endDate);
     return date.toLocaleDateString('en-IN', {
       day: '2-digit',
