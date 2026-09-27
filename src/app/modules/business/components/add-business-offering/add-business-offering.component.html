@@ -624,6 +624,741 @@
           </div>
         </mat-card>
 
+        <!-- ---------- MENU ITEM DETAILS ---------- -->
+        <mat-card
+          class="section-card"
+          *ngIf="
+            activeSection === 'details' &&
+            selectedOfferingType === OfferingType.MenuItem
+          "
+        >
+          <h3 class="section-title">Menu Item Details</h3>
+          <div [formGroup]="menuItemForm">
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Cuisine Type</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="cuisineType"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Food Type</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    formControlName="foodType"
+                    placeholder="Veg / Non-Veg / Vegan"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Spice Level</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="spiceLevel"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Serving Size</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="servingSize"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Preparation Time</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="preparationTime"
+                    min="0"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Prep Time Unit</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    formControlName="preparationTimeUnit"
+                    placeholder="e.g. Minutes"
+                /></mat-form-field>
+              </div>
+            </div>
+            <label class="field-label">Calories</label>
+            <mat-form-field appearance="outline"
+              ><input matInput type="number" formControlName="calories" min="0"
+            /></mat-form-field>
+            <label class="field-label">Ingredients</label>
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="2"
+                formControlName="ingredients"
+              ></textarea>
+            </mat-form-field>
+            <label class="field-label">Allergens</label>
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="2"
+                formControlName="allergens"
+              ></textarea>
+            </mat-form-field>
+            <mat-checkbox formControlName="isChefSpecial"
+              >Chef's Special</mat-checkbox
+            >
+            <mat-checkbox formControlName="isCustomizable"
+              >Customizable</mat-checkbox
+            >
+            <mat-checkbox formControlName="isAvailable">Available</mat-checkbox>
+          </div>
+        </mat-card>
+
+        <!-- ---------- ROOM / ACCOMMODATION DETAILS ---------- -->
+        <mat-card
+          class="section-card"
+          *ngIf="
+            activeSection === 'details' &&
+            selectedOfferingType === OfferingType.RoomAccommodation
+          "
+        >
+          <h3 class="section-title">Room / Accommodation Details</h3>
+          <div [formGroup]="accommodationForm">
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Room Type</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="roomType"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Bed Type</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="bedType"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Max Occupancy</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="maxOccupancy"
+                    min="0"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Room Size (sqft)</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="roomSizeSqft"
+                    min="0"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Check-in Time</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="checkInTime"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Check-out Time</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="checkOutTime"
+                /></mat-form-field>
+              </div>
+            </div>
+            <label class="field-label">View Type</label>
+            <mat-form-field appearance="outline"
+              ><input matInput formControlName="viewType"
+            /></mat-form-field>
+            <label class="field-label">Amenities</label>
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="2"
+                formControlName="amenities"
+              ></textarea>
+            </mat-form-field>
+            <label class="field-label">Cancellation Policy</label>
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="2"
+                formControlName="cancellationPolicy"
+              ></textarea>
+            </mat-form-field>
+            <mat-checkbox formControlName="breakfastIncluded"
+              >Breakfast Included</mat-checkbox
+            >
+            <mat-checkbox formControlName="freeCancellation"
+              >Free Cancellation</mat-checkbox
+            >
+            <mat-checkbox formControlName="isAvailable">Available</mat-checkbox>
+          </div>
+        </mat-card>
+
+        <!-- ---------- PROPERTY DETAILS ---------- -->
+        <mat-card
+          class="section-card"
+          *ngIf="
+            activeSection === 'details' &&
+            selectedOfferingType === OfferingType.Property
+          "
+        >
+          <h3 class="section-title">Property Details</h3>
+          <div [formGroup]="propertyForm">
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Property Type</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="propertyType"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Listing Type</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    formControlName="listingType"
+                    placeholder="Sale / Rent"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Bedrooms</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="bedrooms"
+                    min="0"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Bathrooms</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="bathrooms"
+                    min="0"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Area (sqft)</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="areaSqft"
+                    min="0"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Furnishing Status</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="furnishingStatus"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Floor Number</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="floorNumber"
+                    min="0"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Total Floors</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="totalFloors"
+                    min="0"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Facing</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="facing"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Age of Property (years)</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="ageOfPropertyYears"
+                    min="0"
+                /></mat-form-field>
+              </div>
+            </div>
+            <label class="field-label">Possession Status</label>
+            <mat-form-field appearance="outline"
+              ><input matInput formControlName="possessionStatus"
+            /></mat-form-field>
+            <label class="field-label">Amenities</label>
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="2"
+                formControlName="amenities"
+              ></textarea>
+            </mat-form-field>
+            <mat-checkbox formControlName="isNegotiable"
+              >Price Negotiable</mat-checkbox
+            >
+          </div>
+        </mat-card>
+
+        <!-- ---------- RENTAL VEHICLE DETAILS ---------- -->
+        <mat-card
+          class="section-card"
+          *ngIf="
+            activeSection === 'details' &&
+            selectedOfferingType === OfferingType.RentalVehicle
+          "
+        >
+          <h3 class="section-title">Rental Vehicle Details</h3>
+          <div [formGroup]="rentalVehicleForm">
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Vehicle Type</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="vehicleType"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Brand</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="brand"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Model</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="model"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Year</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput type="number" formControlName="year" min="0"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Transmission</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="transmissionType"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Fuel Type</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="fuelType"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Seating Capacity</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="seatingCapacity"
+                    min="0"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Registration Number</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="registrationNumber"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Price / Hour (₹)</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="pricePerHour"
+                    min="0"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Price / Day (₹)</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="pricePerDay"
+                    min="0"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Security Deposit (₹)</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="securityDeposit"
+                    min="0"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Mileage Limit / Day</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="mileageLimitPerDay"
+                    min="0"
+                /></mat-form-field>
+              </div>
+            </div>
+            <mat-checkbox formControlName="withDriver"
+              >With Driver</mat-checkbox
+            >
+            <mat-checkbox formControlName="isAvailable">Available</mat-checkbox>
+          </div>
+        </mat-card>
+
+        <!-- ---------- EVENT DETAILS ---------- -->
+        <mat-card
+          class="section-card"
+          *ngIf="
+            activeSection === 'details' &&
+            selectedOfferingType === OfferingType.Event
+          "
+        >
+          <h3 class="section-title">Event Details</h3>
+          <div [formGroup]="eventForm">
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Event Type</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="eventType"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Event Date</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput type="date" formControlName="eventDate"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Start Time</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="startTime"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">End Time</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="endTime"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Venue</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="venue"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Capacity</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="capacity"
+                    min="0"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Ticket Type</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="ticketType"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Organizer Name</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="organizerName"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Artist / Performer</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="artistOrPerformer"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Age Restriction</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="ageRestriction"
+                /></mat-form-field>
+              </div>
+            </div>
+            <label class="field-label">Dress Code</label>
+            <mat-form-field appearance="outline"
+              ><input matInput formControlName="dressCode"
+            /></mat-form-field>
+            <label class="field-label">Refund Policy</label>
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="2"
+                formControlName="refundPolicy"
+              ></textarea>
+            </mat-form-field>
+            <mat-checkbox formControlName="isFreeEntry"
+              >Free Entry</mat-checkbox
+            >
+          </div>
+        </mat-card>
+
+        <!-- ---------- TOUR PACKAGE DETAILS ---------- -->
+        <mat-card
+          class="section-card"
+          *ngIf="
+            activeSection === 'details' &&
+            selectedOfferingType === OfferingType.TourPackage
+          "
+        >
+          <h3 class="section-title">Tour Package Details</h3>
+          <div [formGroup]="tourPackageForm">
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Destination</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="destination"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Package Type</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    formControlName="packageType"
+                    placeholder="Domestic / International"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Duration</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="duration"
+                    min="0"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Duration Unit</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    formControlName="durationUnit"
+                    placeholder="e.g. Days"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Start Date</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput type="date" formControlName="startDate"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">End Date</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput type="date" formControlName="endDate"
+                /></mat-form-field>
+              </div>
+            </div>
+            <label class="field-label">Group Size</label>
+            <mat-form-field appearance="outline"
+              ><input
+                matInput
+                type="number"
+                formControlName="groupSize"
+                min="0"
+            /></mat-form-field>
+            <label class="field-label">Inclusions</label>
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="2"
+                formControlName="inclusions"
+              ></textarea>
+            </mat-form-field>
+            <label class="field-label">Exclusions</label>
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="2"
+                formControlName="exclusions"
+              ></textarea>
+            </mat-form-field>
+            <label class="field-label">Itinerary</label>
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="3"
+                formControlName="itinerary"
+              ></textarea>
+            </mat-form-field>
+            <label class="field-label">Cancellation Policy</label>
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="2"
+                formControlName="cancellationPolicy"
+              ></textarea>
+            </mat-form-field>
+            <mat-checkbox formControlName="accommodationIncluded"
+              >Accommodation Included</mat-checkbox
+            >
+            <mat-checkbox formControlName="mealsIncluded"
+              >Meals Included</mat-checkbox
+            >
+            <mat-checkbox formControlName="transportIncluded"
+              >Transport Included</mat-checkbox
+            >
+          </div>
+        </mat-card>
+
+        <!-- ---------- MEMBERSHIP PLAN DETAILS ---------- -->
+        <mat-card
+          class="section-card"
+          *ngIf="
+            activeSection === 'details' &&
+            selectedOfferingType === OfferingType.MembershipPlan
+          "
+        >
+          <h3 class="section-title">Membership Plan Details</h3>
+          <div [formGroup]="membershipPlanForm">
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Plan Type</label>
+                <mat-form-field appearance="outline"
+                  ><input matInput formControlName="planType"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Validity Period</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="validityPeriod"
+                    min="0"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Validity Unit</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    formControlName="validityUnit"
+                    placeholder="e.g. Months"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Max Users</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="maxUsers"
+                    min="0"
+                /></mat-form-field>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-half">
+                <label class="field-label">Discount (%)</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="discountPercentage"
+                    min="0"
+                    max="100"
+                /></mat-form-field>
+              </div>
+              <div class="field-half">
+                <label class="field-label">Free Trial Days</label>
+                <mat-form-field appearance="outline"
+                  ><input
+                    matInput
+                    type="number"
+                    formControlName="freeTrialDays"
+                    min="0"
+                /></mat-form-field>
+              </div>
+            </div>
+            <label class="field-label">Benefits</label>
+            <mat-form-field appearance="outline">
+              <textarea matInput rows="2" formControlName="benefits"></textarea>
+            </mat-form-field>
+            <label class="field-label">Terms &amp; Conditions</label>
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="2"
+                formControlName="termsAndConditions"
+              ></textarea>
+            </mat-form-field>
+            <mat-checkbox formControlName="isRenewable">Renewable</mat-checkbox>
+            <mat-checkbox formControlName="autoRenewal"
+              >Auto-Renewal</mat-checkbox
+            >
+          </div>
+        </mat-card>
+
         <!-- ---------- NO DETAIL FORM AVAILABLE YET ---------- -->
         <mat-card
           class="section-card"

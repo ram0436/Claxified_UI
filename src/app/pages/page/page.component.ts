@@ -19,7 +19,7 @@ export class PageComponent implements OnInit {
 
       this.pageData = PAGE_DATA[this.slug];
 
-      console.log(this.pageData); // debug
+      // console.log(this.pageData); // debug
     });
   }
 }

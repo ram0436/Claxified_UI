@@ -66,7 +66,7 @@ export class AdminOverviewComponent implements OnInit {
       return;
     }
     this.isAdsLoading = true;
-    console.log('Fetching ads for categoryId:', categoryId);
+    // console.log('Fetching ads for categoryId:', categoryId);
     this.adminDashboardService.getAdsByCategory(categoryId).subscribe({
       next: (data: any) => {
         this.allCards = Array.isArray(data) ? data : [];

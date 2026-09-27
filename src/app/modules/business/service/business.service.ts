@@ -25,6 +25,13 @@ import {
   BusinessOfferingDto,
   OfferingCourseDto,
   OfferingTypeOptionDto,
+  OfferingMembershipPlanDto,
+  OfferingTourPackageDto,
+  OfferingEventDto,
+  OfferingRentalVehicleDto,
+  OfferingPropertyDto,
+  OfferingAccommodationDto,
+  OfferingMenuItemDto,
 } from '../model/Business';
 import { EntityType } from '../enum/business-product.enum';
 import { OfferingType } from '../enum/business-offering.enum';
@@ -359,6 +366,121 @@ export class BusinessService {
   ): Observable<OfferingTypeOptionDto[]> {
     return this.http.get<OfferingTypeOptionDto[]>(
       `${this.baseUrl}Business/offeringType?businessCategoryId=${businessCategoryId}`,
+    );
+  }
+
+  // ---------- Offering detail: Menu Item ----------
+  getOfferingMenuItem(
+    businessOfferingId: number,
+  ): Observable<OfferingMenuItemDto> {
+    return this.http.get<OfferingMenuItemDto>(
+      `${this.baseUrl}Business/offering-menu-item/id?businessOfferingId=${businessOfferingId}`,
+    );
+  }
+  saveOfferingMenuItem(
+    payload: OfferingMenuItemDto,
+  ): Observable<OfferingMenuItemDto> {
+    return this.http.post<OfferingMenuItemDto>(
+      `${this.baseUrl}Business/offering-menu-item`,
+      payload,
+    );
+  }
+
+  // ---------- Offering detail: Room / Accommodation ----------
+  getOfferingAccommodation(
+    businessOfferingId: number,
+  ): Observable<OfferingAccommodationDto> {
+    return this.http.get<OfferingAccommodationDto>(
+      `${this.baseUrl}Business/offering-accommodation/id?businessOfferingId=${businessOfferingId}`,
+    );
+  }
+  saveOfferingAccommodation(
+    payload: OfferingAccommodationDto,
+  ): Observable<OfferingAccommodationDto> {
+    return this.http.post<OfferingAccommodationDto>(
+      `${this.baseUrl}Business/offering-accommodation`,
+      payload,
+    );
+  }
+
+  // ---------- Offering detail: Property ----------
+  getOfferingProperty(
+    businessOfferingId: number,
+  ): Observable<OfferingPropertyDto> {
+    return this.http.get<OfferingPropertyDto>(
+      `${this.baseUrl}Business/offering-property/id?businessOfferingId=${businessOfferingId}`,
+    );
+  }
+  saveOfferingProperty(
+    payload: OfferingPropertyDto,
+  ): Observable<OfferingPropertyDto> {
+    return this.http.post<OfferingPropertyDto>(
+      `${this.baseUrl}Business/offering-property`,
+      payload,
+    );
+  }
+
+  // ---------- Offering detail: Rental Vehicle ----------
+  getOfferingRentalVehicle(
+    businessOfferingId: number,
+  ): Observable<OfferingRentalVehicleDto> {
+    return this.http.get<OfferingRentalVehicleDto>(
+      `${this.baseUrl}Business/offering-rental-vehicle/id?businessOfferingId=${businessOfferingId}`,
+    );
+  }
+  saveOfferingRentalVehicle(
+    payload: OfferingRentalVehicleDto,
+  ): Observable<OfferingRentalVehicleDto> {
+    return this.http.post<OfferingRentalVehicleDto>(
+      `${this.baseUrl}Business/offering-rental-vehicle`,
+      payload,
+    );
+  }
+
+  // ---------- Offering detail: Event ----------
+  getOfferingEvent(businessOfferingId: number): Observable<OfferingEventDto> {
+    return this.http.get<OfferingEventDto>(
+      `${this.baseUrl}Business/offering-event/id?businessOfferingId=${businessOfferingId}`,
+    );
+  }
+  saveOfferingEvent(payload: OfferingEventDto): Observable<OfferingEventDto> {
+    return this.http.post<OfferingEventDto>(
+      `${this.baseUrl}Business/offering-event`,
+      payload,
+    );
+  }
+
+  // ---------- Offering detail: Tour Package ----------
+  getOfferingTourPackage(
+    businessOfferingId: number,
+  ): Observable<OfferingTourPackageDto> {
+    return this.http.get<OfferingTourPackageDto>(
+      `${this.baseUrl}Business/offering-tour-package/id?businessOfferingId=${businessOfferingId}`,
+    );
+  }
+  saveOfferingTourPackage(
+    payload: OfferingTourPackageDto,
+  ): Observable<OfferingTourPackageDto> {
+    return this.http.post<OfferingTourPackageDto>(
+      `${this.baseUrl}Business/offering-tour-package`,
+      payload,
+    );
+  }
+
+  // ---------- Offering detail: Membership Plan ----------
+  getOfferingMembershipPlan(
+    businessOfferingId: number,
+  ): Observable<OfferingMembershipPlanDto> {
+    return this.http.get<OfferingMembershipPlanDto>(
+      `${this.baseUrl}Business/offering-membership-plan/id?businessOfferingId=${businessOfferingId}`,
+    );
+  }
+  saveOfferingMembershipPlan(
+    payload: OfferingMembershipPlanDto,
+  ): Observable<OfferingMembershipPlanDto> {
+    return this.http.post<OfferingMembershipPlanDto>(
+      `${this.baseUrl}Business/offering-membership-plan`,
+      payload,
     );
   }
 }

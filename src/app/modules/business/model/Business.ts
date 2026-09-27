@@ -356,6 +356,7 @@ export interface BusinessProductImageDto {
 }
 
 export interface BusinessProductAttributeViewDto {
+  productAttributeMasterId: number;
   name: string;
   value: string;
 }
@@ -739,6 +740,13 @@ export const OFFERING_TYPE_OPTIONS: { value: OfferingType; label: string }[] = [
 export const SUPPORTED_OFFERING_TYPES: OfferingType[] = [
   OfferingType.Course,
   OfferingType.MedicalService,
+  OfferingType.MenuItem,
+  OfferingType.RoomAccommodation,
+  OfferingType.Property,
+  OfferingType.RentalVehicle,
+  OfferingType.Event,
+  OfferingType.TourPackage,
+  OfferingType.MembershipPlan,
 ];
 
 // ---------- Parent record ----------
@@ -827,4 +835,141 @@ export interface OfferingMedicalServiceDto {
   conditionsTreated: string;
   procedures: string;
   serviceHighlights: string;
+}
+
+// ---------- Menu item detail ----------
+export interface OfferingMenuItemDto {
+  id: number;
+  businessOfferingId: number;
+  businessId: number;
+  cuisineType: string;
+  foodType: string; // Veg | Non-Veg | Vegan | Eggetarian
+  spiceLevel: string;
+  preparationTime: number;
+  preparationTimeUnit: string;
+  servingSize: string;
+  calories: number;
+  ingredients: string;
+  allergens: string;
+  isChefSpecial: boolean;
+  isCustomizable: boolean;
+  isAvailable: boolean;
+}
+
+// ---------- Room / Accommodation detail ----------
+export interface OfferingAccommodationDto {
+  id: number;
+  businessOfferingId: number;
+  businessId: number;
+  roomType: string;
+  bedType: string;
+  maxOccupancy: number;
+  roomSizeSqft: number;
+  viewType: string;
+  checkInTime: string;
+  checkOutTime: string;
+  amenities: string;
+  breakfastIncluded: boolean;
+  freeCancellation: boolean;
+  cancellationPolicy: string;
+  isAvailable: boolean;
+}
+
+// ---------- Property detail ----------
+export interface OfferingPropertyDto {
+  id: number;
+  businessOfferingId: number;
+  businessId: number;
+  propertyType: string;
+  listingType: string; // Sale | Rent
+  bedrooms: number;
+  bathrooms: number;
+  areaSqft: number;
+  floorNumber: number;
+  totalFloors: number;
+  furnishingStatus: string;
+  facing: string;
+  ageOfPropertyYears: number;
+  amenities: string;
+  possessionStatus: string;
+  isNegotiable: boolean;
+}
+
+// ---------- Rental vehicle detail ----------
+export interface OfferingRentalVehicleDto {
+  id: number;
+  businessOfferingId: number;
+  businessId: number;
+  vehicleType: string;
+  brand: string;
+  model: string;
+  year: number;
+  transmissionType: string;
+  fuelType: string;
+  seatingCapacity: number;
+  registrationNumber: string;
+  pricePerHour: number;
+  pricePerDay: number;
+  securityDeposit: number;
+  mileageLimitPerDay: number;
+  withDriver: boolean;
+  isAvailable: boolean;
+}
+
+// ---------- Event detail ----------
+export interface OfferingEventDto {
+  id: number;
+  businessOfferingId: number;
+  businessId: number;
+  eventType: string;
+  eventDate: string | null;
+  startTime: string;
+  endTime: string;
+  venue: string;
+  capacity: number;
+  ticketType: string;
+  organizerName: string;
+  artistOrPerformer: string;
+  ageRestriction: string;
+  dressCode: string;
+  isFreeEntry: boolean;
+  refundPolicy: string;
+}
+
+// ---------- Tour package detail ----------
+export interface OfferingTourPackageDto {
+  id: number;
+  businessOfferingId: number;
+  businessId: number;
+  destination: string;
+  packageType: string; // Domestic | International
+  duration: number;
+  durationUnit: string;
+  groupSize: number;
+  startDate: string | null;
+  endDate: string | null;
+  inclusions: string;
+  exclusions: string;
+  itinerary: string;
+  accommodationIncluded: boolean;
+  mealsIncluded: boolean;
+  transportIncluded: boolean;
+  cancellationPolicy: string;
+}
+
+// ---------- Membership plan detail ----------
+export interface OfferingMembershipPlanDto {
+  id: number;
+  businessOfferingId: number;
+  businessId: number;
+  planType: string;
+  validityPeriod: number;
+  validityUnit: string;
+  benefits: string;
+  maxUsers: number;
+  discountPercentage: number;
+  freeTrialDays: number;
+  isRenewable: boolean;
+  autoRenewal: boolean;
+  termsAndConditions: string;
 }
