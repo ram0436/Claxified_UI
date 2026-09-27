@@ -140,7 +140,7 @@ export class BusinessServiceQuickviewComponent {
 
   onContactBusiness(): void {
     // Implement contact business logic
-    console.log("Contact business for service:", this.service.id);
+    // console.log("Contact business for service:", this.service.id);
   }
 
   // Helper to check if service has any images

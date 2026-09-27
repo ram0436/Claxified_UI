@@ -393,11 +393,11 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
     presetValues?: Map<string, string>,
   ): void {
     this.attributeDefs = defs;
-
     this.attributesArray.clear();
 
     for (const def of defs) {
-      const existingValue = presetValues?.get(def.name) || '';
+      const key = (def.name || '').trim().toLowerCase();
+      const existingValue = presetValues?.get(key) || '';
 
       this.attributesArray.push(
         this.fb.group({
@@ -585,7 +585,9 @@ export class AddBusinessServiceComponent implements OnInit, AfterViewInit {
     }));
 
     const presetValues = new Map<string, string>(
-      (s.attributes || []).map((a) => [a.name, a.value]),
+      (s.attributes || [])
+        .filter((a) => !!a?.name)
+        .map((a) => [a.name.trim().toLowerCase(), a.value ?? '']),
     );
 
     this.resolveAttributesForSubCategory(

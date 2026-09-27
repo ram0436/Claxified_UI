@@ -493,6 +493,20 @@ export class BusinessProfileComponent implements OnInit {
         return 'school';
       case Number(this.OfferingType.MedicalService):
         return 'medical_services';
+      case Number(this.OfferingType.MenuItem):
+        return 'restaurant_menu';
+      case Number(this.OfferingType.RoomAccommodation):
+        return 'hotel';
+      case Number(this.OfferingType.Property):
+        return 'home_work';
+      case Number(this.OfferingType.RentalVehicle):
+        return 'directions_car';
+      case Number(this.OfferingType.Event):
+        return 'event';
+      case Number(this.OfferingType.TourPackage):
+        return 'flight_takeoff';
+      case Number(this.OfferingType.MembershipPlan):
+        return 'card_membership';
       default:
         return 'category';
     }
@@ -930,19 +944,35 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   editProduct(item: CatalogItem): void {
-    const product = this.rawProducts.find((p) => p.id === item.id);
-    if (product) {
-      this.editingProduct = product;
-      this.addProductPanelOpen = true;
-    }
+    this.businessService.getBusinessProductDetails(item.id).subscribe(
+      (full) => {
+        this.editingProduct = full;
+        this.addProductPanelOpen = true;
+      },
+      () => {
+        const product = this.rawProducts.find((p) => p.id === item.id);
+        if (product) {
+          this.editingProduct = product;
+          this.addProductPanelOpen = true;
+        }
+      },
+    );
   }
 
   editService(item: CatalogItem): void {
-    const service = this.rawServices.find((s) => s.id === item.id);
-    if (service) {
-      this.editingService = service;
-      this.addServicePanelOpen = true;
-    }
+    this.businessService.getBusinessServiceDetails(item.id).subscribe(
+      (full) => {
+        this.editingService = full;
+        this.addServicePanelOpen = true;
+      },
+      () => {
+        const service = this.rawServices.find((s) => s.id === item.id);
+        if (service) {
+          this.editingService = service;
+          this.addServicePanelOpen = true;
+        }
+      },
+    );
   }
 
   closeAddProductPanel(): void {
@@ -1318,17 +1348,33 @@ export class BusinessProfileComponent implements OnInit {
 
   editCard(card: OfferingCard): void {
     if (card.kind === 'product') {
-      const product = this.rawProducts.find((p) => p.id === card.refId);
-      if (product) {
-        this.editingProduct = product;
-        this.addProductPanelOpen = true;
-      }
+      this.businessService.getBusinessProductDetails(card.refId).subscribe(
+        (full) => {
+          this.editingProduct = full;
+          this.addProductPanelOpen = true;
+        },
+        () => {
+          const product = this.rawProducts.find((p) => p.id === card.refId);
+          if (product) {
+            this.editingProduct = product;
+            this.addProductPanelOpen = true;
+          }
+        },
+      );
     } else if (card.kind === 'service') {
-      const service = this.rawServices.find((s) => s.id === card.refId);
-      if (service) {
-        this.editingService = service;
-        this.addServicePanelOpen = true;
-      }
+      this.businessService.getBusinessServiceDetails(card.refId).subscribe(
+        (full) => {
+          this.editingService = full;
+          this.addServicePanelOpen = true;
+        },
+        () => {
+          const service = this.rawServices.find((s) => s.id === card.refId);
+          if (service) {
+            this.editingService = service;
+            this.addServicePanelOpen = true;
+          }
+        },
+      );
     } else {
       const offering = this.offerings.find((o) => o.id === card.refId);
       if (offering) {
