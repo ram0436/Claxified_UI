@@ -516,14 +516,17 @@ export class BusinessProfileComponent implements OnInit {
 
   /** "All" plus every offering type configured for this business category,
    * used to render the offering-type tab strip. */
+
   get offeringTypeTabs(): { value: OfferingType | 'all'; name: string }[] {
-    return [
-      { value: 'all' as const, name: 'All' },
-      ...this.availableOfferingTypes.map((t) => ({
-        value: t.value,
-        name: t.name,
-      })),
-    ];
+    const typeTabs = this.availableOfferingTypes
+      .filter(
+        (t) =>
+          this.getOfferingTypeCount(t.value) > 0 ||
+          this.isOfferingTypeActive(t.value),
+      )
+      .map((t) => ({ value: t.value, name: t.name }));
+
+    return [{ value: 'all' as const, name: 'All' }, ...typeTabs];
   }
 
   selectOfferingFilter(filter: OfferingType | 'all', event?: Event): void {
@@ -865,6 +868,7 @@ export class BusinessProfileComponent implements OnInit {
         this.catalogLoading = false;
         this.offeringsLoading = false;
         this.currentPage = 1;
+        this.resetFilterIfEmpty();
       },
       () => {
         this.catalogItems = [];
@@ -1132,6 +1136,15 @@ export class BusinessProfileComponent implements OnInit {
     return match?.name || 'Offering';
   }
 
+  private resetFilterIfEmpty(): void {
+    if (
+      this.offeringFilter !== 'all' &&
+      this.getOfferingTypeCount(this.offeringFilter as OfferingType) === 0
+    ) {
+      this.offeringFilter = 'all';
+    }
+  }
+
   addOffering(type?: OfferingType): void {
     this.editingOffering = null;
     this.addOfferingPresetType = type ?? null;
@@ -1173,8 +1186,8 @@ export class BusinessProfileComponent implements OnInit {
 
   onOfferingSearchChange(): void {
     this.currentPage = 1;
+    this.resetFilterIfEmpty();
   }
-
   onSortChange(): void {
     this.currentPage = 1;
   }

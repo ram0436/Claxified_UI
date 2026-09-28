@@ -1627,6 +1627,9 @@ select:focus-visible {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: calc(1.4em * 3);
+  line-height: 1.4em;
 }
 
 .offering-actions {

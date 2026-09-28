@@ -102,7 +102,9 @@
   font-size: 14px;
   font-weight: 600;
   position: relative;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .edit-tab-item .material-icons-outlined {
@@ -230,7 +232,18 @@ mat-form-field {
   font-weight: 600;
 }
 
-/* ---------- Gallery-style image upload (matches edit-profile / add-product) ---------- */
+/* ---------- Suggest-input arrow (replaces app-suggest-input) ---------- */
+
+.suggest-arrow {
+  cursor: pointer;
+  color: #635b67;
+}
+
+.suggest-arrow:hover {
+  color: #0d475c;
+}
+
+/* ---------- Gallery-style image upload ---------- */
 
 .uplod-sectin {
   padding-top: 10px;
@@ -418,7 +431,9 @@ mat-form-field {
   border-radius: 6px;
   color: #3c3241;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .rte-btn .material-icons-outlined {

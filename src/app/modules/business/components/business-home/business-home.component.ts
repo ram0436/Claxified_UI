@@ -992,6 +992,31 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  getBusinessUrl(business: BusinessDirectoryItem): string {
+    if (!business.tabRefGUID) return '';
+    const tree = this.router.createUrlTree([
+      '/business/profile',
+      business.tabRefGUID,
+    ]);
+    return this.router.serializeUrl(tree);
+  }
+
+  onBusinessLinkClick(
+    event: MouseEvent,
+    business: BusinessDirectoryItem,
+  ): void {
+    if (
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey ||
+      event.button !== 0
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.viewBusiness(business);
+  }
+
   formatOfferValidity(endDate: string): string {
     if (!endDate) return '';
     const date = new Date(endDate);

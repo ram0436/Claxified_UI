@@ -669,11 +669,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     this.dialogRef = this.dialog.open(LoginComponent, {
-      width: '400px',
-      panelClass: 'custom-dialog-container',
+      // width: '400px',
+      panelClass: 'login-dialog-container',
     });
 
-    const dialogRefElement = document.querySelector('.custom-dialog-container');
+    const dialogRefElement = document.querySelector('.login-dialog-container');
     if (dialogRefElement) {
       dialogRefElement.setAttribute('style', 'margin-top: 150px');
     }
@@ -706,7 +706,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(BusinessLoginComponent, {
       // width: '800px',
       // maxWidth: '95vw',
-      panelClass: 'business-login-dialog-container',
+      panelClass: 'login-dialog-container',
       autoFocus: false,
     });
 

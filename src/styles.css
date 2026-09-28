@@ -43,7 +43,7 @@ h5 {
   height: auto;
 }
 
-.cdk-global-overlay-wrapper:has(.business-login-dialog-container) {
+.cdk-global-overlay-wrapper:has(.login-dialog-container) {
   display: flex;
   align-items: center !important;
   justify-content: center !important;
@@ -881,14 +881,14 @@ textarea[disabled] {
 }
 
 /* Center ALL dialogs (login, business-login, and any other modal) */
-.cdk-global-overlay-wrapper {
+/* .cdk-global-overlay-wrapper {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   height: 100% !important;
   padding: 16px;
   box-sizing: border-box;
-}
+} */
 
 .cdk-overlay-pane {
   max-width: 95vw !important;
@@ -907,6 +907,6 @@ textarea[disabled] {
 
 /* Remove any leftover margin hacks */
 .custom-dialog-container,
-.business-login-dialog-container {
+.login-dialog-container {
   margin: 0 !important;
 }

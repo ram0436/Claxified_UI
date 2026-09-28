@@ -787,9 +787,11 @@
                 <span class="price-current">Price on Request</span>
               </p>
 
-              <p class="offering-desc" *ngIf="card.description">
-                {{ card.description }}
-              </p>
+              <p
+                class="offering-desc"
+                *ngIf="card.description"
+                [innerHTML]="card.description"
+              ></p>
 
               <div class="offering-actions">
                 <button
@@ -870,7 +872,7 @@
           </nav>
         </div>
 
-        <div
+        <!-- <div
           class="empty-services"
           *ngIf="!isOfferingsSectionLoading && !hasAnyOfferingResults"
         >
@@ -903,7 +905,7 @@
               <span class="material-icons-outlined">add</span> Add Offering
             </button>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- ---------- WORKING HOURS ---------- -->
