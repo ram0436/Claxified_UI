@@ -266,9 +266,9 @@ export class MarketplaceComponent implements OnInit {
 
   openBusinessLoginModal(): void {
     this.dialog.open(BusinessLoginComponent, {
-      width: '800px',
-      maxWidth: '95vw',
-      panelClass: 'business-login-dialog-container',
+      // width: '800px',
+      // maxWidth: '95vw',
+      panelClass: 'login-dialog-container',
       autoFocus: false,
     });
   }
@@ -278,8 +278,8 @@ export class MarketplaceComponent implements OnInit {
       this.router.navigate(['/post-menu']);
     } else {
       this.dialog.open(LoginComponent, {
-        width: '400px',
-        panelClass: 'custom-dialog-container',
+        // width: '400px',
+        panelClass: 'login-dialog-container',
       });
     }
   }
@@ -450,8 +450,8 @@ export class MarketplaceComponent implements OnInit {
 
     if (localStorage.getItem('id') == null) {
       this.dialog.open(LoginComponent, {
-        width: '400px',
-        panelClass: 'custom-dialog-container',
+        // width: '400px',
+        panelClass: 'login-dialog-container',
       });
       return;
     }

@@ -275,8 +275,13 @@
               let business of displayedBusinesses;
               trackBy: trackByBusinessId
             "
-            (click)="viewBusiness(business)"
           >
+            <a
+              class="business-card-link"
+              [href]="getBusinessUrl(business) || null"
+              [attr.aria-label]="'Open ' + business.businessName"
+              (click)="onBusinessLinkClick($event, business)"
+            ></a>
             <div class="business-card-image-wrapper">
               <img
                 *ngIf="business.coverImageUrl"
@@ -372,13 +377,17 @@
               </div>
 
               <div class="business-card-footer">
-                <button
+                <a
                   class="view-details-btn"
-                  (click)="viewBusiness(business); $event.stopPropagation()"
+                  [href]="getBusinessUrl(business) || null"
+                  (click)="
+                    onBusinessLinkClick($event, business);
+                    $event.stopPropagation()
+                  "
                 >
                   View Profile
                   <span class="material-icons-outlined">arrow_forward</span>
-                </button>
+                </a>
 
                 <a
                   class="pill-btn pill-call"

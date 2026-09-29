@@ -725,8 +725,9 @@
    ========================================================= */
 
 .business-card {
+  position: relative;
   border-radius: 12px;
-  overflow: hidden; /* Important: keeps the overlay contained */
+  overflow: hidden;
   border: 1px solid #e7e7e7;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   background: #fff;
@@ -741,6 +742,13 @@
 .business-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.business-card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
 }
 
 /* Taller image to accommodate the overlay text */
@@ -807,7 +815,7 @@
   flex-shrink: 0;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   z-index: 2;
-  pointer-events: auto; /* Make logo clickable if needed */
+  pointer-events: none;
 }
 
 .business-card-logo img {
@@ -1007,7 +1015,9 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: auto; /* Pushes footer to bottom if content varies */
+  margin-top: auto;
+  position: relative;
+  z-index: 2;
 }
 
 .view-details-btn {
@@ -1027,6 +1037,10 @@
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease;
+}
+
+.view-details-btn:hover {
+  text-decoration: none;
 }
 
 .view-details-btn .material-icons-outlined {
