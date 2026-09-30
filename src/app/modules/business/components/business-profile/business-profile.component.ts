@@ -1,4 +1,5 @@
 import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BusinessService } from '../../service/business.service';
 import {
@@ -16,6 +17,7 @@ import { OfferingType } from '../../enum/business-offering.enum';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BusinessLoginComponent } from '../business-login/business-login.component';
 import { forkJoin, of } from 'rxjs';
+import { buildBusinessCommands, buildBusinessPath, extractUniqueSlug, rememberBusinessGuid } from '../../utils/business-url.util';
 
 interface CatalogItem {
   id: number;
@@ -332,6 +334,9 @@ export class BusinessProfileComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private elRef: ElementRef,
+
+    private location: Location,
+
   ) {}
 
   getYearsInBusiness(establishedYear: number): number {
@@ -341,8 +346,14 @@ export class BusinessProfileComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const guid = params.get('tabRefGuid');
+      const businessSlug = params.get('businessSlug');
 
-      if (guid) {
+      if (businessSlug) {
+        // New format: /business/{city}/{business-name}-{area}-{unique-slug}
+        this.mode = 'detail';
+        this.loadBusinessBySlug(extractUniqueSlug(businessSlug));
+      } else if (guid) {
+        // Legacy format: /business/profile/{tabRefGUID}
         this.mode = 'detail';
         this.tabRefGuid = guid;
         this.loadBusinessDetail(guid);
@@ -412,26 +423,44 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   openBusiness(item: BusinessListItem) {
-    this.router.navigate(['/business/profile', item.businessId]);
+    const cmds = buildBusinessCommands(item);
+    this.router.navigate(cmds ?? ['/business/profile', item.businessId]);
+  }
+
+  loadBusinessBySlug(slug: string) {
+    this.loading = true;
+    this.businessService.getBusinessBySlug(slug).subscribe(
+      (data) => this.onBusinessLoaded(data),
+      () => (this.loading = false),
+    );
   }
 
   loadBusinessDetail(tabRefGuid: string) {
     this.loading = true;
 
     this.businessService.getBusinessByGuid(tabRefGuid).subscribe(
-      (data) => {
-        this.business = data;
-        this.loading = false;
-
-        const ids = data?.businessSubCategoryIds || [];
-        this.selectedSubCategoryId = ids.length > 0 ? ids[0] : null;
-
-        this.loadOfferingTypes();
-        this.loadOffers();
-        this.loadReviews();
-      },
+      (data) => this.onBusinessLoaded(data),
       () => (this.loading = false),
     );
+  }
+
+  private onBusinessLoaded(data: BusinessViewDto) {
+    this.business = data;
+    this.loading = false;
+    this.tabRefGuid = data?.tabRefGUID || this.tabRefGuid;
+    rememberBusinessGuid(data?.tabRefGUID);
+
+    const canonical = buildBusinessPath(data as any);
+    if (canonical && this.router.url.split('?')[0] !== canonical) {
+      this.location.replaceState(canonical);
+    }
+
+    const ids = data?.businessSubCategoryIds || [];
+    this.selectedSubCategoryId = ids.length > 0 ? ids[0] : null;
+
+    this.loadOfferingTypes();
+    this.loadOffers();
+    this.loadReviews();
   }
 
   loadAllowedOfferingTypes(businessCategoryId: number): void {

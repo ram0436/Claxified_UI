@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { BusinessService } from "../../service/business.service";
 import { BusinessDirectoryItem } from "./../../model/Business";
+import { buildBusinessCommands } from '../../../business/utils/business-url.util';
 
 @Component({
   selector: "app-business-directories",
@@ -43,7 +44,8 @@ export class BusinessDirectoriesComponent implements OnInit {
 
   viewBusiness(business: BusinessDirectoryItem): void {
     if (!business.tabRefGUID) return;
-    this.router.navigate(["/business/profile", business.tabRefGUID]);
+    const cmds = buildBusinessCommands(business);
+    if (cmds) this.router.navigate(cmds);
   }
 
   trackByBusinessId(_index: number, business: BusinessDirectoryItem): number {

@@ -126,6 +126,8 @@ export interface BusinessListItem {
   businessId: string;
   businessName: string;
   logoUrl: string;
+  city?: string;
+  area?: string;
 }
 
 export interface BusinessVerificationDto {
@@ -842,7 +844,17 @@ export const OFFERING_FIELD_OPTIONS = {
     ageGroup: ['Children', 'Adults', 'Senior Citizens', 'All Ages'],
   },
   menuItem: {
-    cuisineType: [
+    itemCategory: [
+      'Starter',
+      'Main Course',
+      'Dessert',
+      'Beverage',
+      'Snack',
+      'Bread',
+      'Rice & Biryani',
+      'Combo',
+    ],
+    cuisine: [
       'North Indian',
       'South Indian',
       'Chinese',
@@ -853,7 +865,15 @@ export const OFFERING_FIELD_OPTIONS = {
       'Beverages',
       'Mughlai',
     ],
-    foodType: ['Veg', 'Non-Veg', 'Vegan', 'Eggetarian'],
+    foodType: ['Vegetarian', 'Non-Vegetarian', 'Vegan', 'Eggetarian'],
+    mealType: [
+      'Breakfast',
+      'Lunch',
+      'Dinner',
+      'Lunch & Dinner',
+      'Snacks',
+      'All Day',
+    ],
     spiceLevel: ['Mild', 'Medium', 'Spicy', 'Extra Spicy'],
     preparationTimeUnit: ['Minutes', 'Hours'],
     servingSize: [
@@ -865,25 +885,26 @@ export const OFFERING_FIELD_OPTIONS = {
     ],
   },
   accommodation: {
+    accommodationType: [
+      'Hotel',
+      'Resort',
+      'Guest House',
+      'Hostel',
+      'Homestay',
+      'Villa',
+      'Apartment',
+    ],
     roomType: [
-      'Standard',
-      'Deluxe',
+      'Standard Room',
+      'Deluxe Room',
       'Suite',
       'Family Room',
       'Dormitory',
       'Studio',
     ],
-    bedType: ['Single', 'Double', 'Queen', 'King', 'Twin'],
-    viewType: [
-      'City View',
-      'Garden View',
-      'Sea View',
-      'Mountain View',
-      'Pool View',
-      'No View',
-    ],
-    checkInTime: ['12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM'],
-    checkOutTime: ['10:00 AM', '11:00 AM', '12:00 PM'],
+    roomSizeUnit: ['Sq Ft', 'Sq M'],
+    bedType: ['Single Bed', 'Double Bed', 'Queen Bed', 'King Bed', 'Twin Beds'],
+    bathroomType: ['Attached Bathroom', 'Shared Bathroom'],
   },
   property: {
     propertyType: [
@@ -895,8 +916,10 @@ export const OFFERING_FIELD_OPTIONS = {
       'Office',
       'Warehouse',
     ],
-    listingType: ['Sale', 'Rent', 'Lease'],
-    furnishingStatus: ['Furnished', 'Semi-Furnished', 'Unfurnished'],
+    listingType: ['Residential', 'Commercial', 'Industrial', 'Agricultural'],
+    transactionType: ['Sale', 'Rent', 'Lease'],
+    propertyStatus: ['Ready to Move', 'Under Construction', 'Resale'],
+    furnishedStatus: ['Furnished', 'Semi-Furnished', 'Unfurnished'],
     facing: [
       'North',
       'South',
@@ -907,10 +930,25 @@ export const OFFERING_FIELD_OPTIONS = {
       'South-East',
       'South-West',
     ],
-    possessionStatus: ['Ready to Move', 'Under Construction', 'Resale'],
+    areaUnit: ['Sq Ft', 'Sq M', 'Sq Yd', 'Acre'],
+    roadWidthUnit: ['Feet', 'Meters'],
+    ownershipType: [
+      'Freehold',
+      'Leasehold',
+      'Co-operative Society',
+      'Power of Attorney',
+    ],
   },
   rentalVehicle: {
-    vehicleType: ['Car', 'SUV', 'Bike', 'Scooter', 'Bus', 'Van', 'Truck'],
+    vehicleType: ['Car', 'Bike', 'Scooter', 'Bus', 'Van', 'Truck'],
+    vehicleCategory: [
+      'Hatchback',
+      'Sedan',
+      'SUV',
+      'MUV',
+      'Luxury',
+      'Tempo Traveller',
+    ],
     brand: [
       'Toyota',
       'Honda',
@@ -921,8 +959,11 @@ export const OFFERING_FIELD_OPTIONS = {
       'Tata',
       'Yamaha',
     ],
-    transmissionType: ['Manual', 'Automatic'],
     fuelType: ['Petrol', 'Diesel', 'CNG', 'Electric', 'Hybrid'],
+    transmission: ['Manual', 'Automatic'],
+    vehicleCondition: ['Excellent', 'Good', 'Fair'],
+    rentalType: ['Hourly', 'Daily', 'Weekly', 'Monthly'],
+    durationUnit: ['Hour', 'Day', 'Week', 'Month'],
   },
   event: {
     eventType: [
@@ -935,38 +976,56 @@ export const OFFERING_FIELD_OPTIONS = {
       'Seminar',
       'Party',
     ],
-    startTime: [
-      '6:00 AM',
-      '9:00 AM',
-      '12:00 PM',
-      '4:00 PM',
-      '6:00 PM',
-      '8:00 PM',
+    eventCategory: [
+      'Technology',
+      'Business',
+      'Music',
+      'Sports',
+      'Education',
+      'Arts & Culture',
+      'Health',
+      'Food',
     ],
-    endTime: [
-      '12:00 PM',
-      '4:00 PM',
-      '6:00 PM',
-      '8:00 PM',
-      '10:00 PM',
-      '12:00 AM',
-    ],
-    ticketType: ['Free', 'General', 'VIP', 'Early Bird', 'Group'],
-    ageRestriction: ['All Ages', '12+', '16+', '18+', '21+'],
-    dressCode: [
-      'Casual',
-      'Semi-Formal',
-      'Formal',
-      'Traditional',
-      'No Restriction',
+    venueType: [
+      'Convention Centre',
+      'Banquet Hall',
+      'Stadium',
+      'Auditorium',
+      'Outdoor',
+      'Online',
     ],
   },
   tourPackage: {
-    packageType: ['Domestic', 'International'],
+    packageType: [
+      'Domestic Holiday Package',
+      'International Holiday Package',
+      'Adventure',
+      'Pilgrimage',
+      'Honeymoon',
+      'Family',
+      'Corporate',
+    ],
     durationUnit: ['Days', 'Nights', 'Weeks'],
+    travelMode: ['Flight', 'Train', 'Bus', 'Car', 'Cruise'],
+    hotelCategory: ['Budget', '3 Star', '4 Star', '5 Star', 'Luxury'],
+    roomType: ['Standard Room', 'Deluxe Room', 'Suite', 'Family Room'],
   },
   membership: {
     planType: [
+      'Monthly Membership',
+      'Quarterly Membership',
+      'Half-Yearly Membership',
+      'Annual Membership',
+    ],
+    fitnessCategory: [
+      'Gym & Fitness',
+      'Yoga',
+      'Swimming',
+      'Sports Club',
+      'Wellness & Spa',
+      'Martial Arts',
+    ],
+    membershipType: [
       'Basic',
       'Standard',
       'Premium',
@@ -974,7 +1033,16 @@ export const OFFERING_FIELD_OPTIONS = {
       'Student',
       'Corporate',
     ],
-    validityUnit: ['Days', 'Months', 'Years'],
+    durationUnit: ['Days', 'Months', 'Years'],
+    fitnessLevel: [
+      'Beginner',
+      'Intermediate',
+      'Advanced',
+      'Beginner to Advanced',
+    ],
+    gender: ['All', 'Male', 'Female'],
+    accessType: ['Full Access', 'Limited Access', 'Off-Peak Only'],
+    trialDurationUnit: ['Days', 'Hours'],
   },
 } as const;
 
@@ -1068,139 +1136,16 @@ export interface OfferingMedicalServiceDto {
   serviceHighlights: string;
 }
 
-// ---------- Menu item detail ----------
-export interface OfferingMenuItemDto {
+export interface OfferingDetailBase {
   id: number;
   businessOfferingId: number;
   businessId: number;
-  cuisineType: string;
-  foodType: string; // Veg | Non-Veg | Vegan | Eggetarian
-  spiceLevel: string;
-  preparationTime: number;
-  preparationTimeUnit: string;
-  servingSize: string;
-  calories: number;
-  ingredients: string;
-  allergens: string;
-  isChefSpecial: boolean;
-  isCustomizable: boolean;
-  isAvailable: boolean;
+  [key: string]: any;
 }
-
-// ---------- Room / Accommodation detail ----------
-export interface OfferingAccommodationDto {
-  id: number;
-  businessOfferingId: number;
-  businessId: number;
-  roomType: string;
-  bedType: string;
-  maxOccupancy: number;
-  roomSizeSqft: number;
-  viewType: string;
-  checkInTime: string;
-  checkOutTime: string;
-  amenities: string;
-  breakfastIncluded: boolean;
-  freeCancellation: boolean;
-  cancellationPolicy: string;
-  isAvailable: boolean;
-}
-
-// ---------- Property detail ----------
-export interface OfferingPropertyDto {
-  id: number;
-  businessOfferingId: number;
-  businessId: number;
-  propertyType: string;
-  listingType: string; // Sale | Rent
-  bedrooms: number;
-  bathrooms: number;
-  areaSqft: number;
-  floorNumber: number;
-  totalFloors: number;
-  furnishingStatus: string;
-  facing: string;
-  ageOfPropertyYears: number;
-  amenities: string;
-  possessionStatus: string;
-  isNegotiable: boolean;
-}
-
-// ---------- Rental vehicle detail ----------
-export interface OfferingRentalVehicleDto {
-  id: number;
-  businessOfferingId: number;
-  businessId: number;
-  vehicleType: string;
-  brand: string;
-  model: string;
-  year: number;
-  transmissionType: string;
-  fuelType: string;
-  seatingCapacity: number;
-  registrationNumber: string;
-  pricePerHour: number;
-  pricePerDay: number;
-  securityDeposit: number;
-  mileageLimitPerDay: number;
-  withDriver: boolean;
-  isAvailable: boolean;
-}
-
-// ---------- Event detail ----------
-export interface OfferingEventDto {
-  id: number;
-  businessOfferingId: number;
-  businessId: number;
-  eventType: string;
-  eventDate: string | null;
-  startTime: string;
-  endTime: string;
-  venue: string;
-  capacity: number;
-  ticketType: string;
-  organizerName: string;
-  artistOrPerformer: string;
-  ageRestriction: string;
-  dressCode: string;
-  isFreeEntry: boolean;
-  refundPolicy: string;
-}
-
-// ---------- Tour package detail ----------
-export interface OfferingTourPackageDto {
-  id: number;
-  businessOfferingId: number;
-  businessId: number;
-  destination: string;
-  packageType: string; // Domestic | International
-  duration: number;
-  durationUnit: string;
-  groupSize: number;
-  startDate: string | null;
-  endDate: string | null;
-  inclusions: string;
-  exclusions: string;
-  itinerary: string;
-  accommodationIncluded: boolean;
-  mealsIncluded: boolean;
-  transportIncluded: boolean;
-  cancellationPolicy: string;
-}
-
-// ---------- Membership plan detail ----------
-export interface OfferingMembershipPlanDto {
-  id: number;
-  businessOfferingId: number;
-  businessId: number;
-  planType: string;
-  validityPeriod: number;
-  validityUnit: string;
-  benefits: string;
-  maxUsers: number;
-  discountPercentage: number;
-  freeTrialDays: number;
-  isRenewable: boolean;
-  autoRenewal: boolean;
-  termsAndConditions: string;
-}
+export interface OfferingMenuItemDto extends OfferingDetailBase {}
+export interface OfferingAccommodationDto extends OfferingDetailBase {}
+export interface OfferingPropertyDto extends OfferingDetailBase {}
+export interface OfferingRentalVehicleDto extends OfferingDetailBase {}
+export interface OfferingEventDto extends OfferingDetailBase {}
+export interface OfferingTourPackageDto extends OfferingDetailBase {}
+export interface OfferingMembershipPlanDto extends OfferingDetailBase {}

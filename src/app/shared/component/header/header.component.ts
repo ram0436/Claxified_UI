@@ -30,6 +30,7 @@ import { BusinessLoginComponent } from 'src/app/modules/business/components/busi
 import { BusinessService } from 'src/app/modules/business/service/business.service';
 import { BusinessListItem } from 'src/app/modules/business/model/Business';
 import { Subscription } from 'rxjs';
+import { buildBusinessCommands } from '../../../modules/business/utils/business-url.util';
 
 @Component({
   selector: 'app-header',
@@ -640,7 +641,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
       return;
     }
     this.currentBusinessId = biz.businessId;
-    this.router.navigate(['/business/profile', tabRefGuid]);
+    this.router.navigate(
+      buildBusinessCommands(biz) ?? ['/business/profile', tabRefGuid],
+    );
   }
 
   goToBusinessDashboard() {

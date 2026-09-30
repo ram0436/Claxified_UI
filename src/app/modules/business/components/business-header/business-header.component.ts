@@ -6,6 +6,7 @@ import { LoginComponent } from 'src/app/modules/user/component/login/login.compo
 import { BusinessService } from '../../service/business.service';
 import { BusinessListItem } from './../../model/Business';
 import { Subscription } from 'rxjs';
+import { buildBusinessCommands } from '../../../business/utils/business-url.util';
 
 @Component({
   selector: 'app-business-header',
@@ -150,7 +151,9 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
     if (biz.logoUrl && biz.logoUrl.trim() !== '') {
       this.currentBusinessLogo = biz.logoUrl;
     }
-    this.router.navigate(['/business/profile', tabRefGuid]);
+    this.router.navigate(
+      buildBusinessCommands(biz) ?? ['/business/profile', tabRefGuid],
+    );
   }
 
   openLoginModal() {

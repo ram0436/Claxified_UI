@@ -14,6 +14,7 @@ import { BusinessService } from '../../service/business.service';
 import { BusinessDirectoryItem, BusinessOfferDto } from '../../model/Business';
 import { BusinessLoginComponent } from '../business-login/business-login.component';
 import { CommonService } from 'src/app/shared/service/common.service';
+import { buildBusinessCommands } from '../../../business/utils/business-url.util';
 
 interface OfferViewModel extends BusinessOfferDto {
   businessName: string;
@@ -685,7 +686,8 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   viewBusiness(business: BusinessDirectoryItem): void {
     if (!business.tabRefGUID) return;
-    this.router.navigate(['/business/profile', business.tabRefGUID]);
+    const cmds = buildBusinessCommands(business);
+    if (cmds) this.router.navigate(cmds);
   }
 
   trackByBusinessId(_index: number, business: BusinessDirectoryItem): number {
@@ -994,10 +996,9 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getBusinessUrl(business: BusinessDirectoryItem): string {
     if (!business.tabRefGUID) return '';
-    const tree = this.router.createUrlTree([
-      '/business/profile',
-      business.tabRefGUID,
-    ]);
+    const cmds = buildBusinessCommands(business);
+    if (!cmds) return '';
+    const tree = this.router.createUrlTree(cmds);
     return this.router.serializeUrl(tree);
   }
 

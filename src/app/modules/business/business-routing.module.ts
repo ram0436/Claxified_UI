@@ -40,8 +40,8 @@ const routes: Routes = [
       //   canActivate: [AuthGuard],
       // },
       {
-        path: ':location/:businessName',
-        component: BusinessPublicProfileComponent,
+        path: ':city/:businessSlug',
+        component: BusinessProfileComponent,
       },
     ],
   },
