@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, Observable, of, Subject, throwError } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, Subject, switchMap, tap, throwError } from 'rxjs';
+import { forgetBusinessSlug, getCachedBusinessGuid, rememberBusinessGuids } from '../utils/business-url.util';
 import { environment } from 'src/environments/environment';
 import {
   BusinessDirectoryItem,
@@ -35,7 +36,6 @@ import {
 } from '../model/Business';
 import { EntityType } from '../enum/business-product.enum';
 import { OfferingType } from '../enum/business-offering.enum';
-import { catchError } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
@@ -56,9 +56,11 @@ export class BusinessService {
   constructor(private http: HttpClient) {}
 
   getBusinessList(): Observable<BusinessDirectoryItem[]> {
-    return this.http.get<BusinessDirectoryItem[]>(
-      `${this.baseUrl}Business/List`,
-    );
+    return this.http
+      .get<BusinessDirectoryItem[]>(`${this.baseUrl}Business/List`)
+      .pipe(
+        tap((list) => rememberBusinessGuids((list || []).map((b) => b.tabRefGUID))),
+      );
   }
 
   getBusinessCategories() {
@@ -96,6 +98,51 @@ export class BusinessService {
   getBusinessByGuid(tabRefGUID: string): Observable<BusinessViewDto> {
     return this.http.get<BusinessViewDto>(
       `${this.baseUrl}Business/${tabRefGUID}`,
+    );
+  }
+
+  getBusinessBySlug(slug: string): Observable<BusinessViewDto> {
+    const cached = getCachedBusinessGuid(slug);
+    if (cached) {
+      return this.getBusinessByGuid(cached).pipe(
+        catchError(() => {
+          forgetBusinessSlug(slug);
+          return this.resolveSlugViaList(slug);
+        }),
+      );
+    }
+    return this.resolveSlugViaList(slug);
+  }
+
+  private resolveSlugViaList(slug: string): Observable<BusinessViewDto> {
+    const prefix = (slug || '').toLowerCase() + '-';
+    const matches = (guid?: string | null) =>
+      !!guid && guid.toLowerCase().startsWith(prefix);
+
+    const userId = Number(localStorage.getItem('id'));
+    const publicGuids$ = this.getBusinessList().pipe(
+      map((list) => (list || []).map((b) => b.tabRefGUID)),
+      catchError(() => of([] as string[])),
+    );
+    const ownGuids$ = userId
+      ? this.getUserBusinesses(userId).pipe(
+          map((list) => (list || []).map((b) => b.businessId)),
+          catchError(() => of([] as string[])),
+        )
+      : of([] as string[]);
+
+    // both calls run in parallel
+    return forkJoin([publicGuids$, ownGuids$]).pipe(
+      map(([pub, own]) => {
+        const all = [...pub, ...own].filter(Boolean);
+        rememberBusinessGuids(all);
+        return all.find((g) => matches(g)) ?? null;
+      }),
+      switchMap((guid) =>
+        guid
+          ? this.getBusinessByGuid(guid)
+          : throwError(() => new Error('Business not found')),
+      ),
     );
   }
 
@@ -329,7 +376,7 @@ export class BusinessService {
 
   getOfferingCourse(businessOfferingId: number): Observable<OfferingCourseDto> {
     return this.http.get<OfferingCourseDto>(
-      `${this.baseUrl}offering-course/id?businessOfferingId=${businessOfferingId}`,
+      `${this.baseUrl}Business/offering-course/id?businessOfferingId=${businessOfferingId}`,
     );
   }
 

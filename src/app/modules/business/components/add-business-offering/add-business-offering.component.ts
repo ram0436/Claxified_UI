@@ -7,7 +7,12 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
@@ -21,6 +26,17 @@ import {
 } from '../../model/Business';
 import { OfferingType } from '../../enum/business-offering.enum';
 
+import {
+  DETAIL_CONFIG,
+  DATE_FIELDS,
+  END_OF_DAY_FIELDS,
+  TIME_FIELDS,
+  GenericDetailConfig,
+  LayoutBlock,
+  buildLayout,
+  defaultFor,
+} from '../../model/offering-detail-field';
+
 type SectionId = 'type' | 'basic' | 'details' | 'image';
 
 interface DetailTypeHandler {
@@ -31,12 +47,6 @@ interface DetailTypeHandler {
   save: (payload: any) => Observable<any>;
 }
 
-/** Date fields that must be sent as null (not '') and shown as yyyy-MM-dd */
-const DATE_FIELDS = ['startDate', 'endDate', 'eventDate'];
-
-/** Time fields that must be sent as "HH:mm:ss" */
-const TIME_FIELDS = ['startTime', 'endTime'];
-
 @Component({
   selector: 'app-add-business-offering',
   templateUrl: './add-business-offering.component.html',
@@ -45,8 +55,15 @@ const TIME_FIELDS = ['startTime', 'endTime'];
 export class AddBusinessOfferingComponent implements OnInit {
   @Input() businessId!: number;
 
-  @ViewChild('descriptionEditor')
   descriptionEditorRef?: ElementRef<HTMLDivElement>;
+
+  @ViewChild('descriptionEditor')
+  set descriptionEditor(ref: ElementRef<HTMLDivElement> | undefined) {
+    this.descriptionEditorRef = ref;
+    if (ref) {
+      ref.nativeElement.innerHTML = this.form?.get('description')?.value || '';
+    }
+  }
 
   @Input() businessSubCategories: any[] = [];
   @Input() selectedSubCategoryId: number | null = null;
@@ -239,7 +256,7 @@ export class AddBusinessOfferingComponent implements OnInit {
       { id: 'image', label: 'Image', icon: 'photo_library', required: true },
     ];
 
-    if (this.isEditMode || !this.presetType) {
+    if (!this.isEditMode && !this.presetType) {
       return [
         {
           id: 'type',
@@ -299,12 +316,12 @@ export class AddBusinessOfferingComponent implements OnInit {
     } catch {
       /* keep original if not serialisable */
     }
-    console.log(`[AddOffering] ${label}`, snapshot ?? '');
+    // console.log(`[AddOffering] ${label}`, snapshot ?? '');
   }
 
   private logError(label: string, err: unknown): void {
     if (!this.DEBUG) return;
-    console.error(`[AddOffering] ${label}`, err);
+    // console.error(`[AddOffering] ${label}`, err);
   }
 
   // ---------- Inline suggest-input helpers ----------
@@ -564,121 +581,15 @@ export class AddBusinessOfferingComponent implements OnInit {
       serviceHighlights: [''],
     });
 
-    this.menuItemForm = this.fb.group({
-      id: [0],
-      cuisineType: [''],
-      foodType: [''],
-      spiceLevel: [''],
-      preparationTime: [0],
-      preparationTimeUnit: [''],
-      servingSize: [''],
-      calories: [0],
-      ingredients: [''],
-      allergens: [''],
-      isChefSpecial: [false],
-      isCustomizable: [false],
-      isAvailable: [true],
-    });
-
-    this.accommodationForm = this.fb.group({
-      id: [0],
-      roomType: [''],
-      bedType: [''],
-      maxOccupancy: [0],
-      roomSizeSqft: [0],
-      viewType: [''],
-      checkInTime: [''],
-      checkOutTime: [''],
-      amenities: [''],
-      breakfastIncluded: [false],
-      freeCancellation: [false],
-      cancellationPolicy: [''],
-      isAvailable: [true],
-    });
-
-    this.propertyForm = this.fb.group({
-      id: [0],
-      propertyType: [''],
-      listingType: [''],
-      bedrooms: [0],
-      bathrooms: [0],
-      areaSqft: [0],
-      floorNumber: [0],
-      totalFloors: [0],
-      furnishingStatus: [''],
-      facing: [''],
-      ageOfPropertyYears: [0],
-      amenities: [''],
-      possessionStatus: [''],
-      isNegotiable: [false],
-    });
-
-    this.rentalVehicleForm = this.fb.group({
-      id: [0],
-      vehicleType: [''],
-      brand: [''],
-      model: [''],
-      year: [0],
-      transmissionType: [''],
-      fuelType: [''],
-      seatingCapacity: [0],
-      registrationNumber: [''],
-      pricePerHour: [0],
-      pricePerDay: [0],
-      securityDeposit: [0],
-      mileageLimitPerDay: [0],
-      withDriver: [false],
-      isAvailable: [true],
-    });
-
-    this.eventForm = this.fb.group({
-      id: [0],
-      eventType: [''],
-      eventDate: [null],
-      startTime: [''],
-      endTime: [''],
-      venue: [''],
-      capacity: [0],
-      ticketType: [''],
-      organizerName: [''],
-      artistOrPerformer: [''],
-      ageRestriction: [''],
-      dressCode: [''],
-      isFreeEntry: [false],
-      refundPolicy: [''],
-    });
-
-    this.tourPackageForm = this.fb.group({
-      id: [0],
-      destination: [''],
-      packageType: [''],
-      duration: [0],
-      durationUnit: [''],
-      groupSize: [0],
-      startDate: [null],
-      endDate: [null],
-      inclusions: [''],
-      exclusions: [''],
-      itinerary: [''],
-      accommodationIncluded: [false],
-      mealsIncluded: [false],
-      transportIncluded: [false],
-      cancellationPolicy: [''],
-    });
-
-    this.membershipPlanForm = this.fb.group({
-      id: [0],
-      planType: [''],
-      validityPeriod: [0],
-      validityUnit: [''],
-      benefits: [''],
-      maxUsers: [0],
-      discountPercentage: [0],
-      freeTrialDays: [0],
-      isRenewable: [false],
-      autoRenewal: [false],
-      termsAndConditions: [''],
-    });
+    this.menuItemForm = this.genericFormFor(OfferingType.MenuItem);
+    this.accommodationForm = this.genericFormFor(
+      OfferingType.RoomAccommodation,
+    );
+    this.propertyForm = this.genericFormFor(OfferingType.Property);
+    this.rentalVehicleForm = this.genericFormFor(OfferingType.RentalVehicle);
+    this.eventForm = this.genericFormFor(OfferingType.Event);
+    this.tourPackageForm = this.genericFormFor(OfferingType.TourPackage);
+    this.membershipPlanForm = this.genericFormFor(OfferingType.MembershipPlan);
   }
 
   /** Single lookup table mapping an offering type to its detail form,
@@ -882,6 +793,8 @@ export class AddBusinessOfferingComponent implements OnInit {
   private patchFromOffering(o: BusinessOfferingDto): void {
     this.loading = true;
 
+    this.activeSection = 'basic';
+
     this.form.patchValue({
       id: o.id,
       offeringType: o.offeringType,
@@ -900,18 +813,17 @@ export class AddBusinessOfferingComponent implements OnInit {
     if (handler) {
       handler.get(o.id).subscribe(
         (res) => {
-          // The API may return the object directly, or wrapped under
-          // its businessOfferingXxx key. Handle both shapes.
-          const detail =
-            res && typeof res === 'object' && handler.wrapperKey in res
-              ? (res as any)[handler.wrapperKey]
-              : res;
+          const detail = this.extractDetail(res, handler.wrapperKey);
+          // this.log(`Loaded detail for offeringType=${o.offeringType}`, detail);
 
-          this.log(`Loaded detail for offeringType=${o.offeringType}`, detail);
-          if (detail) {
-            handler.form.patchValue(this.normalizeDatesForInput(detail));
-            this.syncSuggestValuesFromForms();
+          if (!detail) {
+            // this.log('No detail record returned for this offering');
+            return;
           }
+
+          const aligned = this.alignKeys(detail, handler.form);
+          handler.form.patchValue(this.normalizeDatesForInput(aligned));
+          this.syncSuggestValuesFromForms();
         },
         (err) => this.logError('Failed to load detail', err),
       );
@@ -938,24 +850,21 @@ export class AddBusinessOfferingComponent implements OnInit {
     return copy;
   }
 
-  /** Dates -> "yyyy-MM-dd" | null; times -> "HH:mm:ss" | null. */
   private normalizeDatesForPayload(payload: any): any {
     const copy = { ...payload };
     DATE_FIELDS.forEach((f) => {
       if (!(f in copy)) return;
       const v = copy[f];
-      if (!v) {
-        copy[f] = null;
-      } else if (v instanceof Date) {
-        copy[f] = this.formatYmd(v);
-      } else if (typeof v === 'string') {
-        copy[f] = v.substring(0, 10);
-      }
+      let ymd: string | null = null;
+      if (v instanceof Date) ymd = this.formatYmd(v);
+      else if (typeof v === 'string' && v) ymd = v.substring(0, 10);
+
+      copy[f] = ymd
+        ? `${ymd}T${END_OF_DAY_FIELDS.includes(f) ? '23:59:59' : '00:00:00'}Z`
+        : null;
     });
     TIME_FIELDS.forEach((f) => {
-      if (f in copy) {
-        copy[f] = this.normalizeTimeForPayload(copy[f]);
-      }
+      if (f in copy) copy[f] = this.normalizeTimeForPayload(copy[f]);
     });
     return copy;
   }
@@ -964,22 +873,22 @@ export class AddBusinessOfferingComponent implements OnInit {
 
   async onSave(): Promise<void> {
     this.errorMessage = '';
-    console.groupCollapsed?.('[AddOffering] ===== SAVE STARTED =====');
+    // console.groupCollapsed?.('[AddOffering] ===== SAVE STARTED =====');
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.errorMessage = 'Please fill in all required fields.';
       this.activeSection = 'basic';
-      this.log('Blocked: parent form invalid', this.form.getRawValue());
-      console.groupEnd?.();
+      // this.log('Blocked: parent form invalid', this.form.getRawValue());
+      // console.groupEnd?.();
       return;
     }
 
     if (!this.imagePreviewUrl) {
       this.errorMessage = 'Please add an image for this offering.';
       this.activeSection = 'image';
-      this.log('Blocked: no image');
-      console.groupEnd?.();
+      // this.log('Blocked: no image');
+      // console.groupEnd?.();
       return;
     }
 
@@ -988,12 +897,12 @@ export class AddBusinessOfferingComponent implements OnInit {
     let uploadedImageUrl = '';
     try {
       uploadedImageUrl = await this.uploadImageIfNeeded();
-      this.log('Image uploaded, url =', uploadedImageUrl);
+      // this.log('Image uploaded, url =', uploadedImageUrl);
     } catch (err) {
-      this.logError('Image upload FAILED', err);
+      // this.logError('Image upload FAILED', err);
       this.saving = false;
       this.errorMessage = 'Image upload failed. Please try again.';
-      console.groupEnd?.();
+      // console.groupEnd?.();
       return;
     }
 
@@ -1012,22 +921,22 @@ export class AddBusinessOfferingComponent implements OnInit {
       displayOrder: raw.displayOrder,
     };
 
-    this.log(
-      '1) PARENT payload -> POST Business/business-offering',
-      offeringPayload,
-    );
+    // this.log(
+    //   '1) PARENT payload -> POST Business/business-offering',
+    //   offeringPayload,
+    // );
 
     this.businessService.saveBusinessOffering(offeringPayload).subscribe(
       (savedOffering) => {
-        this.log('1) PARENT response', savedOffering);
+        // this.log('1) PARENT response', savedOffering);
         const businessOfferingId = savedOffering?.id || raw.id;
         this.saveTypeSpecificDetail(businessOfferingId, raw.offeringType);
       },
       (err) => {
-        this.logError('1) PARENT save FAILED', err);
+        // this.logError('1) PARENT save FAILED', err);
         this.saving = false;
         this.errorMessage = 'Failed to save offering. Please try again.';
-        console.groupEnd?.();
+        // console.groupEnd?.();
       },
     );
   }
@@ -1039,9 +948,9 @@ export class AddBusinessOfferingComponent implements OnInit {
     const handler = this.getDetailHandler(offeringType);
 
     if (!handler) {
-      this.log(
-        `2) No detail handler for offeringType=${offeringType} - skipping detail save`,
-      );
+      // this.log(
+      //   `2) No detail handler for offeringType=${offeringType} - skipping detail save`,
+      // );
       this.finishSave();
       return;
     }
@@ -1065,30 +974,30 @@ export class AddBusinessOfferingComponent implements OnInit {
     // Wrap under the property name the backend expects.
     const payload = { [handler.wrapperKey]: innerPayload };
 
-    this.log(
-      `2) DETAIL payload (offeringType=${
-        OfferingType[offeringType] ?? offeringType
-      }, wrapperKey=${handler.wrapperKey})`,
-      payload,
-    );
-    if (this.DEBUG && console.table) {
-      console.table(innerPayload);
-    }
+    // this.log(
+    //   `2) DETAIL payload (offeringType=${
+    //     OfferingType[offeringType] ?? offeringType
+    //   }, wrapperKey=${handler.wrapperKey})`,
+    //   payload,
+    // );
+    // if (this.DEBUG && console.table) {
+    //   console.table(innerPayload);
+    // }
 
     handler.save(payload).subscribe(
       (res) => {
-        this.log('2) DETAIL response', res);
+        // this.log('2) DETAIL response', res);
         this.finishSave();
       },
       (err) => {
-        this.logError(
-          `2) DETAIL save FAILED for offeringType=${offeringType}`,
-          err,
-        );
-        console.error(
-          '[AddOffering] API validation errors:',
-          err?.error?.errors,
-        );
+        // this.logError(
+        //   `2) DETAIL save FAILED for offeringType=${offeringType}`,
+        //   err,
+        // );
+        // console.error(
+        //   '[AddOffering] API validation errors:',
+        //   err?.error?.errors,
+        // );
         this.finishSaveWithWarning();
       },
     );
@@ -1096,8 +1005,8 @@ export class AddBusinessOfferingComponent implements OnInit {
 
   private finishSave(): void {
     this.saving = false;
-    this.log('===== SAVE COMPLETE =====');
-    console.groupEnd?.();
+    // this.log('===== SAVE COMPLETE =====');
+    // console.groupEnd?.();
     this.showNotification(
       this.isEditMode
         ? 'Offering updated successfully'
@@ -1108,8 +1017,8 @@ export class AddBusinessOfferingComponent implements OnInit {
 
   private finishSaveWithWarning(): void {
     this.saving = false;
-    this.log('===== SAVE COMPLETE WITH DETAIL WARNING =====');
-    console.groupEnd?.();
+    // this.log('===== SAVE COMPLETE WITH DETAIL WARNING =====');
+    // console.groupEnd?.();
     this.showNotification(
       'Offering saved, but its details failed to save. Please edit and try again.',
     );
@@ -1126,5 +1035,74 @@ export class AddBusinessOfferingComponent implements OnInit {
       horizontalPosition: 'end',
       verticalPosition: 'top',
     });
+  }
+
+  private layoutCache = new Map<number, LayoutBlock[]>();
+
+  get genericConfig(): GenericDetailConfig | null {
+    const t = this.selectedOfferingType;
+    return t != null ? (DETAIL_CONFIG[t] ?? null) : null;
+  }
+
+  get genericForm(): FormGroup | null {
+    const c = this.genericConfig;
+    return c ? ((this as any)[c.formName] as FormGroup) : null;
+  }
+
+  get genericLayout(): LayoutBlock[] {
+    const t = this.selectedOfferingType as number;
+    const c = this.genericConfig;
+    if (!c) return [];
+    if (!this.layoutCache.has(t)) {
+      this.layoutCache.set(t, buildLayout(c.fields));
+    }
+    return this.layoutCache.get(t)!;
+  }
+
+  ctrl(key: string): FormControl {
+    return this.genericForm!.get(key) as FormControl;
+  }
+
+  genericPath(key: string): string {
+    return `${this.genericConfig!.formName}.${key}`;
+  }
+
+  private genericFormFor(type: OfferingType): FormGroup {
+    const controls: Record<string, any> = { id: [0] };
+    DETAIL_CONFIG[type]!.fields.forEach(
+      (f) => (controls[f.key] = [defaultFor(f)]),
+    );
+    return this.fb.group(controls);
+  }
+
+  /** Unwraps: array -> first item, {wrapperKey: {...}} -> inner, {anyKey: {...}} -> inner */
+  private extractDetail(res: any, wrapperKey: string): any {
+    let d = Array.isArray(res) ? res[0] : res;
+    if (!d || typeof d !== 'object') return null;
+
+    if (wrapperKey in d) {
+      d = d[wrapperKey];
+    } else if (!('businessOfferingId' in d) && !('id' in d)) {
+      const keys = Object.keys(d);
+      if (keys.length === 1 && typeof d[keys[0]] === 'object') {
+        d = d[keys[0]];
+      }
+    }
+
+    if (Array.isArray(d)) d = d[0];
+    return d ?? null;
+  }
+
+  /** Matches API keys to form control names case-insensitively and drops nulls */
+  private alignKeys(detail: any, form: FormGroup): any {
+    const controlNames = new Map(
+      Object.keys(form.controls).map((k) => [k.toLowerCase(), k]),
+    );
+    const out: any = {};
+    Object.entries(detail).forEach(([k, v]) => {
+      const target = controlNames.get(k.toLowerCase());
+      if (target && v !== null && v !== undefined) out[target] = v;
+    });
+    return out;
   }
 }

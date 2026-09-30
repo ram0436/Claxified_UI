@@ -22,6 +22,7 @@ import {
 } from '../../model/Business';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { MatSelect } from '@angular/material/select';
+import { buildBusinessCommands } from '../../../business/utils/business-url.util';
 
 type SectionId =
   | 'basic'
@@ -258,7 +259,15 @@ export class BusinessEditProfileComponent implements OnInit, OnChanges {
       return;
     }
     const url = this.router.serializeUrl(
-      this.router.createUrlTree(['/business/profile', this.tabRefGuid]),
+      this.router.createUrlTree(
+        buildBusinessCommands({
+          tabRefGuid: this.tabRefGuid,
+          tabRefGUID: this.tabRefGuid,
+          businessName: this.business?.businessName,
+          city: this.business?.businessAddress?.city,
+          area: this.business?.businessAddress?.area,
+        } as any) ?? ['/business/profile', this.tabRefGuid],
+      ),
     );
     window.open(url, '_blank');
   }

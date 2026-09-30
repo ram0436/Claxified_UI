@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { BusinessService } from 'src/app/modules/business/service/business.service';
+import { buildBusinessCommands } from '../../../business/utils/business-url.util';
 
 type BizTab = 'all' | 'active' | 'pending' | 'draft' | 'archived';
 
@@ -149,7 +150,12 @@ export class MyBusinessesComponent implements OnInit {
   }
 
   manageBusiness(business: any): void {
-    this.router.navigateByUrl(`/business/profile/${business.businessId}`);
+    const cmds = buildBusinessCommands(business);
+    if (cmds) {
+      this.router.navigate(cmds);
+    } else {
+      this.router.navigateByUrl(`/business/profile/${business.businessId}`);
+    }
   }
 
   get totalFilteredCount(): number {

@@ -19,6 +19,7 @@ import { NewsService } from '../news/service/news.service';
 import { NewsArticle } from '../news/model/News';
 import { EventService } from '../event/service/event.service';
 import { EventItem } from '../event/model/Event';
+import { buildBusinessCommands } from '../business/utils/business-url.util';
 
 interface OfferViewModel extends BusinessOfferDto {
   businessName: string;
@@ -549,7 +550,8 @@ export class MarketplaceComponent implements OnInit {
 
   viewBusiness(business: BusinessDirectoryItem): void {
     if (!business.tabRefGUID) return;
-    this.router.navigate(['/business/profile', business.tabRefGUID]);
+    const cmds = buildBusinessCommands(business);
+    if (cmds) this.router.navigate(cmds);
   }
 
   trackByBusinessId(_index: number, business: BusinessDirectoryItem): number {
