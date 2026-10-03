@@ -20,6 +20,7 @@ import { BusinessService } from '../../service/business.service';
 import { OfferingTypeOptionDto } from '../../model/Business';
 import {
   BusinessOfferingDto,
+  OfferingMedicalServiceSavePayload,
   SUPPORTED_OFFERING_TYPES,
   OFFERING_FIELD_OPTIONS,
   OfferingFieldOptions,
@@ -869,6 +870,45 @@ export class AddBusinessOfferingComponent implements OnInit {
     return copy;
   }
 
+  private buildDetailInner(
+    handler: DetailTypeHandler,
+    businessOfferingId: number,
+  ): any {
+    const rawDetail = handler.form.getRawValue();
+    const trimmedDetail = Object.fromEntries(
+      Object.entries(rawDetail).map(([k, v]) => [
+        k,
+        typeof v === 'string' ? v.trim() : v,
+      ]),
+    );
+
+    return this.normalizeDatesForPayload({
+      ...trimmedDetail,
+      businessOfferingId,
+      businessId: this.businessId,
+    });
+  }
+
+  private saveMedicalServiceCombined(offering: BusinessOfferingDto): void {
+    const handler = this.getDetailHandler(OfferingType.MedicalService)!;
+
+    const payload: OfferingMedicalServiceSavePayload = {
+      businessOffering: offering,
+      businessOfferingMedicalService: this.buildDetailInner(
+        handler,
+        offering.id,
+      ),
+    };
+
+    this.businessService.saveOfferingMedicalService(payload).subscribe(
+      () => this.finishSave(),
+      () => {
+        this.saving = false;
+        this.errorMessage = 'Failed to save offering. Please try again.';
+      },
+    );
+  }
+
   // ---------- Save ----------
 
   async onSave(): Promise<void> {
@@ -921,6 +961,11 @@ export class AddBusinessOfferingComponent implements OnInit {
       displayOrder: raw.displayOrder,
     };
 
+    if (Number(raw.offeringType) === Number(OfferingType.MedicalService)) {
+      this.saveMedicalServiceCombined(offeringPayload);
+      return;
+    }
+
     // this.log(
     //   '1) PARENT payload -> POST Business/business-offering',
     //   offeringPayload,
@@ -948,9 +993,6 @@ export class AddBusinessOfferingComponent implements OnInit {
     const handler = this.getDetailHandler(offeringType);
 
     if (!handler) {
-      // this.log(
-      //   `2) No detail handler for offeringType=${offeringType} - skipping detail save`,
-      // );
       this.finishSave();
       return;
     }
@@ -964,16 +1006,6 @@ export class AddBusinessOfferingComponent implements OnInit {
       ]),
     );
 
-    // Normalize dates and times, then add the ids.
-    const innerPayload = this.normalizeDatesForPayload({
-      ...trimmedDetail,
-      businessOfferingId,
-      businessId: this.businessId,
-    });
-
-    // Wrap under the property name the backend expects.
-    const payload = { [handler.wrapperKey]: innerPayload };
-
     // this.log(
     //   `2) DETAIL payload (offeringType=${
     //     OfferingType[offeringType] ?? offeringType
@@ -984,22 +1016,12 @@ export class AddBusinessOfferingComponent implements OnInit {
     //   console.table(innerPayload);
     // }
 
+    const innerPayload = this.buildDetailInner(handler, businessOfferingId);
+    const payload = { [handler.wrapperKey]: innerPayload };
+
     handler.save(payload).subscribe(
-      (res) => {
-        // this.log('2) DETAIL response', res);
-        this.finishSave();
-      },
-      (err) => {
-        // this.logError(
-        //   `2) DETAIL save FAILED for offeringType=${offeringType}`,
-        //   err,
-        // );
-        // console.error(
-        //   '[AddOffering] API validation errors:',
-        //   err?.error?.errors,
-        // );
-        this.finishSaveWithWarning();
-      },
+      () => this.finishSave(),
+      () => this.finishSaveWithWarning(),
     );
   }
 

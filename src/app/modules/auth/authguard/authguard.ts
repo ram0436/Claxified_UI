@@ -30,6 +30,7 @@ export class AuthGuard implements CanActivate {
       'add-post',
       'view-posts',
       'post-details/:id',
+      ':city/:postSlug',
       'Vehicles',
       'Electronics & Appliances',
       'Furniture',

@@ -1,17 +1,6 @@
-/**
- * Business profile URL helpers.
- *
- * URL format:
- *   /business/{city}/{business-name}-{area}-{unique-slug}
- * e.g.
- *   /business/bangalore/abc-furniture-whitefield-d517d469
- *
- * {unique-slug} = first segment of the business tabRefGUID (up to the first "-").
- */
-
 export interface BusinessUrlSource {
   tabRefGUID?: string | null;
-  businessId?: string | null; // BusinessListItem uses businessId to carry the GUID
+  businessId?: string | null;
   businessName?: string | null;
   city?: string | null;
   area?: string | null;
@@ -37,7 +26,9 @@ export function getUniqueSlug(guid: string | null | undefined): string {
 }
 
 /** Last "-" separated part of "{business-name}-{area}-{unique-slug}" */
-export function extractUniqueSlug(businessSlug: string | null | undefined): string {
+export function extractUniqueSlug(
+  businessSlug: string | null | undefined,
+): string {
   const parts = (businessSlug || '').trim().split('-');
   return (parts[parts.length - 1] || '').toLowerCase();
 }
@@ -61,7 +52,7 @@ export function rememberBusinessGuid(guid: string | null | undefined): void {
     const map = readCache();
     if (map[slug] === guid) return;
     delete map[slug];
-    map[slug] = guid; // re-insert so newest stays last
+    map[slug] = guid;
     const keys = Object.keys(map);
     if (keys.length > CACHE_LIMIT) {
       keys.slice(0, keys.length - CACHE_LIMIT).forEach((k) => delete map[k]);
@@ -71,7 +62,9 @@ export function rememberBusinessGuid(guid: string | null | undefined): void {
 }
 
 /** Batch version: a single localStorage read/write for many GUIDs */
-export function rememberBusinessGuids(guids: (string | null | undefined)[]): void {
+export function rememberBusinessGuids(
+  guids: (string | null | undefined)[],
+): void {
   try {
     const map = readCache();
     for (const guid of guids) {

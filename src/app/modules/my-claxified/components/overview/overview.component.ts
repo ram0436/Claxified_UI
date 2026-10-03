@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { BusinessService } from 'src/app/modules/business/service/business.service';
 import { ClaxifiedHelperService } from '../../services/claxified-helper.service';
+import { buildPostCommands } from 'src/app/shared/utils/post-url.util';
 
 @Component({
   selector: 'app-overview',
@@ -101,6 +102,11 @@ export class OverviewComponent implements OnInit {
   }
 
   viewDetails(ad: any): void {
-    this.router.navigateByUrl(`/${ad.__category}/post-details/${ad.tableRefGuid}`);
+    const cmds = buildPostCommands({ ...ad, category: ad.__category });
+    this.router.navigate(
+      cmds ?? [
+        `/classified-ads/${ad.__category}/post-details/${ad.tableRefGuid}`,
+      ],
+    );
   }
 }

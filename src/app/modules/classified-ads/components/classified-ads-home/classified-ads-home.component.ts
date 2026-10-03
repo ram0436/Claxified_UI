@@ -9,6 +9,7 @@ import {
   getCategoryRoute,
   WishlistItem,
 } from '../../model/ads';
+import { buildPostCommands } from 'src/app/shared/utils/post-url.util';
 
 interface AdCategory {
   id: number;
@@ -27,6 +28,7 @@ interface ClassifiedAd {
   category: string;
   categoryIcon: string;
   location: string;
+  city?: string;
   postedAgo: string;
   imageUrl?: string;
   colorClass: string;
@@ -375,6 +377,7 @@ export class ClassifiedAdsHomeComponent implements OnInit {
       price: this.formatPrice(item),
       category: category?.name || 'General',
       categoryIcon: category?.icon || 'category',
+      city: item.city,
       location:
         [item.city, item.state].filter(Boolean).join(', ') ||
         item.pincode ||
@@ -500,10 +503,20 @@ export class ClassifiedAdsHomeComponent implements OnInit {
   }
 
   viewAd(ad: ClassifiedAd): void {
-    const categoryRoute = getCategoryRoute(ad.categoryId);
-    this.router.navigate([
-      `classified-ads/${categoryRoute}/post-details/${ad.id}`,
-    ]);
+    const cmds = buildPostCommands({
+      tableRefGuid: ad.id,
+      title: ad.title,
+      city: ad.city,
+      categoryId: ad.categoryId,
+    });
+    if (cmds) {
+      this.router.navigate(cmds);
+    } else {
+      const categoryRoute = getCategoryRoute(ad.categoryId);
+      this.router.navigate([
+        `classified-ads/${categoryRoute}/post-details/${ad.id}`,
+      ]);
+    }
   }
 
   postAdd(): void {

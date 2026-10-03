@@ -14,6 +14,7 @@ import { BusinessServiceDetailComponent } from './components/business-service-de
 import { BusinessAttributeMappingComponent } from './components/business-attribute-mapping/business-attribute-mapping.component';
 import { AuthGuard } from '../auth/authguard/authguard';
 import { BusinessHomeComponent } from './components/business-home/business-home.component';
+import { BusinessOfferingDetailComponent } from './components/business-offering-detail/business-offering-detail.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,7 @@ const routes: Routes = [
         path: 'service/:serviceId',
         component: BusinessServiceDetailComponent,
       },
+      { path: 'offering/:id', component: BusinessOfferingDetailComponent },
       { path: 'page/:slug', component: BusinessPageComponent },
       // {
       //   path: "admin/attribute-mapping",

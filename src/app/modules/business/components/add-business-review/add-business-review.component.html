@@ -13,25 +13,34 @@
       <!-- Star Rating -->
       <div class="review-form-group">
         <label class="review-label">Rating *</label>
-        <div class="review-stars">
-          <span
-            class="material-icons-outlined review-star"
+        <div class="review-stars" (mouseleave)="hoverRating = 0">
+          <button
+            type="button"
+            class="review-star-box"
             *ngFor="let s of [1, 2, 3, 4, 5]"
-            [class.filled]="s <= formData.rating"
+            [class.filled]="s <= (hoverRating || formData.rating)"
+            [class.selected]="s === formData.rating"
+            [style.animation-delay.ms]="(s - 1) * 45"
+            [attr.aria-label]="s + (s === 1 ? ' star' : ' stars')"
             (click)="setRating(s)"
             (mouseenter)="hoverRating = s"
-            (mouseleave)="hoverRating = 0"
           >
-            {{ s <= (hoverRating || formData.rating) ? "star" : "star_border" }}
-          </span>
-          <span class="review-rating-label">{{
-            getRatingLabel(formData.rating)
-          }}</span>
+            <span class="material-icons-outlined review-star">star</span>
+          </button>
+        </div>
+        <div
+          class="review-rating-label"
+          [class.has-rating]="formData.rating > 0"
+        >
+          {{
+            getRatingLabel(hoverRating || formData.rating) ||
+              "Tap a star to rate"
+          }}
         </div>
       </div>
 
       <!-- Title -->
-      <div class="review-form-group">
+      <!-- <div class="review-form-group">
         <label class="review-label">Title</label>
         <input
           type="text"
@@ -40,7 +49,7 @@
           name="title"
           placeholder="Summarize your experience"
         />
-      </div>
+      </div> -->
 
       <!-- Comment -->
       <div class="review-form-group">
@@ -67,14 +76,14 @@
         <button
           type="submit"
           class="review-btn review-btn-primary"
-          [disabled]="saving || formData.rating === 0 || !reviewForm.valid"
+          [disabled]="saving || formData.rating === 0"
         >
           {{
             saving
               ? "Submitting..."
               : review
-              ? "Update Review"
-              : "Submit Review"
+                ? "Update Review"
+                : "Submit Review"
           }}
         </button>
       </div>

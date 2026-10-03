@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { UserService } from 'src/app/modules/user/service/user.service';
 import { ClaxifiedHelperService } from '../../services/claxified-helper.service';
+import { buildPostCommands } from 'src/app/shared/utils/post-url.util';
 
 type TabKey = 'all' | 'active' | 'pending' | 'inactive';
 
@@ -193,8 +194,11 @@ export class MyListingsComponent implements OnInit, AfterViewInit {
   }
 
   viewDetails(ad: any): void {
-    this.router.navigateByUrl(
-      `/classified-ads/${ad.__category}/post-details/${ad.tableRefGuid}`,
+    const cmds = buildPostCommands({ ...ad, category: ad.__category });
+    this.router.navigate(
+      cmds ?? [
+        `/classified-ads/${ad.__category}/post-details/${ad.tableRefGuid}`,
+      ],
     );
   }
 

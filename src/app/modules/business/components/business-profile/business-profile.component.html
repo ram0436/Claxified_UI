@@ -66,13 +66,15 @@
 <div class="profile-wrapper" *ngIf="mode === 'detail' && !loading && business">
   <!-- ---------- HERO ---------- -->
   <div class="hero-banner">
-    <img
-      *ngIf="coverImageSrc"
-      [src]="coverImageSrc"
-      alt="Cover"
-      class="cover-image"
-    />
-    <div *ngIf="!coverImageSrc" class="cover-image cover-placeholder"></div>
+    <ng-container *ngIf="coverImageSrc; else noCover">
+      <!-- blurred fill behind (decorative) -->
+      <img [src]="coverImageSrc" alt="" aria-hidden="true" class="cover-bg" />
+      <!-- full, uncropped image on top -->
+      <img [src]="coverImageSrc" alt="Cover" class="cover-image" />
+    </ng-container>
+    <ng-template #noCover>
+      <div class="cover-image cover-placeholder"></div>
+    </ng-template>
     <div class="hero-overlay"></div>
 
     <div class="hero-top-actions">
@@ -275,6 +277,31 @@
       >
         Reviews
       </span>
+      <div class="tab-rate" (mouseleave)="quickHover = 0">
+        <span
+          class="tab-rate-label"
+          [class.has-rating]="quickHover || quickRated"
+        >
+          {{ quickRateLabel }}
+        </span>
+
+        <div class="tab-rate-stars">
+          <button
+            type="button"
+            class="rate-star-box"
+            *ngFor="let s of [1, 2, 3, 4, 5]"
+            [class.filled]="s <= (quickHover || quickRated)"
+            [class.selected]="s === quickRated"
+            [disabled]="quickSaving || quickRated > 0"
+            [style.animation-delay.ms]="(s - 1) * 45"
+            [attr.aria-label]="'Rate ' + s + (s === 1 ? ' star' : ' stars')"
+            (mouseenter)="quickHover = s"
+            (click)="quickRate(s)"
+          >
+            <span class="material-icons-outlined">star</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -743,11 +770,19 @@
             (keyup.enter)="viewCard(card)"
           >
             <div class="offering-card-image">
-              <img
-                *ngIf="card.imageUrl"
-                [src]="card.imageUrl"
-                [alt]="card.name"
-              />
+              <ng-container *ngIf="card.imageUrl">
+                <img
+                  [src]="card.imageUrl"
+                  alt=""
+                  aria-hidden="true"
+                  class="offering-img-bg"
+                />
+                <img
+                  [src]="card.imageUrl"
+                  [alt]="card.name"
+                  class="offering-img"
+                />
+              </ng-container>
               <span
                 *ngIf="!card.imageUrl"
                 class="material-icons-outlined catalog-placeholder-icon"
@@ -1436,4 +1471,12 @@
     (close)="closeAddReviewPanel()"
     (saved)="onReviewSaved()"
   ></app-add-business-review>
+
+  <app-business-offering-quickview
+    *ngIf="quickViewOfferingOpen && quickViewOffering"
+    [offering]="quickViewOffering"
+    [contactMobile]="business.businessContactDto?.mobile || ''"
+    (close)="closeOfferingQuickView()"
+    (viewFullDetails)="viewFullOfferingDetails()"
+  ></app-business-offering-quickview>
 </div>
