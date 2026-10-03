@@ -17,6 +17,12 @@
       <div class="pd-gallery" *ngIf="sortedImages.length > 0">
         <div class="pd-gallery-main-wrap">
           <img
+            class="pd-gallery-main-bg"
+            [src]="activeImage?.imageUrl"
+            alt=""
+            aria-hidden="true"
+          />
+          <img
             class="pd-gallery-main"
             [src]="activeImage?.imageUrl"
             [alt]="product.name"

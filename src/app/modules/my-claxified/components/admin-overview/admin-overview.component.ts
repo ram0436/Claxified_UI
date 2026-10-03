@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import * as moment from 'moment';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { AdminDashboardService } from '../../../admin/service/admin-dashboard.service';
+import { buildPostCommands } from 'src/app/shared/utils/post-url.util';
 
 @Component({
   selector: 'app-admin-overview',
@@ -127,8 +128,13 @@ export class AdminOverviewComponent implements OnInit {
       (c) => c.id == data.categoryId,
     );
     if (mainCategory) {
-      this.router.navigateByUrl(
-        `/${mainCategory.categoryName}/post-details/${data.tableRefGuid}`,
+      this.router.navigate(
+        buildPostCommands({ ...data, category: mainCategory.categoryName }) ?? [
+          '/classified-ads',
+          mainCategory.categoryName,
+          'post-details',
+          data.tableRefGuid,
+        ],
       );
     }
   }
@@ -138,10 +144,14 @@ export class AdminOverviewComponent implements OnInit {
       (c) => c.id == card.categoryId,
     );
     if (mainCategory) {
-      return [
-        '/' + mainCategory.categoryName + '/post-details',
-        card.tableRefGuid,
-      ];
+      return (
+        buildPostCommands({ ...card, category: mainCategory.categoryName }) ?? [
+          '/classified-ads',
+          mainCategory.categoryName,
+          'post-details',
+          card.tableRefGuid,
+        ]
+      );
     }
     return ['/'];
   }

@@ -12,12 +12,19 @@ import {
   BusinessOfferingDto,
   OFFERING_TYPE_OPTIONS,
   OfferingTypeOptionDto,
+  BusinessReview,
 } from '../../model/Business';
 import { OfferingType } from '../../enum/business-offering.enum';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BusinessLoginComponent } from '../business-login/business-login.component';
 import { forkJoin, of } from 'rxjs';
-import { buildBusinessCommands, buildBusinessPath, extractUniqueSlug, rememberBusinessGuid } from '../../utils/business-url.util';
+import {
+  buildBusinessCommands,
+  buildBusinessPath,
+  extractUniqueSlug,
+  rememberBusinessGuid,
+} from '../../utils/business-url.util';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface CatalogItem {
   id: number;
@@ -122,6 +129,9 @@ export class BusinessProfileComponent implements OnInit {
 
   quickViewServiceOpen: boolean = false;
   quickViewService: BusinessServiceDto | null = null;
+
+  quickViewOfferingOpen: boolean = false;
+  quickViewOffering: BusinessOfferingDto | null = null;
 
   private readonly pricingTypeDisplayMap: { [key: string]: string } = {
     FixedPrice: 'Fixed Price',
@@ -266,6 +276,19 @@ export class BusinessProfileComponent implements OnInit {
 
   private readonly maxVisibleOfferingTabs = 5; // includes "All"
 
+  quickHover = 0;
+  quickRated = 0;
+  quickSaving = false;
+
+  private readonly quickRatingLabels = [
+    'Rate this business',
+    'Poor',
+    'Fair',
+    'Good',
+    'Very Good',
+    'Excellent',
+  ];
+
   get visibleOfferingTypeTabs(): {
     value: OfferingType | 'all';
     name: string;
@@ -334,9 +357,8 @@ export class BusinessProfileComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private elRef: ElementRef,
-
+    private snackBar: MatSnackBar,
     private location: Location,
-
   ) {}
 
   getYearsInBusiness(establishedYear: number): number {
@@ -425,6 +447,52 @@ export class BusinessProfileComponent implements OnInit {
   openBusiness(item: BusinessListItem) {
     const cmds = buildBusinessCommands(item);
     this.router.navigate(cmds ?? ['/business/profile', item.businessId]);
+  }
+
+  get quickRateLabel(): string {
+    if (this.quickSaving) return 'Submitting...';
+    if (this.quickRated) return 'Thanks for rating!';
+    return this.quickRatingLabels[this.quickHover] || this.quickRatingLabels[0];
+  }
+
+  quickRate(rating: number): void {
+    if (this.quickSaving || this.quickRated) return;
+    if (!this.business) return;
+
+    const userId = Number(localStorage.getItem('id')) || 0;
+    if (!userId) {
+      this.showNotification('Please log in to rate this business.');
+      return;
+    }
+
+    const review = new BusinessReview();
+    review.businessId = this.business.id;
+    review.userId = userId;
+    review.rating = rating;
+
+    this.quickSaving = true;
+    this.quickRated = rating;
+
+    this.businessService.saveReview(review).subscribe(
+      () => {
+        this.quickSaving = false;
+        this.showNotification('Thanks for your rating!');
+        this.loadReviews();
+      },
+      () => {
+        this.quickSaving = false;
+        this.quickRated = 0;
+        this.quickHover = 0;
+        this.showNotification('Failed to save rating. Please try again.');
+      },
+    );
+  }
+  showNotification(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+    });
   }
 
   loadBusinessBySlug(slug: string) {
@@ -1074,6 +1142,22 @@ export class BusinessProfileComponent implements OnInit {
     });
   }
 
+  closeOfferingQuickView(): void {
+    this.quickViewOfferingOpen = false;
+    this.quickViewOffering = null;
+  }
+
+  viewFullOfferingDetails(): void {
+    if (!this.quickViewOffering) return;
+    const offering = this.quickViewOffering;
+    const isOwner = this.isOwner;
+    const contactMobile = this.business?.businessContactDto?.mobile || '';
+    this.closeOfferingQuickView();
+    this.router.navigate(['/business/offering', offering.id], {
+      state: { isOwner, offering, contactMobile },
+    });
+  }
+
   // ================== Offerings (generic types: Course, MedicalService, etc.) ==================
 
   /** Offerings/catalog items narrowed by sub-category + search only (not by
@@ -1382,8 +1466,9 @@ export class BusinessProfileComponent implements OnInit {
       }
     } else {
       const offering = this.offerings.find((o) => o.id === card.refId);
-      if (offering && this.isOwner && !this.viewingAsPublic) {
-        this.editOffering(offering);
+      if (offering) {
+        this.quickViewOffering = offering;
+        this.quickViewOfferingOpen = true;
       }
     }
   }

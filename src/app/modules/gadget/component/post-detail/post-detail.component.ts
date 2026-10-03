@@ -129,7 +129,8 @@ export class PostDetailComponent {
     private AdminDashboardService: AdminDashboardService,
   ) {
     this.route.paramMap.subscribe((params) => {
-      this.adTabRefGuid = params.get('id') || '';
+      this.adTabRefGuid =
+        params.get('id') || this.route.snapshot.data['postGuid'] || '';
     });
   }
   verifyAdd(categoryId: number, tableRefGuid: string): void {
@@ -164,7 +165,8 @@ export class PostDetailComponent {
     setTimeout(() => this.getSubCategory(this.postDetails.categoryId), 500);
     var tableRefGuid;
     this.route.paramMap.subscribe((params) => {
-      tableRefGuid = params.get('id');
+      tableRefGuid =
+        params.get('id') || this.route.snapshot.data['postGuid'] || null;
     });
     if (tableRefGuid != null) {
       this.getGadgetPost(tableRefGuid);

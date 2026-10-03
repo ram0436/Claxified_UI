@@ -27,7 +27,13 @@ export class EventDetailComponent implements OnInit {
   loading = true;
   error = false;
 
-  activeTab: 'overview' | 'details' | 'venue' | 'organizer' | 'faqs' | 'reviews' = 'overview';
+  activeTab:
+    | 'overview'
+    | 'details'
+    | 'venue'
+    | 'organizer'
+    | 'faqs'
+    | 'reviews' = 'overview';
   location = 'Bengaluru';
 
   eventHighlights = [
@@ -43,13 +49,17 @@ export class EventDetailComponent implements OnInit {
     { icon: 'facebook', link: 'https://facebook.com', className: 'facebook' },
     { icon: 'chat', link: 'https://wa.me/', className: 'whatsapp' },
     { icon: 'close', link: 'https://x.com/intent/tweet', className: 'x' },
-    { icon: 'work', link: 'https://linkedin.com/sharing', className: 'linkedin' },
+    {
+      icon: 'work',
+      link: 'https://linkedin.com/sharing',
+      className: 'linkedin',
+    },
   ];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private eventService: EventService
+    private eventService: EventService,
   ) {}
 
   ngOnInit(): void {
@@ -75,20 +85,29 @@ export class EventDetailComponent implements OnInit {
         this.event = match;
 
         this.similarEvents = allEvents
-          .filter((e) => e.eventCategoryId === match.eventCategoryId && e.id !== match.id)
+          .filter(
+            (e) =>
+              e.eventCategoryId === match.eventCategoryId && e.id !== match.id,
+          )
           .slice(0, 4);
 
         forkJoin({
           categories: this.eventService.getCategories(),
           subCategories: this.eventService.getSubCategories(),
-          venue: this.eventService.getVenueById(match.eventVenueId).pipe(catchError(() => of(undefined))),
+          venue: this.eventService
+            .getVenueById(match.eventVenueId)
+            .pipe(catchError(() => of(undefined))),
           organizer: this.eventService
             .getOrganizerById(match.eventOrganizerId)
             .pipe(catchError(() => of(undefined))),
         }).subscribe({
           next: ({ categories, subCategories, venue, organizer }) => {
-            this.category = categories.find((c) => c.id === match.eventCategoryId);
-            this.subCategory = subCategories.find((sc) => sc.id === match.eventSubCategoryId);
+            this.category = categories.find(
+              (c) => c.id === match.eventCategoryId,
+            );
+            this.subCategory = subCategories.find(
+              (sc) => sc.id === match.eventSubCategoryId,
+            );
             this.venue = venue;
             this.organizer = organizer;
             this.loading = false;
@@ -124,21 +143,30 @@ export class EventDetailComponent implements OnInit {
     if (!this.event) return '';
     const start = new Date(this.event.startDateTime);
     const end = new Date(this.event.endDateTime);
-    const fmt = (d: Date) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    const fmt = (d: Date) =>
+      d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
     return `${fmt(start)} \u2013 ${fmt(end)}`;
   }
 
   priceLabel(): string {
     if (!this.event) return '';
-    return this.event.isFree ? 'No ticket required. Just show up and be a part of it!' : `\u20B9${this.event.price.toLocaleString('en-IN')} per ticket`;
+    return this.event.isFree
+      ? 'No ticket required. Just show up and be a part of it!'
+      : `\u20B9${this.event.price.toLocaleString('en-IN')} per ticket`;
   }
 
   dayOf(dateStr?: string): string {
-    return dateStr ? new Date(dateStr).getDate().toString().padStart(2, '0') : '';
+    return dateStr
+      ? new Date(dateStr).getDate().toString().padStart(2, '0')
+      : '';
   }
 
   monthOf(dateStr?: string): string {
-    return dateStr ? new Date(dateStr).toLocaleDateString('en-US', { month: 'short' }).toUpperCase() : '';
+    return dateStr
+      ? new Date(dateStr)
+          .toLocaleDateString('en-US', { month: 'short' })
+          .toUpperCase()
+      : '';
   }
 
   goToEvent(e: EventItem): void {

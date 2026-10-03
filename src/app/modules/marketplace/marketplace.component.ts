@@ -20,6 +20,7 @@ import { NewsArticle } from '../news/model/News';
 import { EventService } from '../event/service/event.service';
 import { EventItem } from '../event/model/Event';
 import { buildBusinessCommands } from '../business/utils/business-url.util';
+import { buildPostCommands } from 'src/app/shared/utils/post-url.util';
 
 interface OfferViewModel extends BusinessOfferDto {
   businessName: string;
@@ -674,9 +675,12 @@ export class MarketplaceComponent implements OnInit {
   viewAd(ad: any): void {
     const category = this.getCategoryName(ad.categoryId);
     if (category && ad.tableRefGuid) {
-      this.router.navigate([
-        `/classified-ads/${category}/post-details/${ad.tableRefGuid}`,
-      ]);
+      const cmds = buildPostCommands({ ...ad, category });
+      this.router.navigate(
+        cmds ?? [
+          `/classified-ads/${category}/post-details/${ad.tableRefGuid}`,
+        ],
+      );
     }
   }
 

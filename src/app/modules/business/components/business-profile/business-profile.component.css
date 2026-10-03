@@ -296,12 +296,23 @@ select:focus-visible {
   background: #1c1f3f;
 }
 
+.cover-bg {
+  position: absolute;
+  inset: -20px;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  object-fit: cover;
+  filter: blur(24px) brightness(0.7);
+  display: block;
+}
+
 .cover-image {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   display: block;
 }
 
@@ -586,6 +597,113 @@ select:focus-visible {
 .tab-item.active {
   color: var(--crimson);
   border-bottom-color: var(--crimson);
+}
+
+/* ---------- Inline quick rating (tab strip) ---------- */
+.tab-rate {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  align-self: center;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.tab-rate-label {
+  min-width: 108px;
+  text-align: right;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.tab-rate-label.has-rating {
+  color: #d97700;
+}
+
+.tab-rate-stars {
+  display: flex;
+  gap: 6px;
+}
+
+.rate-star-box {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: #f8f8fa;
+  border: 1.5px solid #e6e6ee;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.rate-star-box .material-icons-outlined {
+  font-size: 20px;
+  color: #c9ccd8;
+  transition: color 0.18s ease;
+}
+
+.rate-star-box:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.rate-star-box:focus-visible {
+  outline: 2px solid #ff8a00;
+  outline-offset: 2px;
+}
+
+.rate-star-box:disabled {
+  cursor: default;
+}
+
+.rate-star-box.filled {
+  background: linear-gradient(145deg, #fff4e0, #ffe3b8);
+  border-color: #ffa21f;
+  box-shadow: 0 4px 10px rgba(255, 138, 0, 0.25);
+  animation: starBoxPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.rate-star-box.filled .material-icons-outlined {
+  color: #ff8a00;
+  animation: starSpin 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  animation-delay: inherit;
+}
+
+.rate-star-box.selected {
+  box-shadow:
+    0 0 0 3px rgba(255, 138, 0, 0.18),
+    0 6px 14px rgba(255, 138, 0, 0.32);
+}
+
+@keyframes starBoxPop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  60% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes starSpin {
+  0% {
+    transform: scale(0.4) rotate(-50deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
 }
 
 /* =====================================================
@@ -1505,10 +1623,24 @@ select:focus-visible {
 }
 
 .offering-card-image img {
+  display: block;
+}
+
+.offering-img-bg {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
+  filter: blur(14px) brightness(0.9);
+  transform: scale(1.15);
+}
+
+.offering-img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .catalog-placeholder-icon {
@@ -2132,7 +2264,7 @@ select:focus-visible {
 }
 
 .review-rating-stars .star-filled {
-  color: #ffb400;
+  color: #ff8a00;
   font-size: 16px;
 }
 
@@ -2442,6 +2574,17 @@ select:focus-visible {
 
   .offer-details-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .tab-rate-label {
+    display: none;
+  }
+  .tab-rate {
+    padding-left: 16px;
+  }
+  .rate-star-box {
+    width: 30px;
+    height: 30px;
   }
 }
 

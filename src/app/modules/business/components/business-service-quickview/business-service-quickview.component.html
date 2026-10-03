@@ -6,11 +6,19 @@
 
     <!-- Gallery -->
     <div class="qv-gallery" *ngIf="hasImages">
-      <img
-        class="qv-gallery-main"
-        [src]="activeImage?.imageUrl"
-        [alt]="service.serviceName"
-      />
+      <div class="qv-gallery-main-wrap">
+        <img
+          class="qv-gallery-main-bg"
+          [src]="activeImage?.imageUrl"
+          alt=""
+          aria-hidden="true"
+        />
+        <img
+          class="qv-gallery-main"
+          [src]="activeImage?.imageUrl"
+          [alt]="service.serviceName"
+        />
+      </div>
       <div class="qv-gallery-thumbs" *ngIf="sortedImages.length > 1">
         <img
           *ngFor="let img of sortedImages; let i = index"

@@ -42,6 +42,8 @@ import { AddBusinessOfferingComponent } from './components/add-business-offering
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { BusinessOfferingQuickviewComponent } from './components/business-offering-quickview/business-offering-quickview.component';
+import { BusinessOfferingDetailComponent } from './components/business-offering-detail/business-offering-detail.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +70,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     BusinessAttributeMappingComponent,
     BusinessHomeComponent,
     AddBusinessOfferingComponent,
+    BusinessOfferingQuickviewComponent,
+    BusinessOfferingDetailComponent,
   ],
   imports: [
     CommonModule,

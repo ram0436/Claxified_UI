@@ -15,6 +15,7 @@ import { LoginComponent } from "../../../modules/user/component/login/login.comp
 import { SignupComponent } from "../../../modules/user/component/signup/signup.component";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { UserService } from "src/app/modules/user/service/user.service";
+import { buildPostCommands } from 'src/app/shared/utils/post-url.util';
 
 @Component({
   selector: "app-post-card",
@@ -151,6 +152,17 @@ export class PostCardComponent implements OnInit, OnChanges {
     const formattedPrice = roundedPrice.toLocaleString("en-IN");
 
     return formattedPrice;
+  }
+
+  getPostLink(card: any): any[] {
+    return (
+      buildPostCommands(card) ?? [
+        '/classified-ads',
+        this.getCategoryFromMapping(card.categoryId),
+        'post-details',
+        card.tableRefGuid,
+      ]
+    );
   }
 
   getCategoryFromMapping(categoryId: string): string {

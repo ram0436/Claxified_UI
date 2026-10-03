@@ -125,7 +125,8 @@ export class PostDetailComponent {
     private snackBar: MatSnackBar,
   ) {
     this.route.paramMap.subscribe((params) => {
-      this.adTabRefGuid = params.get('id') || '';
+      this.adTabRefGuid =
+        params.get('id') || this.route.snapshot.data['postGuid'] || '';
     });
   }
 
@@ -165,7 +166,8 @@ export class PostDetailComponent {
     );
     var tableRefGuid;
     this.route.paramMap.subscribe((params) => {
-      tableRefGuid = params.get('id');
+      tableRefGuid =
+        params.get('id') || this.route.snapshot.data['postGuid'] || null;
       this.targetRoute = params.get('targetRoute');
     });
     if (tableRefGuid != null) {

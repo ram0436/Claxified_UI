@@ -4,6 +4,7 @@ import { CommonService } from "./../../../../shared/service/common.service";
 import { AdminDashboardService } from "../../service/admin-dashboard.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import * as moment from "moment";
+import { buildPostCommands } from 'src/app/shared/utils/post-url.util';
 
 @Component({
   selector: "app-admin-dashboard",
@@ -123,8 +124,13 @@ export class AdminDashboardComponent implements OnInit {
       (mainCategory: any) => mainCategory.id == data.categoryId
     );
     if (mainCategory != null) {
-      this.router.navigateByUrl(
-        "/" + mainCategory.categoryName + "/post-details/" + data.tableRefGuid
+      this.router.navigate(
+        buildPostCommands({ ...data, category: mainCategory.categoryName }) ?? [
+          '/classified-ads',
+          mainCategory.categoryName,
+          'post-details',
+          data.tableRefGuid,
+        ],
       );
     }
   }
@@ -135,10 +141,14 @@ export class AdminDashboardComponent implements OnInit {
     );
 
     if (mainCategory != null) {
-      return [
-        "/" + mainCategory.categoryName + "/post-details",
-        card.tableRefGuid,
-      ];
+      return (
+        buildPostCommands({ ...card, category: mainCategory.categoryName }) ?? [
+          '/classified-ads',
+          mainCategory.categoryName,
+          'post-details',
+          card.tableRefGuid,
+        ]
+      );
     }
 
     return ["/"];

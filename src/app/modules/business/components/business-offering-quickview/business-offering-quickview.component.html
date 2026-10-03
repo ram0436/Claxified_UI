@@ -1,0 +1,93 @@
+<div class="qv-overlay" (click)="onClose()">
+  <div class="qv-panel" (click)="$event.stopPropagation()">
+    <button class="qv-close" (click)="onClose()" aria-label="Close">
+      <span class="material-icons-outlined">close</span>
+    </button>
+
+    <!-- Image (full image, blurred copy fills the empty space) -->
+    <div class="qv-gallery-main-wrap" *ngIf="offering.imageUrl; else noImage">
+      <img
+        class="qv-gallery-main-bg"
+        [src]="offering.imageUrl"
+        alt=""
+        aria-hidden="true"
+      />
+      <img
+        class="qv-gallery-main"
+        [src]="offering.imageUrl"
+        [alt]="offering.name"
+      />
+    </div>
+    <ng-template #noImage>
+      <div class="qv-gallery-placeholder">
+        <span class="material-icons-outlined">{{ placeholderIcon }}</span>
+        <span>No image available</span>
+      </div>
+    </ng-template>
+
+    <h2 class="qv-name">{{ offering.name }}</h2>
+
+    <p class="qv-price">
+      <ng-container *ngIf="offering.price > 0; else porTpl">
+        <span class="qv-price-current">₹{{ offering.price | number }}</span>
+      </ng-container>
+      <ng-template #porTpl>
+        <span class="qv-price-current">Price on request</span>
+      </ng-template>
+    </p>
+
+    <div class="qv-meta-row">
+      <span class="qv-chip">{{ typeLabel }}</span>
+      <span class="qv-chip" *ngFor="let c of view.chips">{{ c }}</span>
+      <span class="qv-chip" [class.in-stock]="offering.isActive">
+        {{ offering.isActive ? "Available" : "Unavailable" }}
+      </span>
+    </div>
+
+    <div
+      class="qv-short-desc"
+      *ngIf="offering.description"
+      [innerHTML]="offering.description"
+    ></div>
+
+    <!-- Loading -->
+    <div class="qv-loading" *ngIf="loading">
+      <div class="qv-skel shimmer"></div>
+      <div class="qv-skel shimmer qv-skel-short"></div>
+      <div class="qv-skel shimmer"></div>
+    </div>
+
+    <ng-container *ngIf="!loading">
+      <!-- Key facts -->
+      <div class="qv-attributes" *ngIf="view.rows.length">
+        <div class="qv-attr-row" *ngFor="let r of view.rows">
+          <span class="qv-attr-label">{{ r.label }}</span>
+          <span class="qv-attr-value">{{ r.value }}</span>
+        </div>
+      </div>
+
+      <!-- Included / available -->
+      <div class="qv-flags" *ngIf="view.flags.length">
+        <span class="qv-flag" *ngFor="let f of view.flags">
+          <span class="material-icons-outlined">{{ f.icon }}</span>
+          {{ f.label }}
+        </span>
+      </div>
+    </ng-container>
+
+    <div class="qv-actions">
+      <button
+        class="btn-outline"
+        type="button"
+        *ngIf="contactMobile"
+        (click)="onContactBusiness()"
+      >
+        <span class="material-icons-outlined">call</span> Contact Business
+      </button>
+      <button class="btn-primary" type="button" (click)="onViewFullDetails()">
+        View Full Details
+        <span class="material-icons-outlined">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+</div>

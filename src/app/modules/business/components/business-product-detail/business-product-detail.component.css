@@ -57,7 +57,9 @@
   padding: 8px 16px 8px 12px;
   cursor: pointer;
   margin-bottom: 18px;
-  transition: background-color 0.15s ease, border-color 0.15s ease,
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
     transform 0.15s ease;
 }
 .back-link .material-icons-outlined {
@@ -83,14 +85,28 @@
 
 /* ---------- Gallery ---------- */
 .pd-gallery-main-wrap {
+  position: relative;
+  height: 420px;
   border-radius: 14px;
   overflow: hidden;
   background: #eef2f4;
 }
-.pd-gallery-main {
+
+.pd-gallery-main-bg {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  max-height: 420px;
+  height: 100%;
   object-fit: cover;
+  filter: blur(22px) brightness(0.85);
+  transform: scale(1.15);
+}
+
+.pd-gallery-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   display: block;
 }
 .pd-gallery-thumbs {
@@ -103,12 +119,15 @@
 .pd-gallery-thumbs img {
   width: 68px;
   height: 68px;
-  object-fit: cover;
+  object-fit: contain;
+  background: #eef2f4;
   border-radius: 8px;
   cursor: pointer;
   opacity: 0.6;
   flex-shrink: 0;
-  transition: opacity 0.15s ease, outline-color 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    outline-color 0.15s ease;
 }
 .pd-gallery-thumbs img:hover {
   opacity: 0.85;
@@ -176,7 +195,8 @@
 .pd-full-gallery img {
   width: 100%;
   aspect-ratio: 1 / 1;
-  object-fit: cover;
+  object-fit: contain;
+  background: #eef2f4;
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.15s ease;
@@ -331,7 +351,9 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease,
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease,
     box-shadow 0.15s ease;
 }
 .btn-primary .material-icons-outlined,
@@ -394,7 +416,7 @@
 }
 
 @media (max-width: 600px) {
-  .pd-gallery-main {
-    max-height: 260px;
+  .pd-gallery-main-wrap {
+    height: 260px;
   }
 }

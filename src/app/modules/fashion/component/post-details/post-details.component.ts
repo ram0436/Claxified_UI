@@ -131,7 +131,8 @@ export class PostDetailsComponent {
     private AdminDashboardService: AdminDashboardService,
   ) {
     this.route.paramMap.subscribe((params) => {
-      this.adTabRefGuid = params.get('id') || '';
+      this.adTabRefGuid =
+        params.get('id') || this.route.snapshot.data['postGuid'] || '';
     });
   }
   verifyAdd(categoryId: number, tableRefGuid: string): void {
@@ -166,7 +167,8 @@ export class PostDetailsComponent {
     setTimeout(() => this.getSubCategory(this.postDetails.categoryId), 1000);
     var tableRefGuid;
     this.route.paramMap.subscribe((params) => {
-      tableRefGuid = params.get('id');
+      tableRefGuid =
+        params.get('id') || this.route.snapshot.data['postGuid'] || null;
     });
     if (tableRefGuid != null) {
       this.getSportPost(tableRefGuid);

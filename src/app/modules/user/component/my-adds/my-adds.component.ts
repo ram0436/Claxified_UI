@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import * as moment from "moment";
 import { CommonService } from "src/app/shared/service/common.service";
 import { UserService } from "../../service/user.service";
+import { buildPostCommands } from 'src/app/shared/utils/post-url.util';
 
 @Component({
   selector: "app-my-adds",
@@ -269,8 +270,13 @@ export class MyAddsComponent {
       (mainCategory: any) => mainCategory.id == data.categoryId
     );
     if (mainCategory != null) {
-      this.router.navigateByUrl(
-        "/" + mainCategory.categoryName + "/post-details/" + data.tableRefGuid
+      this.router.navigate(
+        buildPostCommands({ ...data, category: mainCategory.categoryName }) ?? [
+          '/classified-ads',
+          mainCategory.categoryName,
+          'post-details',
+          data.tableRefGuid,
+        ],
       );
     }
   }

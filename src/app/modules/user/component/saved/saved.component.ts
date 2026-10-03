@@ -5,6 +5,7 @@ import { UserService } from "../../service/user.service";
 import { CommonService } from "src/app/shared/service/common.service";
 import * as moment from "moment";
 import { SalaryPeriod } from "../../../../shared/enum/SalaryPeriod";
+import { buildPostCommands } from 'src/app/shared/utils/post-url.util';
 
 @Component({
   selector: "app-saved",
@@ -88,6 +89,17 @@ export class SavedComponent {
         this.savedCards = []; // Set savedCards to an empty array in case of an error
         this.isLoading = false;
       }
+    );
+  }
+
+  getPostLink(card: any): any[] {
+    return (
+      buildPostCommands(card) ?? [
+        '/classified-ads',
+        this.getMainCategory(card.categoryId),
+        'post-details',
+        card.tableRefGuid,
+      ]
     );
   }
 

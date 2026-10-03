@@ -50,7 +50,7 @@ export class AddBusinessReviewComponent implements OnInit {
 
   saveReview() {
     if (this.formData.rating === 0) {
-      alert("Please select a rating.");
+      this.showNotification("Please select a rating.");
       return;
     }
     this.saving = true;

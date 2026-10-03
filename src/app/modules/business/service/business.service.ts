@@ -1,7 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { catchError, forkJoin, map, Observable, of, Subject, switchMap, tap, throwError } from 'rxjs';
-import { forgetBusinessSlug, getCachedBusinessGuid, rememberBusinessGuids } from '../utils/business-url.util';
+import {
+  catchError,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  Subject,
+  switchMap,
+  tap,
+  throwError,
+} from 'rxjs';
+import {
+  forgetBusinessSlug,
+  getCachedBusinessGuid,
+  rememberBusinessGuids,
+} from '../utils/business-url.util';
 import { environment } from 'src/environments/environment';
 import {
   BusinessDirectoryItem,
@@ -33,6 +47,7 @@ import {
   OfferingPropertyDto,
   OfferingAccommodationDto,
   OfferingMenuItemDto,
+  OfferingMedicalServiceSavePayload,
 } from '../model/Business';
 import { EntityType } from '../enum/business-product.enum';
 import { OfferingType } from '../enum/business-offering.enum';
@@ -59,7 +74,9 @@ export class BusinessService {
     return this.http
       .get<BusinessDirectoryItem[]>(`${this.baseUrl}Business/List`)
       .pipe(
-        tap((list) => rememberBusinessGuids((list || []).map((b) => b.tabRefGUID))),
+        tap((list) =>
+          rememberBusinessGuids((list || []).map((b) => b.tabRefGUID)),
+        ),
       );
   }
 
@@ -400,9 +417,9 @@ export class BusinessService {
   }
 
   saveOfferingMedicalService(
-    payload: OfferingMedicalServiceDto,
-  ): Observable<OfferingMedicalServiceDto> {
-    return this.http.post<OfferingMedicalServiceDto>(
+    payload: OfferingMedicalServiceSavePayload,
+  ): Observable<any> {
+    return this.http.post<any>(
       `${this.baseUrl}Business/offering-medical-service`,
       payload,
     );

@@ -5,11 +5,19 @@
     </button>
 
     <div class="qv-gallery" *ngIf="sortedImages.length > 0">
-      <img
-        class="qv-gallery-main"
-        [src]="activeImage?.imageUrl"
-        [alt]="product.name"
-      />
+      <div class="qv-gallery-main-wrap">
+        <img
+          class="qv-gallery-main-bg"
+          [src]="activeImage?.imageUrl"
+          alt=""
+          aria-hidden="true"
+        />
+        <img
+          class="qv-gallery-main"
+          [src]="activeImage?.imageUrl"
+          [alt]="product.name"
+        />
+      </div>
       <div class="qv-gallery-thumbs" *ngIf="sortedImages.length > 1">
         <img
           *ngFor="let img of sortedImages; let i = index"
