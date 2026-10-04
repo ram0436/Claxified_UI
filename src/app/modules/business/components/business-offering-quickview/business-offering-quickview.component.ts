@@ -4,12 +4,12 @@ import {
   BusinessOfferingDto,
   OFFERING_TYPE_OPTIONS,
 } from '../../model/Business';
-import { OfferingType } from '../../enum/business-offering.enum';
 import {
   DETAIL_WRAPPER_KEY,
   EMPTY_DETAIL_VIEW,
   OfferingDetailView,
   buildOfferingDetailView,
+  getOfferingIcon,
   unwrapDetail,
 } from '../../utils/offering-detail-view.util';
 
@@ -42,31 +42,28 @@ export class BusinessOfferingQuickviewComponent implements OnInit {
   }
 
   get placeholderIcon(): string {
-    return Number(this.offering.offeringType) ===
-      Number(OfferingType.MedicalService)
-      ? 'medical_services'
-      : 'category';
+    return getOfferingIcon(this.offering.offeringType);
   }
 
   private loadDetail(): void {
     const type = Number(this.offering.offeringType);
+    const wrapperKey = DETAIL_WRAPPER_KEY[type];
+    if (!wrapperKey) return;
 
-    if (type === Number(OfferingType.MedicalService)) {
-      this.loading = true;
-      this.businessService
-        .getOfferingMedicalService(this.offering.id)
-        .subscribe(
-          (res) => {
-            const detail = unwrapDetail(res, DETAIL_WRAPPER_KEY[type]!);
-            this.view = buildOfferingDetailView(type, detail);
-            this.loading = false;
-          },
-          () => {
-            this.view = EMPTY_DETAIL_VIEW;
-            this.loading = false;
-          },
+    this.loading = true;
+    this.businessService.getOfferingDetail(type, this.offering.id).subscribe(
+      (res) => {
+        this.view = buildOfferingDetailView(
+          type,
+          unwrapDetail(res, wrapperKey),
         );
-    }
+        this.loading = false;
+      },
+      () => {
+        this.view = EMPTY_DETAIL_VIEW;
+        this.loading = false;
+      },
+    );
   }
 
   onClose(): void {

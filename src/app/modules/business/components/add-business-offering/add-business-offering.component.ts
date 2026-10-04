@@ -17,7 +17,10 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { BusinessService } from '../../service/business.service';
-import { OfferingTypeOptionDto } from '../../model/Business';
+import {
+  OfferingCombinedSavePayload,
+  OfferingTypeOptionDto,
+} from '../../model/Business';
 import {
   BusinessOfferingDto,
   OfferingMedicalServiceSavePayload,
@@ -61,8 +64,14 @@ export class AddBusinessOfferingComponent implements OnInit {
   @ViewChild('descriptionEditor')
   set descriptionEditor(ref: ElementRef<HTMLDivElement> | undefined) {
     this.descriptionEditorRef = ref;
-    if (ref) {
-      ref.nativeElement.innerHTML = this.form?.get('description')?.value || '';
+    this.syncEditorHtml();
+  }
+
+  private syncEditorHtml(): void {
+    const el = this.descriptionEditorRef?.nativeElement;
+    const html = this.form?.get('description')?.value || '';
+    if (el && el.innerHTML !== html) {
+      el.innerHTML = html;
     }
   }
 
@@ -99,17 +108,22 @@ export class AddBusinessOfferingComponent implements OnInit {
 
   OfferingType = OfferingType;
 
-  /** Preset dropdown values used by the inline suggest inputs in the template */
   opts: OfferingFieldOptions = OFFERING_FIELD_OPTIONS;
 
-  /**
-   * Tracks the current text value for every suggest-input in the template.
-   * Key = form control path (e.g. 'courseForm.courseType'), value = typed text.
-   */
   suggestValues: Record<string, string> = {};
 
-  /** Set to false to silence all [AddOffering] console output */
   private readonly DEBUG = true;
+
+  private readonly COMBINED_SAVE_TYPES = new Set<number>([
+    OfferingType.MedicalService,
+    OfferingType.MenuItem,
+    OfferingType.RoomAccommodation,
+    OfferingType.Property,
+    OfferingType.RentalVehicle,
+    OfferingType.Event,
+    OfferingType.TourPackage,
+    OfferingType.MembershipPlan,
+  ]);
 
   imagePreviewUrl = '';
   imageFile: File | null = null;
@@ -671,12 +685,7 @@ export class AddBusinessOfferingComponent implements OnInit {
     this.activeSection = id;
 
     if (id === 'basic') {
-      setTimeout(() => {
-        if (this.descriptionEditorRef) {
-          this.descriptionEditorRef.nativeElement.innerHTML =
-            this.form.get('description')?.value || '';
-        }
-      });
+      setTimeout(() => this.syncEditorHtml());
     }
   }
 
@@ -717,9 +726,8 @@ export class AddBusinessOfferingComponent implements OnInit {
   }
 
   onDescriptionInput(el: HTMLDivElement): void {
-    this.form.patchValue({ description: el.innerHTML });
+    this.form.patchValue({ description: el.innerHTML }, { emitEvent: false });
   }
-
   isSectionFilled(id: SectionId): boolean {
     switch (id) {
       case 'type':
@@ -909,6 +917,31 @@ export class AddBusinessOfferingComponent implements OnInit {
     );
   }
 
+  private saveCombined(
+    offering: BusinessOfferingDto,
+    offeringType: OfferingType,
+  ): void {
+    const handler = this.getDetailHandler(offeringType);
+    if (!handler) {
+      this.saving = false;
+      this.errorMessage = 'This offering type cannot be saved yet.';
+      return;
+    }
+
+    const payload: OfferingCombinedSavePayload = {
+      businessOffering: offering,
+      [handler.wrapperKey]: this.buildDetailInner(handler, offering.id),
+    };
+
+    handler.save(payload).subscribe(
+      () => this.finishSave(),
+      () => {
+        this.saving = false;
+        this.errorMessage = 'Failed to save offering. Please try again.';
+      },
+    );
+  }
+
   // ---------- Save ----------
 
   async onSave(): Promise<void> {
@@ -961,8 +994,8 @@ export class AddBusinessOfferingComponent implements OnInit {
       displayOrder: raw.displayOrder,
     };
 
-    if (Number(raw.offeringType) === Number(OfferingType.MedicalService)) {
-      this.saveMedicalServiceCombined(offeringPayload);
+    if (this.COMBINED_SAVE_TYPES.has(Number(raw.offeringType))) {
+      this.saveCombined(offeringPayload, raw.offeringType);
       return;
     }
 

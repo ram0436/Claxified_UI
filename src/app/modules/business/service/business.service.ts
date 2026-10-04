@@ -48,6 +48,7 @@ import {
   OfferingAccommodationDto,
   OfferingMenuItemDto,
   OfferingMedicalServiceSavePayload,
+  OfferingCombinedSavePayload,
 } from '../model/Business';
 import { EntityType } from '../enum/business-product.enum';
 import { OfferingType } from '../enum/business-offering.enum';
@@ -417,7 +418,7 @@ export class BusinessService {
   }
 
   saveOfferingMedicalService(
-    payload: OfferingMedicalServiceSavePayload,
+    payload: OfferingCombinedSavePayload,
   ): Observable<any> {
     return this.http.post<any>(
       `${this.baseUrl}Business/offering-medical-service`,
@@ -441,10 +442,8 @@ export class BusinessService {
       `${this.baseUrl}Business/offering-menu-item/id?businessOfferingId=${businessOfferingId}`,
     );
   }
-  saveOfferingMenuItem(
-    payload: OfferingMenuItemDto,
-  ): Observable<OfferingMenuItemDto> {
-    return this.http.post<OfferingMenuItemDto>(
+  saveOfferingMenuItem(payload: OfferingCombinedSavePayload): Observable<any> {
+    return this.http.post<any>(
       `${this.baseUrl}Business/offering-menu-item`,
       payload,
     );
@@ -459,9 +458,9 @@ export class BusinessService {
     );
   }
   saveOfferingAccommodation(
-    payload: OfferingAccommodationDto,
-  ): Observable<OfferingAccommodationDto> {
-    return this.http.post<OfferingAccommodationDto>(
+    payload: OfferingCombinedSavePayload,
+  ): Observable<any> {
+    return this.http.post<any>(
       `${this.baseUrl}Business/offering-accommodation`,
       payload,
     );
@@ -475,10 +474,8 @@ export class BusinessService {
       `${this.baseUrl}Business/offering-property/id?businessOfferingId=${businessOfferingId}`,
     );
   }
-  saveOfferingProperty(
-    payload: OfferingPropertyDto,
-  ): Observable<OfferingPropertyDto> {
-    return this.http.post<OfferingPropertyDto>(
+  saveOfferingProperty(payload: OfferingCombinedSavePayload): Observable<any> {
+    return this.http.post<any>(
       `${this.baseUrl}Business/offering-property`,
       payload,
     );
@@ -493,9 +490,9 @@ export class BusinessService {
     );
   }
   saveOfferingRentalVehicle(
-    payload: OfferingRentalVehicleDto,
-  ): Observable<OfferingRentalVehicleDto> {
-    return this.http.post<OfferingRentalVehicleDto>(
+    payload: OfferingCombinedSavePayload,
+  ): Observable<any> {
+    return this.http.post<any>(
       `${this.baseUrl}Business/offering-rental-vehicle`,
       payload,
     );
@@ -507,8 +504,8 @@ export class BusinessService {
       `${this.baseUrl}Business/offering-event/id?businessOfferingId=${businessOfferingId}`,
     );
   }
-  saveOfferingEvent(payload: OfferingEventDto): Observable<OfferingEventDto> {
-    return this.http.post<OfferingEventDto>(
+  saveOfferingEvent(payload: OfferingCombinedSavePayload): Observable<any> {
+    return this.http.post<any>(
       `${this.baseUrl}Business/offering-event`,
       payload,
     );
@@ -523,9 +520,9 @@ export class BusinessService {
     );
   }
   saveOfferingTourPackage(
-    payload: OfferingTourPackageDto,
-  ): Observable<OfferingTourPackageDto> {
-    return this.http.post<OfferingTourPackageDto>(
+    payload: OfferingCombinedSavePayload,
+  ): Observable<any> {
+    return this.http.post<any>(
       `${this.baseUrl}Business/offering-tour-package`,
       payload,
     );
@@ -540,11 +537,39 @@ export class BusinessService {
     );
   }
   saveOfferingMembershipPlan(
-    payload: OfferingMembershipPlanDto,
-  ): Observable<OfferingMembershipPlanDto> {
-    return this.http.post<OfferingMembershipPlanDto>(
+    payload: OfferingCombinedSavePayload,
+  ): Observable<any> {
+    return this.http.post<any>(
       `${this.baseUrl}Business/offering-membership-plan`,
       payload,
     );
+  }
+
+  getOfferingDetail(
+    type: OfferingType | number,
+    businessOfferingId: number,
+  ): Observable<any> {
+    switch (Number(type)) {
+      case Number(OfferingType.Course):
+        return this.getOfferingCourse(businessOfferingId);
+      case Number(OfferingType.MedicalService):
+        return this.getOfferingMedicalService(businessOfferingId);
+      case Number(OfferingType.MenuItem):
+        return this.getOfferingMenuItem(businessOfferingId);
+      case Number(OfferingType.RoomAccommodation):
+        return this.getOfferingAccommodation(businessOfferingId);
+      case Number(OfferingType.Property):
+        return this.getOfferingProperty(businessOfferingId);
+      case Number(OfferingType.RentalVehicle):
+        return this.getOfferingRentalVehicle(businessOfferingId);
+      case Number(OfferingType.Event):
+        return this.getOfferingEvent(businessOfferingId);
+      case Number(OfferingType.TourPackage):
+        return this.getOfferingTourPackage(businessOfferingId);
+      case Number(OfferingType.MembershipPlan):
+        return this.getOfferingMembershipPlan(businessOfferingId);
+      default:
+        return of(null);
+    }
   }
 }

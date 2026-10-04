@@ -353,13 +353,21 @@
         (click)="viewAd(ad)"
       >
         <div class="ad-image-wrapper">
-          <img
-            *ngIf="ad.imageUrl"
-            [src]="ad.imageUrl"
-            [alt]="ad.title"
-            class="ad-image"
-            loading="lazy"
-          />
+          <div class="img-frame" *ngIf="ad.imageUrl">
+            <img
+              class="img-frame__bg"
+              [src]="ad.imageUrl"
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+            />
+            <img
+              class="img-frame__main"
+              [src]="ad.imageUrl"
+              [alt]="ad.title"
+              loading="lazy"
+            />
+          </div>
           <div
             class="ad-image-placeholder"
             [ngClass]="ad.colorClass"

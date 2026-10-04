@@ -231,14 +231,22 @@
           (click)="viewBusiness(business)"
         >
           <div class="card-image-wrapper">
-            <img
-              *ngIf="business.coverImageUrl"
-              [src]="business.coverImageUrl"
-              [alt]="business.businessName"
-              class="card-image"
-              loading="lazy"
-              (error)="onBusinessImageError($event)"
-            />
+            <div class="img-frame" *ngIf="business.coverImageUrl">
+              <img
+                class="img-frame__bg"
+                [src]="business.coverImageUrl"
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+              />
+              <img
+                class="img-frame__main"
+                [src]="business.coverImageUrl"
+                [alt]="business.businessName"
+                loading="lazy"
+                (error)="onBusinessImageError($event)"
+              />
+            </div>
             <div class="card-image-placeholder" *ngIf="!business.coverImageUrl">
               <span class="material-icons-outlined">storefront</span>
             </div>
@@ -288,13 +296,22 @@
           (click)="viewAd(ad)"
         >
           <div class="ad-image-wrapper">
-            <img
-              [src]="getAdImage(ad)"
-              [alt]="ad.title"
-              class="ad-image"
-              loading="lazy"
-              (error)="onAdImageError($event)"
-            />
+            <div class="img-frame">
+              <img
+                class="img-frame__bg"
+                [src]="getAdImage(ad)"
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+              />
+              <img
+                class="img-frame__main"
+                [src]="getAdImage(ad)"
+                [alt]="ad.title"
+                loading="lazy"
+                (error)="onAdImageError($event)"
+              />
+            </div>
             <button
               class="wishlist-btn"
               [class.active]="ad.isWishlisted"
@@ -376,13 +393,22 @@
           (click)="viewAd(ad)"
         >
           <div class="ad-image-wrapper">
-            <img
-              [src]="getAdImage(ad)"
-              [alt]="ad.title"
-              class="ad-image"
-              loading="lazy"
-              (error)="onAdImageError($event)"
-            />
+            <div class="img-frame">
+              <img
+                class="img-frame__bg"
+                [src]="getAdImage(ad)"
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+              />
+              <img
+                class="img-frame__main"
+                [src]="getAdImage(ad)"
+                [alt]="ad.title"
+                loading="lazy"
+                (error)="onAdImageError($event)"
+              />
+            </div>
             <button
               class="wishlist-btn"
               [class.active]="ad.isWishlisted"
@@ -553,14 +579,22 @@
           (click)="viewBusiness(business)"
         >
           <div class="card-image-wrapper">
-            <img
-              *ngIf="business.coverImageUrl"
-              [src]="business.coverImageUrl"
-              [alt]="business.businessName"
-              class="card-image"
-              loading="lazy"
-              (error)="onBusinessImageError($event)"
-            />
+            <div class="img-frame" *ngIf="business.coverImageUrl">
+              <img
+                class="img-frame__bg"
+                [src]="business.coverImageUrl"
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+              />
+              <img
+                class="img-frame__main"
+                [src]="business.coverImageUrl"
+                [alt]="business.businessName"
+                loading="lazy"
+                (error)="onBusinessImageError($event)"
+              />
+            </div>
             <div class="card-image-placeholder" *ngIf="!business.coverImageUrl">
               <span class="material-icons-outlined">storefront</span>
             </div>
@@ -726,13 +760,22 @@
           (click)="viewNewsArticle(article)"
         >
           <div class="news-image-wrapper">
-            <img
-              [src]="article.imageUrl"
-              [alt]="article.title"
-              class="news-image"
-              loading="lazy"
-              (error)="onNewsImageError($event)"
-            />
+            <div class="img-frame">
+              <img
+                class="img-frame__bg"
+                [src]="article.imageUrl"
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+              />
+              <img
+                class="img-frame__main"
+                [src]="article.imageUrl"
+                [alt]="article.title"
+                loading="lazy"
+                (error)="onNewsImageError($event)"
+              />
+            </div>
             <span class="news-category-badge">{{ article.categoryLabel }}</span>
           </div>
           <div class="news-content">
@@ -828,13 +871,22 @@
           (click)="viewBusinessEvent(event)"
         >
           <div class="event-image-wrapper">
-            <img
-              [src]="event.imageUrl"
-              [alt]="event.name"
-              class="event-image"
-              loading="lazy"
-              (error)="onEventImageError($event)"
-            />
+            <div class="img-frame">
+              <img
+                class="img-frame__bg"
+                [src]="event.imageUrl"
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+              />
+              <img
+                class="img-frame__main"
+                [src]="event.imageUrl"
+                [alt]="event.name"
+                loading="lazy"
+                (error)="onEventImageError($event)"
+              />
+            </div>
             <span
               class="event-badge-overlay"
               *ngIf="event.badge"

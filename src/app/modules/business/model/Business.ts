@@ -1141,6 +1141,11 @@ export interface OfferingMedicalServiceSavePayload {
   businessOfferingMedicalService: OfferingMedicalServiceDto;
 }
 
+export interface OfferingCombinedSavePayload {
+  businessOffering: BusinessOfferingDto;
+  [detailKey: string]: any;
+}
+
 export interface OfferingDetailBase {
   id: number;
   businessOfferingId: number;

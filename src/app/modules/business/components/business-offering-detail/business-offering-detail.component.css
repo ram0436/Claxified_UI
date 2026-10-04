@@ -145,6 +145,9 @@
   line-height: 1.6;
   margin: 0;
 }
+.content-card p {
+  white-space: pre-line;
+}
 
 .attr-grid {
   display: flex;

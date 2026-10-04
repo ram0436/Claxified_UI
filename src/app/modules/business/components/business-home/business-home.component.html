@@ -283,13 +283,21 @@
               (click)="onBusinessLinkClick($event, business)"
             ></a>
             <div class="business-card-image-wrapper">
-              <img
-                *ngIf="business.coverImageUrl"
-                [src]="business.coverImageUrl"
-                [alt]="business.businessName"
-                class="business-card-image"
-                loading="lazy"
-              />
+              <div class="img-frame" *ngIf="business.coverImageUrl">
+                <img
+                  class="img-frame__bg"
+                  [src]="business.coverImageUrl"
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                />
+                <img
+                  class="img-frame__main"
+                  [src]="business.coverImageUrl"
+                  [alt]="business.businessName"
+                  loading="lazy"
+                />
+              </div>
               <div
                 class="business-card-image-placeholder"
                 *ngIf="!business.coverImageUrl"
