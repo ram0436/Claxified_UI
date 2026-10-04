@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
 import {
   catchError,
   forkJoin,
@@ -36,23 +40,24 @@ import {
   AttributeMasterListItem,
   CategoryAttributeMappingPayload,
   CategoryAttributeMappingDto,
-  OfferingMedicalServiceDto,
   BusinessOfferingDto,
-  OfferingCourseDto,
   OfferingTypeOptionDto,
-  OfferingMembershipPlanDto,
-  OfferingTourPackageDto,
-  OfferingEventDto,
-  OfferingRentalVehicleDto,
-  OfferingPropertyDto,
-  OfferingAccommodationDto,
-  OfferingMenuItemDto,
-  OfferingMedicalServiceSavePayload,
   OfferingCombinedSavePayload,
 } from '../model/Business';
 import { EntityType } from '../enum/business-product.enum';
 import { OfferingType } from '../enum/business-offering.enum';
-import { HttpErrorResponse } from '@angular/common/http';
+
+const OFFERING_DETAIL_ENDPOINT: Partial<Record<number, string>> = {
+  [OfferingType.Course]: 'offering-course',
+  [OfferingType.MedicalService]: 'offering-medical-service',
+  [OfferingType.MenuItem]: 'offering-menu-item',
+  [OfferingType.RoomAccommodation]: 'offering-accommodation',
+  [OfferingType.Property]: 'offering-property',
+  [OfferingType.RentalVehicle]: 'offering-rental-vehicle',
+  [OfferingType.Event]: 'offering-event',
+  [OfferingType.TourPackage]: 'offering-tour-package',
+  [OfferingType.MembershipPlan]: 'offering-membership-plan',
+};
 
 @Injectable({
   providedIn: 'root',
@@ -381,51 +386,6 @@ export class BusinessService {
     );
   }
 
-  saveBusinessOffering(
-    payload: BusinessOfferingDto,
-  ): Observable<BusinessOfferingDto> {
-    return this.http.post<BusinessOfferingDto>(
-      `${this.baseUrl}Business/business-offering`,
-      payload,
-    );
-  }
-
-  // ---------- Offering detail: Course ----------
-
-  getOfferingCourse(businessOfferingId: number): Observable<OfferingCourseDto> {
-    return this.http.get<OfferingCourseDto>(
-      `${this.baseUrl}Business/offering-course/id?businessOfferingId=${businessOfferingId}`,
-    );
-  }
-
-  saveOfferingCourse(
-    payload: OfferingCourseDto,
-  ): Observable<OfferingCourseDto> {
-    return this.http.post<OfferingCourseDto>(
-      `${this.baseUrl}Business/offering-course`,
-      payload,
-    );
-  }
-
-  // ---------- Offering detail: Medical Service ----------
-
-  getOfferingMedicalService(
-    businessOfferingId: number,
-  ): Observable<OfferingMedicalServiceDto> {
-    return this.http.get<OfferingMedicalServiceDto>(
-      `${this.baseUrl}Business/offering-medical-service/id?businessOfferingId=${businessOfferingId}`,
-    );
-  }
-
-  saveOfferingMedicalService(
-    payload: OfferingCombinedSavePayload,
-  ): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}Business/offering-medical-service`,
-      payload,
-    );
-  }
-
   getOfferingTypesByBusinessCategory(
     businessCategoryId: number,
   ): Observable<OfferingTypeOptionDto[]> {
@@ -434,142 +394,27 @@ export class BusinessService {
     );
   }
 
-  // ---------- Offering detail: Menu Item ----------
-  getOfferingMenuItem(
-    businessOfferingId: number,
-  ): Observable<OfferingMenuItemDto> {
-    return this.http.get<OfferingMenuItemDto>(
-      `${this.baseUrl}Business/offering-menu-item/id?businessOfferingId=${businessOfferingId}`,
-    );
-  }
-  saveOfferingMenuItem(payload: OfferingCombinedSavePayload): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}Business/offering-menu-item`,
-      payload,
-    );
-  }
-
-  // ---------- Offering detail: Room / Accommodation ----------
-  getOfferingAccommodation(
-    businessOfferingId: number,
-  ): Observable<OfferingAccommodationDto> {
-    return this.http.get<OfferingAccommodationDto>(
-      `${this.baseUrl}Business/offering-accommodation/id?businessOfferingId=${businessOfferingId}`,
-    );
-  }
-  saveOfferingAccommodation(
-    payload: OfferingCombinedSavePayload,
-  ): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}Business/offering-accommodation`,
-      payload,
-    );
-  }
-
-  // ---------- Offering detail: Property ----------
-  getOfferingProperty(
-    businessOfferingId: number,
-  ): Observable<OfferingPropertyDto> {
-    return this.http.get<OfferingPropertyDto>(
-      `${this.baseUrl}Business/offering-property/id?businessOfferingId=${businessOfferingId}`,
-    );
-  }
-  saveOfferingProperty(payload: OfferingCombinedSavePayload): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}Business/offering-property`,
-      payload,
-    );
-  }
-
-  // ---------- Offering detail: Rental Vehicle ----------
-  getOfferingRentalVehicle(
-    businessOfferingId: number,
-  ): Observable<OfferingRentalVehicleDto> {
-    return this.http.get<OfferingRentalVehicleDto>(
-      `${this.baseUrl}Business/offering-rental-vehicle/id?businessOfferingId=${businessOfferingId}`,
-    );
-  }
-  saveOfferingRentalVehicle(
-    payload: OfferingCombinedSavePayload,
-  ): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}Business/offering-rental-vehicle`,
-      payload,
-    );
-  }
-
-  // ---------- Offering detail: Event ----------
-  getOfferingEvent(businessOfferingId: number): Observable<OfferingEventDto> {
-    return this.http.get<OfferingEventDto>(
-      `${this.baseUrl}Business/offering-event/id?businessOfferingId=${businessOfferingId}`,
-    );
-  }
-  saveOfferingEvent(payload: OfferingCombinedSavePayload): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}Business/offering-event`,
-      payload,
-    );
-  }
-
-  // ---------- Offering detail: Tour Package ----------
-  getOfferingTourPackage(
-    businessOfferingId: number,
-  ): Observable<OfferingTourPackageDto> {
-    return this.http.get<OfferingTourPackageDto>(
-      `${this.baseUrl}Business/offering-tour-package/id?businessOfferingId=${businessOfferingId}`,
-    );
-  }
-  saveOfferingTourPackage(
-    payload: OfferingCombinedSavePayload,
-  ): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}Business/offering-tour-package`,
-      payload,
-    );
-  }
-
-  // ---------- Offering detail: Membership Plan ----------
-  getOfferingMembershipPlan(
-    businessOfferingId: number,
-  ): Observable<OfferingMembershipPlanDto> {
-    return this.http.get<OfferingMembershipPlanDto>(
-      `${this.baseUrl}Business/offering-membership-plan/id?businessOfferingId=${businessOfferingId}`,
-    );
-  }
-  saveOfferingMembershipPlan(
-    payload: OfferingCombinedSavePayload,
-  ): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}Business/offering-membership-plan`,
-      payload,
-    );
-  }
+  // ---------- Offering detail (all types) ----------
 
   getOfferingDetail(
     type: OfferingType | number,
     businessOfferingId: number,
   ): Observable<any> {
-    switch (Number(type)) {
-      case Number(OfferingType.Course):
-        return this.getOfferingCourse(businessOfferingId);
-      case Number(OfferingType.MedicalService):
-        return this.getOfferingMedicalService(businessOfferingId);
-      case Number(OfferingType.MenuItem):
-        return this.getOfferingMenuItem(businessOfferingId);
-      case Number(OfferingType.RoomAccommodation):
-        return this.getOfferingAccommodation(businessOfferingId);
-      case Number(OfferingType.Property):
-        return this.getOfferingProperty(businessOfferingId);
-      case Number(OfferingType.RentalVehicle):
-        return this.getOfferingRentalVehicle(businessOfferingId);
-      case Number(OfferingType.Event):
-        return this.getOfferingEvent(businessOfferingId);
-      case Number(OfferingType.TourPackage):
-        return this.getOfferingTourPackage(businessOfferingId);
-      case Number(OfferingType.MembershipPlan):
-        return this.getOfferingMembershipPlan(businessOfferingId);
-      default:
-        return of(null);
+    const endpoint = OFFERING_DETAIL_ENDPOINT[Number(type)];
+    if (!endpoint) return of(null);
+    return this.http.get<any>(
+      `${this.baseUrl}Business/${endpoint}/id?businessOfferingId=${businessOfferingId}`,
+    );
+  }
+
+  saveOfferingDetail(
+    type: OfferingType | number,
+    payload: OfferingCombinedSavePayload,
+  ): Observable<any> {
+    const endpoint = OFFERING_DETAIL_ENDPOINT[Number(type)];
+    if (!endpoint) {
+      return throwError(() => new Error('Unsupported offering type'));
     }
+    return this.http.post<any>(`${this.baseUrl}Business/${endpoint}`, payload);
   }
 }
