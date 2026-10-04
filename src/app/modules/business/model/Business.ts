@@ -1065,81 +1065,7 @@ export interface BusinessOfferingDto {
   updatedAt?: string | null;
 }
 
-// ---------- Course detail ----------
-
-export interface OfferingCourseDto {
-  id: number;
-  businessOfferingId: number;
-  businessId: number;
-  courseType: string;
-  courseCategory: string;
-  courseLevel: string;
-  duration: number;
-  durationUnit: string;
-  modeOfLearning: string;
-  classSchedule: string;
-  startDate: string | null;
-  endDate: string | null;
-  eligibility: string;
-  ageGroup: string;
-  language: string;
-  curriculum: string;
-  subjectsCovered: string;
-  certification: string;
-  accreditation: string;
-  instructorName: string;
-  instituteName: string;
-  batchSize: number;
-  feeFrequency: string;
-  registrationFee: number;
-  discount: number;
-  scholarshipAvailable: boolean;
-  studyMaterialIncluded: boolean;
-  examIncluded: boolean;
-  placementAssistance: boolean;
-  internshipAvailable: boolean;
-  courseHighlights: string;
-}
-
-// ---------- Medical service detail ----------
-
-export interface OfferingMedicalServiceDto {
-  id: number;
-  businessOfferingId: number;
-  businessId: number;
-  serviceType: string;
-  medicalSpecialty: string;
-  department: string;
-  doctorName: string;
-  qualification: string;
-  experience: number;
-  gender: string;
-  serviceMode: string;
-  consultationType: string;
-  followUpFee: number;
-  appointmentRequired: boolean;
-  emergencyService: boolean;
-  homeVisitAvailable: boolean;
-  teleconsultationAvailable: boolean;
-  serviceDuration: number;
-  serviceDurationUnit: string;
-  availableDays: string;
-  availableTime: string;
-  insuranceAccepted: boolean;
-  cashlessAvailable: boolean;
-  labFacility: boolean;
-  pharmacyAvailable: boolean;
-  ambulanceAvailable: boolean;
-  ageGroup: string;
-  conditionsTreated: string;
-  procedures: string;
-  serviceHighlights: string;
-}
-
-export interface OfferingMedicalServiceSavePayload {
-  businessOffering: BusinessOfferingDto;
-  businessOfferingMedicalService: OfferingMedicalServiceDto;
-}
+// ---------- Combined save payload (all offering types) ----------
 
 export interface OfferingCombinedSavePayload {
   businessOffering: BusinessOfferingDto;
@@ -1152,10 +1078,3 @@ export interface OfferingDetailBase {
   businessId: number;
   [key: string]: any;
 }
-export interface OfferingMenuItemDto extends OfferingDetailBase {}
-export interface OfferingAccommodationDto extends OfferingDetailBase {}
-export interface OfferingPropertyDto extends OfferingDetailBase {}
-export interface OfferingRentalVehicleDto extends OfferingDetailBase {}
-export interface OfferingEventDto extends OfferingDetailBase {}
-export interface OfferingTourPackageDto extends OfferingDetailBase {}
-export interface OfferingMembershipPlanDto extends OfferingDetailBase {}
