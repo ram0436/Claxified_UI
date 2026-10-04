@@ -66,6 +66,12 @@
             </span>
             <div class="postImgCont">
               <img
+                class="img-frame__bg"
+                [src]="imagesList[imageIndex].imageURL"
+                alt=""
+                aria-hidden="true"
+              />
+              <img
                 class="details-post-img"
                 [src]="imagesList[imageIndex].imageURL"
                 alt=""
