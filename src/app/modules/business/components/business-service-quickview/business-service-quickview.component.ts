@@ -1,13 +1,14 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   BusinessServiceDto,
   BusinessServiceImageDto,
-} from "../../model/Business";
+} from '../../model/Business';
+import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 
 @Component({
-  selector: "app-business-service-quickview",
-  templateUrl: "./business-service-quickview.component.html",
-  styleUrls: ["./business-service-quickview.component.css"],
+  selector: 'app-business-service-quickview',
+  templateUrl: './business-service-quickview.component.html',
+  styleUrls: ['./business-service-quickview.component.css'],
 })
 export class BusinessServiceQuickviewComponent {
   @Input() service!: BusinessServiceDto;
@@ -16,33 +17,43 @@ export class BusinessServiceQuickviewComponent {
 
   activeImageIndex = 0;
 
+  constructor(public wishlist: OfferingWishlistService) {}
+
+  ngOnInit(): void {
+    this.wishlist.load();
+  }
+
+  toggleWishlist(): void {
+    this.wishlist.toggle(this.service.id, 'Service');
+  }
+
   // Pricing type display mapping
   private readonly pricingTypeDisplayMap: { [key: string]: string } = {
-    FixedPrice: "Fixed Price",
-    StartingFrom: "Starting From",
-    PriceRange: "Price Range",
-    Hourly: "Hourly",
-    Daily: "Daily",
-    CustomQuote: "Custom Quote",
+    FixedPrice: 'Fixed Price',
+    StartingFrom: 'Starting From',
+    PriceRange: 'Price Range',
+    Hourly: 'Hourly',
+    Daily: 'Daily',
+    CustomQuote: 'Custom Quote',
   };
 
   // Service mode display mapping
   private readonly serviceModeDisplayMap: { [key: string]: string } = {
-    AtBusiness: "At Business",
-    AtCustomerLocation: "At Customer Location",
-    Remote: "Remote",
+    AtBusiness: 'At Business',
+    AtCustomerLocation: 'At Customer Location',
+    Remote: 'Remote',
   };
 
   // Availability status display mapping
   private readonly availabilityDisplayMap: { [key: string]: string } = {
-    Available: "Available",
-    TemporarilyUnavailable: "Temporarily Unavailable",
-    NotAvailable: "Not Available",
+    Available: 'Available',
+    TemporarilyUnavailable: 'Temporarily Unavailable',
+    NotAvailable: 'Not Available',
   };
 
   get sortedImages() {
     return [...(this.service.images || [])].sort(
-      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)
+      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0),
     );
   }
 
@@ -60,10 +71,10 @@ export class BusinessServiceQuickviewComponent {
 
   // Fixed: Removed the | number pipe from TypeScript
   get priceDisplay(): string {
-    if (this.service.pricingType === "PriceRange") {
+    if (this.service.pricingType === 'PriceRange') {
       return `₹${this.service.minimumPrice} - ₹${this.service.maximumPrice}`;
-    } else if (this.service.pricingType === "CustomQuote") {
-      return "Custom Quote";
+    } else if (this.service.pricingType === 'CustomQuote') {
+      return 'Custom Quote';
     } else {
       return `₹${this.service.minimumPrice}`;
     }
@@ -91,13 +102,13 @@ export class BusinessServiceQuickviewComponent {
   }
 
   get durationDisplay(): string {
-    if (!this.service.duration) return "Not specified";
+    if (!this.service.duration) return 'Not specified';
     const unitMap: { [key: string]: string } = {
-      Minute: "Minute(s)",
-      Hour: "Hour(s)",
-      Day: "Day(s)",
-      Week: "Week(s)",
-      Month: "Month(s)",
+      Minute: 'Minute(s)',
+      Hour: 'Hour(s)',
+      Day: 'Day(s)',
+      Week: 'Week(s)',
+      Month: 'Month(s)',
     };
     const unit =
       unitMap[this.service.durationUnit] || this.service.durationUnit;
@@ -105,26 +116,26 @@ export class BusinessServiceQuickviewComponent {
   }
 
   get isPriceOnRequest(): boolean {
-    return this.service.pricingType === "CustomQuote";
+    return this.service.pricingType === 'CustomQuote';
   }
 
   get gstIncludedDisplay(): string {
-    return this.service.gstIncluded === "Yes"
-      ? "GST Included"
-      : "GST Not Included";
+    return this.service.gstIncluded === 'Yes'
+      ? 'GST Included'
+      : 'GST Not Included';
   }
 
   get bookingRequiredDisplay(): string {
-    return this.service.isBookingRequired === "Yes"
-      ? "Booking Required"
-      : "Booking Not Required";
+    return this.service.isBookingRequired === 'Yes'
+      ? 'Booking Required'
+      : 'Booking Not Required';
   }
 
   get formattedPrice(): string {
-    if (this.service.pricingType === "PriceRange") {
+    if (this.service.pricingType === 'PriceRange') {
       return `₹${this.service.minimumPrice} - ₹${this.service.maximumPrice}`;
-    } else if (this.service.pricingType === "CustomQuote") {
-      return "Custom Quote";
+    } else if (this.service.pricingType === 'CustomQuote') {
+      return 'Custom Quote';
     } else {
       return `₹${this.service.minimumPrice}`;
     }

@@ -12,6 +12,8 @@ export class ClaxifiedLayoutComponent implements OnInit {
     { label: 'Dashboard', icon: 'home', route: 'dashboard' },
     { label: 'My Listings', icon: 'listings', route: 'my-listings' },
     { label: 'My Businesses', icon: 'business', route: 'my-businesses' },
+    { label: 'Saved Businesses', icon: 'bookmark', route: 'saved-businesses' },
+    { label: 'Wishlist', icon: 'heart', route: 'wishlist' },
     { label: 'Enquiries & Leads', icon: 'chat', route: 'enquiries' },
     { label: 'Analytics', icon: 'chart', route: 'analytics' },
     { label: 'Packages & Billing', icon: 'card', route: 'billing' },

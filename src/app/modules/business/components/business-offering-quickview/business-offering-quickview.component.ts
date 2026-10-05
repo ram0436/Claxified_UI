@@ -12,6 +12,7 @@ import {
   getOfferingIcon,
   unwrapDetail,
 } from '../../utils/offering-detail-view.util';
+import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 
 @Component({
   selector: 'app-business-offering-quickview',
@@ -27,10 +28,18 @@ export class BusinessOfferingQuickviewComponent implements OnInit {
   loading = false;
   view: OfferingDetailView = EMPTY_DETAIL_VIEW;
 
-  constructor(private businessService: BusinessService) {}
+  constructor(
+    private businessService: BusinessService,
+    public wishlist: OfferingWishlistService,
+  ) {}
 
   ngOnInit(): void {
+    this.wishlist.load();
     this.loadDetail();
+  }
+
+  toggleWishlist(): void {
+    this.wishlist.toggle(this.offering.id, this.typeLabel);
   }
 
   get typeLabel(): string {

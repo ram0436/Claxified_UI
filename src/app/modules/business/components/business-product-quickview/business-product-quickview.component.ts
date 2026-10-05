@@ -1,13 +1,14 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   BusinessProductDto,
   BusinessProductImageDto,
-} from "../../model/Business";
+} from '../../model/Business';
+import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 
 @Component({
-  selector: "app-business-product-quickview",
-  templateUrl: "./business-product-quickview.component.html",
-  styleUrls: ["./business-product-quickview.component.css"],
+  selector: 'app-business-product-quickview',
+  templateUrl: './business-product-quickview.component.html',
+  styleUrls: ['./business-product-quickview.component.css'],
 })
 export class BusinessProductQuickviewComponent {
   @Input() product!: BusinessProductDto;
@@ -16,9 +17,19 @@ export class BusinessProductQuickviewComponent {
 
   activeImageIndex = 0;
 
+  constructor(public wishlist: OfferingWishlistService) {}
+
+  ngOnInit(): void {
+    this.wishlist.load();
+  }
+
+  toggleWishlist(): void {
+    this.wishlist.toggle(this.product.id, 'Product');
+  }
+
   get sortedImages() {
     return [...(this.product.images || [])].sort(
-      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)
+      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0),
     );
   }
 
@@ -38,7 +49,7 @@ export class BusinessProductQuickviewComponent {
     if (!this.product.discountPercentage) return this.product.price;
     return Math.round(
       this.product.price -
-        (this.product.price * this.product.discountPercentage) / 100
+        (this.product.price * this.product.discountPercentage) / 100,
     );
   }
 

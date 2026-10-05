@@ -16,6 +16,7 @@ import {
   getOfferingIcon,
   unwrapDetail,
 } from '../../utils/offering-detail-view.util';
+import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 
 @Component({
   selector: 'app-business-offering-detail',
@@ -39,6 +40,7 @@ export class BusinessOfferingDetailComponent implements OnInit {
     private location: Location,
     private businessService: BusinessService,
     private snackBar: MatSnackBar,
+    public wishlist: OfferingWishlistService,
   ) {}
 
   ngOnInit(): void {
@@ -75,6 +77,11 @@ export class BusinessOfferingDetailComponent implements OnInit {
         this.notFound = true;
       },
     );
+    this.wishlist.load();
+  }
+
+  toggleWishlist(): void {
+    if (this.offering) this.wishlist.toggle(this.offering.id, this.typeLabel);
   }
 
   get typeLabel(): string {

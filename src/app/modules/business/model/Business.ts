@@ -1078,3 +1078,23 @@ export interface OfferingDetailBase {
   businessId: number;
   [key: string]: any;
 }
+
+// ---------- Saved / Wishlist ----------
+
+export class SavedBusiness extends AuditFields {
+  id: number = 0;
+  userId: number = 0;
+  businessId: number = 0;
+}
+
+export class WishlistBusiness extends AuditFields {
+  id: number = 0;
+  userId: number = 0;
+  businessId: number = 0;
+}
+
+export class WishlistBusinessOffering extends AuditFields {
+  id: number = 0;
+  userId: number = 0;
+  businessOfferingId: number = 0;
+}

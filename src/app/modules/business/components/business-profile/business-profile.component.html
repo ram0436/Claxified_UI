@@ -94,6 +94,17 @@
       <button type="button" class="hero-glass-btn" (click)="shareProfile()">
         <span class="material-icons-outlined">share</span> Share
       </button>
+      <button
+        type="button"
+        class="hero-glass-btn"
+        (click)="toggleBusinessWishlist()"
+        [disabled]="wishlistingBusiness"
+      >
+        <span class="material-icons-outlined">{{
+          wishlistedBusiness ? "favorite" : "favorite_border"
+        }}</span>
+        {{ wishlistedBusiness ? "Wishlisted" : "Wishlist" }}
+      </button>
     </div>
 
     <div class="hero-content">
