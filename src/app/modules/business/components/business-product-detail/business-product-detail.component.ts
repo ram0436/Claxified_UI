@@ -1,16 +1,17 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { map } from "rxjs/operators";
-import { BusinessService } from "../../service/business.service";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs/operators';
+import { BusinessService } from '../../service/business.service';
 import {
   BusinessProductDto,
   BusinessProductImageDto,
-} from "../../model/Business";
+} from '../../model/Business';
+import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 
 @Component({
-  selector: "app-business-product-detail",
-  templateUrl: "./business-product-detail.component.html",
-  styleUrls: ["./business-product-detail.component.css"],
+  selector: 'app-business-product-detail',
+  templateUrl: './business-product-detail.component.html',
+  styleUrls: ['./business-product-detail.component.css'],
 })
 export class BusinessProductDetailComponent implements OnInit {
   loading = true;
@@ -21,7 +22,8 @@ export class BusinessProductDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private businessService: BusinessService
+    private businessService: BusinessService,
+    public wishlist: OfferingWishlistService,
   ) {}
 
   ngOnInit(): void {
@@ -29,9 +31,14 @@ export class BusinessProductDetailComponent implements OnInit {
     this.isOwner = navState?.isOwner === true;
 
     this.route.paramMap.subscribe((params) => {
-      const id = Number(params.get("productId"));
+      const id = Number(params.get('productId'));
       if (id) this.loadProduct(id);
     });
+    this.wishlist.load();
+  }
+
+  toggleWishlist(): void {
+    if (this.product) this.wishlist.toggle(this.product.id, 'Product');
   }
 
   loadProduct(id: number): void {
@@ -47,7 +54,7 @@ export class BusinessProductDetailComponent implements OnInit {
 
   get sortedImages() {
     return [...(this.product?.images || [])].sort(
-      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)
+      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0),
     );
   }
 
@@ -64,7 +71,7 @@ export class BusinessProductDetailComponent implements OnInit {
     if (!this.product.discountPercentage) return this.product.price;
     return Math.round(
       this.product.price -
-        (this.product.price * this.product.discountPercentage) / 100
+        (this.product.price * this.product.discountPercentage) / 100,
     );
   }
 
@@ -74,7 +81,7 @@ export class BusinessProductDetailComponent implements OnInit {
 
   editProduct(): void {
     if (!this.product) return;
-    this.router.navigate(["/business/product", this.product.id, "edit"]);
+    this.router.navigate(['/business/product', this.product.id, 'edit']);
   }
 
   onContactBusiness(): void {}

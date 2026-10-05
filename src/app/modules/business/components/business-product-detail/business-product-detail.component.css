@@ -420,3 +420,15 @@
     height: 260px;
   }
 }
+
+.btn-outline.wished {
+  color: #e75462;
+  border-color: #e75462;
+  background: #fdecec;
+}
+
+.btn-outline:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}

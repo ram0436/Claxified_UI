@@ -10,6 +10,7 @@ import { PackagesBillingComponent } from './components/packages-billing/packages
 import { AdminOverviewComponent } from './components/admin-overview/admin-overview.component';
 import { AuthGuard } from '../auth/authguard/authguard';
 import { AttributeMappingComponent } from './components/attribute-mapping/attribute-mapping.component';
+import { SavedItemsComponent } from './components/saved-items/saved-items.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,16 @@ const routes: Routes = [
       { path: 'dashboard', component: OverviewComponent },
       { path: 'my-listings', component: MyListingsComponent },
       { path: 'my-businesses', component: MyBusinessesComponent },
+      {
+        path: 'saved-businesses',
+        component: SavedItemsComponent,
+        data: { mode: 'saved' },
+      },
+      {
+        path: 'wishlist',
+        component: SavedItemsComponent,
+        data: { mode: 'wishlist' },
+      },
       {
         path: 'enquiries',
         component: ComingSoonComponent,

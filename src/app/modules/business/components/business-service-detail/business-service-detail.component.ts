@@ -1,15 +1,16 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { BusinessService } from "../../service/business.service";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BusinessService } from '../../service/business.service';
 import {
   BusinessServiceDto,
   BusinessServiceImageDto,
-} from "../../model/Business";
+} from '../../model/Business';
+import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 
 @Component({
-  selector: "app-business-service-detail",
-  templateUrl: "./business-service-detail.component.html",
-  styleUrls: ["./business-service-detail.component.css"],
+  selector: 'app-business-service-detail',
+  templateUrl: './business-service-detail.component.html',
+  styleUrls: ['./business-service-detail.component.css'],
 })
 export class BusinessServiceDetailComponent implements OnInit {
   loading = true;
@@ -19,38 +20,39 @@ export class BusinessServiceDetailComponent implements OnInit {
 
   // Display mappings
   private readonly pricingTypeDisplayMap: { [key: string]: string } = {
-    FixedPrice: "Fixed Price",
-    StartingFrom: "Starting From",
-    PriceRange: "Price Range",
-    Hourly: "Hourly",
-    Daily: "Daily",
-    CustomQuote: "Custom Quote",
+    FixedPrice: 'Fixed Price',
+    StartingFrom: 'Starting From',
+    PriceRange: 'Price Range',
+    Hourly: 'Hourly',
+    Daily: 'Daily',
+    CustomQuote: 'Custom Quote',
   };
 
   private readonly serviceModeDisplayMap: { [key: string]: string } = {
-    AtBusiness: "At Business",
-    AtCustomerLocation: "At Customer Location",
-    Remote: "Remote",
+    AtBusiness: 'At Business',
+    AtCustomerLocation: 'At Customer Location',
+    Remote: 'Remote',
   };
 
   private readonly availabilityDisplayMap: { [key: string]: string } = {
-    Available: "Available",
-    TemporarilyUnavailable: "Temporarily Unavailable",
-    NotAvailable: "Not Available",
+    Available: 'Available',
+    TemporarilyUnavailable: 'Temporarily Unavailable',
+    NotAvailable: 'Not Available',
   };
 
   private readonly durationUnitMap: { [key: string]: string } = {
-    Minute: "Minute(s)",
-    Hour: "Hour(s)",
-    Day: "Day(s)",
-    Week: "Week(s)",
-    Month: "Month(s)",
+    Minute: 'Minute(s)',
+    Hour: 'Hour(s)',
+    Day: 'Day(s)',
+    Week: 'Week(s)',
+    Month: 'Month(s)',
   };
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private businessService: BusinessService
+    private businessService: BusinessService,
+    public wishlist: OfferingWishlistService,
   ) {}
 
   ngOnInit(): void {
@@ -58,9 +60,14 @@ export class BusinessServiceDetailComponent implements OnInit {
     this.isOwner = navState?.isOwner === true;
 
     this.route.paramMap.subscribe((params) => {
-      const id = Number(params.get("serviceId"));
+      const id = Number(params.get('serviceId'));
       if (id) this.loadService(id);
     });
+    this.wishlist.load();
+  }
+
+  toggleWishlist(): void {
+    if (this.service) this.wishlist.toggle(this.service.id, 'Service');
   }
 
   loadService(id: number): void {
@@ -76,7 +83,7 @@ export class BusinessServiceDetailComponent implements OnInit {
 
   get sortedImages() {
     return [...(this.service?.images || [])].sort(
-      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)
+      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0),
     );
   }
 
@@ -90,11 +97,11 @@ export class BusinessServiceDetailComponent implements OnInit {
 
   // Price display helpers
   get priceDisplay(): string {
-    if (!this.service) return "0";
-    if (this.service.pricingType === "PriceRange") {
+    if (!this.service) return '0';
+    if (this.service.pricingType === 'PriceRange') {
       return `₹${this.service.minimumPrice} - ₹${this.service.maximumPrice}`;
-    } else if (this.service.pricingType === "CustomQuote") {
-      return "Custom Quote";
+    } else if (this.service.pricingType === 'CustomQuote') {
+      return 'Custom Quote';
     } else {
       return `₹${this.service.minimumPrice}`;
     }
@@ -102,30 +109,30 @@ export class BusinessServiceDetailComponent implements OnInit {
 
   get pricingTypeDisplay(): string {
     return (
-      this.pricingTypeDisplayMap[this.service?.pricingType || ""] ||
+      this.pricingTypeDisplayMap[this.service?.pricingType || ''] ||
       this.service?.pricingType ||
-      ""
+      ''
     );
   }
 
   get serviceModeDisplay(): string {
     return (
-      this.serviceModeDisplayMap[this.service?.serviceMode || ""] ||
+      this.serviceModeDisplayMap[this.service?.serviceMode || ''] ||
       this.service?.serviceMode ||
-      ""
+      ''
     );
   }
 
   get availabilityDisplay(): string {
     return (
-      this.availabilityDisplayMap[this.service?.availabilityStatus || ""] ||
+      this.availabilityDisplayMap[this.service?.availabilityStatus || ''] ||
       this.service?.availabilityStatus ||
-      ""
+      ''
     );
   }
 
   get durationDisplay(): string {
-    if (!this.service?.duration) return "Not specified";
+    if (!this.service?.duration) return 'Not specified';
     const unit =
       this.durationUnitMap[this.service.durationUnit] ||
       this.service.durationUnit;
@@ -133,23 +140,23 @@ export class BusinessServiceDetailComponent implements OnInit {
   }
 
   get isPriceOnRequest(): boolean {
-    return this.service?.pricingType === "CustomQuote";
+    return this.service?.pricingType === 'CustomQuote';
   }
 
   get gstIncludedDisplay(): string {
-    return this.service?.gstIncluded === "Yes"
-      ? "GST Included"
-      : "GST Not Included";
+    return this.service?.gstIncluded === 'Yes'
+      ? 'GST Included'
+      : 'GST Not Included';
   }
 
   get bookingRequiredDisplay(): string {
-    return this.service?.isBookingRequired === "Yes"
-      ? "Booking Required"
-      : "Booking Not Required";
+    return this.service?.isBookingRequired === 'Yes'
+      ? 'Booking Required'
+      : 'Booking Not Required';
   }
 
   get isAvailable(): boolean {
-    return this.service?.availabilityStatus === "Available";
+    return this.service?.availabilityStatus === 'Available';
   }
 
   get formattedMinimumPrice(): number {
@@ -166,7 +173,7 @@ export class BusinessServiceDetailComponent implements OnInit {
 
   editService(): void {
     if (!this.service) return;
-    this.router.navigate(["/business/service", this.service.id, "edit"]);
+    this.router.navigate(['/business/service', this.service.id, 'edit']);
   }
 
   onContactBusiness(): void {}

@@ -139,6 +139,17 @@
           <button class="btn-outline btn-block" (click)="onShare()">
             <span class="material-icons-outlined">share</span> Share
           </button>
+          <button
+            class="btn-outline btn-block"
+            [class.wished]="wishlist.has(offering.id)"
+            [disabled]="wishlist.isBusy(offering.id)"
+            (click)="toggleWishlist()"
+          >
+            <span class="material-icons-outlined">{{
+              wishlist.has(offering.id) ? "favorite" : "favorite_border"
+            }}</span>
+            {{ wishlist.has(offering.id) ? "Wishlisted" : "Add to Wishlist" }}
+          </button>
         </div>
       </div>
     </aside>

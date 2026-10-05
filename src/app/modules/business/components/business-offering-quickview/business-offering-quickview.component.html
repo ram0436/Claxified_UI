@@ -4,6 +4,19 @@
       <span class="material-icons-outlined">close</span>
     </button>
 
+    <button
+      class="qv-wish"
+      type="button"
+      [class.active]="wishlist.has(offering.id)"
+      [disabled]="wishlist.isBusy(offering.id)"
+      (click)="toggleWishlist()"
+      aria-label="Add to wishlist"
+    >
+      <span class="material-icons-outlined">{{
+        wishlist.has(offering.id) ? "favorite" : "favorite_border"
+      }}</span>
+    </button>
+
     <!-- Image (full image, blurred copy fills the empty space) -->
     <div class="qv-gallery-main-wrap" *ngIf="offering.imageUrl; else noImage">
       <img

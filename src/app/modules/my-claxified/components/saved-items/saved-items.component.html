@@ -1,0 +1,194 @@
+<div class="page-head">
+  <nav class="breadcrumb">
+    <span>My Claxified</span>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">{{ title }}</span>
+  </nav>
+  <h1>{{ title }}</h1>
+  <p>{{ subtitle }}</p>
+</div>
+
+<div class="card">
+  <!-- Tabs (wishlist only) -->
+  <div class="biz-tabs" *ngIf="mode === 'wishlist'">
+    <button
+      class="biz-tab"
+      [class.active]="activeTab === 'businesses'"
+      (click)="setTab('businesses')"
+    >
+      <span class="material-icons-outlined">storefront</span> Businesses
+      <span class="tab-count">{{ businesses.length }}</span>
+    </button>
+    <button
+      class="biz-tab"
+      [class.active]="activeTab === 'offerings'"
+      (click)="setTab('offerings')"
+    >
+      <span class="material-icons-outlined">inventory_2</span> Offerings
+      <span class="tab-count">{{ offerings.length }}</span>
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="filter-row">
+    <div class="search-input">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+        <line
+          x1="21"
+          y1="21"
+          x2="16.65"
+          y2="16.65"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+      <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" />
+    </div>
+  </div>
+
+  <div class="spinner-wrap" *ngIf="isLoading">
+    <mat-spinner diameter="36"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!isLoading">
+    <!-- ===== Businesses ===== -->
+    <div
+      class="biz-list"
+      *ngIf="showingBusinesses && filteredBusinesses.length"
+    >
+      <div
+        class="biz-card"
+        *ngFor="let b of filteredBusinesses"
+        [class.unavailable]="!b.found"
+        (click)="openBusiness(b)"
+      >
+        <div class="biz-logo">
+          <img [src]="b.logo" (error)="onImageError($event)" alt="" />
+        </div>
+
+        <div class="biz-info">
+          <div class="biz-head">
+            <h3>{{ b.name }}</h3>
+          </div>
+          <div class="biz-type" *ngIf="b.category">{{ b.category }}</div>
+          <div class="biz-loc" *ngIf="b.location">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <circle
+                cx="12"
+                cy="9"
+                r="2.5"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            {{ b.location }}
+          </div>
+        </div>
+
+        <div class="biz-actions">
+          <button
+            class="manage-btn"
+            *ngIf="b.found"
+            (click)="openBusiness(b); $event.stopPropagation()"
+          >
+            View Business →
+          </button>
+          <button
+            class="remove-btn"
+            [disabled]="isBusy('b:' + b.businessId)"
+            (click)="removeBusiness(b, $event)"
+            [attr.aria-label]="
+              mode === 'saved' ? 'Remove from saved' : 'Remove from wishlist'
+            "
+          >
+            <span class="material-icons-outlined">{{
+              mode === "saved" ? "bookmark_remove" : "favorite"
+            }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Offerings ===== -->
+    <div
+      class="biz-list"
+      *ngIf="!showingBusinesses && filteredOfferings.length"
+    >
+      <div
+        class="biz-card"
+        *ngFor="let o of filteredOfferings"
+        (click)="openOffering(o)"
+      >
+        <div class="biz-logo">
+          <img [src]="o.imageUrl" (error)="onImageError($event)" alt="" />
+        </div>
+
+        <div class="biz-info">
+          <div class="biz-head">
+            <h3>{{ o.name }}</h3>
+            <span class="status status-draft">{{ o.typeLabel }}</span>
+          </div>
+          <div class="biz-type">
+            <ng-container *ngIf="!o.priceOnRequest; else por">
+              <strong class="price-now">₹{{ o.price | number }}</strong>
+              <span class="price-was" *ngIf="o.discountPercentage"
+                >₹{{ o.originalPrice | number }}</span
+              >
+              <span class="price-unit" *ngIf="o.priceUnit">{{
+                o.priceUnit
+              }}</span>
+            </ng-container>
+            <ng-template #por>Price on request</ng-template>
+          </div>
+        </div>
+
+        <div class="biz-actions">
+          <button
+            class="manage-btn"
+            (click)="openOffering(o); $event.stopPropagation()"
+          >
+            View Details →
+          </button>
+          <button
+            class="remove-btn"
+            [disabled]="isBusy('o:' + o.id)"
+            (click)="removeOffering(o, $event)"
+            aria-label="Remove from wishlist"
+          >
+            <span class="material-icons-outlined">favorite</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Empty ===== -->
+    <div
+      class="empty"
+      *ngIf="
+        (showingBusinesses && !filteredBusinesses.length) ||
+        (!showingBusinesses && !filteredOfferings.length)
+      "
+    >
+      <span
+        class="material-icons-outlined"
+        style="font-size: 44px; color: #c9c2dd"
+        >{{ mode === "saved" ? "bookmark_border" : "favorite_border" }}</span
+      >
+      <p *ngIf="searchTerm">No results match your search.</p>
+      <p *ngIf="!searchTerm && mode === 'saved'">
+        You haven't saved any businesses yet.
+      </p>
+      <p *ngIf="!searchTerm && mode === 'wishlist'">
+        Your wishlist is empty. Tap the heart on a business or offering to add
+        it.
+      </p>
+    </div>
+  </ng-container>
+</div>

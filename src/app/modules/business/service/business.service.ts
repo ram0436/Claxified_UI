@@ -43,6 +43,9 @@ import {
   BusinessOfferingDto,
   OfferingTypeOptionDto,
   OfferingCombinedSavePayload,
+  WishlistBusinessOffering,
+  WishlistBusiness,
+  SavedBusiness,
 } from '../model/Business';
 import { EntityType } from '../enum/business-product.enum';
 import { OfferingType } from '../enum/business-offering.enum';
@@ -416,5 +419,104 @@ export class BusinessService {
       return throwError(() => new Error('Unsupported offering type'));
     }
     return this.http.post<any>(`${this.baseUrl}Business/${endpoint}`, payload);
+  }
+
+  // ---------- Saved Business ----------
+
+  getSavedBusinesses(userId: number): Observable<SavedBusiness[]> {
+    return this.http.get<SavedBusiness[]>(
+      `${this.baseUrl}Business/saved-businesses/${userId}`,
+    );
+  }
+
+  isBusinessSaved(userId: number, businessId: number): Observable<boolean> {
+    return this.http.get<boolean>(
+      `${this.baseUrl}Business/saved-business/${userId}/${businessId}/exists`,
+    );
+  }
+
+  saveBusinessForUser(userId: number, businessId: number) {
+    const body = new SavedBusiness();
+    body.userId = userId;
+    body.businessId = businessId;
+    body.createdBy = userId;
+    body.modifiedBy = userId;
+    body.isDeleted = false;
+    return this.http.post(`${this.baseUrl}Business/saved-business`, body);
+  }
+
+  unsaveBusiness(userId: number, businessId: number) {
+    return this.http.delete(
+      `${this.baseUrl}Business/saved-business/${userId}/${businessId}`,
+    );
+  }
+
+  // ---------- Wishlist Business ----------
+
+  getWishlistBusinesses(userId: number): Observable<WishlistBusiness[]> {
+    return this.http.get<WishlistBusiness[]>(
+      `${this.baseUrl}Business/wishlist-businesses/${userId}`,
+    );
+  }
+
+  isBusinessWishlisted(
+    userId: number,
+    businessId: number,
+  ): Observable<boolean> {
+    return this.http.get<boolean>(
+      `${this.baseUrl}Business/wishlist-business/${userId}/${businessId}/exists`,
+    );
+  }
+
+  addBusinessToWishlist(userId: number, businessId: number) {
+    const body = new WishlistBusiness();
+    body.userId = userId;
+    body.businessId = businessId;
+    body.createdBy = userId;
+    body.modifiedBy = userId;
+    body.isDeleted = false;
+    return this.http.post(`${this.baseUrl}Business/wishlist-business`, body);
+  }
+
+  removeBusinessFromWishlist(userId: number, businessId: number) {
+    return this.http.delete(
+      `${this.baseUrl}Business/wishlist-business/${userId}/${businessId}`,
+    );
+  }
+
+  // ---------- Wishlist Business Offering ----------
+
+  getWishlistOfferings(userId: number): Observable<WishlistBusinessOffering[]> {
+    return this.http.get<WishlistBusinessOffering[]>(
+      `${this.baseUrl}Business/wishlist-business-offerings/${userId}`,
+    );
+  }
+
+  isOfferingWishlisted(
+    userId: number,
+    businessOfferingId: number,
+  ): Observable<boolean> {
+    return this.http.get<boolean>(
+      `${this.baseUrl}Business/wishlist-business-offering/${userId}/${businessOfferingId}/exists`,
+    );
+  }
+
+  addOfferingToWishlist(userId: number, businessOfferingId: number) {
+    const body = new WishlistBusinessOffering();
+    body.userId = userId;
+    body.businessOfferingId = businessOfferingId;
+    body.createdBy = userId;
+    body.modifiedBy = userId;
+    body.isDeleted = false;
+    return this.http.post(
+      `${this.baseUrl}Business/wishlist-business-offering`,
+      body,
+    );
+  }
+
+  removeOfferingFromWishlist(userId: number, businessOfferingId: number) {
+    return this.http.delete(
+      `${this.baseUrl}Business/wishlist-business-offering/${userId}/${businessOfferingId}`,
+    );
   }
 }

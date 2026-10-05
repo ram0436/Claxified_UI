@@ -13,6 +13,7 @@ import { ComingSoonComponent } from './components/coming-soon/coming-soon.compon
 import { PackagesBillingComponent } from './components/packages-billing/packages-billing.component';
 import { AdminOverviewComponent } from './components/admin-overview/admin-overview.component';
 import { AttributeMappingComponent } from './components/attribute-mapping/attribute-mapping.component';
+import { SavedItemsComponent } from './components/saved-items/saved-items.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { AttributeMappingComponent } from './components/attribute-mapping/attrib
     PackagesBillingComponent,
     AdminOverviewComponent,
     AttributeMappingComponent,
+    SavedItemsComponent,
   ],
   imports: [
     CommonModule,

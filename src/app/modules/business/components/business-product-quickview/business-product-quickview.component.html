@@ -4,6 +4,19 @@
       <span class="material-icons-outlined">close</span>
     </button>
 
+    <button
+      class="qv-wish"
+      type="button"
+      [class.active]="wishlist.has(product.id)"
+      [disabled]="wishlist.isBusy(product.id)"
+      (click)="toggleWishlist()"
+      aria-label="Add to wishlist"
+    >
+      <span class="material-icons-outlined">{{
+        wishlist.has(product.id) ? "favorite" : "favorite_border"
+      }}</span>
+    </button>
+
     <div class="qv-gallery" *ngIf="sortedImages.length > 0">
       <div class="qv-gallery-main-wrap">
         <img

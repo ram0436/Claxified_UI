@@ -25,6 +25,7 @@ import {
   rememberBusinessGuid,
 } from '../../utils/business-url.util';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 
 interface CatalogItem {
   id: number;
@@ -359,6 +360,7 @@ export class BusinessProfileComponent implements OnInit {
     private elRef: ElementRef,
     private snackBar: MatSnackBar,
     private location: Location,
+    private wishlist: OfferingWishlistService,
   ) {}
 
   getYearsInBusiness(establishedYear: number): number {
@@ -529,6 +531,7 @@ export class BusinessProfileComponent implements OnInit {
     this.loadOfferingTypes();
     this.loadOffers();
     this.loadReviews();
+    this.loadUserFlags();
   }
 
   loadAllowedOfferingTypes(businessCategoryId: number): void {
@@ -853,12 +856,101 @@ export class BusinessProfileComponent implements OnInit {
     return '';
   }
 
-  /** Simple client-side "saved" toggle for the Save button; persistence is
-   * left to the parent/service layer wiring this component up. */
-  savedBusiness: boolean = false;
+  // ---------- Saved / Wishlist state ----------
+  savedBusiness = false;
+  savingBusiness = false;
+
+  wishlistedBusiness = false;
+  wishlistingBusiness = false;
+
+  /** businessOfferingIds the user has wishlisted (API-backed). */
+  private wishlistedOfferingIds = new Set<number>();
+  private wishlistBusy = new Set<number>();
+
+  private get currentUserId(): number {
+    return Number(localStorage.getItem('id')) || 0;
+  }
+
+  private requireLogin(action: string): number | null {
+    const uid = this.currentUserId;
+    if (!uid) {
+      this.showNotification(`Please log in to ${action}.`);
+      return null;
+    }
+    return uid;
+  }
+
+  private loadUserFlags(): void {
+    const uid = this.currentUserId;
+    if (!uid || !this.business?.id) return;
+
+    this.businessService.isBusinessSaved(uid, this.business.id).subscribe(
+      (v) => (this.savedBusiness = !!v),
+      () => (this.savedBusiness = false),
+    );
+
+    this.businessService.isBusinessWishlisted(uid, this.business.id).subscribe(
+      (v) => (this.wishlistedBusiness = !!v),
+      () => (this.wishlistedBusiness = false),
+    );
+
+    this.wishlist.load(true);
+  }
 
   toggleSaved(): void {
-    this.savedBusiness = !this.savedBusiness;
+    if (!this.business || this.savingBusiness) return;
+    const uid = this.requireLogin('save this business');
+    if (!uid) return;
+
+    const wasSaved = this.savedBusiness;
+    this.savedBusiness = !wasSaved; // optimistic
+    this.savingBusiness = true;
+
+    const call$ = wasSaved
+      ? this.businessService.unsaveBusiness(uid, this.business.id)
+      : this.businessService.saveBusinessForUser(uid, this.business.id);
+
+    call$.subscribe(
+      () => {
+        this.savingBusiness = false;
+        this.showNotification(
+          wasSaved ? 'Removed from saved businesses' : 'Business saved',
+        );
+      },
+      () => {
+        this.savedBusiness = wasSaved; // revert
+        this.savingBusiness = false;
+        this.showNotification('Something went wrong. Please try again.');
+      },
+    );
+  }
+
+  toggleBusinessWishlist(): void {
+    if (!this.business || this.wishlistingBusiness) return;
+    const uid = this.requireLogin('use your wishlist');
+    if (!uid) return;
+
+    const was = this.wishlistedBusiness;
+    this.wishlistedBusiness = !was;
+    this.wishlistingBusiness = true;
+
+    const call$ = was
+      ? this.businessService.removeBusinessFromWishlist(uid, this.business.id)
+      : this.businessService.addBusinessToWishlist(uid, this.business.id);
+
+    call$.subscribe(
+      () => {
+        this.wishlistingBusiness = false;
+        this.showNotification(
+          was ? 'Removed from wishlist' : 'Added to wishlist',
+        );
+      },
+      () => {
+        this.wishlistedBusiness = was;
+        this.wishlistingBusiness = false;
+        this.showNotification('Something went wrong. Please try again.');
+      },
+    );
   }
 
   /** Quick highlight chips shown in the left sidebar while browsing
@@ -1305,23 +1397,30 @@ export class BusinessProfileComponent implements OnInit {
     this.currentPage = 1;
   }
 
-  private wishlist = new Set<string>();
-
   private cardKey(kind: OfferingCard['kind'], id: number): string {
     return `${kind}:${id}`;
   }
 
+  /** Maps a card to its OfferingType (Product/Service come from the enum). */
+  private offeringTypeOfCard(card: OfferingCard): OfferingType {
+    if (card.kind === 'product') return OfferingType.Product;
+    if (card.kind === 'service') return OfferingType.Service;
+    return card.offeringType as OfferingType;
+  }
+
   isWishlisted(card: OfferingCard): boolean {
-    return this.wishlist.has(card.key);
+    return this.wishlist.has(card.refId);
   }
 
   toggleWishlist(card: OfferingCard, event: Event): void {
     event.stopPropagation();
-    if (this.wishlist.has(card.key)) {
-      this.wishlist.delete(card.key);
-    } else {
-      this.wishlist.add(card.key);
-    }
+    const label =
+      card.kind === 'product'
+        ? 'Product'
+        : card.kind === 'service'
+          ? 'Service'
+          : this.getOfferingTypeLabel(card.offeringType as OfferingType);
+    this.wishlist.toggle(card.refId, label);
   }
 
   /** All catalog items + generic offerings, narrowed by sub-category,
