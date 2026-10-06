@@ -222,13 +222,13 @@
         Businesses
       </h3>
       <div class="search-results-grid">
-        <div
+        <a
           class="business-card"
           *ngFor="
-            let business of filteredBusinessResults;
+            let business of filteredBusinessResults | slice: 0 : 10;
             trackBy: trackByBusinessId
           "
-          (click)="viewBusiness(business)"
+          [routerLink]="business.link"
         >
           <div class="card-image-wrapper">
             <div class="img-frame" *ngIf="business.coverImageUrl">
@@ -281,7 +281,7 @@
               {{ getLocationLabel(business) || "Location" }}
             </div>
           </div>
-        </div>
+        </a>
       </div>
     </ng-container>
 
@@ -290,10 +290,13 @@
         Classified Ads
       </h3>
       <div class="search-results-grid">
-        <div
+        <a
           class="ad-card"
-          *ngFor="let ad of filteredAdResults; trackBy: trackByAdId"
-          (click)="viewAd(ad)"
+          *ngFor="
+            let ad of filteredAdResults | slice: 0 : 10;
+            trackBy: trackByAdId
+          "
+          [routerLink]="ad.link"
         >
           <div class="ad-image-wrapper">
             <div class="img-frame">
@@ -336,7 +339,7 @@
               <span class="ad-time">{{ ad.postedAgo }}</span>
             </div>
           </div>
-        </div>
+        </a>
       </div>
     </ng-container>
   </section>
@@ -387,10 +390,10 @@
       </button>
 
       <div class="ads-row" #adsScroll>
-        <div
+        <a
           class="ad-card"
           *ngFor="let ad of featuredAds | slice: 0 : 10; trackBy: trackByAdId"
-          (click)="viewAd(ad)"
+          [routerLink]="ad.link"
         >
           <div class="ad-image-wrapper">
             <div class="img-frame">
@@ -433,7 +436,7 @@
               <span class="ad-time">{{ ad.postedAgo }}</span>
             </div>
           </div>
-        </div>
+        </a>
       </div>
       <button
         class="scroll-arrow scroll-arrow-right"
@@ -570,13 +573,13 @@
       </button>
 
       <div class="business-row" #businessScroll>
-        <div
+        <a
           class="business-card"
           *ngFor="
             let business of businesses | slice: 0 : 10;
             trackBy: trackByBusinessId
           "
-          (click)="viewBusiness(business)"
+          [routerLink]="business.link"
         >
           <div class="card-image-wrapper">
             <div class="img-frame" *ngIf="business.coverImageUrl">
@@ -630,7 +633,7 @@
               {{ getLocationLabel(business) || "Location" }}
             </div>
           </div>
-        </div>
+        </a>
       </div>
       <button
         class="scroll-arrow scroll-arrow-right"
@@ -754,10 +757,10 @@
       </button>
 
       <div class="news-row" #newsScroll>
-        <div
+        <a
           class="news-card"
           *ngFor="let article of businessNews; trackBy: trackByNewsId"
-          (click)="viewNewsArticle(article)"
+          [routerLink]="article.link"
         >
           <div class="news-image-wrapper">
             <div class="img-frame">
@@ -793,7 +796,7 @@
               </span>
             </div>
           </div>
-        </div>
+        </a>
       </div>
 
       <button
@@ -865,10 +868,10 @@
       </button>
 
       <div class="event-row" #eventScroll>
-        <div
+        <a
           class="event-card"
           *ngFor="let event of businessEvents; trackBy: trackByEventId"
-          (click)="viewBusinessEvent(event)"
+          [routerLink]="event.link"
         >
           <div class="event-image-wrapper">
             <div class="img-frame">
@@ -920,7 +923,7 @@
               </button>
             </div>
           </div>
-        </div>
+        </a>
       </div>
 
       <button

@@ -158,24 +158,6 @@
                 stroke-linejoin="round"
               />
             </svg>
-            <svg *ngSwitchCase="'bookmark'" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1z"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <svg *ngSwitchCase="'heart'" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M20.8 5.6a5.2 5.2 0 00-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 10-7.4 7.4L12 21.8l8.8-8.8a5.2 5.2 0 000-7.4z"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
             <svg *ngSwitchCase="'chat'" viewBox="0 0 24 24" fill="none">
               <path
                 d="M21 11.5a8.5 8.5 0 01-8.5 8.5H4l2-4.5A8.5 8.5 0 1121 11.5z"
@@ -254,7 +236,49 @@
         </a>
       </nav>
 
-      <div class="nav-divider" *ngIf="isAdmin"></div>
+      <div class="nav-divider"></div>
+
+      <a
+        routerLink="saved-businesses"
+        routerLinkActive="active"
+        (click)="closeSidebar()"
+        class="nav-item"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path
+              d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+        <span>Saved Businesses</span>
+      </a>
+
+      <a
+        routerLink="wishlist"
+        routerLinkActive="active"
+        (click)="closeSidebar()"
+        class="nav-item"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path
+              d="M20.8 5.6a5.2 5.2 0 00-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 10-7.4 7.4L12 21.8l8.8-8.8a5.2 5.2 0 000-7.4z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+        <span>Wishlist</span>
+      </a>
+
+      <div class="nav-divider"></div>
 
       <a class="nav-item logout" (click)="logout()">
         <span class="nav-icon">

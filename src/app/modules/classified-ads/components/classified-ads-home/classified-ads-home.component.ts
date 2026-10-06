@@ -33,6 +33,7 @@ interface ClassifiedAd {
   imageUrl?: string;
   colorClass: string;
   isWishlisted?: boolean;
+  link: any[] | null;
 }
 
 interface WhyItem {
@@ -263,6 +264,25 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     this.visibleAdsCount += this.ADS_PER_LOAD;
   }
 
+  private getAdLink(ad: {
+    id: string;
+    title: string;
+    city?: string;
+    categoryId: string;
+  }): any[] | null {
+    const cmds = buildPostCommands({
+      tableRefGuid: ad.id,
+      title: ad.title,
+      city: ad.city,
+      categoryId: ad.categoryId,
+    });
+    if (cmds) return cmds;
+
+    const categoryRoute = getCategoryRoute(ad.categoryId);
+    if (!categoryRoute || !ad.id) return null;
+    return ['/classified-ads', categoryRoute, 'post-details', ad.id];
+  }
+
   // ===================== FETCH CATEGORIES =====================
 
   // Category icon mapping
@@ -370,7 +390,7 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     const category = this.browseCategories.find(
       (c) => c.id === item.categoryId,
     );
-    return {
+    const ad = {
       id: item.tableRefGuid || String(item.id),
       categoryId: item.categoryId,
       title: item.title || 'Untitled',
@@ -389,6 +409,7 @@ export class ClassifiedAdsHomeComponent implements OnInit {
         this.categoryColorClasses[index % this.categoryColorClasses.length],
       isWishlisted: false,
     };
+    return { ...ad, link: this.getAdLink(ad) };
   }
 
   private getFirstImageUrl(item: any): string | undefined {

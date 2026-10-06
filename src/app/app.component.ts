@@ -1,5 +1,11 @@
 import { Component } from "@angular/core";
-import { Router, NavigationEnd } from "@angular/router";
+import {
+  Router,
+  NavigationStart,
+  NavigationEnd,
+  NavigationCancel,
+  NavigationError,
+} from "@angular/router";
 import { filter } from "rxjs/operators";
 
 @Component({
@@ -12,11 +18,19 @@ export class AppComponent {
 
   showCommonHeader = true;
 
+  isNavigating = true;
+
   constructor(private router: Router) {
-    // this.router.events
-    //   .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-    //   .subscribe((e) => {
-    //     this.showCommonHeader = !e.urlAfterRedirects.startsWith("/business");
-    //   });
+    this.router.events.subscribe((e) => {
+      if (e instanceof NavigationStart) {
+        this.isNavigating = true;
+      } else if (
+        e instanceof NavigationEnd ||
+        e instanceof NavigationCancel ||
+        e instanceof NavigationError
+      ) {
+        this.isNavigating = false;
+      }
+    });
   }
 }

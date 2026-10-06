@@ -13,22 +13,20 @@
       </button>
       <nav
         class="pd-breadcrumb"
-        *ngIf="
-          !isLoading && mainCategories.length > 0 && subCategories.length > 0
-        "
+        *ngIf="!isLoading && postDetails && mainCategories.length > 0"
       >
-        <a routerLink="/Properties/view-posts">{{
-          getMainCategoryName(postDetails?.categoryId)
-        }}</a>
-        <span class="material-icons-outlined pd-crumb-sep">chevron_right</span>
-        <a
-          [routerLink]="'/Properties/view-posts'"
-          [queryParams]="{
-            type: 'Properties',
-            sub: postDetails?.subCategoryId,
-          }"
-          >{{ getSubCategoryName(postDetails?.subCategoryId) }}</a
-        >
+        <a (click)="goToPostsListing()" style="cursor: pointer">
+          {{ getMainCategoryName(postDetails?.categoryId) }}
+        </a>
+        <ng-container *ngIf="getSubCategoryName(postDetails?.subCategoryId)">
+          <span class="material-icons-outlined pd-crumb-sep">chevron_right</span>
+          <a
+            (click)="goToPostsListing(postDetails?.subCategoryId)"
+            style="cursor: pointer"
+          >
+            {{ getSubCategoryName(postDetails?.subCategoryId) }}
+          </a>
+        </ng-container>
       </nav>
     </div>
 
@@ -79,6 +77,23 @@
                 [src]="imagesList[imageIndex].imageURL"
                 alt=""
               />
+              <div class="img-feature">
+                <p class="img_count">
+                  <span class="material-icons"> photo_camera </span>
+                  {{ imageIndex + 1 }} of {{ imagesList.length }}
+                </p>
+                <p class="zoom-in" (click)="zoomIn()">
+                  <span class="material-icons-outlined"> zoom_in </span>
+                </p>
+              </div>
+              <div class="zoom-controls">
+                <span
+                  class="material-icons-outlined"
+                  *ngIf="isZoomed"
+                  (click)="closeZoom()"
+                  >close</span
+                >
+              </div>
             </div>
             <span
               class="material-icons pg_arrow"
@@ -88,22 +103,14 @@
               arrow_forward_ios
             </span>
           </div>
-          <div class="img-feature">
-            <p class="img_count">
-              <span class="material-icons"> photo_camera </span>
-              {{ imageIndex + 1 }} of {{ imagesList.length }}
-            </p>
-            <p class="zoom-in" (click)="zoomIn()">
-              <span class="material-icons-outlined"> zoom_in </span>
-            </p>
-          </div>
-          <div class="zoom-controls">
-            <span
-              class="material-icons-outlined"
-              *ngIf="isZoomed"
-              (click)="closeZoom()"
-              >close</span
-            >
+          <div class="pd-gallery-thumbs">
+            <img
+              *ngFor="let img of imagesList; let i = index"
+              [src]="img.imageURL"
+              [class.active]="i === imageIndex"
+              (click)="setActiveImage(i)"
+              alt=""
+            />
           </div>
           <div class="pg-arrows-after">
             <span
@@ -175,7 +182,7 @@
                     formatDetailLabel(prop.label)
                   }}</span>
                   <span class="pd-detail-value">{{
-                    prop.value ? prop.value : "—"
+                    displayValue(prop.value)
                   }}</span>
                 </div>
               </div>
@@ -204,19 +211,16 @@
                   <span class="material-icons pd-phone-icon-circle">
                     call
                   </span>
-                  <h2 class="seller-phone-number-title">
-                    {{
-                      isPhoneNumberHidden
-                        ? postDetails?.mobile.slice(0, -4) + "XXXX"
-                        : postDetails?.mobile
-                    }}
-                  </h2>
+                  <h2 class="seller-phone-number-title">{{ displayPhone }}</h2>
                 </div>
                 <button
                   class="button button--secondary reveal-button"
                   (click)="revealPhoneNumber()"
-                  [disabled]="!isPhoneNumberHidden"
-                  [ngClass]="{ 'disabled-button': !isPhoneNumberHidden }"
+                  [disabled]="!isPhoneNumberHidden || !phoneNumbers.length"
+                  [ngClass]="{
+                    'disabled-button':
+                      !isPhoneNumberHidden || !phoneNumbers.length,
+                  }"
                 >
                   Reveal
                 </button>

@@ -76,10 +76,10 @@
     >
       <!-- Top story + headline list -->
       <div class="headlines-main">
-        <div
+        <a
           class="top-story-card"
           *ngIf="topStory"
-          (click)="goToArticle(topStory)"
+          [routerLink]="['/news/article', topStory.slug]"
         >
           <span class="top-story-badge">TOP STORY</span>
           <img
@@ -94,13 +94,13 @@
               {{ timeAgo(topStory.publishedAt) }}</span
             >
           </div>
-        </div>
+        </a>
 
         <div class="headline-list">
-          <div
+          <a
             class="headline-row"
             *ngFor="let a of headlineList"
-            (click)="goToArticle(a)"
+            [routerLink]="['/news/article', a.slug]"
           >
             <img
               [src]="a.featuredImageUrl"
@@ -110,7 +110,7 @@
               <h4>{{ a.title }}</h4>
               <span class="headline-meta">{{ timeAgo(a.publishedAt) }}</span>
             </div>
-          </div>
+          </a>
         </div>
       </div>
 
@@ -123,10 +123,10 @@
             <span class="material-icons-outlined">arrow_forward</span></a
           >
         </div>
-        <div
+        <a
           class="trending-row"
           *ngFor="let a of trendingNow; let i = index"
-          (click)="goToArticle(a)"
+          [routerLink]="['/news/article', a.slug]"
         >
           <span class="trending-rank">{{ i + 1 }}</span>
           <img [src]="a.featuredImageUrl" [alt]="a.title" />
@@ -134,7 +134,7 @@
             <h5>{{ a.title }}</h5>
             <span>{{ reads(a.viewCount) }}</span>
           </div>
-        </div>
+        </a>
 
         <!-- <div class="news-by-category-card">
           <div class="section-header inner">
@@ -207,17 +207,17 @@
       class="category-tile-row"
       *ngIf="!categoriesLoading && !categoriesError && categories.length > 0"
     >
-      <div
+      <a
         class="category-tile"
         *ngFor="let c of categories"
-        (click)="goToCategory(c)"
+        [routerLink]="['/news/categories', c.slug]"
       >
         <img [src]="categoryImage(c)" [alt]="c.name" />
         <div class="category-tile-overlay">
           <span class="material-icons-outlined">label</span>
           <h4>{{ c.name }}</h4>
         </div>
-      </div>
+      </a>
     </div>
   </section>
 
@@ -232,16 +232,16 @@
     </div>
 
     <div class="editor-pick-strip" *ngIf="!articlesLoading && !articlesError">
-      <div
+      <a
         class="editor-pick-card"
         *ngFor="let a of editorsPicks"
-        (click)="goToArticle(a)"
+        [routerLink]="['/news/article', a.slug]"
       >
         <img [src]="a.featuredImageUrl" [alt]="a.title" />
         <span class="material-icons-outlined bookmark-icon"
           >bookmark_border</span
         >
-      </div>
+      </a>
     </div>
   </section>
 </div>

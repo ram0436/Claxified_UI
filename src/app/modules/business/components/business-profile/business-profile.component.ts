@@ -107,10 +107,34 @@ export class BusinessProfileComponent implements OnInit {
   // ---------- Sub-category tabs ----------
   selectedSubCategoryId: number | null = null;
 
+  private subCategoryNameById = new Map<number, string>();
+
   get subCategoryTabs(): { id: number; name: string }[] {
     const ids = this.business?.businessSubCategoryIds || [];
     const names = this.business?.businessSubCategory || [];
-    return ids.map((id, i) => ({ id, name: names[i] || `Category ${id}` }));
+    return ids
+      .map((id, i) => ({
+        id: Number(id),
+        name:
+          this.subCategoryNameById.get(Number(id)) ||
+          names[i] ||
+          `Category ${id}`,
+      }))
+      .sort((a, b) => a.id - b.id);
+  }
+
+  private loadSubCategoryNames(): void {
+    const categoryId = this.business?.businessCategoryId;
+    if (!categoryId) return;
+
+    this.businessService.getBusinessSubCategories(categoryId).subscribe(
+      (list: any) => {
+        this.subCategoryNameById = new Map(
+          (list || []).map((s: any) => [Number(s.id), s.name]),
+        );
+      },
+      () => (this.subCategoryNameById = new Map()),
+    );
   }
 
   // ---------- Products & Services (catalog) state ----------
@@ -526,8 +550,14 @@ export class BusinessProfileComponent implements OnInit {
     }
 
     const ids = data?.businessSubCategoryIds || [];
-    this.selectedSubCategoryId = ids.length > 0 ? ids[0] : null;
+    const stillValid =
+      this.selectedSubCategoryId !== null &&
+      ids.includes(this.selectedSubCategoryId);
 
+    if (!stillValid) {
+      this.selectedSubCategoryId = ids.length > 0 ? ids[0] : null;
+    }
+    this.loadSubCategoryNames();
     this.loadOfferingTypes();
     this.loadOffers();
     this.loadReviews();
@@ -637,7 +667,7 @@ export class BusinessProfileComponent implements OnInit {
     this.currentPage = 1;
   }
 
-  selectSubCategoryTab(id: number): void {
+  selectSubCategoryTab(id: number | null): void {
     if (this.selectedSubCategoryId === id) return;
     this.selectedSubCategoryId = id;
     this.currentPage = 1;
@@ -1053,7 +1083,11 @@ export class BusinessProfileComponent implements OnInit {
           ...this.rawProducts.map((p) => this.mapProductToCatalogItem(p)),
           ...this.rawServices.map((s) => this.mapServiceToCatalogItem(s)),
         ];
-        this.offerings = offerings || [];
+        this.offerings = (offerings || []).filter(
+          (o) =>
+            Number(o.offeringType) !== Number(OfferingType.Product) &&
+            Number(o.offeringType) !== Number(OfferingType.Service),
+        );
         this.catalogLoading = false;
         this.offeringsLoading = false;
         this.currentPage = 1;
@@ -1273,9 +1307,12 @@ export class BusinessProfileComponent implements OnInit {
 
   private get searchedOfferings(): BusinessOfferingDto[] {
     const term = this.offeringSearch.trim().toLowerCase();
-    return this.offerings.filter(
-      (item) => !term || item.name.toLowerCase().includes(term),
-    );
+    return this.offerings.filter((item) => {
+      const matchesSub =
+        this.selectedSubCategoryId === null ||
+        item.subCategoryId === this.selectedSubCategoryId;
+      return matchesSub && (!term || item.name.toLowerCase().includes(term));
+    });
   }
 
   get filteredOfferings(): BusinessOfferingDto[] {

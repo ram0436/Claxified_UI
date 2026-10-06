@@ -1924,3 +1924,11 @@
     font-size: 13px;
   }
 }
+
+a.business-card,
+a.ad-card,
+a.news-card,
+a.event-card {
+  color: inherit;
+  text-decoration: none;
+}

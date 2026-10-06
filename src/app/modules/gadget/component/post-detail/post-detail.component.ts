@@ -7,6 +7,7 @@ import { LoginComponent } from '../../../user/component/login/login.component';
 import { SignupComponent } from '../../../user/component/signup/signup.component';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { Location } from '@angular/common';
+import { CategoryNavigationService } from 'src/app/shared/service/category-navigation.service';
 import { UserService } from 'src/app/modules/user/service/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AdsReportType } from 'src/app/shared/enum/AdsReportType';
@@ -124,6 +125,7 @@ export class PostDetailComponent {
     private dialog: MatDialog,
     private commonService: CommonService,
     private location: Location,
+    private categoryNav: CategoryNavigationService,
     private UserService: UserService,
     private snackBar: MatSnackBar,
     private AdminDashboardService: AdminDashboardService,
@@ -162,7 +164,6 @@ export class PostDetailComponent {
     if (role != null && role == 'Admin') this.isAdmin = true;
     else this.isAdmin = false;
     this.getMainCategories();
-    setTimeout(() => this.getSubCategory(this.postDetails.categoryId), 500);
     var tableRefGuid;
     this.route.paramMap.subscribe((params) => {
       tableRefGuid =
@@ -372,6 +373,7 @@ export class PostDetailComponent {
   getGadgetPost(guid: any) {
     this.gadgetService.getGadgetPostByGuid(guid).subscribe((data: any) => {
       this.postDetails = data[0];
+      this.getSubCategory(this.postDetails.categoryId);
       this.isLoading = false;
       this.imagesList = this.postDetails.gadgetImageList;
     });
@@ -391,12 +393,6 @@ export class PostDetailComponent {
     } else {
       return moment(inputDate).format('MMM DD');
     }
-  }
-  showPrevious() {
-    this.imageIndex = this.imageIndex - 1;
-  }
-  showNext() {
-    this.imageIndex = this.imageIndex + 1;
   }
   handleNext(): void {
     if (
@@ -460,5 +456,57 @@ export class PostDetailComponent {
     this.commonService.getSubCategoryByCategoryId(id).subscribe((res) => {
       this.subCategories = res;
     });
+  }
+
+  /** Returns '—' for empty values and for the placeholder "string" the API sometimes sends. */
+  displayValue(value: any): string {
+    if (value === null || value === undefined) return '—';
+    const v = String(value).trim();
+    return !v || v.toLowerCase() === 'string' ? '—' : v;
+  }
+
+  /** Splits the mobile field into individual numbers (handles , / ; | separators). */
+  get phoneNumbers(): string[] {
+    return String(this.postDetails?.mobile || '')
+      .split(/[,/;|]+/)
+      .map((n) => n.trim())
+      .filter((n) => n && n.toLowerCase() !== 'string');
+  }
+
+  private maskPhone(num: string): string {
+    return num.length > 4 ? num.slice(0, -4) + 'XXXX' : 'XXXX';
+  }
+
+  /** Every number is masked until Reveal is clicked. */
+  get displayPhone(): string {
+    if (!this.phoneNumbers.length) return 'Not Available';
+    return this.phoneNumbers
+      .map((n) => (this.isPhoneNumberHidden ? this.maskPhone(n) : n))
+      .join(', ');
+  }
+
+  setActiveImage(index: number) {
+    this.imageIndex = index;
+  }
+
+  showPrevious() {
+    if (this.imageIndex > 0) this.imageIndex--;
+  }
+
+  showNext() {
+    if (this.imageIndex < this.imagesList.length - 1) this.imageIndex++;
+  }
+
+  goToPostsListing(subCategoryId?: number): void {
+    const mainCategory = this.mainCategories.find(
+      (cat: any) => cat.id == this.postDetails?.categoryId,
+    );
+
+    if (!mainCategory) {
+      this.router.navigate(['/classified-ads']);
+      return;
+    }
+
+    this.categoryNav.goToPostsListing(mainCategory.categoryName, subCategoryId);
   }
 }
