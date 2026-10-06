@@ -764,3 +764,18 @@
 .write-article-card:hover .write-article-cta .material-icons-outlined {
   transform: translateX(3px);
 }
+
+a.top-story-card,
+a.headline-row,
+a.trending-row,
+a.category-tile,
+a.editor-pick-card {
+  color: inherit;
+  text-decoration: none;
+}
+
+a.top-story-card,
+a.category-tile,
+a.editor-pick-card {
+  display: block;
+}

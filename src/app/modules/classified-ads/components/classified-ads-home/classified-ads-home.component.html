@@ -347,10 +347,10 @@
       class="ads-grid"
       *ngIf="!adsLoading && !adsError && displayedAds.length > 0"
     >
-      <div
+      <a
         class="ad-card"
         *ngFor="let ad of displayedAds; trackBy: trackByAdId"
-        (click)="viewAd(ad)"
+        [routerLink]="ad.link"
       >
         <div class="ad-image-wrapper">
           <div class="img-frame" *ngIf="ad.imageUrl">
@@ -399,7 +399,7 @@
             <span class="ad-time">{{ ad.postedAgo }}</span>
           </div>
         </div>
-      </div>
+      </a>
     </div>
 
     <div class="view-more-wrapper" *ngIf="hasMoreAds">

@@ -27,6 +27,12 @@ interface OfferViewModel extends BusinessOfferDto {
   icon: string;
 }
 
+interface BusinessViewModel extends BusinessDirectoryItem {
+  link: any[] | null;
+  rating?: string;
+  reviewCount?: number;
+}
+
 interface TrustItem {
   icon: string;
   title: string;
@@ -44,7 +50,7 @@ export class MarketplaceComponent implements OnInit {
   searchQuery: string = '';
 
   // Businesses
-  businesses: BusinessDirectoryItem[] = [];
+  businesses: BusinessViewModel[] = [];
   businessesLoading: boolean = true;
   businessesError: boolean = false;
 
@@ -201,7 +207,7 @@ export class MarketplaceComponent implements OnInit {
     return this.searchQuery.trim().length > 0;
   }
 
-  get filteredBusinessResults(): BusinessDirectoryItem[] {
+  get filteredBusinessResults(): BusinessViewModel[] {
     const q = this.searchQuery.trim().toLowerCase();
     if (!q) return [];
     return this.businesses.filter(
@@ -231,6 +237,7 @@ export class MarketplaceComponent implements OnInit {
       )
       .map((ad) => ({
         ...ad,
+        link: this.getAdLink(ad),
         priceLabel: this.formatAdPrice(ad),
         isWishlisted: false,
         locationLabel:
@@ -297,12 +304,12 @@ export class MarketplaceComponent implements OnInit {
       (data: BusinessDirectoryItem[]) => {
         const activeBusinesses = (data || []).filter((b) => b.status !== 0);
 
-        this.businesses = activeBusinesses.slice(0, 15);
-        this.businesses.forEach((b) => {
-          (b as any).rating = (4 + Math.random() * 0.8).toFixed(1);
-          (b as any).reviewCount = Math.floor(Math.random() * 200) + 20;
-          (b as any).establishedYear = 2015 + Math.floor(Math.random() * 10);
-        });
+        this.businesses = activeBusinesses.slice(0, 15).map((b) => ({
+          ...b,
+          link: this.getBusinessLink(b),
+          rating: (4 + Math.random() * 0.8).toFixed(1),
+          reviewCount: Math.floor(Math.random() * 200) + 20,
+        }));
         this.businessesLoading = false;
 
         this.fetchOffers(
@@ -397,10 +404,12 @@ export class MarketplaceComponent implements OnInit {
       (data: any[]) => {
         this.allAds = data || [];
         const premiumAds = this.allAds.filter((ad) => ad.isPremium);
-        const source =
-          premiumAds.length > 0 ? premiumAds : this.allAds.slice(0, 10);
+        const otherAds = this.allAds.filter((ad) => !ad.isPremium);
+        const source = [...premiumAds, ...otherAds];
+
         this.featuredAds = source.slice(0, 10).map((ad) => ({
           ...ad,
+          link: this.getAdLink(ad),
           priceLabel: this.formatAdPrice(ad),
           isWishlisted: false,
           locationLabel:
@@ -672,14 +681,30 @@ export class MarketplaceComponent implements OnInit {
     event.target.src = 'assets/image_not_available.jpg';
   }
 
+  getBusinessLink(business: BusinessDirectoryItem): any[] | null {
+    if (!business.tabRefGUID) return null;
+    return buildBusinessCommands(business) ?? null;
+  }
+
+  getAdLink(ad: any): any[] | null {
+    const category = this.getCategoryName(ad.categoryId);
+    if (!category || !ad.tableRefGuid) return null;
+    return (
+      buildPostCommands({ ...ad, category }) ?? [
+        '/classified-ads',
+        category,
+        'post-details',
+        ad.tableRefGuid,
+      ]
+    );
+  }
+
   viewAd(ad: any): void {
     const category = this.getCategoryName(ad.categoryId);
     if (category && ad.tableRefGuid) {
       const cmds = buildPostCommands({ ...ad, category });
       this.router.navigate(
-        cmds ?? [
-          `/classified-ads/${category}/post-details/${ad.tableRefGuid}`,
-        ],
+        cmds ?? [`/classified-ads/${category}/post-details/${ad.tableRefGuid}`],
       );
     }
   }
@@ -771,6 +796,7 @@ export class MarketplaceComponent implements OnInit {
           .slice(0, 10)
           .map((a) => ({
             ...a,
+            link: (a as any).slug ? ['/news/article', (a as any).slug] : null,
             imageUrl: a.featuredImageUrl || 'assets/image_not_available.jpg',
             postedAgo: this.getPostedAgo(a.publishedAt || a.createdAt),
             categoryLabel: (a as any).categoryName || 'Business',
@@ -838,6 +864,7 @@ export class MarketplaceComponent implements OnInit {
 
         this.businessEvents = sorted.slice(0, 10).map((e) => ({
           ...e,
+          link: (e as any).slug ? ['/events/event', (e as any).slug] : null,
           imageUrl: e.featuredImageUrl || 'assets/image_not_available.jpg',
           badge: this.eventBadge(e),
           dayLabel: this.dayOf(e.startDateTime),
