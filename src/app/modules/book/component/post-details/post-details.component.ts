@@ -7,6 +7,7 @@ import { LoginComponent } from '../../../user/component/login/login.component';
 import { SignupComponent } from '../../../user/component/signup/signup.component';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { Location } from '@angular/common';
+import { CategoryNavigationService } from 'src/app/shared/service/category-navigation.service';
 import { UserService } from 'src/app/modules/user/service/user.service';
 import { AdsReportType } from 'src/app/shared/enum/AdsReportType';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -125,6 +126,7 @@ export class PostDetailsComponent {
     private dialog: MatDialog,
     private commonService: CommonService,
     private location: Location,
+    private categoryNav: CategoryNavigationService,
     private UserService: UserService,
     private snackBar: MatSnackBar,
     private AdminDashboardService: AdminDashboardService,
@@ -163,7 +165,6 @@ export class PostDetailsComponent {
     if (role != null && role == 'Admin') this.isAdmin = true;
     else this.isAdmin = false;
     this.getMainCategories();
-    setTimeout(() => this.getSubCategory(this.postDetails.categoryId), 1000);
     var tableRefGuid;
     this.route.paramMap.subscribe((params) => {
       tableRefGuid =
@@ -373,6 +374,7 @@ export class PostDetailsComponent {
   getSportPost(guid: any) {
     this.bookService.getBookPostByGuid(guid).subscribe((data: any) => {
       this.postDetails = data[0];
+      this.getSubCategory(this.postDetails.categoryId);
       this.isLoading = false;
       this.imagesList = this.postDetails.bookImageList;
     });
@@ -493,5 +495,18 @@ export class PostDetailsComponent {
     return this.phoneNumbers
       .map((n) => (this.isPhoneNumberHidden ? this.maskPhone(n) : n))
       .join(', ');
+  }
+
+  goToPostsListing(subCategoryId?: number): void {
+    const mainCategory = this.mainCategories.find(
+      (cat: any) => cat.id == this.postDetails?.categoryId,
+    );
+
+    if (!mainCategory) {
+      this.router.navigate(['/classified-ads']);
+      return;
+    }
+
+    this.categoryNav.goToPostsListing(mainCategory.categoryName, subCategoryId);
   }
 }

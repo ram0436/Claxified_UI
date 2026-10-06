@@ -165,7 +165,6 @@ export class PostDetailsComponent {
     if (role != null && role == 'Admin') this.isAdmin = true;
     else this.isAdmin = false;
     this.getMainCategories();
-    setTimeout(() => this.getSubCategory(this.postDetails.categoryId), 1000);
     var tableRefGuid;
     this.route.paramMap.subscribe((params) => {
       tableRefGuid =
@@ -375,6 +374,7 @@ export class PostDetailsComponent {
   getSportPost(guid: any) {
     this.sportService.getSportPostByGuid(guid).subscribe((data: any) => {
       this.postDetails = data[0];
+      this.getSubCategory(this.postDetails.categoryId);
       this.isLoading = false;
       this.imagesList = this.postDetails.sportImageList;
     });

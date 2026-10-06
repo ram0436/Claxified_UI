@@ -13,20 +13,20 @@
       </button>
       <nav
         class="pd-breadcrumb"
-        *ngIf="
-          !isLoading && mainCategories.length > 0 && subCategories.length > 0
-        "
+        *ngIf="!isLoading && postDetails && mainCategories.length > 0"
       >
         <a (click)="goToPostsListing()" style="cursor: pointer">
           {{ getMainCategoryName(postDetails?.categoryId) }}
         </a>
-        <span class="material-icons-outlined pd-crumb-sep">chevron_right</span>
-        <a
-          (click)="goToPostsListing(postDetails?.subCategoryId)"
-          style="cursor: pointer"
-        >
-          {{ getSubCategoryName(postDetails?.subCategoryId) }}
-        </a>
+        <ng-container *ngIf="getSubCategoryName(postDetails?.subCategoryId)">
+          <span class="material-icons-outlined pd-crumb-sep">chevron_right</span>
+          <a
+            (click)="goToPostsListing(postDetails?.subCategoryId)"
+            style="cursor: pointer"
+          >
+            {{ getSubCategoryName(postDetails?.subCategoryId) }}
+          </a>
+        </ng-container>
       </nav>
     </div>
 

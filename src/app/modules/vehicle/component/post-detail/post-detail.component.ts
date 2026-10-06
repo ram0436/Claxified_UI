@@ -6,6 +6,7 @@ import { AdsReportType } from 'src/app/shared/enum/AdsReportType';
 import { TransmissionType } from 'src/app/shared/enum/TransmissionType';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { CategoryNavigationService } from 'src/app/shared/service/category-navigation.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LoginComponent } from '../../../user/component/login/login.component';
 import { SignupComponent } from '../../../user/component/signup/signup.component';
@@ -117,6 +118,7 @@ export class PostDetailComponent {
     private vehicleService: VehicleService,
     private route: ActivatedRoute,
     private location: Location,
+    private categoryNav: CategoryNavigationService,
     private router: Router,
     private dialog: MatDialog,
     private AdminDashboardService: AdminDashboardService,
@@ -159,7 +161,6 @@ export class PostDetailComponent {
     if (role != null && role == 'Admin') this.isAdmin = true;
     else this.isAdmin = false;
     this.getMainCategories();
-    setTimeout(() => this.getSubCategory(this.postDetails.categoryId), 1000);
     this.fuelTypes = this.fuelTypes.slice(this.fuelTypes.length / 2);
     this.transmissionTypes = this.transmissionTypes.slice(
       this.transmissionTypes.length / 2,
@@ -369,6 +370,7 @@ export class PostDetailComponent {
   getVehiclePost(guid: any) {
     this.vehicleService.getVehiclePostById(guid).subscribe((data: any) => {
       this.postDetails = data[0];
+      this.getSubCategory(this.postDetails.categoryId);
       this.imagesList = this.postDetails.vehicleImageList;
       this.fuelType = this.fuelTypes.filter(
         (fuel) => fuel.id == this.postDetails.fuelType,
@@ -477,5 +479,18 @@ export class PostDetailComponent {
 
   showNext() {
     if (this.imageIndex < this.imagesList.length - 1) this.imageIndex++;
+  }
+
+  goToPostsListing(subCategoryId?: number): void {
+    const mainCategory = this.mainCategories.find(
+      (cat: any) => cat.id == this.postDetails?.categoryId,
+    );
+
+    if (!mainCategory) {
+      this.router.navigate(['/classified-ads']);
+      return;
+    }
+
+    this.categoryNav.goToPostsListing(mainCategory.categoryName, subCategoryId);
   }
 }
