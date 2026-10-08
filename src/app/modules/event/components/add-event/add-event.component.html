@@ -165,12 +165,9 @@
       </div>
     </section>
 
-    <!-- Category & Venue -->
+    <!-- Category -->
     <section class="form-card">
-      <h3>
-        <span class="material-icons-outlined">category</span> Category &amp;
-        Venue
-      </h3>
+      <h3><span class="material-icons-outlined">category</span> Category</h3>
 
       <div class="form-grid">
         <div class="form-row">
@@ -208,26 +205,6 @@
         </div>
 
         <div class="form-row">
-          <label>Organizer <span class="required">*</span></label>
-          <select [(ngModel)]="model.eventOrganizerId" name="eventOrganizerId">
-            <option [ngValue]="null" disabled>Select an organizer</option>
-            <option *ngFor="let o of organizers" [ngValue]="o.id">
-              {{ o.name }}
-            </option>
-          </select>
-        </div>
-
-        <div class="form-row">
-          <label>Venue <span class="required">*</span></label>
-          <select [(ngModel)]="model.eventVenueId" name="eventVenueId">
-            <option [ngValue]="null" disabled>Select a venue</option>
-            <option *ngFor="let v of venues" [ngValue]="v.id">
-              {{ v.name }}, {{ v.city }}
-            </option>
-          </select>
-        </div>
-
-        <div class="form-row">
           <label>Event Type</label>
           <select [(ngModel)]="model.eventType" name="eventType">
             <option *ngFor="let t of eventTypeOptions" [ngValue]="t.value">
@@ -238,7 +215,170 @@
       </div>
     </section>
 
-    <!-- Date & Time -->
+    <!-- Venue -->
+    <section class="form-card">
+      <h3><span class="material-icons-outlined">place</span> Venue</h3>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Venue Name <span class="required">*</span></label>
+          <input
+            type="text"
+            placeholder="e.g. Phoenix Marketcity Arena"
+            [(ngModel)]="model.venueName"
+            name="venueName"
+            (input)="onVenueNameChange()"
+          />
+        </div>
+
+        <div class="form-row">
+          <label>Venue Slug <span class="required">*</span></label>
+          <input
+            type="text"
+            placeholder="phoenix-marketcity-arena"
+            [(ngModel)]="model.venueSlug"
+            name="venueSlug"
+            (input)="onVenueSlugEdited()"
+          />
+        </div>
+
+        <div class="form-row">
+          <label>Pincode</label>
+          <input
+            type="text"
+            inputmode="numeric"
+            maxlength="6"
+            placeholder="6-digit pincode"
+            [(ngModel)]="model.venuePincode"
+            name="venuePincode"
+            (input)="onVenuePincodeInput($event)"
+          />
+          <span class="field-error" *ngIf="pincodeInvalid">
+            We couldn't find that pincode.
+          </span>
+        </div>
+
+        <div class="form-row">
+          <label>Country</label>
+          <input
+            type="text"
+            [(ngModel)]="model.venueCountry"
+            name="venueCountry"
+            readonly
+          />
+        </div>
+
+        <div class="form-row" *ngIf="model.venueState">
+          <label>State</label>
+          <input
+            type="text"
+            [(ngModel)]="model.venueState"
+            name="venueState"
+            readonly
+          />
+        </div>
+
+        <div class="form-row" *ngIf="model.venueCity">
+          <label>City</label>
+          <input
+            type="text"
+            [(ngModel)]="model.venueCity"
+            name="venueCity"
+            readonly
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Street Address</label>
+        <input
+          type="text"
+          placeholder="Building, street, landmark"
+          [(ngModel)]="model.venueAddress"
+          name="venueAddress"
+        />
+      </div>
+
+      <div class="form-row">
+        <label>Google Maps URL</label>
+        <input
+          type="url"
+          placeholder="https://maps.google.com/..."
+          [(ngModel)]="model.venueMapUrl"
+          name="venueMapUrl"
+        />
+      </div>
+    </section>
+
+    <!-- Organizer -->
+    <section class="form-card">
+      <h3><span class="material-icons-outlined">groups</span> Organizer</h3>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Organizer Name <span class="required">*</span></label>
+          <input
+            type="text"
+            placeholder="e.g. Bengaluru Photo Club"
+            [(ngModel)]="model.organizerName"
+            name="organizerName"
+            (input)="onOrganizerNameChange()"
+          />
+        </div>
+
+        <div class="form-row">
+          <label>Organizer Slug <span class="required">*</span></label>
+          <input
+            type="text"
+            placeholder="bengaluru-photo-club"
+            [(ngModel)]="model.organizerSlug"
+            name="organizerSlug"
+            (input)="onOrganizerSlugEdited()"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Organizer Description <span class="required">*</span></label>
+        <textarea
+          rows="3"
+          placeholder="A short description about the organizer"
+          [(ngModel)]="model.organizerDescription"
+          name="organizerDescription"
+        ></textarea>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Website</label>
+          <input
+            type="url"
+            placeholder="https://example.com"
+            [(ngModel)]="model.organizerWebsite"
+            name="organizerWebsite"
+          />
+        </div>
+        <div class="form-row">
+          <label>Email</label>
+          <input
+            type="email"
+            placeholder="contact@example.com"
+            [(ngModel)]="model.organizerEmail"
+            name="organizerEmail"
+          />
+        </div>
+        <div class="form-row">
+          <label>Phone</label>
+          <input
+            type="tel"
+            placeholder="Contact number"
+            [(ngModel)]="model.organizerPhone"
+            name="organizerPhone"
+          />
+        </div>
+      </div>
+    </section>
+
     <section class="form-card">
       <h3>
         <span class="material-icons-outlined">event</span> Date &amp; Time
@@ -246,20 +386,56 @@
 
       <div class="form-grid">
         <div class="form-row">
-          <label>Start Date &amp; Time <span class="required">*</span></label>
-          <input
-            type="datetime-local"
-            [(ngModel)]="model.startDateTime"
-            name="startDateTime"
-          />
+          <label>Start Date <span class="required">*</span></label>
+          <div class="date-field" (click)="startPicker.open()">
+            <input
+              matInput
+              [matDatepicker]="startPicker"
+              [min]="today"
+              [(ngModel)]="model.startDate"
+              name="startDate"
+              placeholder="Select start date"
+              readonly
+              (dateChange)="onStartDateChange()"
+            />
+            <mat-datepicker-toggle [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </div>
         </div>
+
+        <div class="form-row" *ngIf="!model.isAllDay">
+          <label>Start Time <span class="required">*</span></label>
+          <select [(ngModel)]="model.startTime" name="startTime">
+            <option *ngFor="let t of timeOptions" [value]="t.value">
+              {{ t.label }}
+            </option>
+          </select>
+        </div>
+
         <div class="form-row">
-          <label>End Date &amp; Time <span class="required">*</span></label>
-          <input
-            type="datetime-local"
-            [(ngModel)]="model.endDateTime"
-            name="endDateTime"
-          />
+          <label>End Date <span class="required">*</span></label>
+          <div class="date-field" (click)="endPicker.open()">
+            <input
+              matInput
+              [matDatepicker]="endPicker"
+              [min]="model.startDate || today"
+              [(ngModel)]="model.endDate"
+              name="endDate"
+              placeholder="Select end date"
+              readonly
+            />
+            <mat-datepicker-toggle [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="!model.isAllDay">
+          <label>End Time <span class="required">*</span></label>
+          <select [(ngModel)]="model.endTime" name="endTime">
+            <option *ngFor="let t of timeOptions" [value]="t.value">
+              {{ t.label }}
+            </option>
+          </select>
         </div>
       </div>
 
@@ -299,7 +475,7 @@
         This is a free event
       </label>
       <div class="form-row indent" *ngIf="!model.isFree">
-        <label>Price (\u20B9) <span class="required">*</span></label>
+        <label>Price (&#8377;) <span class="required">*</span></label>
         <input
           type="number"
           min="0"
@@ -328,21 +504,66 @@
       </div>
     </section>
 
-    <!-- Media -->
     <section class="form-card">
-      <h3><span class="material-icons-outlined">image</span> Featured Image</h3>
+      <h3><span class="material-icons-outlined">image</span> Event Image</h3>
 
       <div class="form-row">
-        <label>Image URL <span class="required">*</span></label>
+        <label>Event Image <span class="required">*</span></label>
+
         <input
-          type="url"
-          placeholder="https://example.com/event-banner.jpg"
-          [(ngModel)]="model.featuredImageUrl"
-          name="featuredImageUrl"
+          #imageInput
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="onImageSelected($event)"
         />
-        <span class="hint"
-          >Paste a hosted image URL. Recommended size 1200&times;600px.</span
+
+        <div
+          class="upload-box"
+          *ngIf="!model.featuredImageUrl"
+          (click)="!imageUploading && imageInput.click()"
         >
+          <div class="spinner" *ngIf="imageUploading"></div>
+          <span class="material-icons-outlined" *ngIf="!imageUploading"
+            >cloud_upload</span
+          >
+          <p>
+            {{ imageUploading ? "Uploading..." : "Click to upload an image" }}
+          </p>
+          <span class="hint"
+            >JPG, PNG or WebP, up to 5 MB. Recommended 1200&times;600px.</span
+          >
+        </div>
+
+        <div class="image-preview" *ngIf="model.featuredImageUrl">
+          <div class="img-blur preview-frame">
+            <img
+              class="img-bg"
+              [src]="model.featuredImageUrl"
+              alt=""
+              aria-hidden="true"
+            />
+            <img class="img-fg" [src]="model.featuredImageUrl" alt="Preview" />
+          </div>
+          <div class="image-preview-actions">
+            <button
+              type="button"
+              class="btn-outline small"
+              (click)="imageInput.click()"
+              [disabled]="imageUploading"
+            >
+              Replace
+            </button>
+            <button
+              type="button"
+              class="btn-ghost small"
+              (click)="removeImage()"
+              [disabled]="imageUploading"
+            >
+              Remove
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="form-row">
@@ -353,10 +574,6 @@
           [(ngModel)]="model.featuredImageAltText"
           name="featuredImageAltText"
         />
-      </div>
-
-      <div class="image-preview" *ngIf="model.featuredImageUrl">
-        <img [src]="model.featuredImageUrl" alt="Preview" />
       </div>
     </section>
 

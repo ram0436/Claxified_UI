@@ -13,6 +13,7 @@ import {
   OFFERING_TYPE_OPTIONS,
   OfferingTypeOptionDto,
   BusinessReview,
+  BusinessDirectoryItem,
 } from '../../model/Business';
 import { OfferingType } from '../../enum/business-offering.enum';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -752,19 +753,6 @@ export class BusinessProfileComponent implements OnInit {
 
   get isBusinessVerified(): boolean {
     return this.business?.businessVerificationDto?.isBusinessVerified === 1;
-  }
-
-  get verificationItems(): { label: string; verified: boolean }[] {
-    const v = this.business?.businessVerificationDto;
-    if (!v) return [];
-    return [
-      { label: 'GST', verified: v.isGSTVerified === 1 },
-      { label: 'PAN', verified: v.isPANVerified === 1 },
-      { label: 'Aadhaar', verified: v.isAadhaarVerified === 1 },
-      { label: 'Email', verified: v.isEmailVerified === 1 },
-      { label: 'Mobile', verified: v.isMobileVerified === 1 },
-      { label: 'Business', verified: v.isBusinessVerified === 1 },
-    ];
   }
 
   get socialLinks(): {
@@ -1800,5 +1788,44 @@ export class BusinessProfileComponent implements OnInit {
       return `No ${this.currentFilterLabel.toLowerCase()} listed yet.`;
     }
     return 'No products or services listed yet.';
+  }
+
+  get verificationItems(): { label: string; verified: boolean }[] {
+    const v = this.business?.businessVerificationDto;
+    if (!v) return [];
+    return [
+      { label: 'Mobile', verified: v.isMobileVerified === 1 },
+      { label: 'Email', verified: v.isEmailVerified === 1 },
+      { label: 'Business', verified: v.isBusinessVerified === 1 },
+      { label: 'GST', verified: v.isGSTVerified === 1 },
+      { label: 'PAN', verified: v.isPANVerified === 1 },
+      { label: 'Aadhaar', verified: v.isAadhaarVerified === 1 },
+    ];
+  }
+
+  get trustScore(): number {
+    const items = this.verificationItems;
+    if (!items.length) return 0;
+    return Math.round(
+      (items.filter((i) => i.verified).length / items.length) * 100,
+    );
+  }
+
+  get heroGalleryTiles() {
+    return this.galleryItems.slice(0, 3);
+  }
+
+  get heroGalleryLayout(): number {
+    const n = this.galleryItems.length;
+    return n > 3 ? 4 : n;
+  }
+
+  get heroMoreBg(): string {
+    const img = this.galleryItems[3];
+    return img ? img.thumbnailUrl || img.imageUrl : '';
+  }
+
+  get galleryTotal(): number {
+    return this.galleryItems.length;
   }
 }

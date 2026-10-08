@@ -573,15 +573,21 @@
       </button>
 
       <div class="business-row" #businessScroll>
-        <a
-          class="business-card"
+        <div
+          class="bz-card"
           *ngFor="
             let business of businesses | slice: 0 : 10;
             trackBy: trackByBusinessId
           "
-          [routerLink]="business.link"
         >
-          <div class="card-image-wrapper">
+          <a
+            class="bz-card-link"
+            [href]="getBusinessUrl(business) || null"
+            [attr.aria-label]="'Open ' + business.businessName"
+            (click)="onBusinessLinkClick($event, business)"
+          ></a>
+
+          <div class="bz-image-wrapper">
             <div class="img-frame" *ngIf="business.coverImageUrl">
               <img
                 class="img-frame__bg"
@@ -595,45 +601,122 @@
                 [src]="business.coverImageUrl"
                 [alt]="business.businessName"
                 loading="lazy"
-                (error)="onBusinessImageError($event)"
               />
             </div>
-            <div class="card-image-placeholder" *ngIf="!business.coverImageUrl">
+            <div class="bz-image-placeholder" *ngIf="!business.coverImageUrl">
               <span class="material-icons-outlined">storefront</span>
             </div>
-            <div class="business-logo-badge">
-              <img
-                *ngIf="business.logoUrl"
-                [src]="business.logoUrl"
-                [alt]="business.businessName"
-                (error)="onLogoError($event)"
-              />
-              <span class="logo-initials" *ngIf="!business.logoUrl">
-                {{ getInitials(business.businessName) }}
-              </span>
-            </div>
+
             <div
-              class="card-status"
-              [class.open]="isOpenNow(business)"
-              [class.closed]="!isOpenNow(business)"
+              class="bz-verified"
+              *ngIf="business.businessVerificationDto?.isBusinessVerified"
             >
-              {{ isOpenNow(business) ? "Open" : "Closed" }}
+              <span class="material-icons-outlined">verified</span>
+            </div>
+
+            <button
+              class="bz-favorite"
+              [class.active]="isFavorite(business)"
+              (click)="toggleFavorite(business, $event)"
+              aria-label="Save business"
+            >
+              <span class="material-icons-outlined">{{
+                isFavorite(business) ? "favorite" : "favorite_border"
+              }}</span>
+            </button>
+
+            <div class="bz-image-overlay">
+              <div class="bz-logo">
+                <img
+                  *ngIf="business.logoUrl"
+                  [src]="business.logoUrl"
+                  [alt]="business.businessName"
+                />
+                <span *ngIf="!business.logoUrl" class="bz-initials">{{
+                  getInitials(business.businessName)
+                }}</span>
+              </div>
+              <div class="bz-heading">
+                <h3 class="bz-name">
+                  {{ business.businessName || "Unnamed Business" }}
+                </h3>
+                <div class="bz-rating">
+                  <span class="bz-stars"
+                    ><span class="material-icons-outlined">star</span>4.5</span
+                  >
+                  <span class="bz-rating-count">({{ 10 }} reviews)</span>
+                  <span class="bz-rating-divider">•</span>
+                  <span
+                    class="bz-open-state"
+                    [class.closed]="!isOpenNow(business)"
+                  >
+                    <span class="bz-open-dot"></span
+                    >{{ isOpenNow(business) ? "Open Now" : "Closed" }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="card-content">
-            <h3 class="business-name">
-              {{ business.businessName || "Unnamed Business" }}
-            </h3>
-            <p class="business-category">
+          <div class="bz-body">
+            <p class="bz-category">
               {{ business.businessCategory || "Business" }}
             </p>
-            <div class="business-location">
-              <span class="material-icons-outlined">location_on</span>
-              {{ getLocationLabel(business) || "Location" }}
+            <p class="bz-desc">{{ getBusinessDescription(business) }}</p>
+
+            <div class="bz-tags">
+              <span
+                class="bz-tag"
+                *ngFor="
+                  let tag of (business.businessSubCategory || []).slice(0, 2)
+                "
+                >{{ tag }}</span
+              >
+              <span
+                class="bz-tag more"
+                *ngIf="(business.businessSubCategory || []).length > 2"
+              >
+                +{{ business.businessSubCategory.length - 2 }}
+              </span>
+            </div>
+
+            <div class="bz-footer">
+              <a
+                class="bz-view-btn"
+                [href]="getBusinessUrl(business) || null"
+                (click)="
+                  onBusinessLinkClick($event, business);
+                  $event.stopPropagation()
+                "
+              >
+                View Profile
+                <span class="material-icons-outlined">arrow_forward</span>
+              </a>
+
+              <a
+                class="bz-pill bz-call"
+                [href]="
+                  getBusinessPhone(business)
+                    ? 'tel:' + getBusinessPhone(business)
+                    : null
+                "
+                (click)="onCallClick($event, business)"
+              >
+                <span class="material-icons-outlined">call</span> Call
+              </a>
+
+              <a
+                class="bz-pill bz-whatsapp"
+                [href]="getWhatsAppLink(business) || null"
+                target="_blank"
+                rel="noopener"
+                (click)="onWhatsAppClick($event, business)"
+              >
+                <span class="material-icons-outlined">chat</span> WhatsApp
+              </a>
             </div>
           </div>
-        </a>
+        </div>
       </div>
       <button
         class="scroll-arrow scroll-arrow-right"
@@ -791,9 +874,6 @@
                 <span class="material-icons-outlined">schedule</span>
                 {{ article.postedAgo }}
               </span>
-              <span class="news-reads" *ngIf="article.viewCount">
-                {{ reads(article.viewCount) }}
-              </span>
             </div>
           </div>
         </a>
@@ -905,10 +985,10 @@
 
           <div class="event-content">
             <h4 class="event-title">{{ truncateTitle(event.name, 55) }}</h4>
-            <p class="event-location">
+            <!-- <p class="event-location">
               <span class="material-icons-outlined">place</span>
               {{ event.locationLabel }}
-            </p>
+            </p> -->
             <p class="event-time">
               <span class="material-icons-outlined">schedule</span>
               {{ event.timeLabel }}
@@ -918,9 +998,9 @@
               <span class="event-price" [class.free]="event.isFree">
                 {{ event.priceLabel }}
               </span>
-              <button class="event-cta">
+              <!-- <button class="event-cta">
                 {{ event.ticketRequired ? "Book Now" : "View Details" }}
-              </button>
+              </button> -->
             </div>
           </div>
         </a>

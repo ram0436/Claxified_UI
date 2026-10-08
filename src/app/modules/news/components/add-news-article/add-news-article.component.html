@@ -244,16 +244,62 @@
       <h3><span class="material-icons-outlined">image</span> Featured Image</h3>
 
       <div class="form-row">
-        <label>Image URL <span class="required">*</span></label>
+        <label>Featured Image <span class="required">*</span></label>
+
         <input
-          type="url"
-          placeholder="https://example.com/article-banner.jpg"
-          [(ngModel)]="model.featuredImageUrl"
-          name="featuredImageUrl"
+          #imageInput
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="onImageSelected($event)"
         />
-        <span class="hint"
-          >Recommended 1200&times;630px for social sharing.</span
+
+        <div
+          class="upload-box"
+          *ngIf="!model.featuredImageUrl"
+          (click)="!imageUploading && imageInput.click()"
         >
+          <div class="spinner" *ngIf="imageUploading"></div>
+          <span class="material-icons-outlined" *ngIf="!imageUploading"
+            >cloud_upload</span
+          >
+          <p>
+            {{ imageUploading ? "Uploading..." : "Click to upload an image" }}
+          </p>
+          <span class="hint"
+            >JPG, PNG or WebP, up to 5 MB. Recommended 1200&times;630px.</span
+          >
+        </div>
+
+        <div class="image-preview" *ngIf="model.featuredImageUrl">
+          <div class="img-blur preview-frame">
+            <img
+              class="img-bg"
+              [src]="model.featuredImageUrl"
+              alt=""
+              aria-hidden="true"
+            />
+            <img class="img-fg" [src]="model.featuredImageUrl" alt="Preview" />
+          </div>
+          <div class="image-preview-actions">
+            <button
+              type="button"
+              class="btn-outline small"
+              (click)="imageInput.click()"
+              [disabled]="imageUploading"
+            >
+              Replace
+            </button>
+            <button
+              type="button"
+              class="btn-ghost small"
+              (click)="removeImage()"
+              [disabled]="imageUploading"
+            >
+              Remove
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="form-row">
@@ -264,10 +310,6 @@
           [(ngModel)]="model.featuredImageAltText"
           name="featuredImageAltText"
         />
-      </div>
-
-      <div class="image-preview" *ngIf="model.featuredImageUrl">
-        <img [src]="model.featuredImageUrl" alt="Preview" />
       </div>
     </section>
 

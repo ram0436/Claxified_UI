@@ -1027,4 +1027,53 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
       year: 'numeric',
     });
   }
+
+  private resolveContact(
+    business: BusinessDirectoryItem,
+    done: () => void,
+  ): void {
+    if (!business.tabRefGUID) {
+      done();
+      return;
+    }
+    this.businessService.getBusinessByGuid(business.tabRefGUID).subscribe(
+      (detail: any) => {
+        (business as any).businessContactDto = detail?.businessContactDto;
+        done();
+      },
+      () => done(),
+    );
+  }
+
+  onCallClick(event: Event, business: BusinessDirectoryItem): void {
+    event.stopPropagation();
+    if (this.getBusinessPhone(business)) return;
+
+    event.preventDefault();
+    this.resolveContact(business, () => {
+      const phone = this.getBusinessPhone(business);
+      if (phone) {
+        window.location.href = `tel:${phone}`;
+      } else {
+        alert('Phone number not available for this business.');
+      }
+    });
+  }
+
+  onWhatsAppClick(event: Event, business: BusinessDirectoryItem): void {
+    event.stopPropagation();
+    if (this.getWhatsAppLink(business)) return;
+
+    event.preventDefault();
+    const win = window.open('', '_blank');
+    this.resolveContact(business, () => {
+      const link = this.getWhatsAppLink(business);
+      if (link && win) {
+        win.location.href = link;
+      } else {
+        win?.close();
+        alert('WhatsApp number not available for this business.');
+      }
+    });
+  }
 }

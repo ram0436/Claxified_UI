@@ -74,7 +74,6 @@
       class="headlines-grid"
       *ngIf="!articlesLoading && !articlesError && articles.length > 0"
     >
-      <!-- Top story + headline list -->
       <div class="headlines-main">
         <a
           class="top-story-card"
@@ -82,10 +81,19 @@
           [routerLink]="['/news/article', topStory.slug]"
         >
           <span class="top-story-badge">TOP STORY</span>
+
           <img
+            class="top-story-bg"
+            [src]="topStory.featuredImageUrl"
+            alt=""
+            aria-hidden="true"
+          />
+          <img
+            class="top-story-img"
             [src]="topStory.featuredImageUrl"
             [alt]="topStory.featuredImageAltText || topStory.title"
           />
+
           <div class="top-story-overlay">
             <h3>{{ topStory.title }}</h3>
             <p>{{ topStory.shortDescription }}</p>
@@ -102,10 +110,19 @@
             *ngFor="let a of headlineList"
             [routerLink]="['/news/article', a.slug]"
           >
-            <img
-              [src]="a.featuredImageUrl"
-              [alt]="a.featuredImageAltText || a.title"
-            />
+            <div class="img-blur headline-thumb">
+              <img
+                class="img-bg"
+                [src]="a.featuredImageUrl"
+                alt=""
+                aria-hidden="true"
+              />
+              <img
+                class="img-fg"
+                [src]="a.featuredImageUrl"
+                [alt]="a.featuredImageAltText || a.title"
+              />
+            </div>
             <div class="headline-row-body">
               <h4>{{ a.title }}</h4>
               <span class="headline-meta">{{ timeAgo(a.publishedAt) }}</span>
@@ -129,7 +146,15 @@
           [routerLink]="['/news/article', a.slug]"
         >
           <span class="trending-rank">{{ i + 1 }}</span>
-          <img [src]="a.featuredImageUrl" [alt]="a.title" />
+          <div class="img-blur trending-thumb">
+            <img
+              class="img-bg"
+              [src]="a.featuredImageUrl"
+              alt=""
+              aria-hidden="true"
+            />
+            <img class="img-fg" [src]="a.featuredImageUrl" [alt]="a.title" />
+          </div>
           <div class="trending-body">
             <h5>{{ a.title }}</h5>
             <span>{{ reads(a.viewCount) }}</span>
@@ -163,7 +188,11 @@
             <button>Subscribe</button>
           </div>
         </div>
-        <a routerLink="/news/add-article" class="write-article-card">
+        <a
+          routerLink="/news/add-article"
+          class="write-article-card"
+          *ngIf="isAdmin"
+        >
           <div class="write-article-icon">
             <span class="material-icons-outlined">edit</span>
           </div>
@@ -208,11 +237,17 @@
       *ngIf="!categoriesLoading && !categoriesError && categories.length > 0"
     >
       <a
-        class="category-tile"
+        class="category-tile img-blur"
         *ngFor="let c of categories"
         [routerLink]="['/news/categories', c.slug]"
       >
-        <img [src]="categoryImage(c)" [alt]="c.name" />
+        <img
+          class="img-bg"
+          [src]="categoryImage(c)"
+          alt=""
+          aria-hidden="true"
+        />
+        <img class="img-fg" [src]="categoryImage(c)" [alt]="c.name" />
         <div class="category-tile-overlay">
           <span class="material-icons-outlined">label</span>
           <h4>{{ c.name }}</h4>
@@ -233,11 +268,17 @@
 
     <div class="editor-pick-strip" *ngIf="!articlesLoading && !articlesError">
       <a
-        class="editor-pick-card"
+        class="editor-pick-card img-blur"
         *ngFor="let a of editorsPicks"
         [routerLink]="['/news/article', a.slug]"
       >
-        <img [src]="a.featuredImageUrl" [alt]="a.title" />
+        <img
+          class="img-bg"
+          [src]="a.featuredImageUrl"
+          alt=""
+          aria-hidden="true"
+        />
+        <img class="img-fg" [src]="a.featuredImageUrl" [alt]="a.title" />
         <span class="material-icons-outlined bookmark-icon"
           >bookmark_border</span
         >

@@ -159,6 +159,80 @@ export class MarketplaceComponent implements OnInit {
   businessEventsLoading: boolean = true;
   businessEventsError: boolean = false;
 
+  favoriteIds: Set<number> = new Set();
+
+  private readonly htmlTagRegex = /<[^>]*>/g;
+
+  stripHtml(value: string | undefined | null): string {
+    if (!value) return '';
+    return value
+      .replace(this.htmlTagRegex, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  getBusinessDescription(business: BusinessDirectoryItem): string {
+    const clean = this.stripHtml((business as any).description);
+    return (
+      clean ||
+      `${business.businessCategory || 'This business'} near you — quality service you can trust.`
+    );
+  }
+
+  toggleFavorite(business: BusinessDirectoryItem, event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.favoriteIds.has(business.id)
+      ? this.favoriteIds.delete(business.id)
+      : this.favoriteIds.add(business.id);
+  }
+
+  isFavorite(business: BusinessDirectoryItem): boolean {
+    return this.favoriteIds.has(business.id);
+  }
+
+  getBusinessPhone(business: BusinessDirectoryItem): string {
+    const b = business as any;
+    const fromDto =
+      b?.businessContactDto?.mobile ||
+      b?.businessContactDto?.whatsApp ||
+      b?.businessContactDto?.phone;
+    if (fromDto) return String(fromDto).trim();
+    return (
+      b?.contactNumber || b?.phoneNumber || b?.mobileNumber || b?.mobile || ''
+    );
+  }
+
+  getWhatsAppLink(business: BusinessDirectoryItem): string {
+    const b = business as any;
+    const wa =
+      b?.businessContactDto?.whatsApp ||
+      b?.whatsApp ||
+      this.getBusinessPhone(business);
+    if (!wa) return '';
+    let digits = String(wa).replace(/[^\d]/g, '');
+    if (digits.length === 10) digits = '91' + digits;
+    return digits ? `https://wa.me/${digits}` : '';
+  }
+
+  getBusinessUrl(business: BusinessDirectoryItem): string {
+    if (!business.tabRefGUID) return '';
+    const cmds = buildBusinessCommands(business);
+    if (!cmds) return '';
+    return this.router.serializeUrl(this.router.createUrlTree(cmds));
+  }
+
+  onBusinessLinkClick(
+    event: MouseEvent,
+    business: BusinessDirectoryItem,
+  ): void {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.button !== 0)
+      return;
+    event.preventDefault();
+    this.viewBusiness(business);
+  }
+
   constructor(
     private businessService: BusinessService,
     private commonService: CommonService,
@@ -929,5 +1003,54 @@ export class MarketplaceComponent implements OnInit {
 
   onEventImageError(event: any): void {
     event.target.src = 'assets/image_not_available.jpg';
+  }
+
+  private resolveContact(
+    business: BusinessDirectoryItem,
+    done: () => void,
+  ): void {
+    if (!business.tabRefGUID) {
+      done();
+      return;
+    }
+    this.businessService.getBusinessByGuid(business.tabRefGUID).subscribe(
+      (detail: any) => {
+        (business as any).businessContactDto = detail?.businessContactDto;
+        done();
+      },
+      () => done(),
+    );
+  }
+
+  onCallClick(event: Event, business: BusinessDirectoryItem): void {
+    event.stopPropagation();
+    if (this.getBusinessPhone(business)) return;
+
+    event.preventDefault();
+    this.resolveContact(business, () => {
+      const phone = this.getBusinessPhone(business);
+      if (phone) {
+        window.location.href = `tel:${phone}`;
+      } else {
+        alert('Phone number not available for this business.');
+      }
+    });
+  }
+
+  onWhatsAppClick(event: Event, business: BusinessDirectoryItem): void {
+    event.stopPropagation();
+    if (this.getWhatsAppLink(business)) return;
+
+    event.preventDefault();
+    const win = window.open('', '_blank');
+    this.resolveContact(business, () => {
+      const link = this.getWhatsAppLink(business);
+      if (link && win) {
+        win.location.href = link;
+      } else {
+        win?.close();
+        alert('WhatsApp number not available for this business.');
+      }
+    });
   }
 }

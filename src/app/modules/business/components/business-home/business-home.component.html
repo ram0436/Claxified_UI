@@ -399,30 +399,22 @@
 
                 <a
                   class="pill-btn pill-call"
-                  [class.disabled]="!getBusinessPhone(business)"
                   [href]="
                     getBusinessPhone(business)
                       ? 'tel:' + getBusinessPhone(business)
                       : null
                   "
-                  (click)="
-                    !getBusinessPhone(business) && $event.preventDefault();
-                    $event.stopPropagation()
-                  "
+                  (click)="onCallClick($event, business)"
                 >
                   <span class="material-icons-outlined">call</span> Call
                 </a>
 
                 <a
                   class="pill-btn pill-whatsapp"
-                  [class.disabled]="!getBusinessPhone(business)"
                   [href]="getWhatsAppLink(business) || null"
                   target="_blank"
                   rel="noopener"
-                  (click)="
-                    !getBusinessPhone(business) && $event.preventDefault();
-                    $event.stopPropagation()
-                  "
+                  (click)="onWhatsAppClick($event, business)"
                 >
                   <span class="material-icons-outlined">chat</span> WhatsApp
                 </a>

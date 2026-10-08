@@ -312,7 +312,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 640px;
+  max-height: 500px;
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -330,16 +330,30 @@
   border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
-  height: 640px;
+  height: 500px;
   background: #111;
 }
 
-.top-story-card img {
+/* Blurred fill behind the image */
+.top-story-bg {
+  position: absolute;
+  inset: -20px;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  object-fit: cover;
+  filter: blur(24px) brightness(0.7);
+  display: block;
+}
+
+/* Full image, never cropped */
+.top-story-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   display: block;
-  opacity: 0.85;
 }
 .top-story-badge {
   position: absolute;
@@ -401,11 +415,10 @@
   border-bottom: none;
 }
 
-.headline-row img {
+.headline-thumb {
   width: 74px;
   height: 60px;
   border-radius: 8px;
-  object-fit: cover;
   flex-shrink: 0;
 }
 
@@ -458,11 +471,10 @@
   flex-shrink: 0;
 }
 
-.trending-row img {
+.trending-thumb {
   width: 46px;
   height: 40px;
   border-radius: 6px;
-  object-fit: cover;
   flex-shrink: 0;
 }
 
@@ -567,14 +579,11 @@
   height: 130px;
 }
 
-.category-tile img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.category-tile .img-bg,
+.category-tile .img-fg {
   transition: transform 0.3s ease;
 }
-
-.category-tile:hover img {
+.category-tile:hover .img-fg {
   transform: scale(1.06);
 }
 
@@ -598,6 +607,11 @@
   margin: 0;
   font-size: 13px;
   font-weight: 700;
+}
+
+.category-tile-overlay,
+.bookmark-icon {
+  z-index: 1;
 }
 
 /* ===================== EDITOR PICK STRIP ===================== */
@@ -663,7 +677,7 @@
   }
 
   .top-story-card {
-    height: 340px;
+    height: 300px;
   }
   .headline-list {
     max-height: none;
@@ -778,4 +792,38 @@ a.top-story-card,
 a.category-tile,
 a.editor-pick-card {
   display: block;
+}
+
+/* ===================== SHARED BLUR-IMAGE EFFECT ===================== */
+
+.img-blur {
+  position: relative;
+  overflow: hidden;
+  background: #111;
+}
+
+.img-blur .img-bg {
+  position: absolute;
+  inset: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  object-fit: cover;
+  filter: blur(12px) brightness(0.7);
+  display: block;
+}
+
+.img-blur .img-fg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+/* Thumbnails are tiny, so use a lighter blur */
+.headline-thumb .img-bg,
+.trending-thumb .img-bg {
+  filter: blur(6px) brightness(0.75);
 }

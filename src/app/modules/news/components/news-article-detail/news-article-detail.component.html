@@ -53,18 +53,25 @@
       </div>
 
       <div class="article-image-wrapper">
-        <img
-          [src]="article.featuredImageUrl"
-          [alt]="article.featuredImageAltText || article.title"
-        />
+        <div class="img-blur article-hero-img">
+          <img
+            class="img-bg"
+            [src]="article.featuredImageUrl"
+            alt=""
+            aria-hidden="true"
+          />
+          <img
+            class="img-fg"
+            [src]="article.featuredImageUrl"
+            [alt]="article.featuredImageAltText || article.title"
+          />
+        </div>
         <span class="article-image-caption">{{
           article.featuredImageAltText
         }}</span>
       </div>
 
-      <div class="article-content">
-        <p *ngFor="let para of contentParagraphs">{{ para }}</p>
-      </div>
+      <div class="article-content" [innerHTML]="article.content"></div>
 
       <div class="article-stats-row">
         <span
@@ -93,7 +100,15 @@
           *ngFor="let a of relatedArticles"
           (click)="goToArticle(a)"
         >
-          <img [src]="a.featuredImageUrl" [alt]="a.title" />
+          <div class="img-blur related-thumb">
+            <img
+              class="img-bg"
+              [src]="a.featuredImageUrl"
+              alt=""
+              aria-hidden="true"
+            />
+            <img class="img-fg" [src]="a.featuredImageUrl" [alt]="a.title" />
+          </div>
           <div>
             <h5>{{ a.title }}</h5>
             <span>{{ timeAgo(a.publishedAt) }}</span>

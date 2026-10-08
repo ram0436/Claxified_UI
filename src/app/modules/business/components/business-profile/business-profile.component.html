@@ -64,20 +64,29 @@
 
 <!-- ============ DETAIL MODE ============ -->
 <div class="profile-wrapper" *ngIf="mode === 'detail' && !loading && business">
-  <!-- ---------- HERO ---------- -->
-  <div class="hero-banner">
-    <ng-container *ngIf="coverImageSrc; else noCover">
-      <!-- blurred fill behind (decorative) -->
-      <img [src]="coverImageSrc" alt="" aria-hidden="true" class="cover-bg" />
-      <!-- full, uncropped image on top -->
-      <img [src]="coverImageSrc" alt="Cover" class="cover-image" />
-    </ng-container>
-    <ng-template #noCover>
-      <div class="cover-image cover-placeholder"></div>
-    </ng-template>
-    <div class="hero-overlay"></div>
+  <div
+    class="hero-wrap"
+    [class.has-gallery]="heroGalleryTiles.length > 0"
+    [ngClass]="'gallery-n-' + heroGalleryLayout"
+  >
+    <!-- ---------- HERO ---------- -->
+    <div
+      class="hero-banner"
+      [class.has-gallery]="heroGalleryTiles.length > 0"
+      [ngClass]="'gallery-n-' + heroGalleryLayout"
+    >
+      <ng-container *ngIf="coverImageSrc; else noCover">
+        <!-- blurred fill behind (decorative) -->
+        <img [src]="coverImageSrc" alt="" aria-hidden="true" class="cover-bg" />
+        <!-- full, uncropped image on top -->
+        <img [src]="coverImageSrc" alt="Cover" class="cover-image" />
+      </ng-container>
+      <ng-template #noCover>
+        <div class="cover-image cover-placeholder"></div>
+      </ng-template>
+      <div class="hero-overlay"></div>
 
-    <div class="hero-top-actions">
+      <!-- <div class="hero-top-actions">
       <button type="button" class="hero-glass-btn" (click)="viewPhotos()">
         <span class="material-icons-outlined">photo_camera</span> View Photos
       </button>
@@ -105,52 +114,101 @@
         }}</span>
         {{ wishlistedBusiness ? "Wishlisted" : "Wishlist" }}
       </button>
-    </div>
+    </div> -->
 
-    <div class="hero-content">
-      <div
-        class="logo-box"
-        [style.background]="
-          logoImageSrc ? '#fff' : avatarGradient(business.businessName)
-        "
-      >
-        <img *ngIf="logoImageSrc" [src]="logoImageSrc" alt="Logo" />
-        <span
-          *ngIf="!logoImageSrc"
-          class="avatar-initials avatar-initials-lg"
-          >{{ getInitials(business.businessName) }}</span
+      <div class="hero-content">
+        <div
+          class="logo-box"
+          [style.background]="
+            logoImageSrc ? '#fff' : avatarGradient(business.businessName)
+          "
         >
-      </div>
+          <img *ngIf="logoImageSrc" [src]="logoImageSrc" alt="Logo" />
+          <span
+            *ngIf="!logoImageSrc"
+            class="avatar-initials avatar-initials-lg"
+            >{{ getInitials(business.businessName) }}</span
+          >
+        </div>
 
-      <div class="hero-info">
-        <span class="hero-verified" *ngIf="isBusinessVerified">
-          <span class="material-icons-outlined">check_circle</span> Verified
-          Business
-        </span>
-        <h2 class="business-name-text">
-          {{ business.businessName || "Your Business Name" }}
-        </h2>
-        <p class="hero-categories" *ngIf="heroCategories">
-          {{ heroCategories }}
-        </p>
-        <div class="hero-meta">
-          <span class="hero-meta-item" *ngIf="shortLocation">
-            <span class="material-icons-outlined">location_on</span>
-            {{ shortLocation }}
+        <div class="hero-info">
+          <span class="hero-verified" *ngIf="isBusinessVerified">
+            <span class="material-icons-outlined">check_circle</span> Verified
+            Business
           </span>
-          <span class="hero-meta-item">
-            <span class="material-icons-outlined star-gold">star</span>
-            {{ averageRating }} ({{ reviews.length }} review{{
-              reviews.length > 1 ? "s" : ""
-            }})
-          </span>
-          <span class="hero-meta-item" *ngIf="business.establishedYear">
-            <span class="material-icons-outlined">event_available</span>
-            In business for
-            {{ getYearsInBusiness(business.establishedYear) }} years
-          </span>
+          <h2 class="business-name-text">
+            {{ business.businessName || "Your Business Name" }}
+          </h2>
+          <p class="hero-categories" *ngIf="heroCategories">
+            {{ heroCategories }}
+          </p>
+          <div class="hero-meta">
+            <span class="hero-meta-item" *ngIf="shortLocation">
+              <span class="material-icons-outlined">location_on</span>
+              {{ shortLocation }}
+            </span>
+            <span class="hero-meta-item">
+              <span class="material-icons-outlined star-gold">star</span>
+              {{ averageRating }} ({{ reviews.length }} review{{
+                reviews.length > 1 ? "s" : ""
+              }})
+            </span>
+            <span class="hero-meta-item" *ngIf="business.establishedYear">
+              <span class="material-icons-outlined">event_available</span>
+              In business for
+              {{ getYearsInBusiness(business.establishedYear) }} years
+            </span>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="hero-gallery" *ngIf="heroGalleryTiles.length > 0">
+      <button
+        type="button"
+        class="hero-gallery-tile"
+        *ngFor="let img of heroGalleryTiles"
+        (click)="viewPhotos()"
+        aria-label="Open gallery"
+      >
+        <!-- blurred fill behind -->
+        <img
+          class="tile-bg"
+          [src]="img.thumbnailUrl || img.imageUrl"
+          alt=""
+          aria-hidden="true"
+        />
+        <!-- full, uncropped photo on top -->
+        <img
+          class="tile-img"
+          [src]="img.thumbnailUrl || img.imageUrl"
+          [alt]="img.caption || 'Business photo'"
+        />
+      </button>
+
+      <button
+        type="button"
+        class="hero-gallery-tile hero-gallery-more"
+        *ngIf="galleryTotal > 3"
+        (click)="viewPhotos()"
+      >
+        <img
+          *ngIf="heroMoreBg"
+          class="hero-more-bg"
+          [src]="heroMoreBg"
+          alt=""
+          aria-hidden="true"
+        />
+        <span class="hero-more-content">
+          <span class="material-icons-outlined">photo_library</span>
+          <span>View All Photos</span>
+          <strong>({{ galleryTotal }})</strong>
+        </span>
+      </button>
+
+      <span class="hero-gallery-badge" *ngIf="galleryTotal <= 3">
+        <span class="material-icons-outlined">photo_camera</span>
+        {{ galleryTotal }} photo{{ galleryTotal === 1 ? "" : "s" }}
+      </span>
     </div>
   </div>
 
@@ -207,7 +265,7 @@
         *ngIf="isOwner && !viewingAsPublic"
         (click)="openBusinessDashboard()"
       >
-        <span class="material-icons-outlined">space_dashboard</span> Business
+        <span class="material-icons-outlined">space_dashboard</span>
         Dashboard
       </button>
       <!-- <button
@@ -226,6 +284,43 @@
       >
         <span class="material-icons-outlined">edit</span> Edit Profile
       </button>
+      <div class="action-extras">
+        <button
+          type="button"
+          class="act-btn act-outline act-sm"
+          (click)="viewPhotos()"
+        >
+          <span class="material-icons-outlined">photo_camera</span> View Photos
+        </button>
+        <a
+          class="act-btn act-outline act-sm"
+          *ngIf="videoUrl"
+          [href]="videoUrl"
+          target="_blank"
+          rel="noopener"
+        >
+          <span class="material-icons-outlined">play_circle_outline</span> Watch
+          Video
+        </a>
+        <button
+          type="button"
+          class="act-btn act-outline act-sm"
+          (click)="shareProfile()"
+        >
+          <span class="material-icons-outlined">share</span> Share
+        </button>
+        <button
+          type="button"
+          class="act-btn act-outline act-sm"
+          (click)="toggleBusinessWishlist()"
+          [disabled]="wishlistingBusiness"
+        >
+          <span class="material-icons-outlined">{{
+            wishlistedBusiness ? "favorite" : "favorite_border"
+          }}</span>
+          {{ wishlistedBusiness ? "Wishlisted" : "Wishlist" }}
+        </button>
+      </div>
       <button
         type="button"
         class="act-btn act-outline act-view-public"
@@ -324,8 +419,20 @@
   >
     <!-- ===== LEFT ASIDE (offerings only) ===== -->
     <aside class="side side-left" *ngIf="activeTab === 'offerings'">
-      <div class="side-card subcat-card" *ngIf="subCategoryTabs.length > 0">
-        <h4 class="side-title">Business Sub Categories</h4>
+      <div
+        class="side-card subcat-card"
+        *ngIf="business.businessCategory || subCategoryTabs.length > 0"
+      >
+        <h4 class="side-title">
+          <span class="material-icons-outlined side-title-icon">grid_view</span>
+          Business Categories
+        </h4>
+
+        <div class="cat-parent" *ngIf="business.businessCategory">
+          <span class="material-icons-outlined">category</span>
+          <span>{{ business.businessCategory }}</span>
+        </div>
+
         <ul class="subcat-list">
           <li
             class="subcat-item"
@@ -339,6 +446,38 @@
             <span>{{ sc.name }}</span>
           </li>
         </ul>
+      </div>
+
+      <!-- Claxified Trust (below Business Categories) -->
+      <div class="side-card trust-card" *ngIf="verificationItems.length > 0">
+        <h4 class="side-title trust-title">
+          <span class="material-icons-outlined">verified_user</span>
+          Claxified Trust
+        </h4>
+
+        <ul class="trust-list">
+          <li
+            *ngFor="let item of verificationItems"
+            [class.is-verified]="item.verified"
+          >
+            <span class="material-icons-outlined">{{
+              item.verified ? "check_circle" : "radio_button_unchecked"
+            }}</span>
+            <span>{{ item.label }} Verified</span>
+          </li>
+        </ul>
+
+        <p
+          class="verification-remark"
+          *ngIf="business.businessVerificationDto?.verificationRemarks"
+        >
+          {{ business.businessVerificationDto?.verificationRemarks }}
+        </p>
+
+        <div class="trust-score">
+          <span>Trust Score</span>
+          <strong>{{ trustScore }}<small>/100</small></strong>
+        </div>
       </div>
 
       <div class="side-card promo-card">
@@ -522,7 +661,7 @@
           </div>
         </div>
 
-        <div class="content-card" *ngIf="verificationItems.length > 0">
+        <!-- <div class="content-card" *ngIf="verificationItems.length > 0">
           <div class="card-header">
             <h3>Verification</h3>
           </div>
@@ -544,7 +683,7 @@
           >
             {{ business.businessVerificationDto?.verificationRemarks }}
           </p>
-        </div>
+        </div> -->
 
         <div class="content-card">
           <div class="card-header">

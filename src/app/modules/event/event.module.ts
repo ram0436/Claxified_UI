@@ -15,6 +15,11 @@ import { AllEventsComponent } from './components/all-events/all-events.component
 import { EventDetailComponent } from './components/event-detail/event-detail.component';
 import { AddEventComponent } from './components/add-event/add-event.component';
 
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
 @NgModule({
   declarations: [
     EventHeaderComponent,
@@ -27,6 +32,15 @@ import { AddEventComponent } from './components/add-event/add-event.component';
     EventDetailComponent,
     AddEventComponent,
   ],
-  imports: [CommonModule, FormsModule, RouterModule, EventRoutingModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    EventRoutingModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
 })
 export class EventModule {}
