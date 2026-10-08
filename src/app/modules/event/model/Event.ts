@@ -185,3 +185,9 @@ export interface EventFilterState {
   eventTypeIds: number[];
   searchQuery?: string;
 }
+
+export interface CreateEventRequest {
+  event: Partial<EventItem>;
+  eventVenue: Partial<EventVenue>;
+  eventOrganizer: Partial<EventOrganizer>;
+}

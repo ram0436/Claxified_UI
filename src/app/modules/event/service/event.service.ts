@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import {
+  CreateEventRequest,
   EventCategory,
   EventItem,
   EventListResponse,
@@ -31,8 +32,8 @@ export class EventService {
       .pipe(map((res) => res?.data || []));
   }
 
-  createEvent(payload: Partial<EventItem>): Observable<EventItem> {
-    return this.http.post<EventItem>(`${this.baseUrl}`, payload);
+  createEvent(payload: CreateEventRequest): Observable<EventItem> {
+    return this.http.post<EventItem>(`${this.baseUrl}/create`, payload);
   }
 
   // ---------------------------------------------------------
@@ -45,7 +46,9 @@ export class EventService {
 
   getCategoryById(categoryId: number): Observable<EventCategory> {
     const params = new HttpParams().set('categoryId', categoryId);
-    return this.http.get<EventCategory>(`${this.baseUrl}/category/categoryId`, { params });
+    return this.http.get<EventCategory>(`${this.baseUrl}/category/categoryId`, {
+      params,
+    });
   }
 
   // ---------------------------------------------------------
@@ -53,17 +56,27 @@ export class EventService {
   // ---------------------------------------------------------
 
   getSubCategories(): Observable<EventSubCategory[]> {
-    return this.http.get<EventSubCategory[]>(`${this.baseUrl}/sub-categories/list`);
+    return this.http.get<EventSubCategory[]>(
+      `${this.baseUrl}/sub-categories/list`,
+    );
   }
 
   getSubCategoryById(id: number): Observable<EventSubCategory> {
     const params = new HttpParams().set('id', id);
-    return this.http.get<EventSubCategory>(`${this.baseUrl}/sub-category/subCategoryId`, { params });
+    return this.http.get<EventSubCategory>(
+      `${this.baseUrl}/sub-category/subCategoryId`,
+      { params },
+    );
   }
 
-  getSubCategoriesByCategoryId(eventCategoryId: number): Observable<EventSubCategory[]> {
+  getSubCategoriesByCategoryId(
+    eventCategoryId: number,
+  ): Observable<EventSubCategory[]> {
     const params = new HttpParams().set('eventCategoryId', eventCategoryId);
-    return this.http.get<EventSubCategory[]>(`${this.baseUrl}/sub-category/eventCategoryId`, { params });
+    return this.http.get<EventSubCategory[]>(
+      `${this.baseUrl}/sub-category/eventCategoryId`,
+      { params },
+    );
   }
 
   // ---------------------------------------------------------
@@ -76,7 +89,9 @@ export class EventService {
 
   getVenueById(id: number): Observable<EventVenue> {
     const params = new HttpParams().set('id', id);
-    return this.http.get<EventVenue>(`${this.baseUrl}/venu/venueId`, { params });
+    return this.http.get<EventVenue>(`${this.baseUrl}/venu/venueId`, {
+      params,
+    });
   }
 
   // ---------------------------------------------------------
@@ -89,6 +104,9 @@ export class EventService {
 
   getOrganizerById(id: number): Observable<EventOrganizer> {
     const params = new HttpParams().set('id', id);
-    return this.http.get<EventOrganizer>(`${this.baseUrl}/organizer/organizerId`, { params });
+    return this.http.get<EventOrganizer>(
+      `${this.baseUrl}/organizer/organizerId`,
+      { params },
+    );
   }
 }

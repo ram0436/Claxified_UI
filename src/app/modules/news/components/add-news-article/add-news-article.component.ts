@@ -11,6 +11,7 @@ import {
   NewsSubCategory,
 } from '../../model/News';
 import { ArticleStatus, ArticleType } from '../../enum/news.enum';
+import { BusinessService } from 'src/app/modules/business/service/business.service';
 
 interface OptionVm {
   value: number;
@@ -32,6 +33,8 @@ export class AddNewsArticleComponent implements OnInit {
 
   lookupsLoading = true;
   lookupsError = false;
+
+  imageUploading = false;
 
   // Enum options exposed to template
   articleTypeOptions: OptionVm[] = [
@@ -97,6 +100,7 @@ export class AddNewsArticleComponent implements OnInit {
     private newsService: NewsService,
     private router: Router,
     private snackBar: MatSnackBar,
+    private businessService: BusinessService,
   ) {}
 
   ngOnInit(): void {
@@ -180,6 +184,44 @@ export class AddNewsArticleComponent implements OnInit {
     }
   }
 
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      this.showNotification('Please choose an image file');
+      input.value = '';
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      this.showNotification('Image must be smaller than 5 MB');
+      input.value = '';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.imageUploading = true;
+    this.businessService.uploadLogo(formData).subscribe({
+      next: (url: string) => {
+        this.imageUploading = false;
+        this.model.featuredImageUrl = url;
+      },
+      error: () => {
+        this.imageUploading = false;
+        this.showNotification('Image upload failed. Please try again.');
+      },
+    });
+
+    input.value = ''; // allows re-selecting the same file later
+  }
+
+  removeImage(): void {
+    this.model.featuredImageUrl = '';
+  }
+
   onContentInput(el: HTMLDivElement): void {
     this.model.content = el.textContent?.trim() ? el.innerHTML : '';
     // Auto-estimate reading time when content changes
@@ -202,7 +244,8 @@ export class AddNewsArticleComponent implements OnInit {
     if (!m.newsSourceId) missing.push('Source');
     if (!m.newsAuthorId) missing.push('Author');
     if (!m.content.trim()) missing.push('Content');
-    if (!m.featuredImageUrl.trim()) missing.push('Featured Image URL');
+    if (this.imageUploading) missing.push('Image is still uploading');
+    else if (!m.featuredImageUrl.trim()) missing.push('Featured Image');
 
     return missing;
   }

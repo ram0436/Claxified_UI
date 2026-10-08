@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { EventService } from '../../service/event.service';
 import { EventCategory, EventItem } from '../../model/Event';
+import { UserService } from 'src/app/modules/user/service/user.service';
 
 const CATEGORY_ICONS: Record<string, string> = {
   technology: 'memory',
@@ -78,13 +79,30 @@ export class EventHomeComponent implements OnInit {
     },
   ];
 
+  isAdmin = false;
+
   constructor(
     private eventService: EventService,
     private router: Router,
+    private userService: UserService,
   ) {}
 
   ngOnInit(): void {
     this.fetchData();
+    this.checkAdmin();
+  }
+
+  private checkAdmin(): void {
+    this.isAdmin = localStorage.getItem('role') === 'Admin';
+
+    this.userService.getData().subscribe({
+      next: () => {
+        this.isAdmin = localStorage.getItem('role') === 'Admin';
+      },
+      error: () => {
+        this.isAdmin = false;
+      },
+    });
   }
 
   fetchData(): void {

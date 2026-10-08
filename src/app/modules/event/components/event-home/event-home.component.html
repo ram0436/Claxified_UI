@@ -210,7 +210,11 @@
             <p>{{ w.subtitle }}</p>
           </div>
         </div>
-        <button class="list-event-btn" routerLink="/events/register">
+        <button
+          class="list-event-btn"
+          routerLink="/events/register"
+          *ngIf="isAdmin"
+        >
           List Your Event Now
         </button>
       </div>
