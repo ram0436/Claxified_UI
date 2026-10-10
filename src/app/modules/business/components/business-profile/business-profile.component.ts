@@ -1790,25 +1790,30 @@ export class BusinessProfileComponent implements OnInit {
     return 'No products or services listed yet.';
   }
 
-  get verificationItems(): { label: string; verified: boolean }[] {
-    const v = this.business?.businessVerificationDto;
-    if (!v) return [];
+  get verificationItems(): {
+    label: string;
+    verified: boolean;
+    weight: number;
+  }[] {
+    if (!this.business) return [];
+
+    const v = this.business.businessVerificationDto;
+    const c = this.business.businessContactDto;
+    const has = (val: unknown) => !!val?.toString().trim();
+
     return [
-      { label: 'Mobile', verified: v.isMobileVerified === 1 },
-      { label: 'Email', verified: v.isEmailVerified === 1 },
-      { label: 'Business', verified: v.isBusinessVerified === 1 },
-      { label: 'GST', verified: v.isGSTVerified === 1 },
-      { label: 'PAN', verified: v.isPANVerified === 1 },
-      { label: 'Aadhaar', verified: v.isAadhaarVerified === 1 },
+      { label: 'Mobile', verified: has(c?.mobile), weight: 25 },
+      { label: 'WhatsApp', verified: has(c?.whatsApp), weight: 25 },
+      { label: 'Business', verified: true, weight: 25 },
+      { label: 'Email', verified: has(c?.email), weight: 15 },
+      { label: 'GST', verified: v?.isGSTVerified === 1, weight: 10 },
     ];
   }
 
   get trustScore(): number {
-    const items = this.verificationItems;
-    if (!items.length) return 0;
-    return Math.round(
-      (items.filter((i) => i.verified).length / items.length) * 100,
-    );
+    return this.verificationItems
+      .filter((i) => i.verified)
+      .reduce((sum, i) => sum + i.weight, 0);
   }
 
   get heroGalleryTiles() {

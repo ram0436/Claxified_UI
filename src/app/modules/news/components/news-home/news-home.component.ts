@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { NewsService } from '../../service/news.service';
@@ -31,7 +31,7 @@ const CATEGORY_IMAGES: Record<string, string> = {
   templateUrl: './news-home.component.html',
   styleUrls: ['./news-home.component.css'],
 })
-export class NewsHomeComponent implements OnInit {
+export class NewsHomeComponent implements OnInit, OnDestroy {
   location = 'Bengaluru';
   searchQuery = '';
 
@@ -84,6 +84,12 @@ export class NewsHomeComponent implements OnInit {
 
   isAdmin = false;
 
+  carouselStories: NewsArticle[] = [];
+  activeIndex = 0;
+  private carouselTimer: any = null;
+  private readonly CAROUSEL_SIZE = 8;
+  private readonly CAROUSEL_INTERVAL_MS = 5000;
+
   constructor(
     private newsService: NewsService,
     private router: Router,
@@ -94,6 +100,10 @@ export class NewsHomeComponent implements OnInit {
     this.checkAdmin();
     this.fetchCategories();
     this.fetchArticles();
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoPlay();
   }
 
   private checkAdmin(): void {
@@ -143,6 +153,14 @@ export class NewsHomeComponent implements OnInit {
             new Date(b.publishedAt || b.createdAt).getTime() -
             new Date(a.publishedAt || a.createdAt).getTime(),
         );
+        const featured = this.articles.filter((a) => a.isFeatured);
+        const others = this.articles.filter((a) => !a.isFeatured);
+        this.carouselStories = [...featured, ...others].slice(
+          0,
+          this.CAROUSEL_SIZE,
+        );
+        this.activeIndex = 0;
+        this.startAutoPlay();
         this.articlesLoading = false;
       },
       error: () => {
@@ -153,17 +171,56 @@ export class NewsHomeComponent implements OnInit {
   }
 
   get topStory(): NewsArticle | undefined {
-    return this.articles.find((a) => a.isFeatured) || this.articles[0];
+    return this.carouselStories[this.activeIndex];
   }
 
+  // The stories that come after the current one, wrapping around
   get headlineList(): NewsArticle[] {
-    return this.articles.filter((a) => a.id !== this.topStory?.id).slice(0, 6);
+    const n = this.carouselStories.length;
+    if (n <= 1) return [];
+    const list: NewsArticle[] = [];
+    for (let i = 1; i < n && list.length < 6; i++) {
+      list.push(this.carouselStories[(this.activeIndex + i) % n]);
+    }
+    return list;
+  }
+
+  nextStory(): void {
+    if (this.carouselStories.length < 2) return;
+    this.activeIndex = (this.activeIndex + 1) % this.carouselStories.length;
+  }
+
+  goToStory(index: number, event?: Event): void {
+    event?.preventDefault();
+    event?.stopPropagation();
+    this.activeIndex = index;
+    this.startAutoPlay();
+  }
+
+  startAutoPlay(): void {
+    this.stopAutoPlay();
+    if (this.carouselStories.length < 2) return;
+    this.carouselTimer = setInterval(
+      () => this.nextStory(),
+      this.CAROUSEL_INTERVAL_MS,
+    );
+  }
+
+  stopAutoPlay(): void {
+    if (this.carouselTimer) {
+      clearInterval(this.carouselTimer);
+      this.carouselTimer = null;
+    }
+  }
+
+  trackByStoryId(_index: number, a: NewsArticle): number {
+    return a.id;
   }
 
   get trendingNow(): NewsArticle[] {
     return [...this.articles]
       .sort((a, b) => b.viewCount - a.viewCount)
-      .slice(0, 4);
+      .slice(0, 5);
   }
 
   get editorsPicks(): NewsArticle[] {

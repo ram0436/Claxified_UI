@@ -10,8 +10,7 @@
           <span class="hero-accent">Buy. Sell. Grow Locally.</span>
         </h1>
         <p class="hero-subtitle">
-          Find local businesses, discover great deals, buy and sell products,
-          and connect with people near you.
+          Find local businesses, discover great deals, buy and sell products.
         </p>
 
         <div class="hero-action-row">
@@ -865,9 +864,15 @@
             <span class="news-category-badge">{{ article.categoryLabel }}</span>
           </div>
           <div class="news-content">
-            <h4 class="news-title">{{ truncateTitle(article.title, 60) }}</h4>
-            <p class="news-desc" *ngIf="article.shortDescription">
-              {{ truncateTitle(article.shortDescription, 80) }}
+            <h4 class="news-title" [title]="article.title">
+              {{ article.title }}
+            </h4>
+            <p class="news-category">
+              <span class="material-icons-outlined">sell</span>
+              {{ article.categoryLabel }}
+              <ng-container *ngIf="article.readingTimeLabel">
+                • {{ article.readingTimeLabel }}
+              </ng-container>
             </p>
             <div class="news-meta">
               <span class="news-source">
@@ -984,14 +989,14 @@
           </div>
 
           <div class="event-content">
-            <h4 class="event-title">{{ truncateTitle(event.name, 55) }}</h4>
-            <!-- <p class="event-location">
-              <span class="material-icons-outlined">place</span>
-              {{ event.locationLabel }}
-            </p> -->
+            <h4 class="event-title" [title]="event.name">{{ event.name }}</h4>
             <p class="event-time">
               <span class="material-icons-outlined">schedule</span>
               {{ event.timeLabel }}
+            </p>
+            <p class="event-category">
+              <span class="material-icons-outlined">category</span>
+              {{ event.categoryLabel }}
             </p>
 
             <div class="event-footer">

@@ -312,9 +312,15 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 500px;
+  max-height: 530px;
   overflow-y: auto;
   padding-right: 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.headline-list::-webkit-scrollbar {
+  display: none;
 }
 
 /* .headline-list::-webkit-scrollbar {
@@ -330,7 +336,7 @@
   border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
-  height: 500px;
+  height: 530px;
   background: #111;
 }
 
@@ -407,7 +413,7 @@
   display: flex;
   gap: 10px;
   cursor: pointer;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
   border-bottom: 1px solid #f0eaf9;
 }
 
@@ -826,4 +832,94 @@ a.editor-pick-card {
 .headline-thumb .img-bg,
 .trending-thumb .img-bg {
   filter: blur(6px) brightness(0.75);
+}
+
+.subscribe-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.subscribe-header-text {
+  min-width: 0;
+}
+
+.subscribe-write-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.subscribe-write-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.subscribe-write-btn .material-icons-outlined {
+  font-size: 15px;
+}
+
+.top-story-slide {
+  position: absolute;
+  inset: 0;
+  animation: storyFade 0.6s ease;
+}
+
+@keyframes storyFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.top-story-badge {
+  z-index: 2;
+}
+
+.top-story-dots {
+  position: absolute;
+  top: 16px;
+  right: 14px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.top-story-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition:
+    width 0.25s ease,
+    background 0.25s ease;
+}
+
+.top-story-dot.active {
+  width: 22px;
+  border-radius: 4px;
+  background: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top-story-slide {
+    animation: none;
+  }
 }

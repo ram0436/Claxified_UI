@@ -1,6 +1,6 @@
 <div class="news-home-wrapper">
   <!-- Hero -->
-  <section class="news-hero">
+  <!-- <section class="news-hero">
     <div class="news-hero-inner">
       <div class="news-hero-text">
         <h1 class="news-hero-title">
@@ -41,7 +41,7 @@
         </svg>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Top Headlines -->
   <section class="section-wrapper">
@@ -79,28 +79,46 @@
           class="top-story-card"
           *ngIf="topStory"
           [routerLink]="['/news/article', topStory.slug]"
+          (mouseenter)="stopAutoPlay()"
+          (mouseleave)="startAutoPlay()"
         >
           <span class="top-story-badge">TOP STORY</span>
 
-          <img
-            class="top-story-bg"
-            [src]="topStory.featuredImageUrl"
-            alt=""
-            aria-hidden="true"
-          />
-          <img
-            class="top-story-img"
-            [src]="topStory.featuredImageUrl"
-            [alt]="topStory.featuredImageAltText || topStory.title"
-          />
+          <!-- Re-created whenever the story changes, which triggers the fade-in -->
+          <div
+            class="top-story-slide"
+            *ngFor="let s of [topStory]; trackBy: trackByStoryId"
+          >
+            <img
+              class="top-story-bg"
+              [src]="s.featuredImageUrl"
+              alt=""
+              aria-hidden="true"
+            />
+            <img
+              class="top-story-img"
+              [src]="s.featuredImageUrl"
+              [alt]="s.featuredImageAltText || s.title"
+            />
 
-          <div class="top-story-overlay">
-            <h3>{{ topStory.title }}</h3>
-            <p>{{ topStory.shortDescription }}</p>
-            <span class="top-story-meta"
-              >Claxified News Desk &bull;
-              {{ timeAgo(topStory.publishedAt) }}</span
-            >
+            <div class="top-story-overlay">
+              <h3>{{ s.title }}</h3>
+              <p>{{ s.shortDescription }}</p>
+              <span class="top-story-meta"
+                >Claxified News Desk &bull; {{ timeAgo(s.publishedAt) }}</span
+              >
+            </div>
+          </div>
+
+          <div class="top-story-dots" *ngIf="carouselStories.length > 1">
+            <button
+              type="button"
+              class="top-story-dot"
+              *ngFor="let s of carouselStories; let i = index"
+              [class.active]="i === activeIndex"
+              (click)="goToStory(i, $event)"
+              [attr.aria-label]="'Show story ' + (i + 1)"
+            ></button>
           </div>
         </a>
 
@@ -181,14 +199,28 @@
         </div> -->
 
         <div class="subscribe-card">
-          <h4>Stay Updated</h4>
-          <p>Get the latest news delivered to your inbox.</p>
+          <div class="subscribe-header">
+            <div class="subscribe-header-text">
+              <h4>Stay Updated</h4>
+              <p>Get the latest news delivered to your inbox.</p>
+            </div>
+
+            <a
+              routerLink="/news/add-article"
+              class="subscribe-write-btn"
+              *ngIf="isAdmin"
+            >
+              <span class="material-icons-outlined">edit</span>
+              Write
+            </a>
+          </div>
+
           <div class="subscribe-input-row">
             <input type="email" placeholder="Enter your email" />
             <button>Subscribe</button>
           </div>
         </div>
-        <a
+        <!-- <a
           routerLink="/news/add-article"
           class="write-article-card"
           *ngIf="isAdmin"
@@ -204,7 +236,7 @@
               <span class="material-icons-outlined">arrow_forward</span>
             </span>
           </div>
-        </a>
+        </a> -->
       </aside>
     </div>
   </section>
