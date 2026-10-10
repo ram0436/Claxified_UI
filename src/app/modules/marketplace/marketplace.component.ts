@@ -16,9 +16,9 @@ import { LoginComponent } from '../../modules/user/component/login/login.compone
 import { UserService } from '../user/service/user.service';
 import { WishlistItem } from '../classified-ads/model/ads';
 import { NewsService } from '../news/service/news.service';
-import { NewsArticle } from '../news/model/News';
+import { NewsArticle, NewsCategory } from '../news/model/News';
 import { EventService } from '../event/service/event.service';
-import { EventItem } from '../event/model/Event';
+import { EventCategory, EventItem } from '../event/model/Event';
 import { buildBusinessCommands } from '../business/utils/business-url.util';
 import { buildPostCommands } from 'src/app/shared/utils/post-url.util';
 
@@ -848,32 +848,46 @@ export class MarketplaceComponent implements OnInit {
     this.businessNewsLoading = true;
     this.businessNewsError = false;
 
-    this.newsService.getArticles().subscribe(
-      (data: NewsArticle[]) => {
-        const articles = data || [];
+    forkJoin({
+      articles: this.newsService.getArticles(),
+      categories: this.newsService
+        .getCategories()
+        .pipe(catchError(() => of([] as NewsCategory[]))),
+    }).subscribe(
+      ({ articles, categories }) => {
+        const catMap = new Map<number, string>(
+          (categories || []).map((c) => [c.id, c.name] as [number, string]),
+        );
+        const all = articles || [];
 
-        // Try to filter to business/news category; fall back to all
-        const businessOnly = articles.filter((a) => {
-          const cat = (a as any).categoryName?.toLowerCase?.() || '';
-          const slug = (a as any).categorySlug?.toLowerCase?.() || '';
-          return cat.includes('business') || slug.includes('business');
-        });
+        const businessOnly = all.filter((a) =>
+          (catMap.get(a.newsCategoryId) || '')
+            .toLowerCase()
+            .includes('business'),
+        );
+        const isBusiness = (a: NewsArticle) =>
+          (catMap.get(a.newsCategoryId) || '')
+            .toLowerCase()
+            .includes('business');
 
-        const source = businessOnly.length > 0 ? businessOnly : articles;
-
-        this.businessNews = source
-          .sort(
-            (a, b) =>
+        this.businessNews = [...all]
+          .sort((a, b) => {
+            if (isBusiness(a) !== isBusiness(b)) return isBusiness(a) ? -1 : 1;
+            return (
               new Date(b.publishedAt || b.createdAt).getTime() -
-              new Date(a.publishedAt || a.createdAt).getTime(),
-          )
+              new Date(a.publishedAt || a.createdAt).getTime()
+            );
+          })
           .slice(0, 10)
           .map((a) => ({
             ...a,
-            link: (a as any).slug ? ['/news/article', (a as any).slug] : null,
+            link: a.slug ? ['/news/article', a.slug] : null,
             imageUrl: a.featuredImageUrl || 'assets/image_not_available.jpg',
             postedAgo: this.getPostedAgo(a.publishedAt || a.createdAt),
-            categoryLabel: (a as any).categoryName || 'Business',
+            categoryLabel: catMap.get(a.newsCategoryId) || 'News',
+            readingTimeLabel: a.readingTimeMinutes
+              ? `${a.readingTimeMinutes} min read`
+              : '',
           }));
 
         this.businessNewsLoading = false;
@@ -914,21 +928,28 @@ export class MarketplaceComponent implements OnInit {
     this.businessEventsLoading = true;
     this.businessEventsError = false;
 
-    this.eventService.getEvents().subscribe(
-      (data: EventItem[]) => {
-        const events = data || [];
+    forkJoin({
+      events: this.eventService.getEvents(),
+      categories: this.eventService
+        .getCategories()
+        .pipe(catchError(() => of([] as EventCategory[]))),
+    }).subscribe(
+      ({ events, categories }) => {
+        const catMap = new Map<number, string>(
+          (categories || []).map((c) => [c.id, c.name] as [number, string]),
+        );
+        const all = events || [];
 
-        // Prefer events in the "business" category (by slug), fall back to all
-        const businessOnly = events.filter(
+        const businessOnly = all.filter(
           (e) =>
-            (e as any).categorySlug?.toLowerCase?.() === 'business' ||
-            (e as any).categoryName?.toLowerCase?.() === 'business',
+            (catMap.get(e.eventCategoryId) || '').toLowerCase() === 'business',
         );
 
-        const source = businessOnly.length > 0 ? businessOnly : events;
+        const isBusiness = (e: EventItem) =>
+          (catMap.get(e.eventCategoryId) || '').toLowerCase() === 'business';
 
-        // Featured first, then upcoming soonest
-        const sorted = [...source].sort((a, b) => {
+        const sorted = [...all].sort((a, b) => {
+          if (isBusiness(a) !== isBusiness(b)) return isBusiness(a) ? -1 : 1;
           if (!!b.isFeatured !== !!a.isFeatured) return b.isFeatured ? 1 : -1;
           return (
             new Date(a.startDateTime).getTime() -
@@ -938,14 +959,14 @@ export class MarketplaceComponent implements OnInit {
 
         this.businessEvents = sorted.slice(0, 10).map((e) => ({
           ...e,
-          link: (e as any).slug ? ['/events/event', (e as any).slug] : null,
+          link: e.slug ? ['/events/event', e.slug] : null,
           imageUrl: e.featuredImageUrl || 'assets/image_not_available.jpg',
           badge: this.eventBadge(e),
           dayLabel: this.dayOf(e.startDateTime),
           monthLabel: this.monthOf(e.startDateTime),
           timeLabel: this.timeRange(e),
           priceLabel: this.priceLabel(e),
-          locationLabel: (e as any).venueName || (e as any).city || 'Location',
+          categoryLabel: catMap.get(e.eventCategoryId) || 'Event',
         }));
 
         this.businessEventsLoading = false;
