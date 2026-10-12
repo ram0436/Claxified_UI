@@ -100,8 +100,9 @@ export function buildBusinessCommands(b: BusinessUrlSource): string[] | null {
   if (!uniqueSlug) return null;
   rememberBusinessGuid(guid);
 
-  const city = slugify(b.businessAddressDto?.city ?? b.city) || FALLBACK_CITY;
-  const area = slugify(b.businessAddressDto?.area ?? b.area);
+  const city =
+    slugify(b.businessAddressDto?.city) || slugify(b.city) || FALLBACK_CITY;
+  const area = slugify(b.businessAddressDto?.area) || slugify(b.area);
   const name = slugify(b.businessName) || 'business';
 
   const last = [name, area, uniqueSlug].filter(Boolean).join('-');
