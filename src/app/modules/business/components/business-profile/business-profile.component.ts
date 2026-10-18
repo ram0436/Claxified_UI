@@ -1,5 +1,11 @@
-import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  Inject,
+  OnInit,
+} from '@angular/core';
+import { DOCUMENT, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BusinessService } from '../../service/business.service';
 import {
@@ -386,6 +392,7 @@ export class BusinessProfileComponent implements OnInit {
     private snackBar: MatSnackBar,
     private location: Location,
     private wishlist: OfferingWishlistService,
+    @Inject(DOCUMENT) private document: Document,
   ) {}
 
   getYearsInBusiness(establishedYear: number): number {
@@ -549,6 +556,7 @@ export class BusinessProfileComponent implements OnInit {
     if (canonical && this.router.url.split('?')[0] !== canonical) {
       this.location.replaceState(canonical);
     }
+    this.setCanonicalLink(canonical);
 
     const ids = data?.businessSubCategoryIds || [];
     const stillValid =
@@ -563,6 +571,22 @@ export class BusinessProfileComponent implements OnInit {
     this.loadOffers();
     this.loadReviews();
     this.loadUserFlags();
+  }
+
+  /** Keeps <link rel="canonical"> in sync so Google indexes the real city URL
+   * (e.g. /business/bangalore/...) and not a placeholder city. */
+  private setCanonicalLink(path: string): void {
+    if (!path) return;
+    const href = `${this.document.location.origin}${path}`;
+    let link = this.document.head.querySelector<HTMLLinkElement>(
+      'link[rel="canonical"]',
+    );
+    if (!link) {
+      link = this.document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      this.document.head.appendChild(link);
+    }
+    link.setAttribute('href', href);
   }
 
   loadAllowedOfferingTypes(businessCategoryId: number): void {
