@@ -547,22 +547,55 @@ mat-dialog-content.form-scroll {
 /* On mobile the form panel becomes full width — keep 3 columns but tighten */
 @media (max-width: 750px) {
   .bottom-trust-strip {
-    padding: 10px 14px 12px;
+    padding: 14px 12px 16px;
+    gap: 8px;
+    align-items: start;
+  }
+
+  .bottom-trust-item {
+    flex-direction: column;
     gap: 6px;
+    text-align: center;
   }
-  .bottom-trust-icon {
-    width: 26px;
-    height: 26px;
+
+  .bottom-trust-text strong,
+  .bottom-trust-text small {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
   }
-  .bottom-trust-icon mat-icon {
-    font-size: 15px;
-    width: 15px;
-    height: 15px;
-  }
+
   .bottom-trust-text strong {
     font-size: 11.5px;
+    line-height: 1.2;
   }
+
   .bottom-trust-text small {
     font-size: 10.5px;
+    line-height: 1.25;
+    margin-top: 2px;
+  }
+
+  .auth-wrapper {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* old Edge / IE */
+  }
+
+  .auth-wrapper::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, new Edge */
+  }
+
+  /* let the panels take their natural height instead of scrolling internally */
+  .form-panel {
+    flex: 0 0 auto;
+  }
+
+  mat-dialog-content.form-scroll {
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+    max-height: none !important;
   }
 }
