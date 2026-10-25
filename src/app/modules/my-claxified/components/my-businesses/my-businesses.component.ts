@@ -53,7 +53,7 @@ export class MyBusinessesComponent implements OnInit {
         );
 
         forkJoin(detailCalls).subscribe((details) => {
-          this.businesses = items.map((b, i) => {
+          const mapped = items.map((b, i) => {
             const d: any = details[i];
 
             const addr = d?.businessAddressDto;
@@ -79,8 +79,16 @@ export class MyBusinessesComponent implements OnInit {
               productCount: d?.productCount ?? 0,
               profileViews: d?.profileViews ?? 0,
               enquiryCount: d?.enquiryCount ?? 0,
+              _sortId: Number(d?.id) || 0,
             };
           });
+
+          // Newest first: highest numeric id first; if details are missing,
+          // fall back to reversing the API order (oldest-first).
+          this.businesses = mapped
+            .map((b, i) => ({ b, i }))
+            .sort((x, y) => y.b._sortId - x.b._sortId || y.i - x.i)
+            .map((x) => x.b);
           this.isLoading = false;
         });
       },

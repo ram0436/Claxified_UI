@@ -2893,3 +2893,13 @@ select:focus-visible {
     transition: none;
   }
 }
+
+/* Small devices: hide the hero photo strip, show only the cover */
+@media (max-width: 768px) {
+  .hero-gallery {
+    display: none;
+  }
+  .hero-banner.has-gallery .hero-content {
+    right: 14px;
+  }
+}
