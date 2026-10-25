@@ -367,6 +367,7 @@ export class BusinessProfileComponent implements OnInit {
     if (this.lightboxOpen) {
       this.closeLightbox();
     }
+    this.shareMenuOpen = false;
   }
 
   @HostListener('document:click', ['$event'])
@@ -374,10 +375,12 @@ export class BusinessProfileComponent implements OnInit {
     if (
       !this.addOfferingMenuOpen &&
       !this.moreOfferingMenuOpen &&
-      !this.sortMenuOpen
+      !this.sortMenuOpen &&
+      !this.shareMenuOpen
     ) {
       return;
     }
+    this.shareMenuOpen = false;
     this.addOfferingMenuOpen = false;
     this.moreOfferingMenuOpen = false;
     this.sortMenuOpen = false;
@@ -718,7 +721,182 @@ export class BusinessProfileComponent implements OnInit {
     this.loadBusinessDetail(this.tabRefGuid);
   }
 
-  shareProfile(): void {}
+  // ================== Share / Copy link ==================
+
+  shareMenuOpen = false;
+  linkCopied = false;
+  private linkCopiedTimer: any;
+
+  readonly shareTargets: {
+    key: string;
+    label: string;
+    color: string;
+    icon?: string;
+    glyph?: string;
+  }[] = [
+    { key: 'whatsapp', label: 'WhatsApp', color: '#25D366', icon: 'chat' },
+    { key: 'facebook', label: 'Facebook', color: '#1877F2', glyph: 'f' },
+    {
+      key: 'instagram',
+      label: 'Instagram',
+      color: '#C13584',
+      icon: 'photo_camera',
+    },
+    { key: 'twitter', label: 'X', color: '#111111', glyph: 'X' },
+    { key: 'linkedin', label: 'LinkedIn', color: '#0A66C2', glyph: 'in' },
+    { key: 'telegram', label: 'Telegram', color: '#229ED9', icon: 'send' },
+    { key: 'email', label: 'Email', color: '#6b7280', icon: 'mail' },
+    { key: 'sms', label: 'Message', color: '#16a34a', icon: 'sms' },
+  ];
+
+  /** Share targets, plus a "More" tile that opens the device's native share
+   * sheet when the browser supports it (mostly phones / tablets). */
+  get shareTargetList(): {
+    key: string;
+    label: string;
+    color: string;
+    icon?: string;
+    glyph?: string;
+  }[] {
+    const canNative = typeof (navigator as any).share === 'function';
+    return canNative
+      ? [
+          ...this.shareTargets,
+          {
+            key: 'native',
+            label: 'More',
+            color: '#374151',
+            icon: 'more_horiz',
+          },
+        ]
+      : this.shareTargets;
+  }
+
+  /** Public URL of this business profile (the canonical city/slug URL). */
+  get shareUrl(): string {
+    const path = this.business ? buildBusinessPath(this.business as any) : '';
+    return path
+      ? `${this.document.location.origin}${path}`
+      : this.document.location.href.split('?')[0];
+  }
+
+  private get shareText(): string {
+    const name = this.business?.businessName || 'this business';
+    return `Check out ${name} on Claxified`;
+  }
+
+  shareProfile(event?: Event): void {
+    event?.stopPropagation();
+
+    this.shareMenuOpen = !this.shareMenuOpen;
+  }
+
+  closeShareMenu(): void {
+    this.shareMenuOpen = false;
+  }
+
+  shareTo(key: string): void {
+    const url = encodeURIComponent(this.shareUrl);
+    const text = encodeURIComponent(this.shareText);
+    let target = '';
+
+    switch (key) {
+      case 'native':
+        (navigator as any)
+          .share({
+            title: this.business?.businessName,
+            text: this.shareText,
+            url: this.shareUrl,
+          })
+          .catch(() => {
+            /* user cancelled */
+          });
+        this.shareMenuOpen = false;
+        return;
+      case 'whatsapp':
+        target = `https://wa.me/?text=${encodeURIComponent(
+          `${this.shareText} ${this.shareUrl}`,
+        )}`;
+        break;
+      case 'facebook':
+        target = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        break;
+      case 'twitter':
+        target = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+        break;
+      case 'linkedin':
+        target = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+        break;
+      case 'telegram':
+        target = `https://t.me/share/url?url=${url}&text=${text}`;
+        break;
+      case 'email':
+        target = `mailto:?subject=${text}&body=${encodeURIComponent(
+          `${this.shareText}\n${this.shareUrl}`,
+        )}`;
+        break;
+      case 'sms':
+        target = `sms:?&body=${encodeURIComponent(
+          `${this.shareText} ${this.shareUrl}`,
+        )}`;
+        break;
+      case 'instagram':
+        // Instagram has no web share link: copy the URL, then open Instagram
+        // so the user can paste it in a story, bio or DM.
+        this.copyProfileLink(true);
+        window.open('https://www.instagram.com/', '_blank', 'noopener');
+        this.shareMenuOpen = false;
+        return;
+    }
+
+    if (!target) return;
+
+    if (key === 'email' || key === 'sms') {
+      window.location.href = target;
+    } else {
+      window.open(target, '_blank', 'noopener,noreferrer,width=640,height=560');
+    }
+    this.shareMenuOpen = false;
+  }
+
+  copyProfileLink(forInstagram = false): void {
+    const url = this.shareUrl;
+
+    const done = () => {
+      this.linkCopied = true;
+      clearTimeout(this.linkCopiedTimer);
+      this.linkCopiedTimer = setTimeout(() => (this.linkCopied = false), 2000);
+      this.showNotification(
+        forInstagram
+          ? 'Link copied - paste it in Instagram'
+          : 'Link copied to clipboard',
+      );
+    };
+
+    const fallback = () => {
+      const ta = this.document.createElement('textarea');
+      ta.value = url;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      this.document.body.appendChild(ta);
+      ta.select();
+      try {
+        this.document.execCommand('copy');
+        done();
+      } catch {
+        this.showNotification(
+          'Could not copy the link. Please copy it manually.',
+        );
+      }
+      this.document.body.removeChild(ta);
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(url).then(done, fallback);
+    } else {
+      fallback();
+    }
+  }
 
   advertiseProfile(): void {}
 

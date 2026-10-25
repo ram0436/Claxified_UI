@@ -285,13 +285,74 @@
         <span class="material-icons-outlined">edit</span> Edit Profile
       </button>
       <div class="action-extras">
-        <button
-          type="button"
-          class="act-btn act-outline act-sm"
-          (click)="shareProfile()"
-        >
-          <span class="material-icons-outlined">share</span> Share
-        </button>
+        <div class="share-wrap" (click)="$event.stopPropagation()">
+          <button
+            type="button"
+            class="act-btn act-outline act-sm"
+            [class.is-open]="shareMenuOpen"
+            aria-haspopup="true"
+            [attr.aria-expanded]="shareMenuOpen"
+            (click)="shareProfile($event)"
+          >
+            <span class="material-icons-outlined">share</span> Share
+          </button>
+
+          <div class="share-menu" *ngIf="shareMenuOpen" role="menu">
+            <div class="share-menu-head">
+              <h4>Share this business</h4>
+              <button
+                type="button"
+                class="share-close"
+                aria-label="Close"
+                (click)="closeShareMenu()"
+              >
+                <span class="material-icons-outlined">close</span>
+              </button>
+            </div>
+
+            <div class="share-grid">
+              <button
+                type="button"
+                class="share-item"
+                *ngFor="let t of shareTargetList"
+                (click)="shareTo(t.key)"
+              >
+                <span class="share-icon" [style.background]="t.color">
+                  <span *ngIf="t.glyph" class="share-glyph">{{ t.glyph }}</span>
+                  <span
+                    *ngIf="!t.glyph"
+                    class="material-icons-outlined share-mat"
+                    >{{ t.icon }}</span
+                  >
+                </span>
+                <span class="share-label">{{ t.label }}</span>
+              </button>
+            </div>
+
+            <div class="share-link-row">
+              <input
+                #shareLinkInput
+                type="text"
+                class="share-link-input"
+                readonly
+                [value]="shareUrl"
+                (focus)="shareLinkInput.select()"
+                aria-label="Business profile link"
+              />
+              <button
+                type="button"
+                class="share-copy-btn"
+                [class.copied]="linkCopied"
+                (click)="copyProfileLink()"
+              >
+                <span class="material-icons-outlined">{{
+                  linkCopied ? "check" : "content_copy"
+                }}</span>
+                {{ linkCopied ? "Copied" : "Copy" }}
+              </button>
+            </div>
+          </div>
+        </div>
         <button
           type="button"
           class="act-btn act-outline act-sm"
