@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { BusinessLoginComponent } from '../business-login/business-login.component';
 import { LoginComponent } from 'src/app/modules/user/component/login/login.component';
 import { BusinessService } from '../../service/business.service';
+import { UserService } from 'src/app/modules/user/service/user.service';
 import { BusinessListItem } from './../../model/Business';
 import { Subscription } from 'rxjs';
 import { buildBusinessCommands } from '../../../business/utils/business-url.util';
@@ -35,9 +36,11 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private router: Router,
     private businessService: BusinessService,
+    private userService: UserService,
   ) {}
 
   private businessUpdatedSub!: Subscription;
+  private loginEventSub!: Subscription;
 
   ngOnInit() {
     if (localStorage.getItem('authToken') != null) {
@@ -45,6 +48,15 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
       this.isAdmin = localStorage.getItem('role') === 'Admin';
       this.loadUserBusinesses();
     }
+
+    // React to login events (e.g. auto-login after business registration)
+    this.loginEventSub = this.userService.getData().subscribe(() => {
+      if (localStorage.getItem('authToken') != null) {
+        this.isUserLogedIn = true;
+        this.isAdmin = localStorage.getItem('role') === 'Admin';
+        this.loadUserBusinesses();
+      }
+    });
 
     this.businessUpdatedSub = this.businessService.businessUpdated$.subscribe(
       (update) => {
@@ -78,6 +90,9 @@ export class BusinessHeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.businessUpdatedSub) {
       this.businessUpdatedSub.unsubscribe();
+    }
+    if (this.loginEventSub) {
+      this.loginEventSub.unsubscribe();
     }
   }
 

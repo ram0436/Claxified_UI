@@ -134,7 +134,15 @@ export class EventHomeComponent implements OnInit {
   }
 
   get featuredEvents(): EventItem[] {
-    return this.events.filter((e) => e.isFeatured).slice(0, 5);
+    // latest created first
+    return this.events
+      .filter((e) => e.isFeatured)
+      .sort(
+        (a, b) =>
+          (new Date(b.createdAt).getTime() || 0) -
+            (new Date(a.createdAt).getTime() || 0) || b.id - a.id,
+      )
+      .slice(0, 5);
   }
 
   get topPicks(): EventItem[] {

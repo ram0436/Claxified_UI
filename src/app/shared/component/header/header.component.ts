@@ -542,6 +542,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.loadUserBusinesses();
     }
     this.userService.getData().subscribe((data) => {
+      if (localStorage.getItem('authToken') != null && !this.isUserLogedIn) {
+        this.isUserLogedIn = true;
+        this.loadUserBusinesses();
+      }
       this.getUserData();
     });
     var role = localStorage.getItem('role');

@@ -10,6 +10,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UserService } from '../../../user/service/user.service';
 import { BusinessService } from '../../service/business.service';
+import { buildBusinessCommands } from '../../utils/business-url.util';
 import {
   BusinessRegisterRequest,
   BusinessSubCategoryMapping,
@@ -601,15 +602,42 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
     // ----- SAVE -----
     this.registering = true;
 
+    console.log('Business register request payload:', payload);
+
     this.businessService.saveBusiness(payload).subscribe(
       (data: any) => {
+        console.log('Business register API response:', data);
+
         this.registering = false;
+
+        // Log the user in with the credentials returned by the register API
+        // (same keys the normal user login stores)
+        if (data?.authToken) {
+          localStorage.setItem('authToken', data.authToken);
+          localStorage.setItem('role', data.role);
+          localStorage.setItem('id', data.id);
+          localStorage.setItem('firstName', data.firstName || this.userName);
+
+          if (data.businessId) {
+            localStorage.setItem('businessId', data.businessId);
+          }
+
+          // Notify headers etc. that the user is now logged in
+          this.userService.setData('login');
+        }
+
         this.dialogRef.close();
         this.showNotification('Business Registered Successfully');
-        this.router.navigate(['/business/profile']);
+        // The backend generates its own tabRefGUID (it ignores the one sent),
+        // so look the new business up in the user's list to get the real one.
+        this.navigateToNewBusiness(Number(data?.id) || this.loggedInUserId);
       },
 
       (error) => {
+        console.error('Business register API error:', error);
+        console.error('Status:', error?.status);
+        console.error('Error body:', error?.error);
+
         this.registering = false;
         this.unauthorizedUser = true;
 
@@ -617,6 +645,37 @@ export class BusinessLoginComponent implements OnInit, OnDestroy {
           this.unauthorizedUser = false;
         }, 5000);
       },
+    );
+  }
+
+  private navigateToNewBusiness(userId: number): void {
+    const fallback = () => this.router.navigate(['/business/profile']);
+
+    this.businessService.getUserBusinesses(userId).subscribe(
+      (list: any[]) => {
+        const name = this.businessName.trim().toLowerCase();
+        const matches = (list || []).filter(
+          (b) => (b.businessName || '').trim().toLowerCase() === name,
+        );
+        // newest registration with this name = last one in the list
+        const created = matches[matches.length - 1];
+
+        const commands = created
+          ? buildBusinessCommands({
+              tabRefGUID: created.businessId,
+              businessName: created.businessName,
+              city: created.city || this.city,
+              area: created.area || this.nearBy,
+            })
+          : null;
+
+        if (commands) {
+          this.router.navigate(commands);
+        } else {
+          fallback();
+        }
+      },
+      () => fallback(),
     );
   }
 
