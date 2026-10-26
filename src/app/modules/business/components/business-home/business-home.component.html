@@ -94,7 +94,7 @@
           class="category-tab"
           *ngFor="let category of businessCategories"
           [class.active]="selectedCategoryIds.has(category.id)"
-          (click)="navigateToCategory(category)"
+          (click)="selectCategoryTab(category)"
         >
           <div
             class="category-tab-icon"
@@ -342,10 +342,26 @@
                     {{ business.businessName || "Unnamed Business" }}
                   </h3>
                   <div class="business-rating">
-                    <span class="rating-stars">
-                      <span class="material-icons-outlined">star</span>4.5
-                    </span>
-                    <span class="rating-count">({{ 10 }} reviews)</span>
+                    <ng-container
+                      *ngIf="getReviewCount(business) > 0; else noRating"
+                    >
+                      <span class="rating-stars">
+                        <span class="material-icons-outlined">star</span
+                        >{{ getRating(business) | number: "1.1-1" }}
+                      </span>
+                      <span class="rating-count"
+                        >({{ getReviewCount(business) }} review{{
+                          getReviewCount(business) === 1 ? "" : "s"
+                        }})</span
+                      >
+                    </ng-container>
+                    <ng-template #noRating>
+                      <span
+                        class="rating-count"
+                        *ngIf="hasReviewStats(business)"
+                        >No reviews yet</span
+                      >
+                    </ng-template>
                     <span class="rating-divider">•</span>
                     <span
                       class="business-open-state"

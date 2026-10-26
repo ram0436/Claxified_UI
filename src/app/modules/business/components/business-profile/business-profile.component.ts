@@ -1201,8 +1201,14 @@ export class BusinessProfileComponent implements OnInit {
   /** Opens the enquiry panel. For now this routes to the "Get a Quote"
    * offer panel entry point; callers can pass along which offering the
    * enquiry relates to. */
-  enquire(context?: string): void {
-    this.addOffer();
+  inquire(context?: string): void {
+    // this.addOffer();
+  }
+
+  get websiteHref(): string {
+    const raw = (this.business as any)?.website?.trim();
+    if (!raw) return '';
+    return /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
   }
 
   // ================== Offering Types ==================
