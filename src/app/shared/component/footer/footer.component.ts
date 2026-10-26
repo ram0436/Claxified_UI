@@ -1,9 +1,9 @@
-import { Component, OnDestroy } from "@angular/core";
-import { Router, NavigationEnd } from "@angular/router";
-import { Subscription, filter } from "rxjs";
-import { BUSINESS_FOOTER_SECTIONS } from "./../../../modules/business/components/business-footer/business-footer.component";
-import { FooterSection } from "./../../../modules/business/components/business-footer/business-footer.component";
-import { FOOTER_DATA } from "./footer.config";
+import { Component, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription, filter } from 'rxjs';
+import { BUSINESS_FOOTER_SECTIONS } from './../../../modules/business/components/business-footer/business-footer.component';
+import { FooterSection } from './../../../modules/business/components/business-footer/business-footer.component';
+import { FOOTER_DATA } from './footer.config';
 
 interface FooterLink {
   label: string;
@@ -29,22 +29,22 @@ interface SocialLink {
   colorClass: string;
 }
 
-type FooterMode = "full" | "simple" | "business";
+type FooterMode = 'full' | 'simple' | 'business';
 
 @Component({
-  selector: "app-footer",
-  templateUrl: "./footer.component.html",
-  styleUrls: ["./footer.component.css"],
+  selector: 'app-footer',
+  templateUrl: './footer.component.html',
+  styleUrls: ['./footer.component.css'],
 })
 export class FooterComponent implements OnDestroy {
   currentYear: number = new Date().getFullYear();
-  newsletterEmail: string = "";
-  subscribeState: "idle" | "success" | "error" = "idle";
+  newsletterEmail: string = '';
+  subscribeState: 'idle' | 'success' | 'error' = 'idle';
 
   // 'full' = default marketplace footer
   // 'simple' = classified-ads routes -> FOOTER_DATA-driven link columns only
   // 'business' = business/* routes -> business footer sections
-  footerMode: FooterMode = "full";
+  footerMode: FooterMode = 'full';
 
   businessFooterSections: FooterSection[] = BUSINESS_FOOTER_SECTIONS;
 
@@ -55,107 +55,123 @@ export class FooterComponent implements OnDestroy {
 
   linkColumns: FooterColumn[] = [
     {
-      title: "Marketplace",
+      title: 'Marketplace',
       links: [
-        { label: "All Categories", route: "/categories" },
-        { label: "Popular Ads", route: "/classified-ads" },
-        { label: "Premium Ads", route: "/classified-ads" },
-        { label: "Offers & Deals", route: "/offers" },
-        { label: "Near Me", route: "/search" },
-        { label: "Browse Locations", route: "/locations" },
+        { label: 'All Categories', route: '/categories' },
+        { label: 'Popular Ads', route: '/classified-ads' },
+        { label: 'Premium Ads', route: '/classified-ads' },
+        { label: 'Offers & Deals', route: '/offers' },
+        { label: 'Near Me', route: '/search' },
+        { label: 'Browse Locations', route: '/locations' },
       ],
     },
     {
-      title: "Businesses",
+      title: 'Businesses',
       links: [
-        { label: "All Businesses", route: "/business/directories" },
-        { label: "Top Rated Businesses", route: "/business/directories" },
-        { label: "New Businesses", route: "/business/directories" },
-        { label: "Verified Businesses", route: "/business/directories" },
-        { label: "List Your Business", route: "/business/list" },
-        { label: "Business Categories", route: "/categories" },
+        { label: 'All Businesses', route: '/business/directories' },
+        { label: 'Top Rated Businesses', route: '/business/directories' },
+        { label: 'New Businesses', route: '/business/directories' },
+        { label: 'Verified Businesses', route: '/business/directories' },
+        { label: 'List Your Business', route: '/business/list' },
+        { label: 'Business Categories', route: '/categories' },
       ],
     },
     {
-      title: "Ads",
+      title: 'Ads',
       links: [
-        { label: "Post Free Ad", route: "/post-menu" },
-        { label: "My Ads", route: "/my-ads" },
-        { label: "Saved Ads", route: "/saved-ads" },
-        { label: "Ad Categories", route: "/categories" },
-        { label: "How It Works", route: "/how-it-works" },
-        { label: "Safety Tips", route: "/safety-tips" },
+        { label: 'Post Free Ad', route: '/post-menu' },
+        { label: 'My Ads', route: '/my-ads' },
+        { label: 'Saved Ads', route: '/saved-ads' },
+        { label: 'Ad Categories', route: '/categories' },
+        { label: 'How It Works', route: '/how-it-works' },
+        { label: 'Safety Tips', route: '/safety-tips' },
       ],
     },
     {
-      title: "Support",
+      title: 'Support',
       links: [
-        { label: "Help Center", route: "/help" },
-        { label: "Contact Us", route: "/contact" },
-        { label: "FAQs", route: "/faqs" },
-        { label: "Terms & Conditions", route: "/terms" },
-        { label: "Privacy Policy", route: "/privacy" },
-        { label: "Refund Policy", route: "/refund-policy" },
+        { label: 'Help Center', route: '/help' },
+        { label: 'Contact Us', route: '/contact' },
+        { label: 'FAQs', route: '/faqs' },
+        { label: 'Terms & Conditions', route: '/terms' },
+        { label: 'Privacy Policy', route: '/privacy' },
+        { label: 'Refund Policy', route: '/refund-policy' },
       ],
     },
   ];
 
   popularCategories: PopularCategory[] = [
     {
-      icon: "devices_other",
-      name: "Electronics",
+      icon: 'devices_other',
+      name: 'Electronics',
       count: 1200,
-      colorClass: "c-purple",
-      route: "/Electronics/view-posts",
+      colorClass: 'c-purple',
+      route: '/Electronics/view-posts',
     },
     {
-      icon: "directions_car",
-      name: "Automobile",
+      icon: 'directions_car',
+      name: 'Automobile',
       count: 950,
-      colorClass: "c-pink",
-      route: "/Vehicles/view-posts",
+      colorClass: 'c-pink',
+      route: '/Vehicles/view-posts',
     },
     {
-      icon: "restaurant",
-      name: "Food & Restaurants",
+      icon: 'restaurant',
+      name: 'Food & Restaurants',
       count: 1500,
-      colorClass: "c-orange",
-      route: "/Commercial Services/view-posts",
+      colorClass: 'c-orange',
+      route: '/Commercial Services/view-posts',
     },
     {
-      icon: "home",
-      name: "Home & Living",
+      icon: 'home',
+      name: 'Home & Living',
       count: 1100,
-      colorClass: "c-green",
-      route: "/Furniture/view-posts",
+      colorClass: 'c-green',
+      route: '/Furniture/view-posts',
     },
     {
-      icon: "spa",
-      name: "Beauty & Wellness",
+      icon: 'spa',
+      name: 'Beauty & Wellness',
       count: 850,
-      colorClass: "c-rose",
-      route: "/Fashion/view-posts",
+      colorClass: 'c-rose',
+      route: '/Fashion/view-posts',
     },
   ];
 
   socialLinks: SocialLink[] = [
-    { name: "facebook", url: "https://facebook.com", colorClass: "c-facebook" },
     {
-      name: "instagram",
-      url: "https://instagram.com",
-      colorClass: "c-instagram",
+      name: 'facebook',
+      url: 'https://www.facebook.com/profile.php?id=61557194704541',
+      colorClass: 'c-facebook',
     },
-    { name: "twitter", url: "https://twitter.com", colorClass: "c-twitter" },
-    { name: "linkedin", url: "https://linkedin.com", colorClass: "c-linkedin" },
-    { name: "youtube", url: "https://youtube.com", colorClass: "c-youtube" },
+    {
+      name: 'instagram',
+      url: 'https://www.instagram.com/claxified_official',
+      colorClass: 'c-instagram',
+    },
+    {
+      name: 'twitter',
+      url: 'https://x.com/claxified51010',
+      colorClass: 'c-twitter',
+    },
+    {
+      name: 'linkedin',
+      url: 'https://www.linkedin.com/company/claxified',
+      colorClass: 'c-linkedin',
+    },
+    {
+      name: 'youtube',
+      url: 'https://www.youtube.com/@Claxified_official',
+      colorClass: 'c-youtube',
+    },
   ];
 
   bottomLinks: FooterLink[] = [
-    { label: "About Us", route: "/about" },
-    { label: "Careers", route: "/careers" },
-    { label: "Blog", route: "/blog" },
-    { label: "Press", route: "/press" },
-    { label: "Sitemap", route: "/sitemap" },
+    { label: 'About Us', route: '/about' },
+    { label: 'Careers', route: '/careers' },
+    { label: 'Blog', route: '/blog' },
+    { label: 'Press', route: '/press' },
+    { label: 'Sitemap', route: '/sitemap' },
   ];
 
   constructor(private router: Router) {
@@ -175,48 +191,46 @@ export class FooterComponent implements OnDestroy {
   private computeFooterMode(url: string): FooterMode {
     // "/business" and "/business/..." -> business footer
     if (
-      url === "/business" ||
-      url.startsWith("/business/") ||
-      url.startsWith("/business?")
+      url === '/business' ||
+      url.startsWith('/business/') ||
+      url.startsWith('/business?')
     ) {
-      return "business";
+      return 'business';
     }
     // classified-ads routes -> simplified, FOOTER_DATA-driven footer
-    if (url.includes("classified-ads")) {
-      return "simple";
+    if (url.includes('classified-ads')) {
+      return 'simple';
     }
-    return "full";
+    return 'full';
   }
 
-  isRouteSection(
-    section: any
-  ): section is {
-    type: "route";
+  isRouteSection(section: any): section is {
+    type: 'route';
     title: string;
     links: { label: string; slug: string }[];
   } {
-    return section.type === "route";
+    return section.type === 'route';
   }
 
   onNewsletterInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.newsletterEmail = input.value;
-    this.subscribeState = "idle";
+    this.subscribeState = 'idle';
   }
 
   subscribe(): void {
     const email = this.newsletterEmail.trim();
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if (!isValidEmail) {
-      this.subscribeState = "error";
+      this.subscribeState = 'error';
       return;
     }
-    this.subscribeState = "success";
-    this.newsletterEmail = "";
+    this.subscribeState = 'success';
+    this.newsletterEmail = '';
   }
 
   changeLocation(): void {
-    this.router.navigate(["/select-location"]);
+    this.router.navigate(['/select-location']);
   }
 
   navigateTo(route: string): void {
