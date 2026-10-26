@@ -8,8 +8,8 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { forkJoin, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { forkJoin, from, of } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { BusinessService } from '../../service/business.service';
 import { BusinessDirectoryItem, BusinessOfferDto } from '../../model/Business';
 import { BusinessLoginComponent } from '../business-login/business-login.component';
@@ -299,12 +299,6 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.businessService.getBusinessList().subscribe(
       (data: BusinessDirectoryItem[]) => {
         const activeBusinesses = (data || []).filter((b) => b.status !== 0);
-        activeBusinesses.forEach((b) => {
-          (b as any).rating = Number((4 + Math.random() * 0.8).toFixed(1));
-          (b as any).reviewCount = Math.floor(Math.random() * 200) + 20;
-          (b as any).establishedYear = 2015 + Math.floor(Math.random() * 10);
-        });
-
         this.allActiveBusinesses = activeBusinesses;
         this.businesses = activeBusinesses;
         this.businessesLoading = false;
@@ -312,6 +306,7 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.fetchOffers(
           activeBusinesses.slice(0, this.OFFER_SOURCE_BUSINESS_LIMIT),
         );
+        this.loadReviewStats(activeBusinesses);
         this.updateCategoryCounts();
         this.updateCityOptions();
         this.updateBusinessTypeOptions();
@@ -326,6 +321,51 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.offersError = true;
       },
     );
+  }
+
+  /** Fetches real reviews per business and stores average + count on each item
+   * so the existing rating filter and sort keep working. */
+  private loadReviewStats(businesses: BusinessDirectoryItem[]): void {
+    if (!businesses.length) return;
+
+    from(businesses)
+      .pipe(
+        mergeMap(
+          (b) =>
+            this.businessService.getBusinessReviews(b.id).pipe(
+              map((res) => ({ b, res })),
+              catchError((err) => {
+                return of(null);
+              }),
+            ),
+          4, // at most 4 requests at a time, so they don't queue behind offers
+        ),
+      )
+      .subscribe((result) => {
+        if (!result) return; // failed: stay in "unknown" state, not "no reviews"
+        const { b, res } = result;
+        const list: any[] = Array.isArray(res)
+          ? res
+          : (res as any)?.data || (res as any)?.items || [];
+
+        const count = list.length;
+        const total = list.reduce((s, r) => s + (Number(r.rating) || 0), 0);
+        (b as any).reviewCount = count;
+        (b as any).rating = count ? Number((total / count).toFixed(1)) : 0;
+        (b as any).reviewsLoaded = true;
+      });
+  }
+
+  hasReviewStats(business: BusinessDirectoryItem): boolean {
+    return !!(business as any).reviewsLoaded;
+  }
+
+  getRating(business: BusinessDirectoryItem): number {
+    return Number((business as any).rating) || 0;
+  }
+
+  getReviewCount(business: BusinessDirectoryItem): number {
+    return Number((business as any).reviewCount) || 0;
   }
 
   // =========================================================
@@ -1075,5 +1115,15 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
         alert('WhatsApp number not available for this business.');
       }
     });
+  }
+
+  selectCategoryTab(category: any): void {
+    this.toggleCategoryFilter(category.id);
+
+    if (this.selectedCategoryIds.has(category.id)) {
+      document
+        .getElementById('businesses-section')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }
