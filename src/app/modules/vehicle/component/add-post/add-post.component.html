@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <div class="header">Post your add</div>
+  <div class="header">Post your ad</div>
   <div class="container">
     <div class="heading">
       <h4>SELECTED CATEGORY</h4>
@@ -516,24 +516,23 @@
         </div>
 
         <div class="wd-300">
-          <div class="wd-100">
-            <p class="w-50">Name</p>
+          <mat-form-field appearance="fill">
+            <mat-label>Name</mat-label>
             <input
-              class="details-input"
-              type="text"
+              matInput
               [(ngModel)]="userData.firstName"
               [readonly]="!this.isAppSupport"
             />
-          </div>
-          <div class="wd-100">
-            <p class="w-50">Phone number</p>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Phone number</mat-label>
             <input
-              class="details-input"
-              type="text"
+              matInput
               [(ngModel)]="userData.mobileNo"
               [readonly]="!this.isAppSupport"
             />
-          </div>
+          </mat-form-field>
         </div>
       </div>
     </div>

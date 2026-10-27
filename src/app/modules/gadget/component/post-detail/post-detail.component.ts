@@ -509,4 +509,15 @@ export class PostDetailComponent {
 
     this.categoryNav.goToPostsListing(mainCategory.categoryName, subCategoryId);
   }
+
+  get formattedLocation(): string {
+    if (!this.postDetails) return '';
+    return [
+      this.postDetails.nearBy,
+      this.postDetails.city,
+      this.postDetails.state,
+    ]
+      .filter((part) => part && String(part).trim() !== '') // Remove empty/null values
+      .join(', '); // Join with a comma
+  }
 }

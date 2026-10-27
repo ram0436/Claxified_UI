@@ -219,8 +219,28 @@ export class NewsHomeComponent implements OnInit, OnDestroy {
 
   get trendingNow(): NewsArticle[] {
     return [...this.articles]
-      .sort((a, b) => b.viewCount - a.viewCount)
+      .sort((a, b) => {
+        // 1) Highest view count first
+        const views = (b.viewCount ?? 0) - (a.viewCount ?? 0);
+        if (views !== 0) return views;
+
+        // 2) Trending flag
+        const trending = Number(b.isTrending) - Number(a.isTrending);
+        if (trending !== 0) return trending;
+
+        // 3) Newest first
+        return (
+          this.toTime(b.publishedAt || b.createdAt) -
+          this.toTime(a.publishedAt || a.createdAt)
+        );
+      })
       .slice(0, 5);
+  }
+
+  private toTime(d?: string | null): number {
+    if (!d) return 0;
+    const t = new Date(d).getTime();
+    return Number.isFinite(t) ? t : 0;
   }
 
   get editorsPicks(): NewsArticle[] {

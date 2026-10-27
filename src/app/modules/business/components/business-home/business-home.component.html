@@ -93,7 +93,7 @@
         <div
           class="category-tab"
           *ngFor="let category of businessCategories"
-          [class.active]="selectedCategoryIds.has(category.id)"
+          [class.active]="selectedCategoryId === category.id"
           (click)="selectCategoryTab(category)"
         >
           <div
@@ -126,7 +126,7 @@
           {{ searchQuery.trim() ? "Search Results" : "Businesses Near You" }}
         </h2>
         <span class="ads-count-badge" *ngIf="!businessesLoading">
-          {{ filteredBusinesses.length }} found
+          {{ totalBusinessCount }} found
         </span>
       </div>
 
@@ -151,19 +151,22 @@
       </div>
     </div>
 
+    <!-- Initial load -->
     <div class="state-block" *ngIf="businessesLoading">
       <div class="spinner"></div>
       <p>Loading businesses…</p>
     </div>
 
+    <!-- Error -->
     <div class="state-block" *ngIf="!businessesLoading && businessesError">
       <span class="material-icons-outlined state-icon">wifi_off</span>
       <p>We couldn't load the businesses right now.</p>
-      <button class="retry-button" (click)="fetchBusinesses()">
+      <button class="retry-button" (click)="loadBusinesses(true)">
         Try Again
       </button>
     </div>
 
+    <!-- Layout: sidebar + results. Sidebar stays visible across refetches. -->
     <div
       class="businesses-layout"
       *ngIf="!businessesLoading && !businessesError"
@@ -180,7 +183,7 @@
           >
         </div>
 
-        <!-- Category -->
+        <!-- Category (single-select) -->
         <div class="filter-group">
           <h4 class="filter-group-title">Category</h4>
           <label
@@ -190,7 +193,7 @@
             <span class="filter-checkbox-label">
               <input
                 type="checkbox"
-                [checked]="selectedCategoryIds.has(category.id)"
+                [checked]="selectedCategoryId === category.id"
                 (change)="toggleCategoryFilter(category.id)"
               />
               {{ category.name }}
@@ -207,6 +210,8 @@
         </div>
 
         <hr class="filter-separator" />
+
+        <!-- Business Type (single-select) -->
         <div class="filter-group" *ngIf="businessTypeOptions.length">
           <h4 class="filter-group-title">Business Type</h4>
           <label
@@ -216,7 +221,7 @@
             <span class="filter-checkbox-label">
               <input
                 type="checkbox"
-                [checked]="selectedBusinessTypes.has(opt.value)"
+                [checked]="selectedBusinessType === opt.value"
                 (change)="toggleBusinessTypeFilter(opt.value)"
               />
               {{ opt.value }}
@@ -226,6 +231,8 @@
         </div>
 
         <hr class="filter-separator" />
+
+        <!-- Seller Type (single-select) -->
         <div class="filter-group" *ngIf="sellerTypeOptions.length">
           <h4 class="filter-group-title">Seller Type</h4>
           <label
@@ -235,7 +242,7 @@
             <span class="filter-checkbox-label">
               <input
                 type="checkbox"
-                [checked]="selectedSellerTypes.has(opt.value)"
+                [checked]="selectedSellerType === opt.value"
                 (change)="toggleSellerTypeFilter(opt.value)"
               />
               {{ opt.value }}
@@ -247,7 +254,16 @@
 
       <!-- Results -->
       <div class="businesses-content">
-        <div class="state-block" *ngIf="filteredBusinesses.length === 0">
+        <!-- Subtle progress row while refetching after a filter change -->
+        <div class="refreshing-row" *ngIf="businessesRefreshing">
+          <div class="spinner small"></div>
+          <span>Updating results…</span>
+        </div>
+
+        <div
+          class="state-block"
+          *ngIf="filteredBusinesses.length === 0 && !businessesRefreshing"
+        >
           <span class="material-icons-outlined state-icon">search_off</span>
           <p *ngIf="searchQuery.trim()">
             No businesses match "{{ searchQuery }}".
@@ -267,12 +283,12 @@
         <div
           class="business-grid"
           [class.list-view]="viewMode === 'list'"
-          *ngIf="displayedBusinesses.length > 0"
+          *ngIf="filteredBusinesses.length > 0"
         >
           <div
             class="business-card"
             *ngFor="
-              let business of displayedBusinesses;
+              let business of filteredBusinesses;
               trackBy: trackByBusinessId
             "
           >
@@ -439,12 +455,25 @@
           </div>
         </div>
 
-        <!-- Infinite scroll sentinel: loads more cards as the user scrolls, no click needed -->
+        <!-- Infinite scroll loading row -->
         <div class="infinite-loading-row" [class.hidden]="!isLoadingMore">
           <div class="spinner small"></div>
           <p>Loading more businesses…</p>
         </div>
 
+        <!-- End of results -->
+        <div
+          class="end-of-results"
+          *ngIf="
+            !hasMoreFromServer &&
+            !businessesRefreshing &&
+            filteredBusinesses.length > 0
+          "
+        >
+          You've reached the end.
+        </div>
+
+        <!-- Sentinel: triggers the next page load as the user scrolls -->
         <div #scrollSentinel class="scroll-sentinel"></div>
       </div>
     </div>
@@ -468,7 +497,7 @@
     <div class="state-block" *ngIf="!offersLoading && offersError">
       <span class="material-icons-outlined state-icon">wifi_off</span>
       <p>We couldn't load offers right now.</p>
-      <button class="retry-button" (click)="fetchBusinesses()">
+      <button class="retry-button" (click)="loadBusinesses(true)">
         Try Again
       </button>
     </div>
@@ -496,9 +525,7 @@
         </div>
         <div class="offer-content">
           <h4 class="offer-title">{{ offer.title }}</h4>
-          <p class="offer-description">
-            {{ offer.businessName }}
-          </p>
+          <p class="offer-description">{{ offer.businessName }}</p>
           <div class="offer-footer">
             <span class="offer-validity" *ngIf="offer.endDate">
               Valid till {{ formatOfferValidity(offer.endDate) }}

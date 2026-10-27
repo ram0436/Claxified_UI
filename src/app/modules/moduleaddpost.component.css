@@ -377,14 +377,26 @@ button.selected {
   display: none;
 }
 
-/* Name / phone fields */
+/* Container for the two material fields */
 .wd-300 {
   margin-left: 0;
-  width: auto;
   flex: 1;
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
+  align-items: flex-start;
+  margin-right: 30px;
+}
+
+/* Make the material fields share the space equally */
+.wd-300 mat-form-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Optional: Fix for the read-only background color */
+::ng-deep .wd-300 .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+  background-color: #faf9fc;
 }
 
 .wd-100 {
