@@ -62,6 +62,23 @@ const OFFERING_DETAIL_ENDPOINT: Partial<Record<number, string>> = {
   [OfferingType.MembershipPlan]: 'offering-membership-plan',
 };
 
+/** Query parameters accepted by the paginated Business/List endpoint. */
+export interface BusinessListQuery {
+  pageIndex: number;
+  pageSize: number;
+  businessCategoryId?: number | null;
+  businessTypeId?: number | null;
+  sellerTypeId?: number | null;
+}
+
+/** Normalized response shape for Business/List. */
+export interface BusinessListResponse {
+  items: BusinessDirectoryItem[];
+  totalCount: number;
+  pageIndex: number;
+  pageSize: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -79,16 +96,74 @@ export class BusinessService {
 
   constructor(private http: HttpClient) {}
 
-  getBusinessList(): Observable<BusinessDirectoryItem[]> {
+  // Overload 1: legacy no-args call → flat array (backwards compatible)
+  getBusinessList(): Observable<BusinessDirectoryItem[]>;
+  // Overload 2: paginated call → envelope
+  getBusinessList(query: BusinessListQuery): Observable<BusinessListResponse>;
+  // Implementation
+  getBusinessList(
+    query?: BusinessListQuery,
+  ): Observable<BusinessDirectoryItem[] | BusinessListResponse> {
+    if (!query) {
+      return this.http
+        .get<BusinessDirectoryItem[]>(`${this.baseUrl}Business/List`)
+        .pipe(
+          tap((list) =>
+            rememberBusinessGuids((list || []).map((b) => b.tabRefGUID)),
+          ),
+        );
+    }
+
+    let params = new HttpParams()
+      .set('pageIndex', String(query.pageIndex))
+      .set('pageSize', String(query.pageSize));
+
+    if (query.businessCategoryId != null) {
+      params = params.set(
+        'businessCategoryId',
+        String(query.businessCategoryId),
+      );
+    }
+    if (query.businessTypeId != null) {
+      params = params.set('businessTypeId', String(query.businessTypeId));
+    }
+    if (query.sellerTypeId != null) {
+      params = params.set('sellerTypeId', String(query.sellerTypeId));
+    }
+
     return this.http
-      .get<BusinessDirectoryItem[]>(`${this.baseUrl}Business/List`)
+      .get<
+        BusinessListResponse | BusinessDirectoryItem[]
+      >(`${this.baseUrl}Business/List`, { params })
       .pipe(
-        tap((list) =>
-          rememberBusinessGuids((list || []).map((b) => b.tabRefGUID)),
+        map((res): BusinessListResponse => {
+          if (Array.isArray(res)) {
+            return {
+              items: res,
+              totalCount: res.length,
+              pageIndex: query.pageIndex,
+              pageSize: query.pageSize,
+            };
+          }
+          const anyRes = res as any;
+          return {
+            items: anyRes.items ?? anyRes.data ?? anyRes.results ?? [],
+            totalCount:
+              anyRes.totalCount ??
+              anyRes.total ??
+              anyRes.totalRecords ??
+              anyRes.count ??
+              0,
+            pageIndex: anyRes.pageIndex ?? query.pageIndex,
+            pageSize: anyRes.pageSize ?? query.pageSize,
+          };
+        }),
+        tap((res) =>
+          rememberBusinessGuids((res.items || []).map((b) => b.tabRefGUID)),
         ),
       );
   }
-
+  
   getBusinessCategories() {
     return this.http.get(`${this.baseUrl}Business/business-categories`);
   }
@@ -146,8 +221,11 @@ export class BusinessService {
       !!guid && guid.toLowerCase().startsWith(prefix);
 
     const userId = Number(localStorage.getItem('id'));
-    const publicGuids$ = this.getBusinessList().pipe(
-      map((list) => (list || []).map((b) => b.tabRefGUID)),
+    const publicGuids$ = this.getBusinessList({
+      pageIndex: 1,
+      pageSize: 1000,
+    }).pipe(
+      map((res) => (res.items || []).map((b) => b.tabRefGUID)),
       catchError(() => of([] as string[])),
     );
     const ownGuids$ = userId
@@ -157,7 +235,6 @@ export class BusinessService {
         )
       : of([] as string[]);
 
-    // both calls run in parallel
     return forkJoin([publicGuids$, ownGuids$]).pipe(
       map(([pub, own]) => {
         const all = [...pub, ...own].filter(Boolean);
@@ -188,9 +265,7 @@ export class BusinessService {
     return this.http.post(
       `${this.baseUrl}Business/UploadCoverImage`,
       formData,
-      {
-        responseType: 'text',
-      },
+      { responseType: 'text' },
     ) as Observable<string>;
   }
 

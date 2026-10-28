@@ -25,7 +25,7 @@
           <button class="search-btn" (click)="performSearch()">Search</button>
         </div>
 
-        <div class="popular-search-row">
+        <div class="popular-search-row" *ngIf="popularSearches.length > 0">
           <span class="popular-label">Popular Searches:</span>
           <span class="popular-chip" *ngFor="let p of popularSearches">{{
             p
@@ -33,12 +33,12 @@
         </div>
       </div>
 
-      <div class="event-hero-side">
+      <div class="event-hero-side" *ngIf="quickLinks.length > 0">
         <div class="quick-link-list">
           <a
             class="quick-link-row"
             *ngFor="let q of quickLinks"
-            routerLink="/events/categories"
+            [routerLink]="['/events/categories', q.slug]"
           >
             <span class="material-icons-outlined">{{ q.icon }}</span>
             <div>
@@ -68,13 +68,13 @@
 
   <ng-container *ngIf="!loading && !error">
     <!-- Featured Events -->
-    <section class="section-wrapper">
+    <section class="section-wrapper" *ngIf="featuredEvents.length > 0">
       <div class="section-header">
         <h2 class="section-title">Featured Events</h2>
-        <a routerLink="/events/all" class="view-all-link"
-          >View all events
-          <span class="material-icons-outlined">arrow_forward</span></a
-        >
+        <a routerLink="/events/all" class="view-all-link">
+          View all events
+          <span class="material-icons-outlined">arrow_forward"></span>
+        </a>
       </div>
 
       <div class="featured-event-row">
@@ -115,9 +115,9 @@
               >
             </div>
             <div class="featured-event-footer">
-              <span class="price" [class.free]="e.isFree">{{
-                priceLabel(e)
-              }}</span>
+              <span class="price" *ngIf="priceLabel(e)" [class.free]="e.isFree">
+                {{ priceLabel(e) }}
+              </span>
               <button class="book-btn">
                 {{ e.ticketRequired ? "Book Now" : "View Details" }}
               </button>
@@ -172,49 +172,71 @@
             <h5>{{ e.name }}</h5>
             <span>{{ timeRange(e) }}</span>
           </div>
-          <span class="mini-price">{{ priceLabel(e) }}</span>
+          <span class="mini-price" *ngIf="priceLabel(e)">{{
+            priceLabel(e)
+          }}</span>
         </a>
       </div>
 
+      <!-- Upcoming This Weekend -->
       <div class="mini-card">
         <div class="mini-card-header">
           <h3>Upcoming This Weekend</h3>
           <a routerLink="/events/all" class="view-all-link">View all</a>
         </div>
-        <a
-          class="mini-event-row"
-          *ngFor="let e of topPicks"
-          [routerLink]="['/events/event', e.slug]"
+
+        <ng-container
+          *ngIf="upcomingThisWeekend.length > 0; else noWeekendEvents"
         >
-          <img [src]="e.featuredImageUrl" [alt]="e.name" />
-          <div class="mini-event-body">
-            <h5>{{ e.name }}</h5>
-            <span
-              >{{ dayOf(e.startDateTime) }}
-              {{ monthOf(e.startDateTime) }} &bull; {{ timeRange(e) }}</span
-            >
-          </div>
-          <span class="mini-price">{{ priceLabel(e) }}</span>
-        </a>
-        <p class="empty-hint" *ngIf="upcomingThisWeekend.length === 0">
-          No events this weekend yet.
-        </p>
+          <a
+            class="mini-event-row"
+            *ngFor="let e of upcomingThisWeekend"
+            [routerLink]="['/events/event', e.slug]"
+          >
+            <img [src]="e.featuredImageUrl" [alt]="e.name" />
+            <div class="mini-event-body">
+              <h5>{{ e.name }}</h5>
+              <span
+                >{{ dayOf(e.startDateTime) }}
+                {{ monthOf(e.startDateTime) }} &bull; {{ timeRange(e) }}</span
+              >
+            </div>
+            <span class="mini-price" *ngIf="priceLabel(e)">{{
+              priceLabel(e)
+            }}</span>
+          </a>
+        </ng-container>
+
+        <ng-template #noWeekendEvents>
+          <p class="empty-hint">No events happening this weekend.</p>
+        </ng-template>
       </div>
 
-      <div class="mini-card why-list-card">
+      <div class="mini-card why-list-card" *ngIf="isAdmin">
         <h3>Why List Your Event on Claxified?</h3>
         <div class="why-grid">
-          <div class="why-item" *ngFor="let w of whyList">
-            <span class="material-icons-outlined">{{ w.icon }}</span>
-            <h6>{{ w.title }}</h6>
-            <p>{{ w.subtitle }}</p>
+          <div class="why-item">
+            <span class="material-icons-outlined">live_tv</span>
+            <h6>Free Event Listing</h6>
+            <p>Reach more people</p>
+          </div>
+          <div class="why-item">
+            <span class="material-icons-outlined">groups</span>
+            <h6>Targeted Audience</h6>
+            <p>Local &amp; relevant</p>
+          </div>
+          <div class="why-item">
+            <span class="material-icons-outlined">settings</span>
+            <h6>Easy Management</h6>
+            <p>Simple &amp; quick</p>
+          </div>
+          <div class="why-item">
+            <span class="material-icons-outlined">visibility</span>
+            <h6>Boost Visibility</h6>
+            <p>Get more attendees</p>
           </div>
         </div>
-        <button
-          class="list-event-btn"
-          routerLink="/events/register"
-          *ngIf="isAdmin"
-        >
+        <button class="list-event-btn" routerLink="/events/register">
           List Your Event Now
         </button>
       </div>

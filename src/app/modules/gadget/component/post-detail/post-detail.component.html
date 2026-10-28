@@ -19,7 +19,9 @@
           {{ getMainCategoryName(postDetails?.categoryId) }}
         </a>
         <ng-container *ngIf="getSubCategoryName(postDetails?.subCategoryId)">
-          <span class="material-icons-outlined pd-crumb-sep">chevron_right</span>
+          <span class="material-icons-outlined pd-crumb-sep"
+            >chevron_right</span
+          >
           <a
             (click)="goToPostsListing(postDetails?.subCategoryId)"
             style="cursor: pointer"
@@ -163,10 +165,7 @@
               <span class="material-icons-outlined pd-loc-icon"
                 >location_on</span
               >
-              <p class="loc">
-                {{ postDetails?.nearBy }}, {{ postDetails?.city }},
-                {{ postDetails?.state }}
-              </p>
+              <p class="loc">{{ formattedLocation }}</p>
             </div>
           </mat-card-content>
         </mat-card>
@@ -416,10 +415,7 @@
               <span class="material-icons-outlined pd-loc-icon"
                 >location_on</span
               >
-              <p class="loc">
-                {{ postDetails?.nearBy }}, {{ postDetails?.city }},
-                {{ postDetails?.state }}
-              </p>
+              <p class="loc">{{ formattedLocation }}</p>
             </div>
           </mat-card-content>
         </mat-card>

@@ -613,11 +613,6 @@
   transition: all 0.2s ease;
 }
 
-.reveal-button:hover {
-  background-color: #e75462 !important;
-  color: #fff !important;
-}
-
 .reveal-button:disabled {
   color: #b1adb3 !important;
   background-color: #f4f1fb !important;
@@ -736,12 +731,13 @@
   color: #1c1533;
   cursor: pointer;
   transition: all 0.2s ease;
+  width: 100%;
 }
 
 .radio-switch + label::before {
   content: "";
   position: absolute;
-  left: 12px;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
   width: 16px;
@@ -1181,11 +1177,12 @@ ul {
   font-size: 11.5px;
   font-weight: 500;
   color: #8b8299;
-  text-transform: uppercase;
+
   letter-spacing: 0.3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  margin-bottom: 2px;
 }
 
 .pd-detail-value {
@@ -1222,4 +1219,21 @@ ul {
   .pd-detail-icon .material-icons-outlined {
     font-size: 18px;
   }
+}
+
+.hide-visually {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.reveal-button:hover {
+  background-color: #e75462 !important;
+  color: #fff !important;
 }

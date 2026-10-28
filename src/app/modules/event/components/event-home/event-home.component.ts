@@ -5,80 +5,19 @@ import { EventService } from '../../service/event.service';
 import { EventCategory, EventItem } from '../../model/Event';
 import { UserService } from 'src/app/modules/user/service/user.service';
 
-const CATEGORY_ICONS: Record<string, string> = {
-  technology: 'memory',
-  business: 'work',
-  entertainment: 'theater_comedy',
-  sports: 'sports_soccer',
-  'music-concerts': 'music_note',
-  workshops: 'school',
-  exhibitions: 'photo_library',
-  'food-drinks': 'restaurant',
-  family: 'diversity_3',
-  community: 'groups',
-};
-
 @Component({
   selector: 'app-event-home',
   templateUrl: './event-home.component.html',
   styleUrls: ['./event-home.component.css'],
 })
 export class EventHomeComponent implements OnInit {
-  location = 'Bengaluru';
   searchQuery = '';
-  dateFilter = '';
 
   categories: EventCategory[] = [];
   events: EventItem[] = [];
 
   loading = true;
   error = false;
-
-  popularSearches = [
-    'Concerts',
-    'Workshops',
-    'Exhibitions',
-    'Festivals',
-    'Sports',
-  ];
-
-  quickLinks = [
-    {
-      icon: 'celebration',
-      title: 'Live Shows & Concerts',
-      subtitle: 'Experience amazing live performances',
-    },
-    {
-      icon: 'school',
-      title: 'Workshops & Classes',
-      subtitle: 'Learn new skills & grow',
-    },
-    {
-      icon: 'palette',
-      title: 'Exhibitions & Fairs',
-      subtitle: 'Explore, connect & inspire',
-    },
-  ];
-
-  whyList = [
-    {
-      icon: 'live_tv',
-      title: 'Free Event Listing',
-      subtitle: 'Reach more people',
-    },
-    {
-      icon: 'groups',
-      title: 'Targeted Audience',
-      subtitle: 'Local & relevant',
-    },
-    { icon: 'settings', title: 'Easy Management', subtitle: 'Simple & quick' },
-    {
-      icon: 'visibility',
-      title: 'Boost Visibility',
-      subtitle: 'Get more attendees',
-    },
-  ];
-
   isAdmin = false;
 
   constructor(
@@ -94,14 +33,9 @@ export class EventHomeComponent implements OnInit {
 
   private checkAdmin(): void {
     this.isAdmin = localStorage.getItem('role') === 'Admin';
-
     this.userService.getData().subscribe({
-      next: () => {
-        this.isAdmin = localStorage.getItem('role') === 'Admin';
-      },
-      error: () => {
-        this.isAdmin = false;
-      },
+      next: () => (this.isAdmin = localStorage.getItem('role') === 'Admin'),
+      error: () => (this.isAdmin = false),
     });
   }
 
@@ -114,14 +48,19 @@ export class EventHomeComponent implements OnInit {
       events: this.eventService.getEvents(),
     }).subscribe({
       next: ({ categories, events }) => {
-        this.categories = categories
+        this.categories = (categories || [])
           .filter((c) => c.isActive)
           .sort((a, b) => a.displayOrder - b.displayOrder);
 
-        this.events = events.sort(
-          (a, b) =>
-            new Date(a.startDateTime).getTime() -
-            new Date(b.startDateTime).getTime(),
+        // De-dupe: API returns the same event multiple times
+        const byKey = new Map<string, EventItem>();
+        (events || []).forEach((e) => {
+          const key = e.slug || String(e.id);
+          if (!byKey.has(key)) byKey.set(key, e);
+        });
+
+        this.events = [...byKey.values()].sort(
+          (a, b) => this.toTime(a.startDateTime) - this.toTime(b.startDateTime),
         );
 
         this.loading = false;
@@ -133,21 +72,25 @@ export class EventHomeComponent implements OnInit {
     });
   }
 
+  // ---------- Derived views ----------
+
   get featuredEvents(): EventItem[] {
-    // latest created first
     return this.events
       .filter((e) => e.isFeatured)
       .sort(
         (a, b) =>
-          (new Date(b.createdAt).getTime() || 0) -
-            (new Date(a.createdAt).getTime() || 0) || b.id - a.id,
+          this.toTime(b.createdAt) - this.toTime(a.createdAt) || b.id - a.id,
       )
       .slice(0, 5);
   }
 
   get topPicks(): EventItem[] {
     return [...this.events]
-      .sort((a, b) => b.viewCount - a.viewCount)
+      .sort((a, b) => {
+        const views = (b.viewCount ?? 0) - (a.viewCount ?? 0);
+        if (views !== 0) return views;
+        return this.toTime(b.createdAt) - this.toTime(a.createdAt);
+      })
       .slice(0, 3);
   }
 
@@ -156,55 +99,89 @@ export class EventHomeComponent implements OnInit {
     const weekMs = 7 * 24 * 3600000;
     return this.events
       .filter((e) => {
-        const start = new Date(e.startDateTime).getTime();
+        const start = this.toTime(e.startDateTime);
         return start >= now && start <= now + weekMs;
       })
       .slice(0, 2);
   }
 
-  categoryIcon(cat: EventCategory): string {
-    return CATEGORY_ICONS[cat.slug] || 'event';
+  /** Popular searches are derived from the top categories instead of hardcoded. */
+  get popularSearches(): string[] {
+    return this.categories.slice(0, 5).map((c) => c.name);
   }
 
-  // Event counts per category aren't returned by the categories API,
-  // so this derives a live count from the loaded events list.
+  /**
+   * Quick links are derived from the first few categories — no hardcoded
+   * titles. Only shown if the backend returns categories at all.
+   */
+  get quickLinks(): {
+    icon: string;
+    title: string;
+    subtitle: string;
+    slug: string;
+  }[] {
+    return this.categories.slice(0, 3).map((c) => ({
+      icon: this.categoryIcon(c),
+      title: c.name,
+      subtitle: c.description?.trim() || `${this.categoryCount(c)} events`,
+      slug: c.slug,
+    }));
+  }
+
+  /** Icon comes from backend if it exposes one; otherwise a neutral default. */
+  categoryIcon(cat: EventCategory): string {
+    // If EventCategory ever gains an `icon` field, use it:
+    // return (cat as any).icon || 'event';
+    return 'event';
+  }
+
   categoryCount(cat: EventCategory): number {
     return this.events.filter((e) => e.eventCategoryId === cat.id).length;
   }
 
+  // ---------- Formatting ----------
+
+  /** Badge only from backend flags — no invented thresholds. */
   eventBadge(e: EventItem): string | null {
     if (e.isFeatured) return 'Featured';
     if (e.isTrending) return 'Trending';
-    const created = new Date(e.createdAt).getTime();
-    if (!isNaN(created) && Date.now() - created < 7 * 24 * 3600000)
-      return 'New';
-    if (e.viewCount > 1000) return 'Popular';
     return null;
   }
 
   dayOf(dateStr: string): string {
-    return new Date(dateStr).getDate().toString().padStart(2, '0');
+    const d = new Date(dateStr);
+    return isNaN(d.getTime()) ? '' : d.getDate().toString().padStart(2, '0');
   }
 
   monthOf(dateStr: string): string {
-    return new Date(dateStr)
-      .toLocaleDateString('en-US', { month: 'short' })
-      .toUpperCase();
+    const d = new Date(dateStr);
+    return isNaN(d.getTime())
+      ? ''
+      : d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
   }
 
   timeRange(e: EventItem): string {
     const start = new Date(e.startDateTime);
-    const startStr = start.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-    return `${startStr} Onwards`;
+    if (isNaN(start.getTime())) return '';
+    return (
+      start.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+      }) + ' Onwards'
+    );
   }
 
   priceLabel(e: EventItem): string {
-    return e.isFree
-      ? 'Free Entry'
-      : `\u20B9${e.price.toLocaleString('en-IN')} Onwards`;
+    if (e.isFree) return 'Free Entry';
+    if (e.price == null || e.price <= 0) return '';
+    return `₹${e.price.toLocaleString('en-IN')} Onwards`;
+  }
+  // ---------- Helpers ----------
+
+  private toTime(d?: string | null): number {
+    if (!d) return 0;
+    const t = new Date(d).getTime();
+    return Number.isFinite(t) ? t : 0;
   }
 
   performSearch(): void {

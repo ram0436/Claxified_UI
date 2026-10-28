@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { BusinessService } from "../../service/business.service";
-import { BusinessDirectoryItem } from "./../../model/Business";
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { BusinessService } from '../../service/business.service';
+import { BusinessDirectoryItem } from './../../model/Business';
 import { buildBusinessCommands } from '../../../business/utils/business-url.util';
 
 @Component({
-  selector: "app-business-directories",
-  templateUrl: "./business-directories.component.html",
-  styleUrls: ["./business-directories.component.css"],
+  selector: 'app-business-directories',
+  templateUrl: './business-directories.component.html',
+  styleUrls: ['./business-directories.component.css'],
 })
 export class BusinessDirectoriesComponent implements OnInit {
   businesses: BusinessDirectoryItem[] = [];
@@ -16,7 +16,7 @@ export class BusinessDirectoriesComponent implements OnInit {
 
   constructor(
     private businessService: BusinessService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +38,7 @@ export class BusinessDirectoriesComponent implements OnInit {
       () => {
         this.loadError = true;
         this.loading = false;
-      }
+      },
     );
   }
 
@@ -54,18 +54,18 @@ export class BusinessDirectoriesComponent implements OnInit {
 
   getLocationLabel(business: BusinessDirectoryItem): string {
     const addr = business.businessAddressDto;
-    if (!addr) return "";
-    return [addr.area, addr.city].filter((part) => !!part).join(", ");
+    if (!addr) return '';
+    return [addr.area, addr.city].filter((part) => !!part).join(', ');
   }
 
   getInitials(name: string): string {
-    if (!name || !name.trim()) return "?";
+    if (!name || !name.trim()) return '?';
     return name
       .trim()
       .split(/\s+/)
       .slice(0, 2)
       .map((word) => word.charAt(0).toUpperCase())
-      .join("");
+      .join('');
   }
 
   /**
@@ -92,7 +92,7 @@ export class BusinessDirectoriesComponent implements OnInit {
 
   private toMinutes(time: string): number | null {
     if (!time) return null;
-    const [h, m] = time.split(":").map((v) => parseInt(v, 10));
+    const [h, m] = time.split(':').map((v) => parseInt(v, 10));
     if (isNaN(h) || isNaN(m)) return null;
     return h * 60 + m;
   }
@@ -107,9 +107,9 @@ export class BusinessDirectoriesComponent implements OnInit {
   whatsappBusiness(event: Event, whatsApp: string | undefined): void {
     event.stopPropagation();
     if (!whatsApp) return;
-    const cleaned = whatsApp.replace(/[^0-9]/g, "");
+    const cleaned = whatsApp.replace(/[^0-9]/g, '');
     if (cleaned) {
-      window.open(`https://wa.me/${cleaned}`, "_blank");
+      window.open(`https://wa.me/${cleaned}`, '_blank');
     }
   }
 }

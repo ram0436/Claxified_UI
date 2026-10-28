@@ -579,7 +579,7 @@
 
 /* ---- Filters sidebar ---- */
 
-.filters-sidebar {
+/* .filters-sidebar {
   flex: 0 0 260px;
   width: 260px;
   background: #fff;
@@ -589,7 +589,7 @@
   position: sticky;
   top: 16px;
   box-shadow: 0 4px 20px rgba(108, 76, 224, 0.05);
-}
+} */
 
 .filters-head {
   display: flex;
@@ -1013,13 +1013,10 @@
    ========================================================= */
 .business-card-footer {
   display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
   align-items: center;
-  gap: 6px;
-  margin-top: auto;
-  position: relative;
-  z-index: 2;
 }
-
 .view-details-btn {
   flex: 1.4;
   display: flex;
@@ -1037,6 +1034,14 @@
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease;
+}
+
+.business-card-footer .view-details-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .view-details-btn:hover {
@@ -1090,6 +1095,18 @@
 
 .pill-whatsapp:hover {
   background: #d3f0dd;
+}
+
+.business-card-footer .pill-btn {
+  flex: 0 0 auto;
+  min-width: 0;
+  padding: 0 6px;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.business-card-footer .pill-btn .material-icons-outlined {
+  font-size: 12px;
 }
 
 /* ---- List view variant ---- */
@@ -1416,6 +1433,24 @@
 @media (max-width: 480px) {
   .offers-grid {
     grid-template-columns: 1fr;
+  }
+
+  .business-card-footer {
+    gap: 3px;
+  }
+
+  .business-card-footer .view-details-btn {
+    padding: 0 4px;
+    font-size: 9.5px;
+  }
+
+  .business-card-footer .pill-btn {
+    padding: 0 4px;
+    font-size: 9px;
+  }
+
+  .business-card-footer .pill-btn .material-icons-outlined {
+    font-size: 11px;
   }
 }
 
@@ -2062,5 +2097,172 @@
 
   .business-card-image-overlay .business-name {
     font-size: 15px;
+  }
+}
+
+.businesses-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.filters-sidebar {
+  flex: 0 0 260px;
+  width: 260px;
+  align-self: flex-start;
+  position: sticky;
+  top: 16px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #eee6fa;
+  border-radius: 16px;
+  padding: 18px 18px 22px;
+  box-shadow: 0 4px 20px rgba(108, 76, 224, 0.05);
+}
+
+.businesses-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.refreshing-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 0 12px;
+  font-size: 12.5px;
+  color: #635b76;
+}
+
+.end-of-results {
+  text-align: center;
+  padding: 20px 0 4px;
+  font-size: 12.5px;
+  color: #8b8299;
+}
+
+.scroll-sentinel {
+  height: 1px;
+  width: 100%;
+}
+
+.infinite-loading-row.hidden {
+  display: none;
+}
+
+@media (max-width: 992px) {
+  .businesses-layout {
+    flex-direction: column;
+  }
+  .filters-sidebar {
+    position: static;
+    width: 100%;
+    flex: 1 1 auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+:host {
+  --filters-sticky-top: 16px;
+}
+
+.businesses-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* Sidebar: sticky, no scrollbar, no max-height cap */
+.filters-sidebar {
+  flex: 0 0 260px;
+  width: 260px;
+  align-self: flex-start;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: var(--filters-sticky-top);
+
+  /* No internal scroll, no scrollbar, no height cap */
+  max-height: none;
+  overflow: visible;
+  overflow-y: visible;
+
+  /* Keep the sidebar itself unclipped while the page scrolls */
+  background: #fff;
+  border: 1px solid #eee6fa;
+  border-radius: 16px;
+  padding: 18px 18px 22px;
+  box-shadow: 0 4px 20px rgba(108, 76, 224, 0.05);
+}
+
+/* Belt-and-braces: hide any scrollbar the UA might still show */
+.filters-sidebar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.filters-sidebar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Results column */
+.businesses-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Refreshing indicator */
+.refreshing-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 0 12px;
+  font-size: 12.5px;
+  color: #635b76;
+}
+
+/* End-of-results */
+.end-of-results {
+  text-align: center;
+  padding: 20px 0 4px;
+  font-size: 12.5px;
+  color: #8b8299;
+}
+
+/* Sentinel for infinite scroll */
+.scroll-sentinel {
+  height: 1px;
+  width: 100%;
+}
+
+.infinite-loading-row.hidden {
+  display: none;
+}
+
+/* On mobile the sidebar flows above the results, not sticky */
+@media (max-width: 992px) {
+  .businesses-layout {
+    flex-direction: column;
+  }
+  .filters-sidebar {
+    position: static;
+    width: 100%;
+    flex: 1 1 auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+.filters-sidebar {
+  position: static;
+  top: auto;
+  align-self: flex-start;
+}
+
+@media (max-width: 380px) {
+  .business-card-footer .pill-btn .material-icons-outlined {
+    display: none;
   }
 }

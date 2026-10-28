@@ -49,10 +49,13 @@ export class MarketplaceComponent implements OnInit {
   // Search
   searchQuery: string = '';
 
-  // Businesses
+  // Businesses (server-paged, first page only for the strip)
   businesses: BusinessViewModel[] = [];
   businessesLoading: boolean = true;
   businessesError: boolean = false;
+
+  /** How many businesses we want to show in the "Popular Businesses" strip. */
+  private readonly POPULAR_BUSINESS_LIMIT = 15;
 
   // Featured Ads
   featuredAds: any[] = [];
@@ -75,10 +78,10 @@ export class MarketplaceComponent implements OnInit {
 
   // Icon per offer type
   private offerTypeIcons: { [key: number]: string } = {
-    1: 'local_offer', // percentage off
-    2: 'discount', // flat amount off
-    3: 'card_giftcard', // bundled / gift
-    4: 'restaurant', // category-specific (fallback used loosely)
+    1: 'local_offer',
+    2: 'discount',
+    3: 'card_giftcard',
+    4: 'restaurant',
   };
 
   // Category icon mapping
@@ -335,6 +338,7 @@ export class MarketplaceComponent implements OnInit {
   get showAdResults(): boolean {
     return this.activeFilter === 'all' || this.activeFilter === 'ads';
   }
+
   // =========================================================
   // NAVIGATION
   // =========================================================
@@ -349,8 +353,6 @@ export class MarketplaceComponent implements OnInit {
 
   openBusinessLoginModal(): void {
     this.dialog.open(BusinessLoginComponent, {
-      // width: '800px',
-      // maxWidth: '95vw',
       panelClass: 'login-dialog-container',
       autoFocus: false,
     });
@@ -361,42 +363,60 @@ export class MarketplaceComponent implements OnInit {
       this.router.navigate(['/post-menu']);
     } else {
       this.dialog.open(LoginComponent, {
-        // width: '400px',
         panelClass: 'login-dialog-container',
       });
     }
   }
 
   // =========================================================
-  // FETCH BUSINESSES
+  // FETCH BUSINESSES  — server-side pagination
   // =========================================================
 
   fetchBusinesses(): void {
     this.businessesLoading = true;
     this.businessesError = false;
-    this.businessService.getBusinessList().subscribe(
-      (data: BusinessDirectoryItem[]) => {
-        const activeBusinesses = (data || []).filter((b) => b.status !== 0);
 
-        this.businesses = activeBusinesses.slice(0, 15).map((b) => ({
-          ...b,
-          link: this.getBusinessLink(b),
-          rating: (4 + Math.random() * 0.8).toFixed(1),
-          reviewCount: Math.floor(Math.random() * 200) + 20,
-        }));
-        this.businessesLoading = false;
+    // The "Popular Businesses" section only shows the first N cards in a
+    // horizontal strip, so we request exactly that many from the server.
+    // No infinite scroll here — a single page of N is enough.
+    this.businessService
+      .getBusinessList({
+        pageIndex: 1,
+        pageSize: this.POPULAR_BUSINESS_LIMIT,
+        // No server-side filters here: the marketplace section shows the
+        // most recent/active businesses.
+        businessCategoryId: null,
+        businessTypeId: null,
+        sellerTypeId: null,
+      })
+      .subscribe(
+        (res) => {
+          const activeBusinesses = (res.items || []).filter(
+            (b) => b.status !== 0,
+          );
 
-        this.fetchOffers(
-          activeBusinesses.slice(0, this.OFFER_SOURCE_BUSINESS_LIMIT),
-        );
-      },
-      () => {
-        this.businessesError = true;
-        this.businessesLoading = false;
-        this.offersLoading = false;
-        this.offersError = true;
-      },
-    );
+          this.businesses = activeBusinesses
+            .slice(0, this.POPULAR_BUSINESS_LIMIT)
+            .map((b) => ({
+              ...b,
+              link: this.getBusinessLink(b),
+              rating: (4 + Math.random() * 0.8).toFixed(1),
+              reviewCount: Math.floor(Math.random() * 200) + 20,
+            }));
+
+          this.businessesLoading = false;
+
+          // Offers are still fetched per business (unchanged), but only for
+          // the slice we actually display, not a separate 100-business list.
+          this.fetchOffers(activeBusinesses);
+        },
+        () => {
+          this.businessesError = true;
+          this.businessesLoading = false;
+          this.offersLoading = false;
+          this.offersError = true;
+        },
+      );
   }
 
   // =========================================================
@@ -436,7 +456,6 @@ export class MarketplaceComponent implements OnInit {
             });
         });
 
-        // Featured offers first, then by soonest expiry
         flattened.sort((a, b) => {
           if (a.isFeatured !== b.isFeatured) {
             return a.isFeatured ? -1 : 1;
@@ -535,7 +554,6 @@ export class MarketplaceComponent implements OnInit {
 
     if (localStorage.getItem('id') == null) {
       this.dialog.open(LoginComponent, {
-        // width: '400px',
         panelClass: 'login-dialog-container',
       });
       return;
@@ -860,11 +878,6 @@ export class MarketplaceComponent implements OnInit {
         );
         const all = articles || [];
 
-        const businessOnly = all.filter((a) =>
-          (catMap.get(a.newsCategoryId) || '')
-            .toLowerCase()
-            .includes('business'),
-        );
         const isBusiness = (a: NewsArticle) =>
           (catMap.get(a.newsCategoryId) || '')
             .toLowerCase()
@@ -939,11 +952,6 @@ export class MarketplaceComponent implements OnInit {
           (categories || []).map((c) => [c.id, c.name] as [number, string]),
         );
         const all = events || [];
-
-        const businessOnly = all.filter(
-          (e) =>
-            (catMap.get(e.eventCategoryId) || '').toLowerCase() === 'business',
-        );
 
         const isBusiness = (e: EventItem) =>
           (catMap.get(e.eventCategoryId) || '').toLowerCase() === 'business';
