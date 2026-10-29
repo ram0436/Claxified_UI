@@ -190,16 +190,28 @@
           </h3>
           <a routerLink="/news/editors-picks" class="view-all-link">View all</a>
         </div>
+
         <div
-          class="trending-row"
-          *ngFor="let a of trendingNow; let i = index"
-          (click)="goToArticle(a)"
+          class="trending-list"
+          [class.trending-fade-out]="trendingAnimating"
+          (mouseenter)="stopTrendingAutoPlay()"
+          (mouseleave)="startTrendingAutoPlay()"
         >
-          <span class="trending-rank">{{ i + 1 }}</span>
-          <img [src]="a.featuredImageUrl" [alt]="a.title" />
-          <div>
-            <h5>{{ a.title }}</h5>
-            <span>{{ reads(a.viewCount) }}</span>
+          <div
+            class="trending-row"
+            *ngFor="
+              let a of trendingNow;
+              let i = index;
+              trackBy: trackByArticleId
+            "
+            (click)="goToArticle(a)"
+          >
+            <!-- <span class="trending-rank">{{ trendingIndex + i + 1 }}</span> -->
+            <img [src]="a.featuredImageUrl" [alt]="a.title" />
+            <div>
+              <h5>{{ a.title }}</h5>
+              <span>{{ reads(a.viewCount) }}</span>
+            </div>
           </div>
         </div>
       </div>

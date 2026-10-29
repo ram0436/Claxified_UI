@@ -2266,3 +2266,368 @@
     display: none;
   }
 }
+
+/* =========================================================
+   MOBILE RESPONSIVE — final overrides
+   ========================================================= */
+
+/* ---- Card footer: DESKTOP / LARGE (View Profile slightly wider) ---- */
+.business-card-footer {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+}
+
+.business-card-footer .view-details-btn,
+.business-card-footer .pill-btn {
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  padding: 0 8px;
+  gap: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: visible; /* no more clipped "View Profile" */
+  text-overflow: clip;
+  border-radius: 8px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.business-card-footer .view-details-btn .material-icons-outlined,
+.business-card-footer .pill-btn .material-icons-outlined {
+  display: inline-block;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* Narrower desktop widths (3-col grid, cards get tight): drop the arrow icon */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .business-card-footer .view-details-btn .material-icons-outlined {
+    display: none;
+  }
+}
+
+/* ---- Tablet ---- */
+@media (max-width: 992px) {
+  .why-list-card {
+    min-width: 0;
+  }
+}
+
+/* ---- Phones: layout tweaks ---- */
+@media (max-width: 600px) {
+  .business-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .business-page-wrapper {
+    padding: 0 12px 32px;
+  }
+
+  .business-hero {
+    padding: 28px 14px;
+    border-radius: 16px;
+  }
+
+  .feature-card {
+    flex: 1 1 100%;
+  }
+
+  .businesses-layout {
+    gap: 14px;
+  }
+}
+
+/* Never allow horizontal scroll on this page */
+:host {
+  display: block;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ---- Card footer: PHONES / SMALL TABLETS — 3 equal buttons ---- */
+@media (max-width: 768px) {
+  .business-card-footer {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .business-card-footer .view-details-btn,
+  .business-card-footer .pill-btn {
+    height: 36px;
+    padding: 0 6px;
+    font-size: 12px;
+    overflow: hidden;
+  }
+
+  .business-card-footer .view-details-btn .material-icons-outlined,
+  .business-card-footer .pill-btn .material-icons-outlined {
+    display: inline-block; /* re-show the arrow hidden at 769–1200px */
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .business-card-footer {
+    gap: 4px;
+  }
+
+  .business-card-footer .view-details-btn,
+  .business-card-footer .pill-btn {
+    font-size: 11px;
+    padding: 0 4px;
+  }
+
+  .business-card-footer .view-details-btn .material-icons-outlined,
+  .business-card-footer .pill-btn .material-icons-outlined {
+    display: none;
+  }
+}
+
+/* =========================================================
+   MOBILE FILTER DRAWER
+   ========================================================= */
+
+/* Hidden on desktop */
+.mobile-filter-btn,
+.filters-close,
+.filters-apply-btn,
+.filters-backdrop {
+  display: none;
+}
+
+@media (max-width: 992px) {
+  .businesses-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .mobile-filter-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 16px;
+    border: 1px solid #eee6fa;
+    border-radius: 10px;
+    background: #fff;
+    color: #4b2aad;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .mobile-filter-btn .material-icons-outlined {
+    font-size: 18px;
+  }
+
+  .mobile-filter-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ee3f7b;
+  }
+
+  /* Sidebar becomes a bottom sheet */
+  .filters-sidebar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    max-height: 85dvh;
+    flex: none;
+    z-index: 2100;
+    border-radius: 20px 20px 0 0;
+    padding: 0 18px 90px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    transform: translateY(100%);
+    visibility: hidden;
+    transition:
+      transform 0.28s ease,
+      visibility 0.28s;
+    box-shadow: 0 -10px 40px rgba(28, 31, 63, 0.25);
+  }
+
+  .filters-sidebar.mobile-open {
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .filters-sidebar .filters-head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 0 12px;
+    background: #fff;
+    border-bottom: 1px solid #eee6fa;
+    margin-bottom: 8px;
+  }
+
+  .filters-sidebar .filter-heading {
+    margin-right: auto;
+  }
+
+  .filters-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: #f3f1fa;
+    color: #1f1a2e;
+    cursor: pointer;
+  }
+
+  .filters-apply-btn {
+    display: block;
+    position: sticky;
+    bottom: -90px;
+    width: 100%;
+    margin-top: 16px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #f12f72, #ff3d91);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .filters-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 15, 40, 0.45);
+    z-index: 2050;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .filters-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .businesses-layout {
+    display: block;
+  }
+}
+
+/* =========================================================
+   HERO — MOBILE FIX
+   ========================================================= */
+@media (max-width: 768px) {
+  .business-hero {
+    aspect-ratio: auto; /* stop forcing a wide, short banner */
+    min-height: 260px;
+    height: auto;
+    margin: 16px 0 0;
+    padding: 28px 14px;
+    border-radius: 18px;
+    background-position: center;
+  }
+
+  .business-hero-inner,
+  .business-hero-text {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .business-hero-title {
+    font-size: 26px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+  }
+
+  .business-hero-subtitle {
+    font-size: 14px;
+    line-height: 1.45;
+    margin: 0 0 18px;
+  }
+
+  .business-search {
+    width: 100%;
+  }
+
+  .business-search .search-input-wrapper {
+    width: 100%;
+    max-width: 100%;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 5px 5px 5px 14px;
+    border-radius: 50px;
+  }
+
+  .business-search .search-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 14px;
+  }
+
+  .business-search .search-btn {
+    flex: 0 0 auto;
+    margin-left: 6px;
+    padding: 10px 16px;
+    font-size: 13px;
+    border-radius: 50px;
+  }
+
+  .business-search .search-divider,
+  .business-search .location-inline {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .business-hero {
+    min-height: 240px;
+    padding: 22px 12px;
+  }
+
+  .business-hero-title {
+    font-size: 22px;
+  }
+
+  .business-hero-subtitle {
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+
+  .business-search .search-input-wrapper {
+    padding-left: 12px;
+  }
+
+  .business-search .search-icon {
+    display: none; /* saves space so the placeholder and button both fit */
+  }
+
+  .business-search .search-btn {
+    padding: 9px 14px;
+  }
+}

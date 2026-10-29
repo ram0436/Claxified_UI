@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { NewsService } from '../../service/news.service';
@@ -11,7 +11,7 @@ const PAGE_SIZE = 6;
   templateUrl: './all-headlines.component.html',
   styleUrls: ['./all-headlines.component.css'],
 })
-export class AllHeadlinesComponent implements OnInit {
+export class AllHeadlinesComponent implements OnInit, OnDestroy {
   categories: NewsCategory[] = [];
   articles: NewsArticle[] = [];
 
@@ -44,6 +44,15 @@ export class AllHeadlinesComponent implements OnInit {
     { icon: 'linkedin', link: 'https://linkedin.com' },
   ];
 
+  // ---- Trending rotation state ----
+  trendingIndex = 0;
+  trendingAnimating = false;
+  private trendingTimer: any = null;
+  private trendingSource: NewsArticle[] = [];
+  private readonly TRENDING_WINDOW_SIZE = 5;
+  private readonly TRENDING_INTERVAL_MS = 4000;
+  private readonly TRENDING_ANIMATION_MS = 600;
+
   constructor(
     private newsService: NewsService,
     private router: Router,
@@ -55,6 +64,87 @@ export class AllHeadlinesComponent implements OnInit {
       this.searchQuery = params.get('q') || '';
     });
     this.fetchData();
+  }
+
+  ngOnDestroy(): void {
+    this.stopTrendingAutoPlay();
+  }
+
+  /** Full list sorted once, then reused — avoids re-sorting on every CD cycle. */
+  private get trendingSorted(): NewsArticle[] {
+    if (this.trendingSource.length === 0 && this.articles.length > 0) {
+      this.trendingSource = [...this.articles].sort((a, b) => {
+        const views = (b.viewCount ?? 0) - (a.viewCount ?? 0);
+        if (views !== 0) return views;
+
+        const trending = Number(b.isTrending) - Number(a.isTrending);
+        if (trending !== 0) return trending;
+
+        return (
+          this.toTime(b.publishedAt || b.createdAt) -
+          this.toTime(a.publishedAt || a.createdAt)
+        );
+      });
+    }
+    return this.trendingSource;
+  }
+
+  /** Sliding window of TRENDING_WINDOW_SIZE items, wrapping around. */
+  get trendingNow(): NewsArticle[] {
+    const all = this.trendingSorted;
+    const n = all.length;
+    if (n === 0) return [];
+    if (n <= this.TRENDING_WINDOW_SIZE) return all;
+
+    const result: NewsArticle[] = [];
+    for (let i = 0; i < this.TRENDING_WINDOW_SIZE; i++) {
+      result.push(all[(this.trendingIndex + i) % n]);
+    }
+    return result;
+  }
+
+  /** Number of distinct slide positions (0 = no rotation needed). */
+  get trendingDotCount(): number {
+    const n = this.trendingSorted.length;
+    return n <= this.TRENDING_WINDOW_SIZE ? 0 : n;
+  }
+
+  nextTrending(): void {
+    const n = this.trendingSorted.length;
+    if (n <= this.TRENDING_WINDOW_SIZE) return;
+
+    this.trendingAnimating = true;
+    setTimeout(() => {
+      this.trendingIndex = (this.trendingIndex + 1) % n;
+      setTimeout(() => (this.trendingAnimating = false), 20);
+    }, this.TRENDING_ANIMATION_MS);
+  }
+
+  startTrendingAutoPlay(): void {
+    this.stopTrendingAutoPlay();
+    if (this.trendingSorted.length <= this.TRENDING_WINDOW_SIZE) return;
+    this.trendingTimer = setInterval(
+      () => this.nextTrending(),
+      this.TRENDING_INTERVAL_MS,
+    );
+  }
+
+  stopTrendingAutoPlay(): void {
+    if (this.trendingTimer) {
+      clearInterval(this.trendingTimer);
+      this.trendingTimer = null;
+    }
+  }
+
+  goToTrending(index: number, event?: Event): void {
+    event?.preventDefault();
+    event?.stopPropagation();
+    this.trendingIndex = index;
+    this.startTrendingAutoPlay();
+  }
+
+  trackByArticleId(_index: number, a: NewsArticle): number {
+    return a.id;
   }
 
   fetchData(): void {
@@ -80,6 +170,13 @@ export class AllHeadlinesComponent implements OnInit {
             new Date(b.publishedAt || b.createdAt).getTime() -
             new Date(a.publishedAt || a.createdAt).getTime(),
         );
+
+        this.trendingIndex = 0;
+        this.trendingSource = [];
+        void this.trendingSorted;
+        this.startTrendingAutoPlay();
+
+        this.loading = false;
 
         this.loading = false;
       },
@@ -133,26 +230,6 @@ export class AllHeadlinesComponent implements OnInit {
   get pageNumbers(): number[] {
     const pages = Math.min(this.totalPages, 5);
     return Array.from({ length: pages }, (_, i) => i + 1);
-  }
-
-  get trendingNow(): NewsArticle[] {
-    return [...this.articles]
-      .sort((a, b) => {
-        // 1) Highest view count first
-        const views = (b.viewCount ?? 0) - (a.viewCount ?? 0);
-        if (views !== 0) return views;
-
-        // 2) Trending flag
-        const trending = Number(b.isTrending) - Number(a.isTrending);
-        if (trending !== 0) return trending;
-
-        // 3) Newest first
-        return (
-          this.toTime(b.publishedAt || b.createdAt) -
-          this.toTime(a.publishedAt || a.createdAt)
-        );
-      })
-      .slice(0, 5);
   }
 
   private toTime(d?: string | null): number {
