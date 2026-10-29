@@ -18,11 +18,7 @@
     *ngFor="let card of paginatedCards; let isFirst = first; let i = index"
     [class.increase-height]="increaseHeight"
   >
-    <a
-      class="custom-link"
-      [routerLink]="getPostLink(card)"
-      target="_self"
-    >
+    <a class="custom-link" [routerLink]="getPostLink(card)" target="_self">
       <div class="post-image">
         <span
           class="material-icons pg_arrow pg_arrow_left"
@@ -32,15 +28,15 @@
         </span>
         <img
           mat-card-image
-          [src]="getCardImageURL(card)"
-          alt="{{ card?.title }}"
+          [src]="card._imageUrl"
+          alt="{{ card.title }}"
           class="card-image"
         />
         <span
           class="material-icons pg_arrow pg_arrow_right"
           (click)="showNext($event, card)"
           [ngClass]="{
-            disable: card.imageIndex === imagesList.length - 1
+            disable: card.imageIndex === (card._imagesList?.length || 1) - 1,
           }"
           id="{{ 'cardId' + card.id }}"
         >
@@ -66,8 +62,8 @@
         </span>
         <div class="image-count">
           <span class="material-icons"> photo_camera </span>
-          {{ card.imageIndex + (imagesList.length > 0 ? 1 : 0) }} of
-          {{ imagesList.length }}
+          {{ (card.imageIndex || 0) + (card._imagesList?.length ? 1 : 0) }} of
+          {{ card._imagesList?.length || 0 }}
         </div>
       </div>
       <mat-card-title class="title title-flex" *ngIf="!card?.salaryPeriodType"

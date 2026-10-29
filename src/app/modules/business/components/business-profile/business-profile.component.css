@@ -3091,3 +3091,159 @@ select:focus-visible {
     box-shadow: 0 -10px 40px rgba(28, 31, 63, 0.25);
   }
 }
+
+/* =====================================================
+   MOBILE DESIGN POLISH — keep at END of file
+   ===================================================== */
+
+@media (max-width: 768px) {
+  /* ---------- Hero ---------- */
+  .hero-wrap {
+    height: 230px;
+    margin-top: 10px;
+  }
+
+  .hero-banner,
+  .hero-gallery-tile {
+    border-radius: 14px;
+  }
+
+  .hero-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(12, 13, 30, 0.9) 0%,
+      rgba(12, 13, 30, 0.55) 45%,
+      rgba(12, 13, 30, 0) 80%
+    );
+  }
+
+  .hero-content {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    gap: 12px;
+    align-items: flex-end;
+  }
+
+  .logo-box {
+    width: 64px;
+    height: 64px;
+    border-width: 2px;
+    border-radius: 12px;
+  }
+
+  .hero-verified {
+    font-size: 10.5px;
+    padding: 3px 9px 3px 6px;
+    margin-bottom: 5px;
+  }
+
+  .business-name-text {
+    font-size: 19px;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-categories {
+    margin-top: 3px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .hero-meta {
+    margin-top: 6px;
+    gap: 3px 12px;
+  }
+
+  /* ---------- Action bar: 2-column button grid ---------- */
+  .header-card {
+    margin-top: 12px;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .action-bar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .action-extras {
+    display: contents; /* Share + Wishlist join the same grid */
+  }
+
+  .share-wrap {
+    display: flex;
+    position: static; /* bottom-sheet is position:fixed anyway */
+  }
+
+  .action-bar .act-btn,
+  .share-wrap .act-btn {
+    width: 100%;
+    min-width: 0;
+    height: 40px;
+    padding: 0 10px;
+    font-size: 13px;
+    gap: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .act-call,
+  .act-whatsapp {
+    height: 44px;
+    font-size: 14px;
+  }
+
+  .act-edit,
+  .act-view-public {
+    grid-column: 1 / -1;
+    margin-left: 0;
+  }
+}
+
+/* =====================================================
+   PHONES (≤ 480px)
+   ===================================================== */
+@media (max-width: 480px) {
+  .hero-wrap {
+    height: 210px;
+  }
+  .skeleton-cover {
+    height: 210px;
+  }
+
+  .logo-box {
+    width: 56px;
+    height: 56px;
+  }
+  .business-name-text {
+    font-size: 17px;
+  }
+  .hero-meta-item {
+    font-size: 11px;
+  }
+  .hero-meta-item:nth-child(3) {
+    display: none;
+  } /* "In business for…" */
+
+  .act-btn .material-icons-outlined {
+    font-size: 17px;
+  }
+}
+
+/* Very small phones: stack the two primary buttons' labels sensibly */
+@media (max-width: 360px) {
+  .action-bar .act-btn,
+  .share-wrap .act-btn {
+    font-size: 12px;
+    padding: 0 6px;
+  }
+}

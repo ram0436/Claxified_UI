@@ -169,6 +169,19 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   ];
 
+  // ---------- Mobile filter drawer ----------
+  mobileFiltersOpen = false;
+
+  openMobileFilters(): void {
+    this.mobileFiltersOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeMobileFilters(): void {
+    this.mobileFiltersOpen = false;
+    document.body.style.overflow = '';
+  }
+
   constructor(
     private businessService: BusinessService,
     private commonService: CommonService,
@@ -196,6 +209,7 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.intersectionObserver?.disconnect();
+    document.body.style.overflow = '';
   }
 
   // =========================================================

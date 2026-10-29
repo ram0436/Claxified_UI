@@ -923,3 +923,49 @@ a.editor-pick-card {
     animation: none;
   }
 }
+
+.trending-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* match whatever your existing .trending-row spacing is */
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.trending-list.trending-fade-out {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* optional: keep rows visually stable while fading */
+.trending-list .trending-row {
+  will-change: opacity, transform;
+}
+
+.trending-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.trending-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: #cbd5e1;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.trending-dot.active {
+  background: #8b6cf1;
+  transform: scale(1.25);
+}
