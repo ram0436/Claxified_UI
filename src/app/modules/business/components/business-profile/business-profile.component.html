@@ -215,7 +215,12 @@
   <!-- ---------- ACTION BAR + TABS ---------- -->
   <div class="header-card">
     <div class="action-bar">
-      <a class="act-btn act-call" *ngIf="callHref" [href]="callHref">
+      <a
+        class="act-btn act-call"
+        *ngIf="callHref"
+        [href]="callHref"
+        (click)="trackContact('call')"
+      >
         <span class="material-icons-outlined">call</span> Call Now
       </a>
       <a
@@ -224,6 +229,7 @@
         [href]="whatsappHref"
         target="_blank"
         rel="noopener"
+        (click)="trackContact('whatsapp')"
       >
         <span class="material-icons-outlined">chat</span> WhatsApp
       </a>
@@ -233,6 +239,7 @@
         [href]="websiteHref"
         target="_blank"
         rel="noopener noreferrer"
+        (click)="trackContact('website')"
       >
         <span class="material-icons-outlined">language</span> Website
       </a>
@@ -242,6 +249,7 @@
         [href]="directionsHref"
         target="_blank"
         rel="noopener"
+        (click)="trackContact('directions')"
       >
         <span class="material-icons-outlined">near_me</span> Get Directions
       </a>
@@ -276,6 +284,15 @@
       >
         <span class="material-icons-outlined">space_dashboard</span>
         Dashboard
+      </button>
+      <button
+        type="button"
+        class="act-btn act-outline act-analytics"
+        *ngIf="isOwner && !viewingAsPublic"
+        (click)="openAnalytics()"
+      >
+        <span class="material-icons-outlined">insights</span>
+        Analytics
       </button>
       <!-- <button
         type="button"
@@ -539,7 +556,11 @@
         </div>
         <div class="promo-body">
           <h4>Have a question for {{ business.businessName }}?</h4>
-          <button type="button" class="btn-card-outline promo-btn">
+          <button
+            type="button"
+            class="btn-card-outline promo-btn"
+            (click)="inquire()"
+          >
             Contact Us
             <span class="material-icons-outlined">arrow_forward</span>
           </button>
@@ -1051,7 +1072,7 @@
                   type="button"
                   class="btn-card-solid"
                   *ngIf="!(isOwner && !viewingAsPublic)"
-                  (click)="inquire(card.name); $event.stopPropagation()"
+                  (click)="inquireAbout(card); $event.stopPropagation()"
                 >
                   Enquiry
                 </button>
@@ -1455,7 +1476,7 @@
 
         <ul class="touch-list">
           <li *ngIf="callHref">
-            <a class="touch-row" [href]="callHref">
+            <a class="touch-row" [href]="callHref" (click)="trackContact('call')">
               <span class="touch-icon touch-phone">
                 <span class="material-icons-outlined">call</span>
               </span>
@@ -1471,6 +1492,7 @@
               [href]="whatsappHref"
               target="_blank"
               rel="noopener"
+              (click)="trackContact('whatsapp')"
             >
               <span class="touch-icon touch-whatsapp">
                 <span class="material-icons-outlined">chat</span>
@@ -1482,7 +1504,7 @@
             </a>
           </li>
           <li *ngIf="mailHref">
-            <a class="touch-row" [href]="mailHref">
+            <a class="touch-row" [href]="mailHref" (click)="trackContact('mail')">
               <span class="touch-icon touch-mail">
                 <span class="material-icons-outlined">mail</span>
               </span>
@@ -1494,7 +1516,9 @@
           </li>
         </ul>
 
-        <button type="button" class="btn-quote-full">Request a Quote</button>
+        <button type="button" class="btn-quote-full" (click)="inquire()">
+          Request a Quote
+        </button>
       </div>
 
       <div class="side-card">
@@ -1598,6 +1622,15 @@
     </p>
   </div>
 
+  <!-- Analytics (owner only) -->
+  <app-business-analytics
+    *ngIf="analyticsPanelOpen && isOwner && !viewingAsPublic && business"
+    [businessId]="business.id"
+    [businessName]="business.businessName"
+    [offerings]="offerings"
+    (close)="closeAnalytics()"
+  ></app-business-analytics>
+
   <!-- Existing components -->
   <app-business-edit-profile
     *ngIf="editPanelOpen"
@@ -1679,6 +1712,7 @@
     *ngIf="quickViewOfferingOpen && quickViewOffering"
     [offering]="quickViewOffering"
     [contactMobile]="business.businessContactDto?.mobile || ''"
+    [isOwner]="isOwner"
     (close)="closeOfferingQuickView()"
     (viewFullDetails)="viewFullOfferingDetails()"
   ></app-business-offering-quickview>

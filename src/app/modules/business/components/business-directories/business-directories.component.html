@@ -41,6 +41,7 @@
       <div
         class="business-card"
         *ngFor="let business of businesses; trackBy: trackByBusinessId"
+        [attr.data-biz-id]="business.id"
         (click)="viewBusiness(business)"
       >
         <div class="card-cover" [class.no-image]="!business.coverImageUrl">
@@ -119,7 +120,7 @@
               class="card-action icon-only"
               *ngIf="business.businessContactDto?.mobile"
               (click)="
-                callBusiness($event, business.businessContactDto?.mobile)
+                callBusiness($event, business.businessContactDto?.mobile, business)
               "
               title="Call"
               type="button"
@@ -130,7 +131,11 @@
               class="card-action icon-only whatsapp"
               *ngIf="business.businessContactDto?.whatsApp"
               (click)="
-                whatsappBusiness($event, business.businessContactDto?.whatsApp)
+                whatsappBusiness(
+                  $event,
+                  business.businessContactDto?.whatsApp,
+                  business
+                )
               "
               title="WhatsApp"
               type="button"

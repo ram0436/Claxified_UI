@@ -33,6 +33,11 @@ import {
 } from '../../utils/business-url.util';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OfferingWishlistService } from '../../service/offering-wishlist.service';
+import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
+import {
+  BusinessAnalyticsEventType,
+  BusinessOfferingAnalyticsEventType,
+} from '../../model/business-analytics';
 
 interface CatalogItem {
   id: number;
@@ -297,6 +302,7 @@ export class BusinessProfileComponent implements OnInit {
   ];
 
   editPanelOpen: boolean = false;
+  analyticsPanelOpen: boolean = false;
 
   lightboxOpen: boolean = false;
   lightboxSrc: string = '';
@@ -395,6 +401,7 @@ export class BusinessProfileComponent implements OnInit {
     private snackBar: MatSnackBar,
     private location: Location,
     private wishlist: OfferingWishlistService,
+    private tracker: BusinessAnalyticsTracker,
     @Inject(DOCUMENT) private document: Document,
   ) {}
 
@@ -574,6 +581,7 @@ export class BusinessProfileComponent implements OnInit {
     this.loadOffers();
     this.loadReviews();
     this.loadUserFlags();
+    this.trackBusiness(BusinessAnalyticsEventType.ProfileView, true);
   }
 
   /** Keeps <link rel="canonical"> in sync so Google indexes the real city URL
@@ -706,10 +714,63 @@ export class BusinessProfileComponent implements OnInit {
     tab: 'overview' | 'offerings' | 'hours' | 'gallery' | 'offers' | 'reviews',
   ) {
     this.activeTab = tab;
+
+    if (tab === 'gallery') {
+      this.trackBusiness(BusinessAnalyticsEventType.GalleryView, true);
+    } else if (tab === 'reviews') {
+      this.trackBusiness(BusinessAnalyticsEventType.ReviewView, true);
+    } else if (tab === 'offers') {
+      this.trackBusiness(BusinessAnalyticsEventType.OfferView, true);
+    }
   }
 
   editProfile() {
     this.editPanelOpen = true;
+  }
+
+  openAnalytics(): void {
+    if (!this.isOwner) return;
+    this.analyticsPanelOpen = true;
+  }
+
+  // ================== Analytics tracking ==================
+
+  /** Records an analytics event for this business. The owner's own activity is
+   * never counted, and a failed request never affects the page. */
+  private trackBusiness(type: BusinessAnalyticsEventType, once = false): void {
+    if (!this.business?.id || this.isOwner) return;
+    this.tracker.trackBusiness(this.business.id, type, { once });
+  }
+
+  /** Contact / outbound link clicks (called from the template). */
+  trackContact(
+    kind: 'call' | 'whatsapp' | 'website' | 'directions' | 'mail',
+  ): void {
+    const types = {
+      call: BusinessAnalyticsEventType.Call,
+      whatsapp: BusinessAnalyticsEventType.WhatsAppClick,
+      website: BusinessAnalyticsEventType.WebsiteClick,
+      directions: BusinessAnalyticsEventType.DirectionClick,
+      mail: BusinessAnalyticsEventType.Enquiry,
+    };
+    this.trackBusiness(types[kind]);
+  }
+
+  /** Enquiry about one specific card: counts for the business and, when the
+   * card is a tracked offering, for that offering too. */
+  inquireAbout(card: OfferingCard): void {
+    if (card.kind === 'offering' && this.business?.id && !this.isOwner) {
+      this.tracker.trackOffering(
+        this.business.id,
+        card.refId,
+        BusinessOfferingAnalyticsEventType.Enquiry,
+      );
+    }
+    this.inquire(card.name);
+  }
+
+  closeAnalytics(): void {
+    this.analyticsPanelOpen = false;
   }
 
   closeEditPanel() {
@@ -796,6 +857,7 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   shareTo(key: string): void {
+    this.trackBusiness(BusinessAnalyticsEventType.Share);
     const url = encodeURIComponent(this.shareUrl);
     const text = encodeURIComponent(this.shareText);
     let target = '';
@@ -863,6 +925,8 @@ export class BusinessProfileComponent implements OnInit {
     const url = this.shareUrl;
 
     const done = () => {
+      // Instagram goes through shareTo(), which has already counted the share.
+      if (!forInstagram) this.trackBusiness(BusinessAnalyticsEventType.Share);
       this.linkCopied = true;
       clearTimeout(this.linkCopiedTimer);
       this.linkCopiedTimer = setTimeout(() => (this.linkCopied = false), 2000);
@@ -1136,6 +1200,9 @@ export class BusinessProfileComponent implements OnInit {
         this.showNotification(
           wasSaved ? 'Removed from saved businesses' : 'Business saved',
         );
+        if (!wasSaved) {
+          this.trackBusiness(BusinessAnalyticsEventType.SavedBusiness);
+        }
       },
       () => {
         this.savedBusiness = wasSaved; // revert
@@ -1164,6 +1231,7 @@ export class BusinessProfileComponent implements OnInit {
         this.showNotification(
           was ? 'Removed from wishlist' : 'Added to wishlist',
         );
+        if (!was) this.trackBusiness(BusinessAnalyticsEventType.Wishlist);
       },
       () => {
         this.wishlistedBusiness = was;
@@ -1202,6 +1270,7 @@ export class BusinessProfileComponent implements OnInit {
    * offer panel entry point; callers can pass along which offering the
    * enquiry relates to. */
   inquire(context?: string): void {
+    this.trackBusiness(BusinessAnalyticsEventType.Enquiry);
     // this.addOffer();
   }
 

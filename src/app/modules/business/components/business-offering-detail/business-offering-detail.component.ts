@@ -17,6 +17,11 @@ import {
   unwrapDetail,
 } from '../../utils/offering-detail-view.util';
 import { OfferingWishlistService } from '../../service/offering-wishlist.service';
+import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
+import {
+  BusinessAnalyticsEventType,
+  BusinessOfferingAnalyticsEventType,
+} from '../../model/business-analytics';
 
 @Component({
   selector: 'app-business-offering-detail',
@@ -41,6 +46,7 @@ export class BusinessOfferingDetailComponent implements OnInit {
     private businessService: BusinessService,
     private snackBar: MatSnackBar,
     public wishlist: OfferingWishlistService,
+    private tracker: BusinessAnalyticsTracker,
   ) {}
 
   ngOnInit(): void {
@@ -71,6 +77,15 @@ export class BusinessOfferingDetailComponent implements OnInit {
         this.offering = offering;
         this.loading = false;
         this.loadDetail(offering);
+
+        if (!this.isOwner) {
+          this.tracker.trackOffering(
+            offering.businessId,
+            offering.id,
+            BusinessOfferingAnalyticsEventType.View,
+            { once: true },
+          );
+        }
       },
       () => {
         this.loading = false;
@@ -125,6 +140,17 @@ export class BusinessOfferingDetailComponent implements OnInit {
   }
 
   onContactBusiness(): void {
+    if (!this.isOwner && this.offering) {
+      this.tracker.trackOffering(
+        this.offering.businessId,
+        this.offering.id,
+        BusinessOfferingAnalyticsEventType.Call,
+      );
+      this.tracker.trackBusiness(
+        this.offering.businessId,
+        BusinessAnalyticsEventType.Call,
+      );
+    }
     if (this.contactMobile) {
       window.location.href = `tel:${this.contactMobile}`;
     }

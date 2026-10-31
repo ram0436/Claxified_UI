@@ -497,8 +497,8 @@ export class ClassifiedAdsHomeComponent implements OnInit {
     }
 
     this.dialogRef = this.dialog.open(LoginComponent, {
-      width: '400px',
-      panelClass: 'custom-dialog-container',
+      panelClass: 'login-dialog-container',
+      autoFocus: false,
     });
 
     const dialogRefElement = document.querySelector('.custom-dialog-container');
