@@ -39,9 +39,7 @@ interface KpiCard {
   icon: string;
   color: string;
   value: number;
-  /** % change vs previous period; null = not comparable. */
   delta: number | null;
-  /** True when the previous period was empty but this one is not. */
   isNew: boolean;
   hint?: string;
 }
@@ -55,9 +53,7 @@ interface EventGroup {
 interface FunnelStep {
   label: string;
   value: number;
-  /** Bar width, 0–100. */
   width: number;
-  /** Conversion from the previous step, or null if not meaningful. */
   rate: number | null;
   color: string;
 }
@@ -65,7 +61,6 @@ interface FunnelStep {
 interface ChartGeometry {
   line: string;
   area: string;
-  /** Plot-space points, x/y in 0–100. */
   points: { x: number; y: number; value: number; label: string }[];
   yTicks: { label: string; bottom: number }[];
   xTicks: { label: string; left: number }[];
@@ -111,6 +106,7 @@ export class BusinessAnalyticsComponent
   @Input() businessName: string = '';
   @Input() offerings: BusinessOfferingDto[] = [];
   @Output() close = new EventEmitter<void>();
+  @Input() embedded = false;
 
   readonly businessMeta = BUSINESS_EVENT_META;
   readonly offeringMeta = OFFERING_EVENT_META;
@@ -128,13 +124,15 @@ export class BusinessAnalyticsComponent
   preset: RangePreset = '30d';
   granularity: AnalyticsGranularity = 'daily';
 
-  /** yyyy-MM-dd values bound to the custom range inputs. */
   customFrom = '';
   customTo = '';
   rangeError = '';
 
   from!: Date;
   to!: Date;
+
+  bizNotFound = false;
+  offNotFound = false;
 
   // ----- Business state ---------------------------------------------------
   bizLoading = false;
@@ -164,14 +162,43 @@ export class BusinessAnalyticsComponent
   constructor(private analytics: BusinessService) {}
 
   ngOnInit(): void {
-    this.previousBodyOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    if (!this.embedded) {
+      this.previousBodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+    }
     this.applyPreset('30d');
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['offerings'] && this.selectedOfferingId === null) {
-      this.selectedOfferingId = this.offerings[0]?.id ?? null;
+    if (changes['offerings']) {
+      const stillThere = (this.offerings || []).some(
+        (o) => o.id === this.selectedOfferingId,
+      );
+      if (!stillThere) {
+        this.selectedOfferingId = this.offerings?.[0]?.id ?? null;
+      }
+    }
+
+    const businessChanged =
+      changes['businessId'] && !changes['businessId'].firstChange;
+
+    if (businessChanged) {
+      this.bizTotals = {};
+      this.bizPrevTotals = null;
+      this.bizSeries = [];
+      this.bizChart = null;
+      this.offTotals = {};
+      this.offSeries = [];
+      this.offChart = null;
+      this.offError = '';
+      this.offeringSearch = '';
+      this.reload();
+    } else if (
+      changes['offerings'] &&
+      !changes['offerings'].firstChange &&
+      this.scope === 'offerings'
+    ) {
+      this.loadOffering();
     }
   }
 
@@ -278,6 +305,7 @@ export class BusinessAnalyticsComponent
     this.bizSub?.unsubscribe();
     this.bizLoading = true;
     this.bizError = '';
+    this.bizNotFound = false;
 
     const span = this.to.getTime() - this.from.getTime() + 1;
     const prevTo = new Date(this.from.getTime() - 1);
@@ -315,6 +343,8 @@ export class BusinessAnalyticsComponent
       },
       error: (err) => {
         this.bizLoading = false;
+        this.bizError = this.errorMessage(err);
+        this.bizNotFound = err?.status === 404;
         this.bizError = this.errorMessage(err);
       },
     });

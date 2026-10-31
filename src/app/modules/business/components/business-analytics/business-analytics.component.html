@@ -1,13 +1,14 @@
-<div class="an-backdrop" (click)="close.emit()"></div>
+<div class="an-backdrop" *ngIf="!embedded" (click)="close.emit()"></div>
 
 <section
   class="an-panel"
-  role="dialog"
-  aria-modal="true"
+  [class.embedded]="embedded"
+  [attr.role]="embedded ? null : 'dialog'"
+  [attr.aria-modal]="embedded ? null : true"
   aria-label="Business analytics"
 >
   <!-- ================= HEADER ================= -->
-  <header class="an-header">
+  <header class="an-header" *ngIf="!embedded">
     <div class="an-title">
       <span class="an-title-icon material-icons-outlined">insights</span>
       <div>
@@ -157,7 +158,19 @@
     <!-- ============ BUSINESS PAGE ============ -->
     <ng-container *ngIf="scope === 'business'">
       <!-- error -->
-      <div class="an-state an-error" *ngIf="bizError && !bizLoading">
+      <div class="an-state" *ngIf="bizNotFound && !bizLoading">
+        <span class="material-icons-outlined">analytics</span>
+        <h3>Analytics not available</h3>
+        <p>
+          There are no analytics for this business in the selected period yet.
+          They will appear here once customers start viewing and contacting it.
+        </p>
+      </div>
+
+      <div
+        class="an-state an-error"
+        *ngIf="bizError && !bizNotFound && !bizLoading"
+      >
         <span class="material-icons-outlined">error_outline</span>
         <h3>Couldn't load analytics</h3>
         <p>{{ bizError }}</p>
@@ -213,7 +226,7 @@
                         ? "arrow_downward"
                         : "remove"
                   }}</span>
-                  {{ k.delta < 0 ? -k.delta : k.delta | number: "1.0-0" }}%
+                  {{ k.delta < 0 ? -k.delta : (k.delta | number: "1.0-0") }}%
                 </span>
                 <span class="an-delta up" *ngIf="k.isNew">New</span>
               </div>
@@ -321,7 +334,9 @@
                       >
                         <strong>{{ chart.points[bizHover].label }}</strong>
                         <span
-                          ><i [style.background]="currentBusinessMetric.color"></i
+                          ><i
+                            [style.background]="currentBusinessMetric.color"
+                          ></i
                           >{{ currentBusinessMetric.label }}:
                           <b>{{ full(chart.points[bizHover].value) }}</b></span
                         >
@@ -480,7 +495,19 @@
             </div>
           </div>
 
-          <div class="an-state an-error" *ngIf="offError && !offLoading">
+          <div class="an-state" *ngIf="offNotFound && !offLoading">
+            <span class="material-icons-outlined">analytics</span>
+            <h3>Analytics not available</h3>
+            <p>
+              There are no analytics for this offering in the selected period
+              yet. They will appear here once customers start viewing it.
+            </p>
+          </div>
+
+          <div
+            class="an-state an-error"
+            *ngIf="offError && !offNotFound && !offLoading"
+          >
             <span class="material-icons-outlined">error_outline</span>
             <h3>Couldn't load analytics</h3>
             <p>{{ offError }}</p>
@@ -620,7 +647,9 @@
                                 [style.background]="currentOfferingMetric.color"
                               ></i
                               >{{ currentOfferingMetric.label }}:
-                              <b>{{ full(chart.points[offHover].value) }}</b></span
+                              <b>{{
+                                full(chart.points[offHover].value)
+                              }}</b></span
                             >
                           </div>
                         </ng-container>

@@ -679,9 +679,9 @@
                   class="detail-value"
                   [class.is-empty]="!business.businessContactDto?.mobile"
                 >
-                  <ng-container *ngIf="business.businessContactDto?.mobile"
-                    >+91-{{ business.businessContactDto?.mobile }}</ng-container
-                  >
+                  <ng-container *ngIf="business.businessContactDto?.mobile">{{
+                    displayMobile
+                  }}</ng-container>
                   <ng-container *ngIf="!business.businessContactDto?.mobile"
                     >Not provided</ng-container
                   >
@@ -1476,12 +1476,16 @@
 
         <ul class="touch-list">
           <li *ngIf="callHref">
-            <a class="touch-row" [href]="callHref" (click)="trackContact('call')">
+            <a
+              class="touch-row"
+              [href]="callHref"
+              (click)="trackContact('call')"
+            >
               <span class="touch-icon touch-phone">
                 <span class="material-icons-outlined">call</span>
               </span>
               <span class="touch-text">
-                <strong>+91 {{ business.businessContactDto?.mobile }}</strong>
+                <strong>{{ displayMobile }}</strong>
                 <small>Call us now</small>
               </span>
             </a>
@@ -1504,7 +1508,11 @@
             </a>
           </li>
           <li *ngIf="mailHref">
-            <a class="touch-row" [href]="mailHref" (click)="trackContact('mail')">
+            <a
+              class="touch-row"
+              [href]="mailHref"
+              (click)="trackContact('mail')"
+            >
               <span class="touch-icon touch-mail">
                 <span class="material-icons-outlined">mail</span>
               </span>

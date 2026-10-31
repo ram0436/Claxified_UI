@@ -1,0 +1,121 @@
+<div class="page-head">
+  <nav class="breadcrumb">
+    <span>My Claxified</span>
+    <span class="material-icons-outlined">chevron_right</span>
+    <span class="current">Analytics</span>
+  </nav>
+  <h1>Analytics</h1>
+  <p>
+    See how customers find and interact with each of your businesses and
+    offerings.
+  </p>
+</div>
+
+<!-- Loading -->
+<div class="ma-skeleton" *ngIf="loading">
+  <div class="ma-sk ma-sk-chip" *ngFor="let i of [1, 2, 3]"></div>
+</div>
+
+<!-- Failed to load businesses -->
+<div class="ma-state" *ngIf="!loading && loadFailed">
+  <span class="material-icons-outlined err">error_outline</span>
+  <h3>Couldn't load your businesses</h3>
+  <p>Please check your connection and try again.</p>
+  <button type="button" class="ma-btn" (click)="loadBusinesses()">
+    Try again
+  </button>
+</div>
+
+<!-- No businesses -->
+<div class="ma-state" *ngIf="!loading && !loadFailed && !businesses.length">
+  <span class="material-icons-outlined">storefront</span>
+  <h3>No businesses yet</h3>
+  <p>
+    Register a business and its views, calls and enquiries will be tracked here.
+  </p>
+  <a class="ma-btn" routerLink="../my-businesses">Go to My Businesses</a>
+</div>
+
+<ng-container *ngIf="!loading && businesses.length">
+  <!-- Business picker -->
+  <section class="ma-picker" aria-label="Choose a business">
+    <div class="ma-picker-head">
+      <div class="ma-picker-title">
+        <span class="material-icons-outlined">storefront</span>
+        <div>
+          <h2>Your businesses</h2>
+          <p>
+            {{ businesses.length }}
+            {{ businesses.length === 1 ? "business" : "businesses" }} · select
+            one to see its analytics
+          </p>
+        </div>
+      </div>
+
+      <label class="ma-search" *ngIf="businesses.length > 1">
+        <span class="material-icons-outlined">search</span>
+        <input
+          type="text"
+          placeholder="Search businesses"
+          [(ngModel)]="search"
+          aria-label="Search businesses"
+        />
+        <button
+          type="button"
+          class="ma-clear"
+          *ngIf="search"
+          (click)="clearSearch()"
+          aria-label="Clear search"
+        >
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </label>
+    </div>
+
+    <div class="ma-grid" role="listbox">
+      <button
+        type="button"
+        role="option"
+        class="ma-biz"
+        *ngFor="let b of filteredBusinesses; trackBy: trackById"
+        [class.on]="b.id === selectedId"
+        [attr.aria-selected]="b.id === selectedId"
+        (click)="select(b)"
+      >
+        <span class="ma-logo">
+          <img *ngIf="b.logoUrl" [src]="b.logoUrl" alt="" />
+          <ng-container *ngIf="!b.logoUrl">{{ initials(b.name) }}</ng-container>
+        </span>
+        <span class="ma-biz-text">
+          <strong>{{ b.name }}</strong>
+          <small>
+            <span class="material-icons-outlined">location_on</span>
+            {{ b.location || "Location not set" }}
+          </small>
+        </span>
+        <span class="ma-check material-icons-outlined">check_circle</span>
+      </button>
+    </div>
+
+    <div class="ma-none" *ngIf="!filteredBusinesses.length">
+      <span class="material-icons-outlined">search_off</span>
+      <p>No businesses match "{{ search }}"</p>
+      <button type="button" class="ma-link" (click)="clearSearch()">
+        Clear search
+      </button>
+    </div>
+  </section>
+
+  <div class="ma-switching" *ngIf="switching">
+    <span class="ma-bar"></span>
+  </div>
+
+  <!-- Analytics for the selected business -->
+  <app-business-analytics
+    *ngIf="active"
+    [embedded]="true"
+    [businessId]="active.business.id"
+    [businessName]="active.business.name"
+    [offerings]="active.offerings"
+  ></app-business-analytics>
+</ng-container>

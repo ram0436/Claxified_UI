@@ -15,7 +15,12 @@
   --card-shadow:
     0 1px 2px rgba(28, 31, 63, 0.04), 0 4px 14px rgba(28, 31, 63, 0.05);
 
-  font-family: "Inter", "Roboto", system-ui, -apple-system, "Segoe UI",
+  font-family:
+    "Inter",
+    "Roboto",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
     sans-serif;
   color: var(--text);
 }
@@ -1046,4 +1051,26 @@
   .sk {
     animation: none;
   }
+}
+
+.an-panel.embedded {
+  position: static;
+  width: auto;
+  background: transparent;
+  box-shadow: none;
+  animation: none;
+}
+.an-panel.embedded .an-toolbar,
+.an-panel.embedded .an-custom,
+.an-panel.embedded .an-rangebar {
+  padding-left: 0;
+  padding-right: 0;
+}
+.an-panel.embedded .an-toolbar {
+  padding-top: 4px;
+}
+.an-panel.embedded .an-body {
+  flex: none;
+  overflow: visible;
+  padding: 4px 0 24px;
 }

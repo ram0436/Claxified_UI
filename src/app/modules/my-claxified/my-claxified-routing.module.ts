@@ -11,6 +11,7 @@ import { AdminOverviewComponent } from './components/admin-overview/admin-overvi
 import { AuthGuard } from '../auth/authguard/authguard';
 import { AttributeMappingComponent } from './components/attribute-mapping/attribute-mapping.component';
 import { SavedItemsComponent } from './components/saved-items/saved-items.component';
+import { MyAnalyticsComponent } from './components/my-analytics/my-analytics.component';
 
 const routes: Routes = [
   {
@@ -40,15 +41,7 @@ const routes: Routes = [
             'Manage and respond to enquiries, leads and messages from across Claxified.',
         },
       },
-      {
-        path: 'analytics',
-        component: ComingSoonComponent,
-        data: {
-          title: 'Analytics',
-          description:
-            'Track your performance, understand your audience and grow faster with Claxified.',
-        },
-      },
+      { path: 'analytics', component: MyAnalyticsComponent },
       { path: 'billing', component: PackagesBillingComponent },
       { path: 'settings', component: SettingsComponent },
       {
