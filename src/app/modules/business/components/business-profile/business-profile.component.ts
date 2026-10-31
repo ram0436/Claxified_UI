@@ -1414,6 +1414,18 @@ export class BusinessProfileComponent implements OnInit {
     };
   }
 
+  get displayMobile(): string {
+    const raw = String(this.business?.businessContactDto?.mobile ?? '').trim();
+    if (!raw) return '';
+
+    const digits = raw.replace(/[^\d]/g, '');
+    if (raw.startsWith('+')) return raw;
+    if (raw.startsWith('00')) return '+' + raw.slice(2);
+    if (digits.length > 10 && digits.startsWith('91')) return '+' + digits;
+
+    return `+91 ${raw}`;
+  }
+
   private getServicePriceUnit(pricingType: string): string {
     return this.priceUnitMap[pricingType] || '';
   }

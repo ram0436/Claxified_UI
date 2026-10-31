@@ -11,6 +11,7 @@ interface AnalyticsBusiness {
   name: string;
   logoUrl: string;
   location: string;
+  subCategoryIds: number[];
 }
 
 interface ActiveBusiness {
@@ -88,6 +89,9 @@ export class MyAnalyticsComponent implements OnInit, OnDestroy {
                 location: addr
                   ? [addr.city, addr.state].filter((v: any) => !!v).join(', ')
                   : [b.area, b.city].filter((v) => !!v).join(', '),
+                subCategoryIds: ((d?.businessSubCategoryIds || []) as any[])
+                  .map(Number)
+                  .filter((n) => n > 0),
               } as AnalyticsBusiness;
             })
             .filter((b) => b.id > 0)
@@ -118,20 +122,30 @@ export class MyAnalyticsComponent implements OnInit, OnDestroy {
     this.switching = true;
     this.offeringsSub?.unsubscribe();
 
-    this.offeringsSub = this.businessService
-      .getBusinessOfferingsByBusinessId(business.id, null, null)
-      .pipe(catchError(() => of([] as BusinessOfferingDto[])))
-      .subscribe((offerings) => {
-        this.active = {
-          business,
-          offerings: (offerings || []).filter(
-            (o) =>
-              Number(o.offeringType) !== Number(OfferingType.Product) &&
-              Number(o.offeringType) !== Number(OfferingType.Service),
-          ),
-        };
-        this.switching = false;
-      });
+    const queries: (number | null)[] = [null, ...business.subCategoryIds];
+
+    this.offeringsSub = forkJoin(
+      queries.map((subCategoryId) =>
+        this.businessService
+          .getBusinessOfferingsByBusinessId(business.id, subCategoryId, null)
+          .pipe(catchError(() => of([] as BusinessOfferingDto[]))),
+      ),
+    ).subscribe((results) => {
+      const byId = new Map<number, BusinessOfferingDto>();
+      results.forEach((list) =>
+        (list || []).forEach((o) => {
+          if (
+            Number(o.offeringType) !== Number(OfferingType.Product) &&
+            Number(o.offeringType) !== Number(OfferingType.Service)
+          ) {
+            byId.set(o.id, o);
+          }
+        }),
+      );
+
+      this.active = { business, offerings: Array.from(byId.values()) };
+      this.switching = false;
+    });
   }
 
   get filteredBusinesses(): AnalyticsBusiness[] {
