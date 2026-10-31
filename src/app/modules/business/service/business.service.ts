@@ -49,6 +49,11 @@ import {
 } from '../model/Business';
 import { EntityType } from '../enum/business-product.enum';
 import { OfferingType } from '../enum/business-offering.enum';
+import {
+  AnalyticsGranularity,
+  BusinessAnalyticsEventType,
+  BusinessOfferingAnalyticsEventType,
+} from '../model/business-analytics';
 
 const OFFERING_DETAIL_ENDPOINT: Partial<Record<number, string>> = {
   [OfferingType.Course]: 'offering-course',
@@ -163,7 +168,7 @@ export class BusinessService {
         ),
       );
   }
-  
+
   getBusinessCategories() {
     return this.http.get(`${this.baseUrl}Business/business-categories`);
   }
@@ -592,6 +597,70 @@ export class BusinessService {
   removeOfferingFromWishlist(userId: number, businessOfferingId: number) {
     return this.http.delete(
       `${this.baseUrl}Business/wishlist-business-offering/${userId}/${businessOfferingId}`,
+    );
+  }
+
+  private range(from: Date, to: Date): HttpParams {
+    return new HttpParams()
+      .set('fromDate', from.toISOString())
+      .set('toDate', to.toISOString());
+  }
+
+  trackBusinessEvent(
+    businessId: number,
+    eventType: BusinessAnalyticsEventType,
+  ): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}Business/analytics/${businessId}/track`,
+      { eventType },
+    );
+  }
+
+  trackOfferingEvent(
+    businessId: number,
+    offeringId: number,
+    eventType: BusinessOfferingAnalyticsEventType,
+  ): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}Business/analytics/business/${businessId}/offering/${offeringId}/track`,
+      { eventType },
+    );
+  }
+
+  getBusinessSummary(
+    businessId: number,
+    from: Date,
+    to: Date,
+  ): Observable<any> {
+    return this.http.get(`${this.baseUrl}Business/analytics/${businessId}`, {
+      params: this.range(from, to),
+    });
+  }
+
+  getBusinessSeries(
+    businessId: number,
+    granularity: AnalyticsGranularity,
+    from: Date,
+    to: Date,
+  ): Observable<any> {
+    return this.http.get(
+      `${this.baseUrl}Business/analytics/${businessId}/${granularity}`,
+      {
+        params: this.range(from, to),
+      },
+    );
+  }
+
+  getOfferingSeries(
+    businessId: number,
+    offeringId: number,
+    granularity: AnalyticsGranularity,
+    from: Date,
+    to: Date,
+  ): Observable<any> {
+    return this.http.get(
+      `${this.baseUrl}Business/analytics/business/${businessId}/offering/${offeringId}/${granularity}`,
+      { params: this.range(from, to) },
     );
   }
 }

@@ -13,6 +13,11 @@ import {
   unwrapDetail,
 } from '../../utils/offering-detail-view.util';
 import { OfferingWishlistService } from '../../service/offering-wishlist.service';
+import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
+import {
+  BusinessAnalyticsEventType,
+  BusinessOfferingAnalyticsEventType,
+} from '../../model/business-analytics';
 
 @Component({
   selector: 'app-business-offering-quickview',
@@ -22,6 +27,8 @@ import { OfferingWishlistService } from '../../service/offering-wishlist.service
 export class BusinessOfferingQuickviewComponent implements OnInit {
   @Input() offering!: BusinessOfferingDto;
   @Input() contactMobile = '';
+  /** Owners viewing their own offering are not counted in analytics. */
+  @Input() isOwner = false;
   @Output() close = new EventEmitter<void>();
   @Output() viewFullDetails = new EventEmitter<void>();
 
@@ -31,11 +38,21 @@ export class BusinessOfferingQuickviewComponent implements OnInit {
   constructor(
     private businessService: BusinessService,
     public wishlist: OfferingWishlistService,
+    private tracker: BusinessAnalyticsTracker,
   ) {}
 
   ngOnInit(): void {
     this.wishlist.load();
     this.loadDetail();
+
+    if (!this.isOwner) {
+      this.tracker.trackOffering(
+        this.offering.businessId,
+        this.offering.id,
+        BusinessOfferingAnalyticsEventType.View,
+        { once: true },
+      );
+    }
   }
 
   toggleWishlist(): void {
@@ -80,6 +97,17 @@ export class BusinessOfferingQuickviewComponent implements OnInit {
   }
 
   onContactBusiness(): void {
+    if (!this.isOwner) {
+      this.tracker.trackOffering(
+        this.offering.businessId,
+        this.offering.id,
+        BusinessOfferingAnalyticsEventType.Call,
+      );
+      this.tracker.trackBusiness(
+        this.offering.businessId,
+        BusinessAnalyticsEventType.Call,
+      );
+    }
     if (this.contactMobile) {
       window.location.href = `tel:${this.contactMobile}`;
     }

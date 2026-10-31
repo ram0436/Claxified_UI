@@ -1,0 +1,678 @@
+<div class="an-backdrop" (click)="close.emit()"></div>
+
+<section
+  class="an-panel"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Business analytics"
+>
+  <!-- ================= HEADER ================= -->
+  <header class="an-header">
+    <div class="an-title">
+      <span class="an-title-icon material-icons-outlined">insights</span>
+      <div>
+        <h2>Analytics</h2>
+        <p>{{ businessName }}</p>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="an-close"
+      (click)="close.emit()"
+      aria-label="Close analytics"
+    >
+      <span class="material-icons-outlined">close</span>
+    </button>
+  </header>
+
+  <!-- ================= TOOLBAR ================= -->
+  <div class="an-toolbar">
+    <div class="an-seg an-scope" role="tablist">
+      <button
+        type="button"
+        role="tab"
+        [class.on]="scope === 'business'"
+        [attr.aria-selected]="scope === 'business'"
+        (click)="setScope('business')"
+      >
+        <span class="material-icons-outlined">storefront</span>
+        Business Page
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [class.on]="scope === 'offerings'"
+        [attr.aria-selected]="scope === 'offerings'"
+        (click)="setScope('offerings')"
+      >
+        <span class="material-icons-outlined">category</span>
+        Offerings
+        <span class="an-count" *ngIf="offerings.length">{{
+          offerings.length
+        }}</span>
+      </button>
+    </div>
+
+    <div class="an-toolbar-right">
+      <div class="an-seg">
+        <button
+          type="button"
+          [class.on]="preset === '7d'"
+          (click)="applyPreset('7d')"
+        >
+          7D
+        </button>
+        <button
+          type="button"
+          [class.on]="preset === '30d'"
+          (click)="applyPreset('30d')"
+        >
+          30D
+        </button>
+        <button
+          type="button"
+          [class.on]="preset === '90d'"
+          (click)="applyPreset('90d')"
+        >
+          90D
+        </button>
+        <button
+          type="button"
+          [class.on]="preset === 'custom'"
+          (click)="applyPreset('custom')"
+        >
+          Custom
+        </button>
+      </div>
+
+      <div class="an-seg an-gran" aria-label="Chart interval">
+        <button
+          type="button"
+          [class.on]="granularity === 'daily'"
+          (click)="setGranularity('daily')"
+        >
+          Daily
+        </button>
+        <button
+          type="button"
+          [class.on]="granularity === 'weekly'"
+          (click)="setGranularity('weekly')"
+        >
+          Weekly
+        </button>
+        <button
+          type="button"
+          [class.on]="granularity === 'monthly'"
+          (click)="setGranularity('monthly')"
+        >
+          Monthly
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="an-refresh"
+        (click)="reload()"
+        aria-label="Refresh"
+        title="Refresh"
+      >
+        <span class="material-icons-outlined">refresh</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="an-custom" *ngIf="preset === 'custom'">
+    <label>
+      <span>From</span>
+      <input
+        type="date"
+        [(ngModel)]="customFrom"
+        [max]="maxInputDate"
+        (change)="applyCustomRange()"
+      />
+    </label>
+    <span class="an-custom-arrow material-icons-outlined">arrow_forward</span>
+    <label>
+      <span>To</span>
+      <input
+        type="date"
+        [(ngModel)]="customTo"
+        [max]="maxInputDate"
+        (change)="applyCustomRange()"
+      />
+    </label>
+    <span class="an-range-error" *ngIf="rangeError">{{ rangeError }}</span>
+  </div>
+
+  <div class="an-rangebar">
+    <span class="material-icons-outlined">date_range</span>
+    {{ rangeLabel }}
+    <span class="an-rangebar-note" *ngIf="scope === 'business' && bizPrevTotals"
+      >· compared with the previous period</span
+    >
+  </div>
+
+  <!-- ================= BODY ================= -->
+  <div class="an-body">
+    <!-- ============ BUSINESS PAGE ============ -->
+    <ng-container *ngIf="scope === 'business'">
+      <!-- error -->
+      <div class="an-state an-error" *ngIf="bizError && !bizLoading">
+        <span class="material-icons-outlined">error_outline</span>
+        <h3>Couldn't load analytics</h3>
+        <p>{{ bizError }}</p>
+        <button type="button" class="an-btn" (click)="loadBusiness()">
+          Try again
+        </button>
+      </div>
+
+      <!-- loading skeleton -->
+      <div class="an-skeleton" *ngIf="bizLoading">
+        <div class="sk-row">
+          <div class="sk sk-kpi" *ngFor="let i of [1, 2, 3, 4]"></div>
+        </div>
+        <div class="sk sk-chart"></div>
+        <div class="sk-row two">
+          <div class="sk sk-block"></div>
+          <div class="sk sk-block"></div>
+        </div>
+      </div>
+
+      <ng-container *ngIf="!bizLoading && !bizError">
+        <!-- empty -->
+        <div class="an-state an-empty" *ngIf="!bizHasData">
+          <span class="material-icons-outlined">query_stats</span>
+          <h3>No activity in this period</h3>
+          <p>
+            Views, clicks and enquiries on your business page will appear here
+            as customers interact with it. Try a longer date range.
+          </p>
+        </div>
+
+        <ng-container *ngIf="bizHasData">
+          <!-- KPI cards -->
+          <div class="an-kpis">
+            <article class="an-kpi" *ngFor="let k of bizKpis">
+              <div class="an-kpi-top">
+                <span
+                  class="an-kpi-icon material-icons-outlined"
+                  [style.color]="k.color"
+                  [style.background]="k.color + '1a'"
+                  >{{ k.icon }}</span
+                >
+                <span
+                  class="an-delta"
+                  *ngIf="k.delta !== null"
+                  [class.up]="k.delta > 0"
+                  [class.down]="k.delta < 0"
+                >
+                  <span class="material-icons-outlined">{{
+                    k.delta > 0
+                      ? "arrow_upward"
+                      : k.delta < 0
+                        ? "arrow_downward"
+                        : "remove"
+                  }}</span>
+                  {{ k.delta < 0 ? -k.delta : k.delta | number: "1.0-0" }}%
+                </span>
+                <span class="an-delta up" *ngIf="k.isNew">New</span>
+              </div>
+              <div class="an-kpi-value">{{ full(k.value) }}</div>
+              <div class="an-kpi-label" [attr.title]="k.hint">
+                {{ k.label }}
+              </div>
+            </article>
+          </div>
+
+          <!-- trend chart -->
+          <article class="an-card">
+            <div class="an-card-head">
+              <div>
+                <h3>Trend</h3>
+                <p>{{ currentBusinessMetric.label }} over time</p>
+              </div>
+              <div class="an-chips">
+                <button
+                  type="button"
+                  class="an-chip"
+                  *ngFor="let m of businessChartMetrics"
+                  [class.on]="bizMetricKey === m.key"
+                  [style.--c]="m.color"
+                  (click)="setBusinessMetric(m.key)"
+                >
+                  {{ m.label }}
+                </button>
+              </div>
+            </div>
+
+            <ng-container *ngIf="bizChart as chart; else noChart">
+              <div class="an-chart">
+                <div class="an-yaxis">
+                  <span
+                    *ngFor="let t of chart.yTicks"
+                    [style.bottom.%]="t.bottom"
+                    >{{ t.label }}</span
+                  >
+                </div>
+                <div class="an-plot-col">
+                  <div
+                    class="an-plot"
+                    (pointermove)="onPlotMove($event, 'business')"
+                    (pointerleave)="onPlotLeave('business')"
+                  >
+                    <div class="an-grid">
+                      <i
+                        *ngFor="let t of chart.yTicks"
+                        [style.bottom.%]="t.bottom"
+                      ></i>
+                    </div>
+                    <svg
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="none"
+                      aria-hidden="true"
+                    >
+                      <defs>
+                        <linearGradient
+                          id="anBizGrad"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="0%"
+                            [attr.stop-color]="currentBusinessMetric.color"
+                            stop-opacity="0.28"
+                          />
+                          <stop
+                            offset="100%"
+                            [attr.stop-color]="currentBusinessMetric.color"
+                            stop-opacity="0"
+                          />
+                        </linearGradient>
+                      </defs>
+                      <path [attr.d]="chart.area" fill="url(#anBizGrad)" />
+                      <path
+                        [attr.d]="chart.line"
+                        fill="none"
+                        [attr.stroke]="currentBusinessMetric.color"
+                        stroke-width="2.4"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        vector-effect="non-scaling-stroke"
+                      />
+                    </svg>
+
+                    <ng-container *ngIf="bizHover !== null">
+                      <div
+                        class="an-cursor"
+                        [style.left.%]="chart.points[bizHover].x"
+                      ></div>
+                      <div
+                        class="an-dot"
+                        [style.left.%]="chart.points[bizHover].x"
+                        [style.top.%]="chart.points[bizHover].y"
+                        [style.borderColor]="currentBusinessMetric.color"
+                      ></div>
+                      <div
+                        class="an-tip"
+                        [class.flip]="chart.points[bizHover].x > 65"
+                        [style.left.%]="chart.points[bizHover].x"
+                      >
+                        <strong>{{ chart.points[bizHover].label }}</strong>
+                        <span
+                          ><i [style.background]="currentBusinessMetric.color"></i
+                          >{{ currentBusinessMetric.label }}:
+                          <b>{{ full(chart.points[bizHover].value) }}</b></span
+                        >
+                      </div>
+                    </ng-container>
+                  </div>
+                  <div class="an-xaxis">
+                    <span
+                      *ngFor="let t of chart.xTicks"
+                      [style.left.%]="t.left"
+                      >{{ t.label }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #noChart>
+              <div class="an-nochart">No time-series data for this range.</div>
+            </ng-template>
+          </article>
+
+          <div class="an-two">
+            <!-- funnel -->
+            <article class="an-card">
+              <div class="an-card-head">
+                <div>
+                  <h3>Customer journey</h3>
+                  <p>From discovery to converted lead</p>
+                </div>
+              </div>
+              <ul class="an-funnel">
+                <li *ngFor="let s of bizFunnel">
+                  <div class="an-funnel-meta">
+                    <span>{{ s.label }}</span>
+                    <span class="an-funnel-val"
+                      >{{ full(s.value) }}
+                      <em *ngIf="s.rate !== null"
+                        >{{ s.rate | number: "1.0-1" }}%</em
+                      ></span
+                    >
+                  </div>
+                  <div class="an-bar">
+                    <span
+                      [style.width.%]="s.width"
+                      [style.background]="s.color"
+                    ></span>
+                  </div>
+                </li>
+              </ul>
+            </article>
+
+            <!-- grouped breakdown -->
+            <article class="an-card">
+              <div class="an-card-head">
+                <div>
+                  <h3>All activity</h3>
+                  <p>Every tracked interaction in this period</p>
+                </div>
+              </div>
+              <div class="an-groups">
+                <div class="an-group" *ngFor="let g of businessGroups">
+                  <h4>
+                    <span class="material-icons-outlined">{{ g.icon }}</span>
+                    {{ g.title }}
+                    <b>{{ full(bizSum(g.ids)) }}</b>
+                  </h4>
+                  <div class="an-tiles">
+                    <ng-container *ngFor="let m of businessMeta">
+                      <div class="an-tile" *ngIf="g.ids.indexOf(m.id) > -1">
+                        <span
+                          class="material-icons-outlined"
+                          [style.color]="m.color"
+                          >{{ m.icon }}</span
+                        >
+                        <div>
+                          <b>{{ full(bizCount(m.id)) }}</b>
+                          <small>{{ m.label }}</small>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <!-- ============ OFFERINGS ============ -->
+    <ng-container *ngIf="scope === 'offerings'">
+      <div class="an-state an-empty" *ngIf="!offerings.length">
+        <span class="material-icons-outlined">category</span>
+        <h3>No offerings yet</h3>
+        <p>
+          Add an offering to your business and its views, calls and enquiries
+          will be tracked here.
+        </p>
+      </div>
+
+      <div class="an-off-layout" *ngIf="offerings.length">
+        <!-- offering list -->
+        <aside class="an-off-list">
+          <div class="an-search">
+            <span class="material-icons-outlined">search</span>
+            <input
+              type="text"
+              placeholder="Search offerings"
+              [(ngModel)]="offeringSearch"
+              aria-label="Search offerings"
+            />
+          </div>
+          <ul>
+            <li
+              *ngFor="let o of filteredOfferings; trackBy: trackById"
+              [class.on]="o.id === selectedOfferingId"
+              (click)="selectOffering(o)"
+              tabindex="0"
+              (keyup.enter)="selectOffering(o)"
+            >
+              <span class="an-off-thumb">
+                <img *ngIf="o.imageUrl" [src]="o.imageUrl" alt="" />
+                <ng-container *ngIf="!o.imageUrl">{{
+                  initials(o.name)
+                }}</ng-container>
+              </span>
+              <span class="an-off-name">{{ o.name }}</span>
+              <span
+                class="an-off-inactive"
+                *ngIf="o.isActive === false"
+                title="Inactive"
+                >Inactive</span
+              >
+            </li>
+            <li class="an-off-none" *ngIf="!filteredOfferings.length">
+              No offerings match "{{ offeringSearch }}"
+            </li>
+          </ul>
+        </aside>
+
+        <!-- offering detail -->
+        <div class="an-off-main">
+          <div class="an-off-head" *ngIf="selectedOffering as o">
+            <span class="an-off-thumb lg">
+              <img *ngIf="o.imageUrl" [src]="o.imageUrl" alt="" />
+              <ng-container *ngIf="!o.imageUrl">{{
+                initials(o.name)
+              }}</ng-container>
+            </span>
+            <div>
+              <h3>{{ o.name }}</h3>
+              <p *ngIf="offConversionRate !== null">
+                Lead conversion
+                <b>{{ offConversionRate | number: "1.0-1" }}%</b>
+              </p>
+            </div>
+          </div>
+
+          <div class="an-state an-error" *ngIf="offError && !offLoading">
+            <span class="material-icons-outlined">error_outline</span>
+            <h3>Couldn't load analytics</h3>
+            <p>{{ offError }}</p>
+            <button type="button" class="an-btn" (click)="loadOffering()">
+              Try again
+            </button>
+          </div>
+
+          <div class="an-skeleton" *ngIf="offLoading">
+            <div class="sk-row six">
+              <div class="sk sk-kpi" *ngFor="let i of [1, 2, 3, 4, 5, 6]"></div>
+            </div>
+            <div class="sk sk-chart"></div>
+          </div>
+
+          <ng-container *ngIf="!offLoading && !offError && selectedOffering">
+            <div class="an-state an-empty" *ngIf="!offHasData">
+              <span class="material-icons-outlined">query_stats</span>
+              <h3>No activity for this offering</h3>
+              <p>
+                Nothing recorded between {{ rangeLabel }}. Try a longer date
+                range.
+              </p>
+            </div>
+
+            <ng-container *ngIf="offHasData">
+              <div class="an-kpis six">
+                <article class="an-kpi compact" *ngFor="let k of offKpis">
+                  <span
+                    class="an-kpi-icon material-icons-outlined"
+                    [style.color]="k.color"
+                    [style.background]="k.color + '1a'"
+                    >{{ k.icon }}</span
+                  >
+                  <div class="an-kpi-value">{{ full(k.value) }}</div>
+                  <div class="an-kpi-label">{{ k.label }}</div>
+                </article>
+              </div>
+
+              <article class="an-card">
+                <div class="an-card-head">
+                  <div>
+                    <h3>Trend</h3>
+                    <p>{{ currentOfferingMetric.label }} over time</p>
+                  </div>
+                  <div class="an-chips">
+                    <button
+                      type="button"
+                      class="an-chip"
+                      *ngFor="let m of offeringChartMetrics"
+                      [class.on]="offMetricKey === m.key"
+                      [style.--c]="m.color"
+                      (click)="setOfferingMetric(m.key)"
+                    >
+                      {{ m.label }}
+                    </button>
+                  </div>
+                </div>
+
+                <ng-container *ngIf="offChart as chart; else noOffChart">
+                  <div class="an-chart">
+                    <div class="an-yaxis">
+                      <span
+                        *ngFor="let t of chart.yTicks"
+                        [style.bottom.%]="t.bottom"
+                        >{{ t.label }}</span
+                      >
+                    </div>
+                    <div class="an-plot-col">
+                      <div
+                        class="an-plot"
+                        (pointermove)="onPlotMove($event, 'offerings')"
+                        (pointerleave)="onPlotLeave('offerings')"
+                      >
+                        <div class="an-grid">
+                          <i
+                            *ngFor="let t of chart.yTicks"
+                            [style.bottom.%]="t.bottom"
+                          ></i>
+                        </div>
+                        <svg
+                          viewBox="0 0 100 100"
+                          preserveAspectRatio="none"
+                          aria-hidden="true"
+                        >
+                          <defs>
+                            <linearGradient
+                              id="anOffGrad"
+                              x1="0"
+                              y1="0"
+                              x2="0"
+                              y2="1"
+                            >
+                              <stop
+                                offset="0%"
+                                [attr.stop-color]="currentOfferingMetric.color"
+                                stop-opacity="0.28"
+                              />
+                              <stop
+                                offset="100%"
+                                [attr.stop-color]="currentOfferingMetric.color"
+                                stop-opacity="0"
+                              />
+                            </linearGradient>
+                          </defs>
+                          <path [attr.d]="chart.area" fill="url(#anOffGrad)" />
+                          <path
+                            [attr.d]="chart.line"
+                            fill="none"
+                            [attr.stroke]="currentOfferingMetric.color"
+                            stroke-width="2.4"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            vector-effect="non-scaling-stroke"
+                          />
+                        </svg>
+
+                        <ng-container *ngIf="offHover !== null">
+                          <div
+                            class="an-cursor"
+                            [style.left.%]="chart.points[offHover].x"
+                          ></div>
+                          <div
+                            class="an-dot"
+                            [style.left.%]="chart.points[offHover].x"
+                            [style.top.%]="chart.points[offHover].y"
+                            [style.borderColor]="currentOfferingMetric.color"
+                          ></div>
+                          <div
+                            class="an-tip"
+                            [class.flip]="chart.points[offHover].x > 65"
+                            [style.left.%]="chart.points[offHover].x"
+                          >
+                            <strong>{{ chart.points[offHover].label }}</strong>
+                            <span
+                              ><i
+                                [style.background]="currentOfferingMetric.color"
+                              ></i
+                              >{{ currentOfferingMetric.label }}:
+                              <b>{{ full(chart.points[offHover].value) }}</b></span
+                            >
+                          </div>
+                        </ng-container>
+                      </div>
+                      <div class="an-xaxis">
+                        <span
+                          *ngFor="let t of chart.xTicks"
+                          [style.left.%]="t.left"
+                          >{{ t.label }}</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-template #noOffChart>
+                  <div class="an-nochart">
+                    No time-series data for this range.
+                  </div>
+                </ng-template>
+              </article>
+
+              <article class="an-card">
+                <div class="an-card-head">
+                  <div>
+                    <h3>Customer journey</h3>
+                    <p>From view to converted lead</p>
+                  </div>
+                </div>
+                <ul class="an-funnel">
+                  <li *ngFor="let s of offFunnel">
+                    <div class="an-funnel-meta">
+                      <span>{{ s.label }}</span>
+                      <span class="an-funnel-val"
+                        >{{ full(s.value) }}
+                        <em *ngIf="s.rate !== null"
+                          >{{ s.rate | number: "1.0-1" }}%</em
+                        ></span
+                      >
+                    </div>
+                    <div class="an-bar">
+                      <span
+                        [style.width.%]="s.width"
+                        [style.background]="s.color"
+                      ></span>
+                    </div>
+                  </li>
+                </ul>
+              </article>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</section>

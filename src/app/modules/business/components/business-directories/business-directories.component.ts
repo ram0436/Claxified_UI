@@ -1,23 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BusinessService } from '../../service/business.service';
 import { BusinessDirectoryItem } from './../../model/Business';
 import { buildBusinessCommands } from '../../../business/utils/business-url.util';
+import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
+import { BusinessAnalyticsEventType } from '../../model/business-analytics';
 
 @Component({
   selector: 'app-business-directories',
   templateUrl: './business-directories.component.html',
   styleUrls: ['./business-directories.component.css'],
 })
-export class BusinessDirectoriesComponent implements OnInit {
+export class BusinessDirectoriesComponent implements OnInit, OnDestroy {
   businesses: BusinessDirectoryItem[] = [];
   loading: boolean = true;
   loadError: boolean = false;
 
+  private impressionObserver?: IntersectionObserver;
+
   constructor(
     private businessService: BusinessService,
     private router: Router,
+    private tracker: BusinessAnalyticsTracker,
+    private host: ElementRef<HTMLElement>,
   ) {}
+
+  ngOnDestroy(): void {
+    this.impressionObserver?.disconnect();
+  }
 
   ngOnInit(): void {
     this.fetchBusinesses();
@@ -34,12 +44,55 @@ export class BusinessDirectoriesComponent implements OnInit {
       (data: BusinessDirectoryItem[]) => {
         this.businesses = (data || []).filter((b) => b.status !== 0);
         this.loading = false;
+        // Wait for the cards to render before observing them.
+        setTimeout(() => this.observeImpressions());
       },
       () => {
         this.loadError = true;
         this.loading = false;
       },
     );
+  }
+
+  /** A business "appears in search" once its card is at least half visible. */
+  private observeImpressions(): void {
+    this.impressionObserver?.disconnect();
+    if (typeof IntersectionObserver === 'undefined') return;
+
+    const userId = Number(localStorage.getItem('id'));
+    this.impressionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target as HTMLElement;
+          this.impressionObserver?.unobserve(el);
+
+          const id = Number(el.dataset['bizId']);
+          const business = this.businesses.find((b) => b.id === id);
+          if (!business || (userId && business.userId === userId)) return;
+          this.tracker.trackBusiness(
+            id,
+            BusinessAnalyticsEventType.SearchAppearance,
+            { once: true },
+          );
+        });
+      },
+      { threshold: 0.5 },
+    );
+
+    this.host.nativeElement
+      .querySelectorAll<HTMLElement>('.business-card[data-biz-id]')
+      .forEach((el) => this.impressionObserver!.observe(el));
+  }
+
+  private trackCardAction(
+    business: BusinessDirectoryItem | undefined,
+    type: BusinessAnalyticsEventType,
+  ): void {
+    if (!business) return;
+    const userId = Number(localStorage.getItem('id'));
+    if (userId && business.userId === userId) return;
+    this.tracker.trackBusiness(business.id, type);
   }
 
   viewBusiness(business: BusinessDirectoryItem): void {
@@ -97,15 +150,25 @@ export class BusinessDirectoriesComponent implements OnInit {
     return h * 60 + m;
   }
 
-  callBusiness(event: Event, mobile: string | undefined): void {
+  callBusiness(
+    event: Event,
+    mobile: string | undefined,
+    business?: BusinessDirectoryItem,
+  ): void {
     event.stopPropagation();
+    this.trackCardAction(business, BusinessAnalyticsEventType.Call);
     if (mobile) {
       window.location.href = `tel:${mobile}`;
     }
   }
 
-  whatsappBusiness(event: Event, whatsApp: string | undefined): void {
+  whatsappBusiness(
+    event: Event,
+    whatsApp: string | undefined,
+    business?: BusinessDirectoryItem,
+  ): void {
     event.stopPropagation();
+    this.trackCardAction(business, BusinessAnalyticsEventType.WhatsAppClick);
     if (!whatsApp) return;
     const cleaned = whatsApp.replace(/[^0-9]/g, '');
     if (cleaned) {
