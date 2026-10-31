@@ -14,6 +14,8 @@ import { PackagesBillingComponent } from './components/packages-billing/packages
 import { AdminOverviewComponent } from './components/admin-overview/admin-overview.component';
 import { AttributeMappingComponent } from './components/attribute-mapping/attribute-mapping.component';
 import { SavedItemsComponent } from './components/saved-items/saved-items.component';
+import { MyAnalyticsComponent } from './components/my-analytics/my-analytics.component';
+import { BusinessAnalyticsModule } from '../business/business-analytics.module';
 
 @NgModule({
   declarations: [
@@ -27,12 +29,14 @@ import { SavedItemsComponent } from './components/saved-items/saved-items.compon
     AdminOverviewComponent,
     AttributeMappingComponent,
     SavedItemsComponent,
+    MyAnalyticsComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
     MatProgressSpinnerModule,
     MyClaxifiedRoutingModule,
+    BusinessAnalyticsModule,
   ],
 })
 export class MyClaxifiedModule {}

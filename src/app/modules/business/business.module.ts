@@ -44,7 +44,7 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { BusinessOfferingQuickviewComponent } from './components/business-offering-quickview/business-offering-quickview.component';
 import { BusinessOfferingDetailComponent } from './components/business-offering-detail/business-offering-detail.component';
-import { BusinessAnalyticsComponent } from './components/business-analytics/business-analytics.component';
+import { BusinessAnalyticsModule } from './business-analytics.module';
 
 @NgModule({
   declarations: [
@@ -73,7 +73,6 @@ import { BusinessAnalyticsComponent } from './components/business-analytics/busi
     AddBusinessOfferingComponent,
     BusinessOfferingQuickviewComponent,
     BusinessOfferingDetailComponent,
-    BusinessAnalyticsComponent,
   ],
   imports: [
     CommonModule,
@@ -95,6 +94,7 @@ import { BusinessAnalyticsComponent } from './components/business-analytics/busi
     MatAutocompleteModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    BusinessAnalyticsModule,
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'en-IN' }],
 })
