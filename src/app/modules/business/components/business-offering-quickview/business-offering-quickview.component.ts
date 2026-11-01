@@ -15,6 +15,11 @@ import {
 import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
 import {
+  openPhoneCall,
+  openWhatsAppChat,
+  resolveWhatsAppNumber,
+} from '../../utils/business-contact.util';
+import {
   BusinessAnalyticsEventType,
   BusinessOfferingAnalyticsEventType,
 } from '../../model/business-analytics';
@@ -27,6 +32,7 @@ import {
 export class BusinessOfferingQuickviewComponent implements OnInit {
   @Input() offering!: BusinessOfferingDto;
   @Input() contactMobile = '';
+  @Input() contactWhatsApp = '';
   /** Owners viewing their own offering are not counted in analytics. */
   @Input() isOwner = false;
   @Output() close = new EventEmitter<void>();
@@ -96,7 +102,11 @@ export class BusinessOfferingQuickviewComponent implements OnInit {
     this.close.emit();
   }
 
-  onContactBusiness(): void {
+  get whatsAppNumber(): string {
+    return resolveWhatsAppNumber(this.contactWhatsApp, this.contactMobile);
+  }
+
+  onCall(): void {
     if (!this.isOwner) {
       this.tracker.trackOffering(
         this.offering.businessId,
@@ -108,12 +118,36 @@ export class BusinessOfferingQuickviewComponent implements OnInit {
         BusinessAnalyticsEventType.Call,
       );
     }
-    if (this.contactMobile) {
-      window.location.href = `tel:${this.contactMobile}`;
+    openPhoneCall(this.contactMobile);
+  }
+
+  onWhatsApp(): void {
+    if (!this.isOwner) {
+      this.tracker.trackOffering(
+        this.offering.businessId,
+        this.offering.id,
+        BusinessOfferingAnalyticsEventType.WhatsAppClick,
+      );
+      this.tracker.trackBusiness(
+        this.offering.businessId,
+        BusinessAnalyticsEventType.WhatsAppClick,
+      );
     }
+    openWhatsAppChat(this.whatsAppNumber);
   }
 
   onViewFullDetails(): void {
+    // Opening the full page is a view of this offering. It shares the 30-minute
+    // "once" key with the quick view and the detail page, so it is not
+    // counted twice.
+    if (!this.isOwner) {
+      this.tracker.trackOffering(
+        this.offering.businessId,
+        this.offering.id,
+        BusinessOfferingAnalyticsEventType.View,
+        { once: true },
+      );
+    }
     this.viewFullDetails.emit();
   }
 }

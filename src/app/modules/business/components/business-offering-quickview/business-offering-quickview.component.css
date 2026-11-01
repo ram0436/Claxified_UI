@@ -394,3 +394,21 @@
   opacity: 0.6;
   cursor: default;
 }
+
+/* Call + WhatsApp share a row; View Full Details gets its own full-width row. */
+.qv-actions {
+  flex-wrap: wrap;
+}
+
+.qv-actions .btn-primary {
+  flex-basis: 100%;
+}
+
+.qv-actions .btn-whatsapp {
+  color: #1a7f3c;
+  border-color: #25a244;
+}
+
+.qv-actions .btn-whatsapp:hover {
+  background-color: #eaf7ee;
+}

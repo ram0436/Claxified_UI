@@ -21,6 +21,8 @@ import { BusinessDirectoryItem, BusinessOfferDto } from '../../model/Business';
 import { BusinessLoginComponent } from '../business-login/business-login.component';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { buildBusinessCommands } from '../../../business/utils/business-url.util';
+import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
+import { BusinessAnalyticsEventType } from '../../model/business-analytics';
 
 interface OfferViewModel extends BusinessOfferDto {
   businessName: string;
@@ -187,6 +189,7 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private commonService: CommonService,
     private router: Router,
     private dialog: MatDialog,
+    private tracker: BusinessAnalyticsTracker,
   ) {}
 
   ngOnInit(): void {
@@ -1074,7 +1077,25 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
     event.preventDefault();
+    // Same-tab navigation shares the 30-minute "once" key with the profile
+    // page's own ProfileView, so the visit is never double counted.
+    this.trackBusinessAction(business, BusinessAnalyticsEventType.ProfileView, {
+      once: true,
+    });
     this.viewBusiness(business);
+  }
+
+  /** Records a card action. Owners are never counted on their own business,
+   * and a failed request never affects the page. */
+  private trackBusinessAction(
+    business: BusinessDirectoryItem,
+    type: BusinessAnalyticsEventType,
+    options: { once?: boolean } = {},
+  ): void {
+    if (!business?.id) return;
+    const userId = Number(localStorage.getItem('id'));
+    if (userId && business.userId === userId) return;
+    this.tracker.trackBusiness(business.id, type, options);
   }
 
   formatOfferValidity(endDate: string): string {
@@ -1106,12 +1127,16 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onCallClick(event: Event, business: BusinessDirectoryItem): void {
     event.stopPropagation();
-    if (this.getBusinessPhone(business)) return;
+    if (this.getBusinessPhone(business)) {
+      this.trackBusinessAction(business, BusinessAnalyticsEventType.Call);
+      return;
+    }
 
     event.preventDefault();
     this.resolveContact(business, () => {
       const phone = this.getBusinessPhone(business);
       if (phone) {
+        this.trackBusinessAction(business, BusinessAnalyticsEventType.Call);
         window.location.href = `tel:${phone}`;
       } else {
         alert('Phone number not available for this business.');
@@ -1121,13 +1146,23 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onWhatsAppClick(event: Event, business: BusinessDirectoryItem): void {
     event.stopPropagation();
-    if (this.getWhatsAppLink(business)) return;
+    if (this.getWhatsAppLink(business)) {
+      this.trackBusinessAction(
+        business,
+        BusinessAnalyticsEventType.WhatsAppClick,
+      );
+      return;
+    }
 
     event.preventDefault();
     const win = window.open('', '_blank');
     this.resolveContact(business, () => {
       const link = this.getWhatsAppLink(business);
       if (link && win) {
+        this.trackBusinessAction(
+          business,
+          BusinessAnalyticsEventType.WhatsAppClick,
+        );
         win.location.href = link;
       } else {
         win?.close();

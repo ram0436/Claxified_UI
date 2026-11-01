@@ -55,37 +55,6 @@
     </div>
 
     <div class="an-toolbar-right">
-      <div class="an-seg">
-        <button
-          type="button"
-          [class.on]="preset === '7d'"
-          (click)="applyPreset('7d')"
-        >
-          7D
-        </button>
-        <button
-          type="button"
-          [class.on]="preset === '30d'"
-          (click)="applyPreset('30d')"
-        >
-          30D
-        </button>
-        <button
-          type="button"
-          [class.on]="preset === '90d'"
-          (click)="applyPreset('90d')"
-        >
-          90D
-        </button>
-        <button
-          type="button"
-          [class.on]="preset === 'custom'"
-          (click)="applyPreset('custom')"
-        >
-          Custom
-        </button>
-      </div>
-
       <div class="an-seg an-gran" aria-label="Chart interval">
         <button
           type="button"
@@ -108,6 +77,14 @@
         >
           Monthly
         </button>
+        <button
+          type="button"
+          [class.on]="rangeMode === 'custom'"
+          [attr.aria-pressed]="rangeMode === 'custom'"
+          (click)="toggleCustom()"
+        >
+          Custom
+        </button>
       </div>
 
       <button
@@ -122,7 +99,7 @@
     </div>
   </div>
 
-  <div class="an-custom" *ngIf="preset === 'custom'">
+  <div class="an-custom" *ngIf="rangeMode === 'custom'">
     <label>
       <span>From</span>
       <input
@@ -151,6 +128,14 @@
     <span class="an-rangebar-note" *ngIf="scope === 'business' && bizPrevTotals"
       >· compared with the previous period</span
     >
+    <span
+      class="an-live"
+      *ngIf="lastUpdated"
+      title="This view updates automatically"
+    >
+      <span class="an-live-dot"></span>
+      Live · updated {{ lastUpdated | date: "h:mm:ss a" }}
+    </span>
   </div>
 
   <!-- ================= BODY ================= -->

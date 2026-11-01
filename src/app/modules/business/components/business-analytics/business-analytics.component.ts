@@ -9,7 +9,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { catchError, forkJoin, of, Subscription } from 'rxjs';
+import { catchError, forkJoin, of, Subscription, timer } from 'rxjs';
 import { BusinessOfferingDto } from '../../model/Business';
 import { BusinessService } from '../../service/business.service';
 import {
@@ -25,7 +25,8 @@ import {
 } from '../../model/business-analytics';
 
 type AnalyticsScope = 'business' | 'offerings';
-type RangePreset = '7d' | '30d' | '90d' | 'custom';
+/** 'auto' = window follows the Daily / Weekly / Monthly interval; 'custom' = user-picked dates. */
+type RangeMode = 'auto' | 'custom';
 
 interface ChartMetric {
   key: string;
@@ -94,6 +95,9 @@ const OFFERING_CHART_METRICS: ChartMetric[] = OFFERING_EVENT_META.map((m) => ({
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+/** How often the open analytics view silently re-fetches (real-time updates). */
+const LIVE_REFRESH_MS = 10_000;
+
 @Component({
   selector: 'app-business-analytics',
   templateUrl: './business-analytics.component.html',
@@ -121,7 +125,7 @@ export class BusinessAnalyticsComponent
   ];
 
   scope: AnalyticsScope = 'business';
-  preset: RangePreset = '30d';
+  rangeMode: RangeMode = 'auto';
   granularity: AnalyticsGranularity = 'daily';
 
   customFrom = '';
@@ -133,6 +137,9 @@ export class BusinessAnalyticsComponent
 
   bizNotFound = false;
   offNotFound = false;
+
+  /** Time of the last successful (live or manual) refresh. */
+  lastUpdated: Date | null = null;
 
   // ----- Business state ---------------------------------------------------
   bizLoading = false;
@@ -157,6 +164,8 @@ export class BusinessAnalyticsComponent
 
   private bizSub?: Subscription;
   private offSub?: Subscription;
+  private liveSub?: Subscription;
+  private prevRangeKey = '';
   private previousBodyOverflow = '';
 
   constructor(private analytics: BusinessService) {}
@@ -166,7 +175,8 @@ export class BusinessAnalyticsComponent
       this.previousBodyOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
     }
-    this.applyPreset('30d');
+    this.applyAutoRange();
+    this.startLive();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -206,11 +216,41 @@ export class BusinessAnalyticsComponent
     document.body.style.overflow = this.previousBodyOverflow;
     this.bizSub?.unsubscribe();
     this.offSub?.unsubscribe();
+    this.liveSub?.unsubscribe();
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
     this.close.emit();
+  }
+
+  /** Catch up immediately when the owner returns to this tab. */
+  @HostListener('document:visibilitychange')
+  onVisibilityChange(): void {
+    if (!document.hidden) this.refreshLive();
+  }
+
+  // =========================================================================
+  // Live (real-time) refresh
+  // =========================================================================
+
+  private startLive(): void {
+    this.liveSub?.unsubscribe();
+    this.liveSub = timer(LIVE_REFRESH_MS, LIVE_REFRESH_MS).subscribe(() => {
+      if (!document.hidden) this.refreshLive();
+    });
+  }
+
+  /**
+   * Silent refresh: no loading skeleton, and a failed poll keeps the data
+   * already on screen instead of replacing it with an error.
+   */
+  private refreshLive(): void {
+    if (!this.businessId || !this.from) return;
+    // Rolling windows slide forward (also across midnight); custom dates stay put.
+    if (this.rangeMode === 'auto') this.setAutoWindow();
+    this.loadBusiness(true);
+    if (this.scope === 'offerings') this.loadOffering(true);
   }
 
   // =========================================================================
@@ -228,27 +268,41 @@ export class BusinessAnalyticsComponent
     }
   }
 
-  /** Sets the range from "last N days" (today included) in local time. */
-  applyPreset(preset: RangePreset): void {
-    this.preset = preset;
-    this.rangeError = '';
-
-    if (preset === 'custom') {
-      if (!this.customFrom || !this.customTo) {
-        this.customTo = this.toInputDate(new Date());
-        this.customFrom = this.toInputDate(new Date(Date.now() - 29 * DAY_MS));
-      }
-      this.applyCustomRange();
-      return;
-    }
-
-    const days = preset === '7d' ? 7 : preset === '30d' ? 30 : 90;
+  /** Rolling window that matches the selected interval (today included). */
+  private setAutoWindow(): void {
     const end = new Date();
-    const start = new Date(end.getTime() - (days - 1) * DAY_MS);
+    let start: Date;
+    if (this.granularity === 'monthly') {
+      // current month + the previous 11
+      start = new Date(end.getFullYear(), end.getMonth() - 11, 1);
+    } else {
+      const days = this.granularity === 'weekly' ? 12 * 7 : 30;
+      start = new Date(end.getTime() - (days - 1) * DAY_MS);
+    }
     this.from = this.startOfDay(start);
     this.to = this.endOfDay(end);
-    this.granularity = days >= 90 ? 'weekly' : 'daily';
+  }
+
+  private applyAutoRange(): void {
+    this.rangeMode = 'auto';
+    this.rangeError = '';
+    this.setAutoWindow();
     this.reload();
+  }
+
+  /** "Custom" toggles a hand-picked date range on and off. */
+  toggleCustom(): void {
+    if (this.rangeMode === 'custom') {
+      this.applyAutoRange();
+      return;
+    }
+    this.rangeMode = 'custom';
+    this.rangeError = '';
+    if (!this.customFrom || !this.customTo) {
+      this.customTo = this.toInputDate(new Date());
+      this.customFrom = this.toInputDate(new Date(Date.now() - 29 * DAY_MS));
+    }
+    this.applyCustomRange();
   }
 
   applyCustomRange(): void {
@@ -266,17 +320,29 @@ export class BusinessAnalyticsComponent
     this.from = this.startOfDay(from);
     this.to = this.endOfDay(to);
 
+    // Keep the chosen interval, but never ask for an unreasonable number of
+    // points (e.g. daily over a multi-month range).
     const days = Math.round((to.getTime() - from.getTime()) / DAY_MS) + 1;
-    this.granularity = days > 120 ? 'monthly' : days > 45 ? 'weekly' : 'daily';
+    if (this.granularity === 'daily' && days > 120) {
+      this.granularity = 'weekly';
+    }
+    if (this.granularity === 'weekly' && days > 730) {
+      this.granularity = 'monthly';
+    }
     this.reload();
   }
 
   setGranularity(g: AnalyticsGranularity): void {
     if (this.granularity === g) return;
     this.granularity = g;
+    if (this.rangeMode === 'auto') {
+      // Each interval has its own default window (30 days / 12 weeks / 12 months).
+      this.setAutoWindow();
+    }
     this.reload();
   }
 
+  /** Manual / user-driven reload (shows loading state). */
   reload(): void {
     this.loadBusiness();
     if (this.scope === 'offerings') this.loadOffering();
@@ -300,16 +366,26 @@ export class BusinessAnalyticsComponent
   // Business loading
   // =========================================================================
 
-  loadBusiness(): void {
+  loadBusiness(silent = false): void {
     if (!this.businessId || !this.from) return;
+    // A background poll never interrupts a load the user is waiting on.
+    if (silent && this.bizLoading) return;
     this.bizSub?.unsubscribe();
-    this.bizLoading = true;
-    this.bizError = '';
-    this.bizNotFound = false;
+    if (!silent) {
+      this.bizLoading = true;
+      this.bizError = '';
+      this.bizNotFound = false;
+    }
 
     const span = this.to.getTime() - this.from.getTime() + 1;
     const prevTo = new Date(this.from.getTime() - 1);
     const prevFrom = new Date(this.from.getTime() - span);
+
+    // The previous period lies entirely before `from`, so a background poll
+    // only needs it again when the window itself has moved.
+    const rangeKey = `${this.from.getTime()}-${this.to.getTime()}`;
+    const reusePrevious =
+      silent && rangeKey === this.prevRangeKey && !!this.bizPrevTotals;
 
     this.bizSub = forkJoin({
       summary: this.analytics.getBusinessSummary(
@@ -317,9 +393,11 @@ export class BusinessAnalyticsComponent
         this.from,
         this.to,
       ),
-      previous: this.analytics
-        .getBusinessSummary(this.businessId, prevFrom, prevTo)
-        .pipe(catchError(() => of(null))),
+      previous: reusePrevious
+        ? of(undefined)
+        : this.analytics
+            .getBusinessSummary(this.businessId, prevFrom, prevTo)
+            .pipe(catchError(() => of(null))),
       series: this.analytics.getBusinessSeries(
         this.businessId,
         this.granularity,
@@ -329,21 +407,28 @@ export class BusinessAnalyticsComponent
     }).subscribe({
       next: ({ summary, previous, series }) => {
         this.bizTotals = normalizeTotals(summary, BUSINESS_EVENT_META);
-        this.bizPrevTotals = previous
-          ? normalizeTotals(previous, BUSINESS_EVENT_META)
-          : null;
+        if (previous !== undefined) {
+          this.bizPrevTotals = previous
+            ? normalizeTotals(previous, BUSINESS_EVENT_META)
+            : null;
+          this.prevRangeKey = rangeKey;
+        }
         this.bizSeries = normalizeSeries(
           series,
           BUSINESS_EVENT_META,
           this.granularity,
         );
         this.bizLoading = false;
-        this.bizHover = null;
+        this.bizError = '';
+        this.bizNotFound = false;
+        if (!silent) this.bizHover = null;
+        this.lastUpdated = new Date();
         this.rebuildBusinessChart();
       },
       error: (err) => {
         this.bizLoading = false;
-        this.bizError = this.errorMessage(err);
+        // A failed background poll keeps what is already on screen.
+        if (silent) return;
         this.bizNotFound = err?.status === 404;
         this.bizError = this.errorMessage(err);
       },
@@ -484,13 +569,16 @@ export class BusinessAnalyticsComponent
     this.loadOffering();
   }
 
-  loadOffering(): void {
+  loadOffering(silent = false): void {
     if (!this.businessId || !this.selectedOfferingId || !this.from) {
       return;
     }
+    if (silent && this.offLoading) return;
     this.offSub?.unsubscribe();
-    this.offLoading = true;
-    this.offError = '';
+    if (!silent) {
+      this.offLoading = true;
+      this.offError = '';
+    }
 
     this.offSub = this.analytics
       .getOfferingSeries(
@@ -513,11 +601,14 @@ export class BusinessAnalyticsComponent
             OFFERING_EVENT_META,
           );
           this.offLoading = false;
-          this.offHover = null;
+          this.offError = '';
+          if (!silent) this.offHover = null;
+          this.lastUpdated = new Date();
           this.rebuildOfferingChart();
         },
         error: (err) => {
           this.offLoading = false;
+          if (silent) return;
           this.offError = this.errorMessage(err);
         },
       });

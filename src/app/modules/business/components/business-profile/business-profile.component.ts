@@ -1529,9 +1529,11 @@ export class BusinessProfileComponent implements OnInit {
     if (!this.quickViewProduct) return;
     const id = this.quickViewProduct.id;
     const isOwner = this.isOwner;
+    const contactMobile = this.business?.businessContactDto?.mobile || '';
+    const contactWhatsApp = this.business?.businessContactDto?.whatsApp || '';
     this.closeQuickView();
     this.router.navigate(['/business/product', id], {
-      state: { isOwner },
+      state: { isOwner, contactMobile, contactWhatsApp },
     });
   }
 
@@ -1539,9 +1541,11 @@ export class BusinessProfileComponent implements OnInit {
     if (!this.quickViewService) return;
     const id = this.quickViewService.id;
     const isOwner = this.isOwner;
+    const contactMobile = this.business?.businessContactDto?.mobile || '';
+    const contactWhatsApp = this.business?.businessContactDto?.whatsApp || '';
     this.closeServiceQuickView();
     this.router.navigate(['/business/service', id], {
-      state: { isOwner },
+      state: { isOwner, contactMobile, contactWhatsApp },
     });
   }
 
@@ -1555,9 +1559,10 @@ export class BusinessProfileComponent implements OnInit {
     const offering = this.quickViewOffering;
     const isOwner = this.isOwner;
     const contactMobile = this.business?.businessContactDto?.mobile || '';
+    const contactWhatsApp = this.business?.businessContactDto?.whatsApp || '';
     this.closeOfferingQuickView();
     this.router.navigate(['/business/offering', offering.id], {
-      state: { isOwner, offering, contactMobile },
+      state: { isOwner, offering, contactMobile, contactWhatsApp },
     });
   }
 
