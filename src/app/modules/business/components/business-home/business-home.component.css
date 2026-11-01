@@ -1012,6 +1012,8 @@
    FOOTER BUTTONS (Kept similar but slightly larger text)
    ========================================================= */
 .business-card-footer {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-wrap: nowrap;
   gap: 4px;

@@ -4,6 +4,13 @@ import {
   BusinessProductImageDto,
 } from '../../model/Business';
 import { OfferingWishlistService } from '../../service/offering-wishlist.service';
+import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
+import { BusinessAnalyticsEventType } from '../../model/business-analytics';
+import {
+  openPhoneCall,
+  openWhatsAppChat,
+  resolveWhatsAppNumber,
+} from '../../utils/business-contact.util';
 
 @Component({
   selector: 'app-business-product-quickview',
@@ -12,12 +19,19 @@ import { OfferingWishlistService } from '../../service/offering-wishlist.service
 })
 export class BusinessProductQuickviewComponent {
   @Input() product!: BusinessProductDto;
+  @Input() contactMobile = '';
+  @Input() contactWhatsApp = '';
+  /** Owners viewing their own product are not counted in analytics. */
+  @Input() isOwner = false;
   @Output() close = new EventEmitter<void>();
   @Output() viewFullDetails = new EventEmitter<void>();
 
   activeImageIndex = 0;
 
-  constructor(public wishlist: OfferingWishlistService) {}
+  constructor(
+    public wishlist: OfferingWishlistService,
+    private tracker: BusinessAnalyticsTracker,
+  ) {}
 
   ngOnInit(): void {
     this.wishlist.load();
@@ -61,5 +75,24 @@ export class BusinessProductQuickviewComponent {
     this.viewFullDetails.emit();
   }
 
-  onContactBusiness(): void {}
+  get whatsAppNumber(): string {
+    return resolveWhatsAppNumber(this.contactWhatsApp, this.contactMobile);
+  }
+
+  /** Business-level analytics; the owner's own clicks are never counted. */
+  private trackContact(type: BusinessAnalyticsEventType): void {
+    const businessId = this.product?.businessId;
+    if (this.isOwner || !businessId) return;
+    this.tracker.trackBusiness(businessId, type);
+  }
+
+  onCall(): void {
+    this.trackContact(BusinessAnalyticsEventType.Call);
+    openPhoneCall(this.contactMobile);
+  }
+
+  onWhatsApp(): void {
+    this.trackContact(BusinessAnalyticsEventType.WhatsAppClick);
+    openWhatsAppChat(this.whatsAppNumber);
+  }
 }

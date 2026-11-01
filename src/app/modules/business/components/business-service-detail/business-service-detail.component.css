@@ -423,3 +423,12 @@
   cursor: default;
   transform: none;
 }
+
+.btn-outline.btn-whatsapp {
+  color: #1a7f3c;
+  border-color: #25a244;
+}
+
+.btn-outline.btn-whatsapp:hover {
+  background-color: #eaf7ee;
+}

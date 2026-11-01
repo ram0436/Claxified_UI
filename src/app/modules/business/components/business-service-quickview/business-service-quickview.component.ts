@@ -4,6 +4,13 @@ import {
   BusinessServiceImageDto,
 } from '../../model/Business';
 import { OfferingWishlistService } from '../../service/offering-wishlist.service';
+import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
+import { BusinessAnalyticsEventType } from '../../model/business-analytics';
+import {
+  openPhoneCall,
+  openWhatsAppChat,
+  resolveWhatsAppNumber,
+} from '../../utils/business-contact.util';
 
 @Component({
   selector: 'app-business-service-quickview',
@@ -12,12 +19,19 @@ import { OfferingWishlistService } from '../../service/offering-wishlist.service
 })
 export class BusinessServiceQuickviewComponent {
   @Input() service!: BusinessServiceDto;
+  @Input() contactMobile = '';
+  @Input() contactWhatsApp = '';
+  /** Owners viewing their own service are not counted in analytics. */
+  @Input() isOwner = false;
   @Output() close = new EventEmitter<void>();
   @Output() viewFullDetails = new EventEmitter<void>();
 
   activeImageIndex = 0;
 
-  constructor(public wishlist: OfferingWishlistService) {}
+  constructor(
+    public wishlist: OfferingWishlistService,
+    private tracker: BusinessAnalyticsTracker,
+  ) {}
 
   ngOnInit(): void {
     this.wishlist.load();
@@ -149,9 +163,25 @@ export class BusinessServiceQuickviewComponent {
     this.viewFullDetails.emit();
   }
 
-  onContactBusiness(): void {
-    // Implement contact business logic
-    // console.log("Contact business for service:", this.service.id);
+  get whatsAppNumber(): string {
+    return resolveWhatsAppNumber(this.contactWhatsApp, this.contactMobile);
+  }
+
+  /** Business-level analytics; the owner's own clicks are never counted. */
+  private trackContact(type: BusinessAnalyticsEventType): void {
+    const businessId = this.service?.businessId;
+    if (this.isOwner || !businessId) return;
+    this.tracker.trackBusiness(businessId, type);
+  }
+
+  onCall(): void {
+    this.trackContact(BusinessAnalyticsEventType.Call);
+    openPhoneCall(this.contactMobile);
+  }
+
+  onWhatsApp(): void {
+    this.trackContact(BusinessAnalyticsEventType.WhatsAppClick);
+    openWhatsAppChat(this.whatsAppNumber);
   }
 
   // Helper to check if service has any images

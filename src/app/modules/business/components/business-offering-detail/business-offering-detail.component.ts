@@ -19,6 +19,11 @@ import {
 import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
 import {
+  openPhoneCall,
+  openWhatsAppChat,
+  resolveWhatsAppNumber,
+} from '../../utils/business-contact.util';
+import {
   BusinessAnalyticsEventType,
   BusinessOfferingAnalyticsEventType,
 } from '../../model/business-analytics';
@@ -39,6 +44,7 @@ export class BusinessOfferingDetailComponent implements OnInit {
   /** Passed through router state from the business profile page. */
   isOwner = false;
   contactMobile = '';
+  contactWhatsApp = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -55,6 +61,7 @@ export class BusinessOfferingDetailComponent implements OnInit {
 
     this.isOwner = !!state.isOwner;
     this.contactMobile = state.contactMobile || '';
+    this.contactWhatsApp = state.contactWhatsApp || '';
 
     const fromState: BusinessOfferingDto | null =
       state.offering && Number(state.offering.id) === id
@@ -139,7 +146,11 @@ export class BusinessOfferingDetailComponent implements OnInit {
     this.location.back();
   }
 
-  onContactBusiness(): void {
+  get whatsAppNumber(): string {
+    return resolveWhatsAppNumber(this.contactWhatsApp, this.contactMobile);
+  }
+
+  onCall(): void {
     if (!this.isOwner && this.offering) {
       this.tracker.trackOffering(
         this.offering.businessId,
@@ -151,9 +162,22 @@ export class BusinessOfferingDetailComponent implements OnInit {
         BusinessAnalyticsEventType.Call,
       );
     }
-    if (this.contactMobile) {
-      window.location.href = `tel:${this.contactMobile}`;
+    openPhoneCall(this.contactMobile);
+  }
+
+  onWhatsApp(): void {
+    if (!this.isOwner && this.offering) {
+      this.tracker.trackOffering(
+        this.offering.businessId,
+        this.offering.id,
+        BusinessOfferingAnalyticsEventType.WhatsAppClick,
+      );
+      this.tracker.trackBusiness(
+        this.offering.businessId,
+        BusinessAnalyticsEventType.WhatsAppClick,
+      );
     }
+    openWhatsAppChat(this.whatsAppNumber);
   }
 
   onShare(): void {

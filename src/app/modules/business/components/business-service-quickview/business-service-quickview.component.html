@@ -137,8 +137,21 @@
 
     <!-- Actions -->
     <div class="qv-actions">
-      <button class="btn-outline" (click)="onContactBusiness()">
-        <span class="material-icons-outlined">call</span> Contact Business
+      <button
+        class="btn-outline"
+        type="button"
+        *ngIf="contactMobile"
+        (click)="onCall()"
+      >
+        <span class="material-icons-outlined">call</span> Call
+      </button>
+      <button
+        class="btn-outline btn-whatsapp"
+        type="button"
+        *ngIf="whatsAppNumber"
+        (click)="onWhatsApp()"
+      >
+        <span class="material-icons-outlined">chat</span> WhatsApp
       </button>
       <button class="btn-primary" (click)="onViewFullDetails()">
         View Full Details

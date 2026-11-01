@@ -93,9 +93,17 @@
         class="btn-outline"
         type="button"
         *ngIf="contactMobile"
-        (click)="onContactBusiness()"
+        (click)="onCall()"
       >
-        <span class="material-icons-outlined">call</span> Contact Business
+        <span class="material-icons-outlined">call</span> Call
+      </button>
+      <button
+        class="btn-outline btn-whatsapp"
+        type="button"
+        *ngIf="whatsAppNumber"
+        (click)="onWhatsApp()"
+      >
+        <span class="material-icons-outlined">chat</span> WhatsApp
       </button>
       <button class="btn-primary" type="button" (click)="onViewFullDetails()">
         View Full Details

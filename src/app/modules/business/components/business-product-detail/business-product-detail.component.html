@@ -194,8 +194,19 @@
           >
             <span class="material-icons-outlined">edit</span> Edit Product
           </button>
-          <button class="btn-outline btn-block" (click)="onContactBusiness()">
-            <span class="material-icons-outlined">call</span> Contact Business
+          <button
+            class="btn-outline btn-block"
+            *ngIf="contactMobile"
+            (click)="onCall()"
+          >
+            <span class="material-icons-outlined">call</span> Call
+          </button>
+          <button
+            class="btn-outline btn-block btn-whatsapp"
+            *ngIf="whatsAppNumber"
+            (click)="onWhatsApp()"
+          >
+            <span class="material-icons-outlined">chat</span> WhatsApp
           </button>
           <button class="btn-outline btn-block" (click)="onShare()">
             <span class="material-icons-outlined">share</span> Share

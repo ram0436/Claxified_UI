@@ -6,6 +6,13 @@ import {
   BusinessServiceImageDto,
 } from '../../model/Business';
 import { OfferingWishlistService } from '../../service/offering-wishlist.service';
+import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
+import { BusinessAnalyticsEventType } from '../../model/business-analytics';
+import {
+  openPhoneCall,
+  openWhatsAppChat,
+  resolveWhatsAppNumber,
+} from '../../utils/business-contact.util';
 
 @Component({
   selector: 'app-business-service-detail',
@@ -16,6 +23,9 @@ export class BusinessServiceDetailComponent implements OnInit {
   loading = true;
   service: BusinessServiceDto | null = null;
   isOwner = false;
+  /** Passed through router state from the business profile page. */
+  contactMobile = '';
+  contactWhatsApp = '';
   activeImageIndex = 0;
 
   // Display mappings
@@ -53,11 +63,16 @@ export class BusinessServiceDetailComponent implements OnInit {
     private router: Router,
     private businessService: BusinessService,
     public wishlist: OfferingWishlistService,
+    private tracker: BusinessAnalyticsTracker,
   ) {}
 
   ngOnInit(): void {
-    const navState = window.history.state as { isOwner?: boolean } | undefined;
+    const navState = window.history.state as
+      | { isOwner?: boolean; contactMobile?: string; contactWhatsApp?: string }
+      | undefined;
     this.isOwner = navState?.isOwner === true;
+    this.contactMobile = navState?.contactMobile || '';
+    this.contactWhatsApp = navState?.contactWhatsApp || '';
 
     this.route.paramMap.subscribe((params) => {
       const id = Number(params.get('serviceId'));
@@ -176,7 +191,26 @@ export class BusinessServiceDetailComponent implements OnInit {
     this.router.navigate(['/business/service', this.service.id, 'edit']);
   }
 
-  onContactBusiness(): void {}
+  get whatsAppNumber(): string {
+    return resolveWhatsAppNumber(this.contactWhatsApp, this.contactMobile);
+  }
+
+  /** Business-level analytics; the owner's own clicks are never counted. */
+  private trackContact(type: BusinessAnalyticsEventType): void {
+    const businessId = this.service?.businessId;
+    if (this.isOwner || !businessId) return;
+    this.tracker.trackBusiness(businessId, type);
+  }
+
+  onCall(): void {
+    this.trackContact(BusinessAnalyticsEventType.Call);
+    openPhoneCall(this.contactMobile);
+  }
+
+  onWhatsApp(): void {
+    this.trackContact(BusinessAnalyticsEventType.WhatsAppClick);
+    openWhatsAppChat(this.whatsAppNumber);
+  }
 
   onShare(): void {}
 
