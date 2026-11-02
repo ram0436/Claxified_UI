@@ -37,6 +37,7 @@ import { BusinessAnalyticsTracker } from '../../service/business-analytics-track
 import {
   BusinessAnalyticsEventType,
   BusinessOfferingAnalyticsEventType,
+  AnalyticsOfferingItem,
 } from '../../model/business-analytics';
 
 interface CatalogItem {
@@ -1365,6 +1366,39 @@ export class BusinessProfileComponent implements OnInit {
         this.offeringsLoading = false;
       },
     );
+  }
+
+  get analyticsOfferings(): AnalyticsOfferingItem[] {
+    const products: AnalyticsOfferingItem[] = this.rawProducts.map((p) => ({
+      id: p.id,
+      name: p.name,
+      imageUrl:
+        (p.images?.find((i) => i.isPrimary) || p.images?.[0])?.imageUrl || '',
+      isActive: p.availabilityStatus === 'InStock',
+      kind: 'product' as const,
+    }));
+
+    const services: AnalyticsOfferingItem[] = this.rawServices.map((s) => {
+      const imgs: any[] = (s as any).images || [];
+      const primary = imgs.find((i) => i.isPrimary) || imgs[0];
+      return {
+        id: s.id,
+        name: s.serviceName,
+        imageUrl: primary?.imageUrl || '',
+        isActive: s.availabilityStatus === 'Available',
+        kind: 'service' as const,
+      };
+    });
+
+    const offerings: AnalyticsOfferingItem[] = this.offerings.map((o) => ({
+      id: o.id,
+      name: o.name,
+      imageUrl: (o as any).imageUrl || '',
+      isActive: o.isActive,
+      kind: 'offering' as const,
+    }));
+
+    return [...products, ...services, ...offerings];
   }
 
   // ================== Products (catalog) ==================

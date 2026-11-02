@@ -9,6 +9,8 @@ export interface TrackOptions {
   once?: boolean;
 }
 
+export type TrackableKind = 'offering' | 'product' | 'service';
+
 @Injectable({ providedIn: 'root' })
 export class BusinessAnalyticsTracker {
   private readonly onceWindowMs = 30 * 60 * 1000;
@@ -32,15 +34,16 @@ export class BusinessAnalyticsTracker {
 
   trackOffering(
     businessId: number,
-    offeringId: number,
+    entityId: number,
     eventType: BusinessOfferingAnalyticsEventType,
     options: TrackOptions = {},
+    kind: TrackableKind = 'offering',
   ): void {
-    if (!businessId || !offeringId) return;
-    const key = `clx.an.o.${businessId}.${offeringId}.${eventType}`;
+    if (!businessId || !entityId) return;
+    const key = `clx.an.${kind[0]}.${businessId}.${entityId}.${eventType}`;
     if (!this.claim(key, options.once)) return;
 
-    this.api.trackOfferingEvent(businessId, offeringId, eventType).subscribe({
+    this.api.trackOfferingEvent(businessId, entityId, eventType).subscribe({
       error: () => this.release(key),
     });
   }

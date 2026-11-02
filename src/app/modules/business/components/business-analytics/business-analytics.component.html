@@ -417,8 +417,8 @@
         <span class="material-icons-outlined">category</span>
         <h3>No offerings yet</h3>
         <p>
-          Add an offering to your business and its views, calls and enquiries
-          will be tracked here.
+          Add a product, service or offering to your business and its views,
+          calls and enquiries will be tracked here.
         </p>
       </div>
 
@@ -437,7 +437,7 @@
           <ul>
             <li
               *ngFor="let o of filteredOfferings; trackBy: trackById"
-              [class.on]="o.id === selectedOfferingId"
+              [class.on]="o.kind + ':' + o.id === selectedOfferingKey"
               (click)="selectOffering(o)"
               tabindex="0"
               (keyup.enter)="selectOffering(o)"
@@ -449,6 +449,9 @@
                 }}</ng-container>
               </span>
               <span class="an-off-name">{{ o.name }}</span>
+              <span class="an-off-kind-pill" [ngClass]="'kind-' + o.kind">{{
+                o.kind
+              }}</span>
               <span
                 class="an-off-inactive"
                 *ngIf="o.isActive === false"
@@ -473,6 +476,15 @@
             </span>
             <div>
               <h3>{{ o.name }}</h3>
+              <p class="an-off-kind">
+                {{
+                  o.kind === "product"
+                    ? "Product"
+                    : o.kind === "service"
+                      ? "Service"
+                      : "Offering"
+                }}
+              </p>
               <p *ngIf="offConversionRate !== null">
                 Lead conversion
                 <b>{{ offConversionRate | number: "1.0-1" }}%</b>
