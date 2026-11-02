@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map } from 'rxjs/operators';
 import { BusinessService } from '../../service/business.service';
 import {
   BusinessProductDto,
@@ -8,7 +7,10 @@ import {
 } from '../../model/Business';
 import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
-import { BusinessAnalyticsEventType } from '../../model/business-analytics';
+import {
+  BusinessAnalyticsEventType,
+  BusinessOfferingAnalyticsEventType,
+} from '../../model/business-analytics';
 import {
   openPhoneCall,
   openWhatsAppChat,
@@ -24,7 +26,6 @@ export class BusinessProductDetailComponent implements OnInit {
   loading = true;
   product: BusinessProductDto | null = null;
   isOwner = false;
-  /** Passed through router state from the business profile page. */
   contactMobile = '';
   contactWhatsApp = '';
   activeImageIndex = 0;
@@ -62,6 +63,15 @@ export class BusinessProductDetailComponent implements OnInit {
       next: (product) => {
         this.product = product;
         this.loading = false;
+        if (!this.isOwner && product.businessId) {
+          this.tracker.trackOffering(
+            product.businessId,
+            product.id,
+            BusinessOfferingAnalyticsEventType.View,
+            { once: true },
+            'product',
+          );
+        }
       },
       error: () => (this.loading = false),
     });
@@ -103,21 +113,39 @@ export class BusinessProductDetailComponent implements OnInit {
     return resolveWhatsAppNumber(this.contactWhatsApp, this.contactMobile);
   }
 
-  /** Business-level analytics; the owner's own clicks are never counted. */
-  private trackContact(type: BusinessAnalyticsEventType): void {
-    const businessId = this.product?.businessId;
-    if (this.isOwner || !businessId) return;
-    this.tracker.trackBusiness(businessId, type);
-  }
-
   onCall(): void {
-    this.trackContact(BusinessAnalyticsEventType.Call);
+    if (!this.isOwner && this.product?.businessId) {
+      this.tracker.trackOffering(
+        this.product.businessId,
+        this.product.id,
+        BusinessOfferingAnalyticsEventType.Call,
+        undefined,
+        'product',
+      );
+      this.tracker.trackBusiness(
+        this.product.businessId,
+        BusinessAnalyticsEventType.Call,
+      );
+    }
     openPhoneCall(this.contactMobile);
   }
 
   onWhatsApp(): void {
-    this.trackContact(BusinessAnalyticsEventType.WhatsAppClick);
+    if (!this.isOwner && this.product?.businessId) {
+      this.tracker.trackOffering(
+        this.product.businessId,
+        this.product.id,
+        BusinessOfferingAnalyticsEventType.WhatsAppClick,
+        undefined,
+        'product',
+      );
+      this.tracker.trackBusiness(
+        this.product.businessId,
+        BusinessAnalyticsEventType.WhatsAppClick,
+      );
+    }
     openWhatsAppChat(this.whatsAppNumber);
   }
+
   onShare(): void {}
 }

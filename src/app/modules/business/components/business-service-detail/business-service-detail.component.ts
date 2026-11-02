@@ -7,7 +7,10 @@ import {
 } from '../../model/Business';
 import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
-import { BusinessAnalyticsEventType } from '../../model/business-analytics';
+import {
+  BusinessAnalyticsEventType,
+  BusinessOfferingAnalyticsEventType,
+} from '../../model/business-analytics';
 import {
   openPhoneCall,
   openWhatsAppChat,
@@ -23,12 +26,10 @@ export class BusinessServiceDetailComponent implements OnInit {
   loading = true;
   service: BusinessServiceDto | null = null;
   isOwner = false;
-  /** Passed through router state from the business profile page. */
   contactMobile = '';
   contactWhatsApp = '';
   activeImageIndex = 0;
 
-  // Display mappings
   private readonly pricingTypeDisplayMap: { [key: string]: string } = {
     FixedPrice: 'Fixed Price',
     StartingFrom: 'Starting From',
@@ -91,6 +92,15 @@ export class BusinessServiceDetailComponent implements OnInit {
       next: (service) => {
         this.service = service;
         this.loading = false;
+        if (!this.isOwner && service.businessId) {
+          this.tracker.trackOffering(
+            service.businessId,
+            service.id,
+            BusinessOfferingAnalyticsEventType.View,
+            { once: true },
+            'service',
+          );
+        }
       },
       error: () => (this.loading = false),
     });
@@ -110,7 +120,6 @@ export class BusinessServiceDetailComponent implements OnInit {
     this.activeImageIndex = i;
   }
 
-  // Price display helpers
   get priceDisplay(): string {
     if (!this.service) return '0';
     if (this.service.pricingType === 'PriceRange') {
@@ -195,24 +204,56 @@ export class BusinessServiceDetailComponent implements OnInit {
     return resolveWhatsAppNumber(this.contactWhatsApp, this.contactMobile);
   }
 
-  /** Business-level analytics; the owner's own clicks are never counted. */
-  private trackContact(type: BusinessAnalyticsEventType): void {
-    const businessId = this.service?.businessId;
-    if (this.isOwner || !businessId) return;
-    this.tracker.trackBusiness(businessId, type);
-  }
-
   onCall(): void {
-    this.trackContact(BusinessAnalyticsEventType.Call);
+    if (!this.isOwner && this.service?.businessId) {
+      this.tracker.trackOffering(
+        this.service.businessId,
+        this.service.id,
+        BusinessOfferingAnalyticsEventType.Call,
+        undefined,
+        'service',
+      );
+      this.tracker.trackBusiness(
+        this.service.businessId,
+        BusinessAnalyticsEventType.Call,
+      );
+    }
     openPhoneCall(this.contactMobile);
   }
 
   onWhatsApp(): void {
-    this.trackContact(BusinessAnalyticsEventType.WhatsAppClick);
+    if (!this.isOwner && this.service?.businessId) {
+      this.tracker.trackOffering(
+        this.service.businessId,
+        this.service.id,
+        BusinessOfferingAnalyticsEventType.WhatsAppClick,
+        undefined,
+        'service',
+      );
+      this.tracker.trackBusiness(
+        this.service.businessId,
+        BusinessAnalyticsEventType.WhatsAppClick,
+      );
+    }
     openWhatsAppChat(this.whatsAppNumber);
   }
 
   onShare(): void {}
 
-  onBookService(): void {}
+  onBookService(): void {
+    if (!this.isOwner && this.service?.businessId) {
+      this.tracker.trackOffering(
+        this.service.businessId,
+        this.service.id,
+        BusinessOfferingAnalyticsEventType.Enquiry,
+        undefined,
+        'service',
+      );
+      this.tracker.trackBusiness(
+        this.service.businessId,
+        BusinessAnalyticsEventType.Enquiry,
+      );
+    }
+    // ...existing booking flow
+  }
 }

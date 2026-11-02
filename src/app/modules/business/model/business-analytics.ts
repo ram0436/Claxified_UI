@@ -27,6 +27,14 @@ export enum BusinessOfferingAnalyticsEventType {
 
 export type AnalyticsGranularity = 'daily' | 'weekly' | 'monthly';
 
+export interface AnalyticsOfferingItem {
+  id: number;
+  name: string;
+  imageUrl?: string;
+  isActive?: boolean;
+  kind: 'offering' | 'product' | 'service';
+}
+
 export interface AnalyticsEventMeta {
   id: number;
   key: string;

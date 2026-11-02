@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { BusinessService } from 'src/app/modules/business/service/business.service';
 import { BusinessOfferingDto } from 'src/app/modules/business/model/Business';
 import { OfferingType } from 'src/app/modules/business/enum/business-offering.enum';
+import { AnalyticsOfferingItem } from 'src/app/modules/business/model/business-analytics';
 
 interface AnalyticsBusiness {
   id: number;
@@ -173,5 +174,16 @@ export class MyAnalyticsComponent implements OnInit, OnDestroy {
       .slice(0, 2)
       .map((w) => w[0]?.toUpperCase())
       .join('');
+  }
+
+  get analyticsOfferings(): AnalyticsOfferingItem[] {
+    const items = this.active?.offerings || [];
+    return items.map((o) => ({
+      id: o.id,
+      name: o.name,
+      imageUrl: (o as any).imageUrl || '',
+      isActive: o.isActive,
+      kind: 'offering' as const,
+    }));
   }
 }

@@ -9,12 +9,20 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { catchError, forkJoin, of, Subscription, timer } from 'rxjs';
-import { BusinessOfferingDto } from '../../model/Business';
+import {
+  catchError,
+  finalize,
+  forkJoin,
+  of,
+  Subscription,
+  timeout,
+  timer,
+} from 'rxjs';
 import { BusinessService } from '../../service/business.service';
 import {
   AnalyticsEventMeta,
   AnalyticsGranularity,
+  AnalyticsOfferingItem,
   AnalyticsSeriesPoint,
   AnalyticsTotals,
   BUSINESS_EVENT_META,
@@ -25,7 +33,6 @@ import {
 } from '../../model/business-analytics';
 
 type AnalyticsScope = 'business' | 'offerings';
-/** 'auto' = window follows the Daily / Weekly / Monthly interval; 'custom' = user-picked dates. */
 type RangeMode = 'auto' | 'custom';
 
 interface ChartMetric {
@@ -94,8 +101,6 @@ const OFFERING_CHART_METRICS: ChartMetric[] = OFFERING_EVENT_META.map((m) => ({
 }));
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-
-/** How often the open analytics view silently re-fetches (real-time updates). */
 const LIVE_REFRESH_MS = 10_000;
 
 @Component({
@@ -108,7 +113,7 @@ export class BusinessAnalyticsComponent
 {
   @Input() businessId!: number;
   @Input() businessName: string = '';
-  @Input() offerings: BusinessOfferingDto[] = [];
+  @Input() offerings: AnalyticsOfferingItem[] = [];
   @Output() close = new EventEmitter<void>();
   @Input() embedded = false;
 
@@ -138,10 +143,9 @@ export class BusinessAnalyticsComponent
   bizNotFound = false;
   offNotFound = false;
 
-  /** Time of the last successful (live or manual) refresh. */
   lastUpdated: Date | null = null;
 
-  // ----- Business state ---------------------------------------------------
+  // ----- Business state -----
   bizLoading = false;
   bizError = '';
   bizTotals: AnalyticsTotals = {};
@@ -151,9 +155,11 @@ export class BusinessAnalyticsComponent
   bizChart: ChartGeometry | null = null;
   bizHover: number | null = null;
 
-  // ----- Offering state ---------------------------------------------------
+  // ----- Offering state -----
   offeringSearch = '';
-  selectedOfferingId: number | null = null;
+  /** Composite key `${kind}:${id}` — safe even if product/service/offering
+   *  ids collide across tables. */
+  selectedOfferingKey: string | null = null;
   offLoading = false;
   offError = '';
   offTotals: AnalyticsTotals = {};
@@ -161,6 +167,11 @@ export class BusinessAnalyticsComponent
   offMetricKey = 'View';
   offChart: ChartGeometry | null = null;
   offHover: number | null = null;
+
+  /** Identity of the offering-series request currently in flight (or most
+   *  recently issued). Prevents ngDocheck / ngOnChanges / the live poll from
+   *  firing the same request repeatedly while a tick is still pending. */
+  private offInFlightKey: string | null = null;
 
   private bizSub?: Subscription;
   private offSub?: Subscription;
@@ -180,12 +191,14 @@ export class BusinessAnalyticsComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // First-time or replaced offerings array — pick a valid selection.
     if (changes['offerings']) {
       const stillThere = (this.offerings || []).some(
-        (o) => o.id === this.selectedOfferingId,
+        (o) => this.keyOf(o) === this.selectedOfferingKey,
       );
       if (!stillThere) {
-        this.selectedOfferingId = this.offerings?.[0]?.id ?? null;
+        const first = this.offerings?.[0];
+        this.selectedOfferingKey = first ? this.keyOf(first) : null;
       }
     }
 
@@ -203,10 +216,19 @@ export class BusinessAnalyticsComponent
       this.offError = '';
       this.offeringSearch = '';
       this.reload();
-    } else if (
+      return;
+    }
+
+    // The parent rebuilds the offerings array on every CD cycle (getter that
+    // returns a new array). Only refetch when the *content* actually changed.
+    if (
       changes['offerings'] &&
       !changes['offerings'].firstChange &&
-      this.scope === 'offerings'
+      this.scope === 'offerings' &&
+      this.offeringsListChanged(
+        changes['offerings'].previousValue,
+        changes['offerings'].currentValue,
+      )
     ) {
       this.loadOffering();
     }
@@ -224,15 +246,12 @@ export class BusinessAnalyticsComponent
     this.close.emit();
   }
 
-  /** Catch up immediately when the owner returns to this tab. */
   @HostListener('document:visibilitychange')
   onVisibilityChange(): void {
     if (!document.hidden) this.refreshLive();
   }
 
-  // =========================================================================
-  // Live (real-time) refresh
-  // =========================================================================
+  // =================== Live refresh ===================
 
   private startLive(): void {
     this.liveSub?.unsubscribe();
@@ -241,39 +260,31 @@ export class BusinessAnalyticsComponent
     });
   }
 
-  /**
-   * Silent refresh: no loading skeleton, and a failed poll keeps the data
-   * already on screen instead of replacing it with an error.
-   */
   private refreshLive(): void {
     if (!this.businessId || !this.from) return;
-    // Rolling windows slide forward (also across midnight); custom dates stay put.
     if (this.rangeMode === 'auto') this.setAutoWindow();
     this.loadBusiness(true);
     if (this.scope === 'offerings') this.loadOffering(true);
   }
 
-  // =========================================================================
-  // Scope & range
-  // =========================================================================
+  // =================== Scope & range ===================
 
   setScope(scope: AnalyticsScope): void {
     if (this.scope === scope) return;
     this.scope = scope;
     if (scope === 'offerings') {
-      if (this.selectedOfferingId === null) {
-        this.selectedOfferingId = this.offerings[0]?.id ?? null;
+      if (!this.selectedOfferingKey) {
+        const first = this.offerings[0];
+        this.selectedOfferingKey = first ? this.keyOf(first) : null;
       }
       this.loadOffering();
     }
   }
 
-  /** Rolling window that matches the selected interval (today included). */
   private setAutoWindow(): void {
     const end = new Date();
     let start: Date;
     if (this.granularity === 'monthly') {
-      // current month + the previous 11
       start = new Date(end.getFullYear(), end.getMonth() - 11, 1);
     } else {
       const days = this.granularity === 'weekly' ? 12 * 7 : 30;
@@ -290,7 +301,6 @@ export class BusinessAnalyticsComponent
     this.reload();
   }
 
-  /** "Custom" toggles a hand-picked date range on and off. */
   toggleCustom(): void {
     if (this.rangeMode === 'custom') {
       this.applyAutoRange();
@@ -320,8 +330,6 @@ export class BusinessAnalyticsComponent
     this.from = this.startOfDay(from);
     this.to = this.endOfDay(to);
 
-    // Keep the chosen interval, but never ask for an unreasonable number of
-    // points (e.g. daily over a multi-month range).
     const days = Math.round((to.getTime() - from.getTime()) / DAY_MS) + 1;
     if (this.granularity === 'daily' && days > 120) {
       this.granularity = 'weekly';
@@ -335,14 +343,10 @@ export class BusinessAnalyticsComponent
   setGranularity(g: AnalyticsGranularity): void {
     if (this.granularity === g) return;
     this.granularity = g;
-    if (this.rangeMode === 'auto') {
-      // Each interval has its own default window (30 days / 12 weeks / 12 months).
-      this.setAutoWindow();
-    }
+    if (this.rangeMode === 'auto') this.setAutoWindow();
     this.reload();
   }
 
-  /** Manual / user-driven reload (shows loading state). */
   reload(): void {
     this.loadBusiness();
     if (this.scope === 'offerings') this.loadOffering();
@@ -362,14 +366,12 @@ export class BusinessAnalyticsComponent
     return `${fmt(this.from)} – ${fmt(this.to)}`;
   }
 
-  // =========================================================================
-  // Business loading
-  // =========================================================================
+  // =================== Business loading ===================
 
   loadBusiness(silent = false): void {
     if (!this.businessId || !this.from) return;
-    // A background poll never interrupts a load the user is waiting on.
     if (silent && this.bizLoading) return;
+
     this.bizSub?.unsubscribe();
     if (!silent) {
       this.bizLoading = true;
@@ -377,62 +379,42 @@ export class BusinessAnalyticsComponent
       this.bizNotFound = false;
     }
 
-    const span = this.to.getTime() - this.from.getTime() + 1;
-    const prevTo = new Date(this.from.getTime() - 1);
-    const prevFrom = new Date(this.from.getTime() - span);
+    this.bizSub = this.analytics
+      .getBusinessSeries(this.businessId, this.granularity, this.from, this.to)
+      .pipe(
+        timeout(15000),
+        finalize(() => {
+          this.bizLoading = false;
+        }),
+      )
+      .subscribe({
+        next: (series) => {
+          this.bizSeries = normalizeSeries(
+            series,
+            BUSINESS_EVENT_META,
+            this.granularity,
+          );
+          this.bizTotals = totalsFromSeries(
+            this.bizSeries,
+            BUSINESS_EVENT_META,
+          );
+          this.bizPrevTotals = null;
 
-    // The previous period lies entirely before `from`, so a background poll
-    // only needs it again when the window itself has moved.
-    const rangeKey = `${this.from.getTime()}-${this.to.getTime()}`;
-    const reusePrevious =
-      silent && rangeKey === this.prevRangeKey && !!this.bizPrevTotals;
-
-    this.bizSub = forkJoin({
-      summary: this.analytics.getBusinessSummary(
-        this.businessId,
-        this.from,
-        this.to,
-      ),
-      previous: reusePrevious
-        ? of(undefined)
-        : this.analytics
-            .getBusinessSummary(this.businessId, prevFrom, prevTo)
-            .pipe(catchError(() => of(null))),
-      series: this.analytics.getBusinessSeries(
-        this.businessId,
-        this.granularity,
-        this.from,
-        this.to,
-      ),
-    }).subscribe({
-      next: ({ summary, previous, series }) => {
-        this.bizTotals = normalizeTotals(summary, BUSINESS_EVENT_META);
-        if (previous !== undefined) {
-          this.bizPrevTotals = previous
-            ? normalizeTotals(previous, BUSINESS_EVENT_META)
-            : null;
-          this.prevRangeKey = rangeKey;
-        }
-        this.bizSeries = normalizeSeries(
-          series,
-          BUSINESS_EVENT_META,
-          this.granularity,
-        );
-        this.bizLoading = false;
-        this.bizError = '';
-        this.bizNotFound = false;
-        if (!silent) this.bizHover = null;
-        this.lastUpdated = new Date();
-        this.rebuildBusinessChart();
-      },
-      error: (err) => {
-        this.bizLoading = false;
-        // A failed background poll keeps what is already on screen.
-        if (silent) return;
-        this.bizNotFound = err?.status === 404;
-        this.bizError = this.errorMessage(err);
-      },
-    });
+          this.bizError = '';
+          this.bizNotFound = false;
+          if (!silent) this.bizHover = null;
+          this.lastUpdated = new Date();
+          this.rebuildBusinessChart();
+        },
+        error: (err) => {
+          if (silent) return;
+          this.bizNotFound = err?.status === 404;
+          this.bizError =
+            err?.name === 'TimeoutError'
+              ? 'The server took too long to respond. Please try again.'
+              : this.errorMessage(err);
+        },
+      });
   }
 
   setBusinessMetric(key: string): void {
@@ -453,7 +435,7 @@ export class BusinessAnalyticsComponent
     );
   }
 
-  // ----- Business derived values -----------------------------------------
+  // ---- Business derived values ----
 
   bizCount(id: number): number {
     return this.bizTotals[id] || 0;
@@ -545,48 +527,74 @@ export class BusinessAnalyticsComponent
       : this.bizSeries[this.bizHover] || null;
   }
 
-  // =========================================================================
-  // Offering loading
-  // =========================================================================
+  // =================== Offering loading ===================
 
-  get filteredOfferings(): BusinessOfferingDto[] {
+  private keyOf(o: AnalyticsOfferingItem): string {
+    return `${o.kind}:${o.id}`;
+  }
+
+  get filteredOfferings(): AnalyticsOfferingItem[] {
     const term = this.offeringSearch.trim().toLowerCase();
     return (this.offerings || []).filter(
       (o) => !term || (o.name || '').toLowerCase().includes(term),
     );
   }
 
-  get selectedOffering(): BusinessOfferingDto | null {
+  get selectedOffering(): AnalyticsOfferingItem | null {
+    if (!this.selectedOfferingKey) return null;
     return (
-      (this.offerings || []).find((o) => o.id === this.selectedOfferingId) ||
-      null
+      (this.offerings || []).find(
+        (o) => this.keyOf(o) === this.selectedOfferingKey,
+      ) || null
     );
   }
 
-  selectOffering(offering: BusinessOfferingDto): void {
-    if (this.selectedOfferingId === offering.id) return;
-    this.selectedOfferingId = offering.id;
+  selectOffering(offering: AnalyticsOfferingItem): void {
+    const key = this.keyOf(offering);
+    if (this.selectedOfferingKey === key) return;
+    this.selectedOfferingKey = key;
     this.loadOffering();
   }
 
   loadOffering(silent = false): void {
-    if (!this.businessId || !this.selectedOfferingId || !this.from) {
-      return;
-    }
-    if (silent && this.offLoading) return;
+    const item = this.selectedOffering;
+    if (!this.businessId || !item || !this.from) return;
+
+    // Key that uniquely identifies "this exact request". Repeated triggers
+    // (poll tick, ngOnChanges, Parent CD) for the same key do nothing while
+    // a request is in flight, so the backend does not get spammed.
+    const reqKey =
+      `${item.kind}:${item.id}:${this.granularity}:` +
+      `${this.from.getTime()}:${this.to.getTime()}`;
+
+    // Silent (poll) calls never cancel an in-flight request.
+    if (silent && this.offInFlightKey === reqKey) return;
+
+    // A user click on the same offering while it's already loading: skip too.
+    if (!silent && this.offInFlightKey === reqKey) return;
+
     this.offSub?.unsubscribe();
-    if (!silent) {
-      this.offLoading = true;
-      this.offError = '';
-    }
+    this.offInFlightKey = reqKey;
+    this.offLoading = true;
+    if (!silent) this.offError = '';
 
     this.offSub = this.analytics
-      .getOfferingSeries(
+      .getEntitySeries(
         this.businessId,
-        this.selectedOfferingId,
+        item.kind,
+        item.id,
         this.granularity,
         this.from,
         this.to,
+      )
+      .pipe(
+        timeout(15000),
+        finalize(() => {
+          // Runs on next, error, AND unsubscribe, so the guard can never
+          // get stuck at true.
+          this.offLoading = false;
+          if (this.offInFlightKey === reqKey) this.offInFlightKey = null;
+        }),
       )
       .subscribe({
         next: (series) => {
@@ -595,21 +603,21 @@ export class BusinessAnalyticsComponent
             OFFERING_EVENT_META,
             this.granularity,
           );
-          // Totals are summed from the series so they always match the chart.
           this.offTotals = totalsFromSeries(
             this.offSeries,
             OFFERING_EVENT_META,
           );
-          this.offLoading = false;
           this.offError = '';
           if (!silent) this.offHover = null;
           this.lastUpdated = new Date();
           this.rebuildOfferingChart();
         },
         error: (err) => {
-          this.offLoading = false;
           if (silent) return;
-          this.offError = this.errorMessage(err);
+          this.offError =
+            err?.name === 'TimeoutError'
+              ? 'The server took too long to respond. Please try again.'
+              : this.errorMessage(err);
         },
       });
   }
@@ -672,15 +680,31 @@ export class BusinessAnalyticsComponent
       : this.offSeries[this.offHover] || null;
   }
 
-  /** Lead conversion = converted / leads, shown on the offering header. */
   get offConversionRate(): number | null {
     const leads = this.offCount(5);
     return leads > 0 ? (this.offCount(6) / leads) * 100 : null;
   }
 
-  // =========================================================================
-  // Chart helpers
-  // =========================================================================
+  /** True only when the offerings array's *content* changed (items, order,
+   *  name, image, active flag). The parent rebuilds a new array reference
+   *  on every CD cycle, so identity comparison alone is not enough. */
+  private offeringsListChanged(
+    prev: AnalyticsOfferingItem[] | undefined,
+    curr: AnalyticsOfferingItem[] | undefined,
+  ): boolean {
+    const a = prev || [];
+    const b = curr || [];
+    if (a.length !== b.length) return true;
+    for (let i = 0; i < a.length; i++) {
+      if (this.keyOf(a[i]) !== this.keyOf(b[i])) return true;
+      if ((a[i].name || '') !== (b[i].name || '')) return true;
+      if ((a[i].imageUrl || '') !== (b[i].imageUrl || '')) return true;
+      if (!!a[i].isActive !== !!b[i].isActive) return true;
+    }
+    return false;
+  }
+
+  // =================== Chart helpers ===================
 
   pointValue(point: AnalyticsSeriesPoint | null, ids: number[]): number {
     if (!point) return 0;
@@ -747,7 +771,6 @@ export class BusinessAnalyticsComponent
     const xTicks: { label: string; left: number }[] = [];
     points.forEach((p, i) => {
       if (i % step === 0 || i === n - 1) {
-        // Skip the second-to-last label if it would collide with the last.
         if (i !== n - 1 && n - 1 - i < step / 2) return;
         xTicks.push({ label: p.label, left: p.x });
       }
@@ -756,7 +779,6 @@ export class BusinessAnalyticsComponent
     return { line, area, points, yTicks, xTicks, max };
   }
 
-  /** Catmull-Rom → cubic Bézier, clamped so the curve never dips below 0. */
   private smoothPath(pts: { x: number; y: number }[]): string {
     if (pts.length === 1) return `M ${pts[0].x} ${pts[0].y}`;
     let d = `M ${pts[0].x} ${pts[0].y}`;
@@ -781,7 +803,6 @@ export class BusinessAnalyticsComponent
     const unit = value / pow;
     const nice =
       unit <= 1 ? 1 : unit <= 2 ? 2 : unit <= 4 ? 4 : unit <= 5 ? 5 : 10;
-    // Keep it divisible into 4 ticks.
     const candidate = nice * pow;
     return Math.ceil(candidate / 4) * 4;
   }
@@ -804,9 +825,7 @@ export class BusinessAnalyticsComponent
     });
   }
 
-  // =========================================================================
-  // Formatting & utils
-  // =========================================================================
+  // =================== Formatting & utils ===================
 
   compact(value: number): string {
     if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;

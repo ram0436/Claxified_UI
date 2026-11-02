@@ -5,7 +5,10 @@ import {
 } from '../../model/Business';
 import { OfferingWishlistService } from '../../service/offering-wishlist.service';
 import { BusinessAnalyticsTracker } from '../../service/business-analytics-tracker.service';
-import { BusinessAnalyticsEventType } from '../../model/business-analytics';
+import {
+  BusinessAnalyticsEventType,
+  BusinessOfferingAnalyticsEventType,
+} from '../../model/business-analytics';
 import {
   openPhoneCall,
   openWhatsAppChat,
@@ -21,7 +24,6 @@ export class BusinessServiceQuickviewComponent {
   @Input() service!: BusinessServiceDto;
   @Input() contactMobile = '';
   @Input() contactWhatsApp = '';
-  /** Owners viewing their own service are not counted in analytics. */
   @Input() isOwner = false;
   @Output() close = new EventEmitter<void>();
   @Output() viewFullDetails = new EventEmitter<void>();
@@ -35,13 +37,21 @@ export class BusinessServiceQuickviewComponent {
 
   ngOnInit(): void {
     this.wishlist.load();
+    if (!this.isOwner && this.service?.businessId) {
+      this.tracker.trackOffering(
+        this.service.businessId,
+        this.service.id,
+        BusinessOfferingAnalyticsEventType.View,
+        { once: true },
+        'service',
+      );
+    }
   }
 
   toggleWishlist(): void {
     this.wishlist.toggle(this.service.id, 'Service');
   }
 
-  // Pricing type display mapping
   private readonly pricingTypeDisplayMap: { [key: string]: string } = {
     FixedPrice: 'Fixed Price',
     StartingFrom: 'Starting From',
@@ -51,14 +61,12 @@ export class BusinessServiceQuickviewComponent {
     CustomQuote: 'Custom Quote',
   };
 
-  // Service mode display mapping
   private readonly serviceModeDisplayMap: { [key: string]: string } = {
     AtBusiness: 'At Business',
     AtCustomerLocation: 'At Customer Location',
     Remote: 'Remote',
   };
 
-  // Availability status display mapping
   private readonly availabilityDisplayMap: { [key: string]: string } = {
     Available: 'Available',
     TemporarilyUnavailable: 'Temporarily Unavailable',
@@ -83,7 +91,6 @@ export class BusinessServiceQuickviewComponent {
     this.activeImageIndex = i;
   }
 
-  // Fixed: Removed the | number pipe from TypeScript
   get priceDisplay(): string {
     if (this.service.pricingType === 'PriceRange') {
       return `₹${this.service.minimumPrice} - ₹${this.service.maximumPrice}`;
@@ -160,6 +167,15 @@ export class BusinessServiceQuickviewComponent {
   }
 
   onViewFullDetails(): void {
+    if (!this.isOwner && this.service?.businessId) {
+      this.tracker.trackOffering(
+        this.service.businessId,
+        this.service.id,
+        BusinessOfferingAnalyticsEventType.View,
+        { once: true },
+        'service',
+      );
+    }
     this.viewFullDetails.emit();
   }
 
@@ -167,24 +183,40 @@ export class BusinessServiceQuickviewComponent {
     return resolveWhatsAppNumber(this.contactWhatsApp, this.contactMobile);
   }
 
-  /** Business-level analytics; the owner's own clicks are never counted. */
-  private trackContact(type: BusinessAnalyticsEventType): void {
-    const businessId = this.service?.businessId;
-    if (this.isOwner || !businessId) return;
-    this.tracker.trackBusiness(businessId, type);
-  }
-
   onCall(): void {
-    this.trackContact(BusinessAnalyticsEventType.Call);
+    if (!this.isOwner && this.service?.businessId) {
+      this.tracker.trackOffering(
+        this.service.businessId,
+        this.service.id,
+        BusinessOfferingAnalyticsEventType.Call,
+        undefined,
+        'service',
+      );
+      this.tracker.trackBusiness(
+        this.service.businessId,
+        BusinessAnalyticsEventType.Call,
+      );
+    }
     openPhoneCall(this.contactMobile);
   }
 
   onWhatsApp(): void {
-    this.trackContact(BusinessAnalyticsEventType.WhatsAppClick);
+    if (!this.isOwner && this.service?.businessId) {
+      this.tracker.trackOffering(
+        this.service.businessId,
+        this.service.id,
+        BusinessOfferingAnalyticsEventType.WhatsAppClick,
+        undefined,
+        'service',
+      );
+      this.tracker.trackBusiness(
+        this.service.businessId,
+        BusinessAnalyticsEventType.WhatsAppClick,
+      );
+    }
     openWhatsAppChat(this.whatsAppNumber);
   }
 
-  // Helper to check if service has any images
   get hasImages(): boolean {
     return this.sortedImages && this.sortedImages.length > 0;
   }

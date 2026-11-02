@@ -1635,7 +1635,7 @@
     *ngIf="analyticsPanelOpen && isOwner && !viewingAsPublic && business"
     [businessId]="business.id"
     [businessName]="business.businessName"
-    [offerings]="offerings"
+    [offerings]="analyticsOfferings"
     (close)="closeAnalytics()"
   ></app-business-analytics>
 

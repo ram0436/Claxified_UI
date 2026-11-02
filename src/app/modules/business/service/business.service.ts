@@ -663,4 +663,15 @@ export class BusinessService {
       { params: this.range(from, to) },
     );
   }
+
+  getEntitySeries(
+    businessId: number,
+    kind: 'offering' | 'product' | 'service',
+    entityId: number,
+    granularity: AnalyticsGranularity,
+    from: Date,
+    to: Date,
+  ): Observable<any> {
+    return this.getOfferingSeries(businessId, entityId, granularity, from, to);
+  }
 }
