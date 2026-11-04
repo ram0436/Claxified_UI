@@ -123,7 +123,7 @@
     <div class="section-header">
       <div class="section-title-group">
         <h2 class="section-title">
-          {{ searchQuery.trim() ? "Search Results" : "Businesses Near You" }}
+          {{ appliedQuery.trim() ? "Search Results" : "Businesses Near You" }}
         </h2>
         <span class="ads-count-badge" *ngIf="!businessesLoading">
           {{ totalBusinessCount }} found
@@ -298,10 +298,10 @@
           *ngIf="filteredBusinesses.length === 0 && !businessesRefreshing"
         >
           <span class="material-icons-outlined state-icon">search_off</span>
-          <p *ngIf="searchQuery.trim()">
-            No businesses match "{{ searchQuery }}".
+          <p *ngIf="appliedQuery.trim()">
+            No businesses match "{{ appliedQuery }}".
           </p>
-          <p *ngIf="!searchQuery.trim()">
+          <p *ngIf="!appliedQuery.trim()">
             No businesses match the selected filters.
           </p>
           <button

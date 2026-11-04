@@ -101,6 +101,14 @@ export class BusinessService {
 
   constructor(private http: HttpClient) {}
 
+  saveSearchHistory(term: string): Observable<boolean> {
+    return this.http.post<boolean>(
+      `${this.baseUrl}Business/business/search-history`,
+      JSON.stringify(term),
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+  }
+
   // Overload 1: legacy no-args call → flat array (backwards compatible)
   getBusinessList(): Observable<BusinessDirectoryItem[]>;
   // Overload 2: paginated call → envelope
