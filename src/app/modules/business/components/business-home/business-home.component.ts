@@ -8,14 +8,8 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { forkJoin, from, of, Subject } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  mergeMap,
-} from 'rxjs/operators';
+import { forkJoin, from, of } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { BusinessService } from '../../service/business.service';
 import { BusinessDirectoryItem, BusinessOfferDto } from '../../model/Business';
 import { BusinessLoginComponent } from '../business-login/business-login.component';
@@ -57,7 +51,7 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ---------- Search ----------
   searchQuery: string = '';
-  private searchSubject = new Subject<string>();
+  appliedQuery: string = '';
 
   // ---------- Businesses (server-paged, accumulated) ----------
   businesses: BusinessDirectoryItem[] = [];
@@ -195,15 +189,6 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.fetchCategories();
     this.loadBusinesses(true);
-
-    this.searchSubject
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe((q) => {
-        this.searchQuery = q;
-        // Search is applied client-side (the API doesn't accept a search
-        // param yet). No server round-trip needed.
-        this.businesses = [...this.businesses];
-      });
   }
 
   ngAfterViewInit(): void {
@@ -371,16 +356,23 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // =========================================================
 
   onSearchInput(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input) this.searchSubject.next(input.value);
+    this.searchQuery = (event.target as HTMLInputElement)?.value ?? '';
   }
 
   performSearch(): void {
-    this.searchSubject.next(this.searchQuery);
-    const businessSection = document.getElementById('businesses-section');
-    businessSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+    const term = this.searchQuery.trim();
+    this.appliedQuery = term;
 
+    if (term) {
+      this.businessService
+        .saveSearchHistory(term)
+        .subscribe({ error: () => {} });
+    }
+    this.businesses = [...this.businesses];
+    document
+      .getElementById('businesses-section')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
   // =========================================================
   // CATEGORIES
   // =========================================================
@@ -638,7 +630,7 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // =========================================================
 
   get filteredBusinesses(): BusinessDirectoryItem[] {
-    const q = this.searchQuery.trim().toLowerCase();
+    const q = this.appliedQuery.trim().toLowerCase();
 
     let result = this.businesses.filter((b: any) => {
       if (q) {
