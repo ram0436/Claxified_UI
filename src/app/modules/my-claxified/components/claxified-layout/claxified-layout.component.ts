@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/modules/user/service/user.service';
+import { AnalyticsService } from 'src/app/services/analytics.service';
 
 @Component({
   selector: 'app-claxified-layout',
@@ -39,6 +40,7 @@ export class ClaxifiedLayoutComponent implements OnInit {
   constructor(
     private router: Router,
     private userService: UserService,
+    private analytics: AnalyticsService,
   ) {}
 
   ngOnInit(): void {
@@ -91,6 +93,7 @@ export class ClaxifiedLayoutComponent implements OnInit {
   }
 
   logout(): void {
+    this.analytics.reset();
     localStorage.clear();
     this.router.navigate(['/']);
   }

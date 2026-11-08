@@ -31,6 +31,7 @@ import { BusinessService } from 'src/app/modules/business/service/business.servi
 import { BusinessListItem } from 'src/app/modules/business/model/Business';
 import { Subscription } from 'rxjs';
 import { buildBusinessCommands } from '../../../modules/business/utils/business-url.util';
+import { AnalyticsService } from 'src/app/services/analytics.service';
 
 @Component({
   selector: 'app-header',
@@ -96,6 +97,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private elRef: ElementRef,
     private commonService: CommonService,
     private businessService: BusinessService,
+    private analytics: AnalyticsService,
   ) {
     this.userService.getData().subscribe((data) => {
       var role = localStorage.getItem('role');
@@ -739,6 +741,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
+    this.analytics.reset();
     if (this.isSlideVisible) {
       this.isSlideVisible = !this.isSlideVisible;
     }

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../service/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NgForm } from '@angular/forms';
+import { AnalyticsService } from '../../../../services/analytics.service';
 
 @Component({
   selector: 'app-login',
@@ -44,6 +45,7 @@ export class LoginComponent {
     private router: Router,
     private dialogRef: MatDialogRef<LoginComponent>,
     private snackBar: MatSnackBar,
+    private analytics: AnalyticsService,
   ) {}
 
   validatePhoneNumber(): boolean {
@@ -98,6 +100,7 @@ export class LoginComponent {
       localStorage.setItem('role', data.role);
       localStorage.setItem('authToken', data.authToken);
       localStorage.setItem('id', data.id);
+      this.analytics.identify(String(data.id), { role: data.role });
       this.dialogRef.close();
       this.userService.setData('login');
       if (data.role == 'Admin')
@@ -197,6 +200,7 @@ export class LoginComponent {
             localStorage.setItem('authToken', data.authToken);
             localStorage.setItem('id', data.id);
             localStorage.setItem('firstName', data.firstName);
+            this.analytics.identify(String(data.id), { role: data.role });
             this.dialogRef.close();
             this.userService.setData('login');
             if (data.role == 'Admin')

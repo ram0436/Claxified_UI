@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BusinessService } from './business.service';
+import { AnalyticsService } from '../../../services/analytics.service';
 import {
   BusinessAnalyticsEventType,
   BusinessOfferingAnalyticsEventType,
+  BUSINESS_EVENT_META,
+  OFFERING_EVENT_META,
 } from '../model/business-analytics';
 
 export interface TrackOptions {
@@ -16,7 +19,10 @@ export class BusinessAnalyticsTracker {
   private readonly onceWindowMs = 30 * 60 * 1000;
   private readonly memory = new Map<string, number>();
 
-  constructor(private api: BusinessService) {}
+  constructor(
+    private api: BusinessService,
+    private analytics: AnalyticsService,
+  ) {}
 
   trackBusiness(
     businessId: number,
@@ -26,6 +32,11 @@ export class BusinessAnalyticsTracker {
     if (!businessId) return;
     const key = `clx.an.b.${businessId}.${eventType}`;
     if (!this.claim(key, options.once)) return;
+
+    const name = BUSINESS_EVENT_META.find((m) => m.id === eventType)?.key;
+    this.analytics.capture(`business_${this.snake(name)}`, {
+      business_id: businessId,
+    });
 
     this.api.trackBusinessEvent(businessId, eventType).subscribe({
       error: () => this.release(key),
@@ -42,6 +53,13 @@ export class BusinessAnalyticsTracker {
     if (!businessId || !entityId) return;
     const key = `clx.an.${kind[0]}.${businessId}.${entityId}.${eventType}`;
     if (!this.claim(key, options.once)) return;
+
+    const name = OFFERING_EVENT_META.find((m) => m.id === eventType)?.key;
+    this.analytics.capture(`${kind}_${this.snake(name)}`, {
+      business_id: businessId,
+      [`${kind}_id`]: entityId,
+      kind,
+    });
 
     this.api.trackOfferingEvent(businessId, entityId, eventType).subscribe({
       error: () => this.release(key),
@@ -77,5 +95,9 @@ export class BusinessAnalyticsTracker {
     try {
       sessionStorage.setItem(key, String(value));
     } catch {}
+  }
+
+  private snake(s?: string): string {
+    return (s || 'unknown').replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
   }
 }
