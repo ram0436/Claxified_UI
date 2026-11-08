@@ -7,6 +7,7 @@ import {
   NavigationError,
 } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AnalyticsService } from './services/analytics.service';
 
 declare global {
   interface Window {
@@ -27,7 +28,11 @@ export class AppComponent {
 
   isNavigating = true;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private analytics: AnalyticsService,
+  ) {
+    this.analytics.init();
     this.router.events.subscribe((e) => {
       if (e instanceof NavigationStart) {
         this.isNavigating = true;
@@ -45,6 +50,7 @@ export class AppComponent {
             page_title: document.title,
             page_location: window.location.href,
           });
+          this.analytics.pageView(e.urlAfterRedirects);
         }
       }
     });
