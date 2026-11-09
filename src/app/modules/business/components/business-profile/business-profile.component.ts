@@ -136,6 +136,10 @@ export class BusinessProfileComponent implements OnInit {
       .sort((a, b) => a.id - b.id);
   }
 
+  trackBySubCategory(_index: number, sc: { id: number }): number {
+    return sc.id;
+  }
+
   private loadSubCategoryNames(): void {
     const categoryId = this.business?.businessCategoryId;
     if (!categoryId) return;
@@ -569,13 +573,13 @@ export class BusinessProfileComponent implements OnInit {
     }
     this.setCanonicalLink(canonical);
 
-    const ids = data?.businessSubCategoryIds || [];
+    const ids = (data?.businessSubCategoryIds || []).map((x) => Number(x));
     const stillValid =
       this.selectedSubCategoryId !== null &&
-      ids.includes(this.selectedSubCategoryId);
+      ids.includes(Number(this.selectedSubCategoryId));
 
     if (!stillValid) {
-      this.selectedSubCategoryId = ids.length > 0 ? ids[0] : null;
+      this.selectedSubCategoryId = ids.length > 0 ? Math.min(...ids) : null;
     }
     this.loadSubCategoryNames();
     this.loadOfferingTypes();
@@ -1610,7 +1614,7 @@ export class BusinessProfileComponent implements OnInit {
     return this.catalogItems.filter((item) => {
       const matchesSubCategory =
         this.selectedSubCategoryId === null ||
-        item.subCategoryId === this.selectedSubCategoryId;
+        Number(item.subCategoryId) === Number(this.selectedSubCategoryId);
 
       const matchesSearch =
         !term ||
@@ -1626,7 +1630,7 @@ export class BusinessProfileComponent implements OnInit {
     return this.offerings.filter((item) => {
       const matchesSub =
         this.selectedSubCategoryId === null ||
-        item.subCategoryId === this.selectedSubCategoryId;
+        Number(item.subCategoryId) === Number(this.selectedSubCategoryId);
       return matchesSub && (!term || item.name.toLowerCase().includes(term));
     });
   }

@@ -506,7 +506,7 @@
         <ul class="subcat-list">
           <li
             class="subcat-item"
-            *ngFor="let sc of subCategoryTabs"
+            *ngFor="let sc of subCategoryTabs; trackBy: trackBySubCategory"
             [class.active]="selectedSubCategoryId === sc.id"
             (click)="selectSubCategoryTab(sc.id)"
             (keyup.enter)="selectSubCategoryTab(sc.id)"
