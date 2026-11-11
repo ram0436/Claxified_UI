@@ -639,10 +639,10 @@ export class AddPostComponent implements AfterViewInit {
       this.showNotification('Description is required');
     else if (
       payload.discription.length < 15 ||
-      payload.discription.length > 500
+      payload.discription.length > 10000
     )
       this.showNotification(
-        'Description should be min 15 and max 500 charecters',
+        'Description should be min 15 and max 10000 charecters',
       );
     else if (payload.price == 0) this.showNotification('Price is rerquired');
     else if (payload.price < 10)
