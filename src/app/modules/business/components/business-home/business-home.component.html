@@ -25,6 +25,28 @@
               (input)="onSearchInput($event)"
               (keyup.enter)="performSearch()"
             />
+            <span class="search-divider"></span>
+            <label class="location-inline">
+              <span class="material-icons-outlined">location_on</span>
+              <input
+                type="text"
+                class="location-input"
+                placeholder="City, area or pincode"
+                list="business-location-options"
+                autocomplete="off"
+                aria-label="Location"
+                [value]="searchLocation"
+                (input)="onLocationInput($event)"
+                (focus)="ensureLocationSuggestions()"
+                (keyup.enter)="performSearch()"
+              />
+              <datalist id="business-location-options">
+                <option
+                  *ngFor="let loc of locationSuggestions"
+                  [value]="loc"
+                ></option>
+              </datalist>
+            </label>
             <button class="search-btn" (click)="performSearch()">Search</button>
           </div>
         </div>
@@ -121,18 +143,36 @@
   <!-- Businesses Near You -->
   <section class="section-wrapper" id="businesses-section">
     <div class="section-header">
-      <div class="section-title-group">
-        <h2 class="section-title">
-          {{ appliedQuery.trim() ? "Search Results" : "Businesses Near You" }}
-        </h2>
+      <div class="section-title-group" *ngIf="!isSearchMode">
+        <h2 class="section-title">Businesses Near You</h2>
         <span class="ads-count-badge" *ngIf="!businessesLoading">
           {{ totalBusinessCount }} found
         </span>
       </div>
 
+      <div class="sr-title-group" *ngIf="isSearchMode">
+        <h2 class="sr-title">
+          Search Results
+          <ng-container *ngIf="searchTitleQuery">
+            for <span class="sr-title-accent">“{{ searchTitleQuery }}”</span>
+          </ng-container>
+          <ng-container *ngIf="searchTitleLocation">
+            in {{ searchTitleLocation }}
+          </ng-container>
+        </h2>
+        <p class="sr-count">
+          {{ searchCountLabel }}
+          <button type="button" class="sr-clear-search" (click)="clearSearch()">
+            Clear search
+          </button>
+        </p>
+      </div>
+
       <div
         class="businesses-toolbar"
-        *ngIf="!businessesLoading && !businessesError"
+        *ngIf="
+          isSearchMode ? !searchError : !businessesLoading && !businessesError
+        "
       >
         <button
           type="button"
@@ -153,22 +193,50 @@
             (change)="onSortChange()"
           >
             <option value="relevance">Relevance</option>
-            <option value="rating">Highest Rated</option>
-            <option value="reviews">Most Reviewed</option>
+            <ng-container *ngIf="!isSearchMode">
+              <option value="rating">Highest Rated</option>
+              <option value="reviews">Most Reviewed</option>
+            </ng-container>
             <option value="newest">Newest</option>
+            <option *ngIf="isSearchMode" value="name">Name (A–Z)</option>
           </select>
+        </div>
+
+        <div class="sr-view-toggle" *ngIf="isSearchMode" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            [class.active]="resultsView === 'list'"
+            [attr.aria-selected]="resultsView === 'list'"
+            (click)="setResultsView('list')"
+          >
+            <span class="material-icons-outlined">format_list_bulleted</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            [class.active]="resultsView === 'map'"
+            [attr.aria-selected]="resultsView === 'map'"
+            (click)="setResultsView('map')"
+          >
+            <span class="material-icons-outlined">place</span>
+            Map
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Initial load -->
-    <div class="state-block" *ngIf="businessesLoading">
+    <div class="state-block" *ngIf="!isSearchMode && businessesLoading">
       <div class="spinner"></div>
       <p>Loading businesses…</p>
     </div>
 
     <!-- Error -->
-    <div class="state-block" *ngIf="!businessesLoading && businessesError">
+    <div
+      class="state-block"
+      *ngIf="!isSearchMode && !businessesLoading && businessesError"
+    >
       <span class="material-icons-outlined state-icon">wifi_off</span>
       <p>We couldn't load the businesses right now.</p>
       <button class="retry-button" (click)="loadBusinesses(true)">
@@ -179,7 +247,7 @@
     <!-- Layout: sidebar + results. Sidebar stays visible across refetches. -->
     <div
       class="businesses-layout"
-      *ngIf="!businessesLoading && !businessesError"
+      *ngIf="isSearchMode || (!businessesLoading && !businessesError)"
     >
       <!-- Filters sidebar -->
       <!-- Mobile backdrop -->
@@ -281,12 +349,270 @@
           class="filters-apply-btn"
           (click)="closeMobileFilters()"
         >
-          Show {{ totalBusinessCount }} results
+          {{
+            isSearchMode
+              ? "Show results"
+              : "Show " + totalBusinessCount + " results"
+          }}
         </button>
       </aside>
 
       <!-- Results -->
       <div class="businesses-content">
+        <!-- ============ SEARCH RESULTS (Business/search) ============ -->
+        <ng-container *ngIf="isSearchMode">
+          <div class="refreshing-row" *ngIf="searchRefreshing">
+            <div class="spinner small"></div>
+            <span>Updating results…</span>
+          </div>
+
+          <div class="state-block" *ngIf="searchLoading">
+            <div class="spinner"></div>
+            <p>Searching businesses…</p>
+          </div>
+
+          <div class="state-block" *ngIf="!searchLoading && searchError">
+            <span class="material-icons-outlined state-icon">wifi_off</span>
+            <p>We couldn't load the search results right now.</p>
+            <button class="retry-button" (click)="runSearch(true)">
+              Try Again
+            </button>
+          </div>
+
+          <div
+            class="state-block"
+            *ngIf="
+              !searchLoading &&
+              !searchError &&
+              !searchRefreshing &&
+              searchResults.length === 0
+            "
+          >
+            <span class="material-icons-outlined state-icon">search_off</span>
+            <p>
+              No businesses found<ng-container *ngIf="searchTitleQuery">
+                for “{{ searchTitleQuery }}”</ng-container
+              ><ng-container *ngIf="searchTitleLocation">
+                in {{ searchTitleLocation }}</ng-container
+              >.
+            </p>
+            <button
+              class="retry-button"
+              *ngIf="hasActiveFilters()"
+              (click)="clearAllFilters()"
+            >
+              Clear Filters
+            </button>
+            <button class="retry-button" (click)="clearSearch()">
+              Clear Search
+            </button>
+          </div>
+
+          <div
+            class="sr-split"
+            [class.map-view]="resultsView === 'map'"
+            *ngIf="searchResults.length > 0"
+          >
+            <div class="sr-list">
+              <article
+                class="sr-card"
+                *ngFor="
+                  let r of sortedSearchResults;
+                  trackBy: trackBySearchResult
+                "
+                [class.selected]="
+                  resultsView === 'map' && selectedMapResultId === r.business.id
+                "
+                (click)="resultsView === 'map' && selectMapResult(r)"
+              >
+                <div class="sr-card-main">
+                  <a
+                    class="sr-logo-tile"
+                    [href]="getBusinessUrl(r.business) || null"
+                    [attr.aria-label]="'Open ' + r.business.businessName"
+                    (click)="onBusinessLinkClick($event, r.business)"
+                  >
+                    <img
+                      *ngIf="businessImage(r.business) as logo"
+                      class="sr-logo-img"
+                      [src]="logo"
+                      [alt]="r.business.businessName"
+                      loading="lazy"
+                      (error)="markImageFailed(logo)"
+                    />
+                    <ng-container *ngIf="!businessImage(r.business)">
+                      <span class="material-icons-outlined sr-logo-icon"
+                        >storefront</span
+                      >
+                      <span class="sr-logo-name">{{
+                        r.business.businessName
+                      }}</span>
+                    </ng-container>
+                  </a>
+
+                  <div class="sr-info">
+                    <h3 class="sr-name">
+                      <a
+                        [href]="getBusinessUrl(r.business) || null"
+                        (click)="onBusinessLinkClick($event, r.business)"
+                        >{{ r.business.businessName }}</a
+                      >
+                      <span
+                        class="material-icons sr-verified"
+                        *ngIf="
+                          r.business.businessVerificationDto?.isBusinessVerified
+                        "
+                        title="Verified business"
+                        >verified</span
+                      >
+                    </h3>
+                    <p class="sr-location" *ngIf="r.location">
+                      <span class="material-icons-outlined">location_on</span>
+                      {{ r.location }}
+                    </p>
+                    <span
+                      class="sr-category-chip"
+                      *ngIf="r.business.businessCategory"
+                      >{{ r.business.businessCategory }}</span
+                    >
+                  </div>
+
+                  <div class="sr-actions">
+                    <button
+                      type="button"
+                      class="sr-fav"
+                      [class.active]="isFavorite(r.business)"
+                      aria-label="Save business"
+                      (click)="toggleFavorite(r.business, $event)"
+                    >
+                      <span
+                        [ngClass]="
+                          isFavorite(r.business)
+                            ? 'material-icons'
+                            : 'material-icons-outlined'
+                        "
+                        >{{
+                          isFavorite(r.business)
+                            ? "favorite"
+                            : "favorite_border"
+                        }}</span
+                      >
+                    </button>
+
+                    <a
+                      class="sr-view-btn"
+                      [href]="getBusinessUrl(r.business) || null"
+                      (click)="
+                        onBusinessLinkClick($event, r.business);
+                        $event.stopPropagation()
+                      "
+                    >
+                      View Business
+                      <span class="material-icons-outlined">arrow_forward</span>
+                    </a>
+
+                    <div class="sr-contact">
+                      <a
+                        class="sr-contact-btn sr-call"
+                        [href]="
+                          getBusinessPhone(r.business)
+                            ? 'tel:' + getBusinessPhone(r.business)
+                            : null
+                        "
+                        (click)="onCallClick($event, r.business)"
+                      >
+                        <span class="material-icons">call</span> Call
+                      </a>
+                      <span class="sr-contact-divider"></span>
+                      <a
+                        class="sr-contact-btn sr-whatsapp"
+                        [href]="getWhatsAppLink(r.business) || null"
+                        target="_blank"
+                        rel="noopener"
+                        (click)="onWhatsAppClick($event, r.business)"
+                      >
+                        <span class="material-icons">chat</span> WhatsApp
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="sr-offerings" *ngIf="r.offerings.length > 0">
+                  <h4 class="sr-offerings-title">
+                    Matching Offerings
+                    <span class="sr-offerings-count"
+                      >({{ r.offerings.length }})</span
+                    >
+                  </h4>
+
+                  <div
+                    class="sr-offering"
+                    *ngFor="let o of r.offerings; trackBy: trackBySearchOffering"
+                    role="link"
+                    tabindex="0"
+                    [attr.aria-label]="'Open ' + r.business.businessName"
+                    (click)="openBusinessFromOffering($event, r)"
+                    (keyup.enter)="openBusinessFromOffering($event, r)"
+                  >
+                    <div class="sr-offering-img">
+                      <img
+                        *ngIf="offeringImage(o) as img"
+                        [src]="img"
+                        [alt]="o.name"
+                        loading="lazy"
+                        (error)="markImageFailed(img)"
+                      />
+                      <span
+                        class="material-icons-outlined"
+                        *ngIf="!offeringImage(o)"
+                        >inventory_2</span
+                      >
+                    </div>
+                    <div class="sr-offering-body">
+                      <h5 class="sr-offering-name">{{ o.name }}</h5>
+                      <p class="sr-offering-desc" *ngIf="o.description">
+                        {{ o.description }}
+                      </p>
+                      <span class="sr-offering-price" *ngIf="o.price">{{
+                        formatPrice(o.price)
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <aside class="sr-map-pane" *ngIf="resultsView === 'map'">
+              <div class="sr-map-card" *ngIf="selectedMapResult as sel">
+                <div class="sr-map-head">
+                  <div>
+                    <strong>{{ sel.business.businessName }}</strong>
+                    <span>{{ sel.location }}</span>
+                  </div>
+                  <a
+                    class="sr-map-open"
+                    [href]="openInGoogleMaps(sel)"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Open in Maps
+                    <span class="material-icons-outlined">open_in_new</span>
+                  </a>
+                </div>
+                <iframe
+                  *ngIf="mapEmbedUrl"
+                  class="sr-map-frame"
+                  [src]="mapEmbedUrl"
+                  title="Business location map"
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </aside>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="!isSearchMode">
         <!-- Subtle progress row while refetching after a filter change -->
         <div class="refreshing-row" *ngIf="businessesRefreshing">
           <div class="spinner small"></div>
@@ -366,9 +692,14 @@
                 (click)="toggleFavorite(business, $event)"
                 aria-label="Save business"
               >
-                <span class="material-icons-outlined">{{
-                  isFavorite(business) ? "favorite" : "favorite_border"
-                }}</span>
+                <span
+                  [ngClass]="
+                    isFavorite(business)
+                      ? 'material-icons'
+                      : 'material-icons-outlined'
+                  "
+                  >{{ isFavorite(business) ? "favorite" : "favorite_border" }}</span
+                >
               </button>
 
               <div class="business-card-image-overlay">
@@ -487,9 +818,13 @@
             </div>
           </div>
         </div>
+        </ng-container>
 
         <!-- Infinite scroll loading row -->
-        <div class="infinite-loading-row" [class.hidden]="!isLoadingMore">
+        <div
+          class="infinite-loading-row"
+          [class.hidden]="!(isSearchMode ? isLoadingMoreSearch : isLoadingMore)"
+        >
           <div class="spinner small"></div>
           <p>Loading more businesses…</p>
         </div>
@@ -498,9 +833,14 @@
         <div
           class="end-of-results"
           *ngIf="
-            !hasMoreFromServer &&
-            !businessesRefreshing &&
-            filteredBusinesses.length > 0
+            isSearchMode
+              ? !searchHasMore &&
+                !searchRefreshing &&
+                !searchLoading &&
+                searchResults.length > 0
+              : !hasMoreFromServer &&
+                !businessesRefreshing &&
+                filteredBusinesses.length > 0
           "
         >
           You've reached the end.

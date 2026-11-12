@@ -1098,3 +1098,38 @@ export class WishlistBusinessOffering extends AuditFields {
   userId: number = 0;
   businessOfferingId: number = 0;
 }
+
+// ---------- Business search (GET Business/search) ----------
+
+/** Query parameters accepted by Business/search. */
+export interface BusinessSearchQuery {
+  searchText?: string | null;
+  city?: string | null;
+  area?: string | null;
+  pincode?: string | null;
+  businessCategoryId?: number | null;
+  businessTypeId?: number | null;
+  sellerTypeId?: number | null;
+  pageIndex: number;
+  pageSize: number;
+}
+
+export interface BusinessSearchOffering {
+  businessOfferingId: number;
+  name: string;
+  description: string;
+  price: number | null;
+  relevanceScore: number;
+}
+
+export interface BusinessSearchResult {
+  businessId: number;
+  businessName: string;
+  description: string;
+  logoUrl: string;
+  city: string;
+  area: string;
+  pincode: string;
+  relevanceScore: number;
+  matchingOfferings: BusinessSearchOffering[];
+}

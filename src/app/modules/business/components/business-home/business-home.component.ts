@@ -7,11 +7,19 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
-import { forkJoin, from, of } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { LoginComponent } from 'src/app/modules/user/component/login/login.component';
+import { forkJoin, from, Observable, of, Subscription } from 'rxjs';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { BusinessService } from '../../service/business.service';
-import { BusinessDirectoryItem, BusinessOfferDto } from '../../model/Business';
+import {
+  BusinessDirectoryItem,
+  BusinessOfferDto,
+  BusinessSearchQuery,
+  BusinessSearchResult,
+} from '../../model/Business';
 import { BusinessLoginComponent } from '../business-login/business-login.component';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { buildBusinessCommands } from '../../../business/utils/business-url.util';
@@ -40,6 +48,150 @@ interface CityOption {
   count: number;
 }
 
+/** A matching offering shown inside a search result card. */
+interface SearchOfferingVM {
+  id: number;
+  name: string;
+  description: string;
+  price: number | null;
+  businessId: number;
+  imageUrls: string[];
+}
+
+/**
+ * A search hit merged with directory data. `business` is a
+ * BusinessDirectoryItem (real one when found in the directory, otherwise a
+ * minimal stand-in built from the search response) so the existing
+ * view / call / WhatsApp helpers work unchanged.
+ */
+interface SearchResultVM {
+  business: BusinessDirectoryItem;
+  location: string;
+  score: number;
+  offerings: SearchOfferingVM[];
+}
+
+type LocationParams = { city?: string; area?: string; pincode?: string };
+
+/** Major Indian cities offered as suggestions (any place can still be typed). */
+const INDIAN_CITIES: string[] = [
+  'Bangalore',
+  'Mumbai',
+  'Delhi',
+  'Hyderabad',
+  'Chennai',
+  'Kolkata',
+  'Pune',
+  'Ahmedabad',
+  'Jaipur',
+  'Surat',
+  'Lucknow',
+  'Kanpur',
+  'Nagpur',
+  'Indore',
+  'Bhopal',
+  'Visakhapatnam',
+  'Patna',
+  'Vadodara',
+  'Ghaziabad',
+  'Ludhiana',
+  'Agra',
+  'Nashik',
+  'Faridabad',
+  'Meerut',
+  'Rajkot',
+  'Varanasi',
+  'Srinagar',
+  'Aurangabad',
+  'Dhanbad',
+  'Amritsar',
+  'Navi Mumbai',
+  'Allahabad',
+  'Ranchi',
+  'Howrah',
+  'Coimbatore',
+  'Jabalpur',
+  'Gwalior',
+  'Vijayawada',
+  'Jodhpur',
+  'Madurai',
+  'Raipur',
+  'Kota',
+  'Chandigarh',
+  'Guwahati',
+  'Solapur',
+  'Hubli',
+  'Mysore',
+  'Tiruchirappalli',
+  'Bareilly',
+  'Moradabad',
+  'Gurgaon',
+  'Noida',
+  'Aligarh',
+  'Jalandhar',
+  'Bhubaneswar',
+  'Salem',
+  'Warangal',
+  'Thiruvananthapuram',
+  'Kochi',
+  'Kozhikode',
+  'Thrissur',
+  'Mangalore',
+  'Belgaum',
+  'Gulbarga',
+  'Davanagere',
+  'Shimoga',
+  'Tumkur',
+  'Dehradun',
+  'Udaipur',
+  'Ajmer',
+  'Jamshedpur',
+  'Cuttack',
+  'Siliguri',
+  'Thane',
+  'Pimpri-Chinchwad',
+  'Guntur',
+  'Nellore',
+  'Tirupati',
+  'Puducherry',
+  'Goa',
+  'Shimla',
+  'Jammu',
+  'Ranchi',
+  'Gandhinagar',
+  'Mohali',
+  'Panaji',
+  'Imphal',
+  'Shillong',
+];
+
+/** Alternate spellings / old and new names of the same Indian place. */
+const LOCATION_ALIASES: string[][] = [
+  ['Bangalore', 'Bengaluru'],
+  ['Mumbai', 'Bombay'],
+  ['Chennai', 'Madras'],
+  ['Kolkata', 'Calcutta'],
+  ['Gurgaon', 'Gurugram'],
+  ['Pune', 'Poona'],
+  ['Kochi', 'Cochin'],
+  ['Thiruvananthapuram', 'Trivandrum'],
+  ['Mysore', 'Mysuru'],
+  ['Mangalore', 'Mangaluru'],
+  ['Belgaum', 'Belagavi'],
+  ['Gulbarga', 'Kalaburagi'],
+  ['Shimoga', 'Shivamogga'],
+  ['Hubli', 'Hubballi'],
+  ['Tumkur', 'Tumakuru'],
+  ['Vadodara', 'Baroda'],
+  ['Varanasi', 'Benares', 'Banaras'],
+  ['Allahabad', 'Prayagraj'],
+  ['Visakhapatnam', 'Vizag'],
+  ['Tiruchirappalli', 'Trichy'],
+  ['Puducherry', 'Pondicherry'],
+  ['Kozhikode', 'Calicut'],
+  ['Panaji', 'Panjim'],
+];
+
 @Component({
   selector: 'app-business-home',
   templateUrl: './business-home.component.html',
@@ -52,6 +204,26 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // ---------- Search ----------
   searchQuery: string = '';
   appliedQuery: string = '';
+  searchLocation: string = '';
+  appliedLocation: string = '';
+  locationSuggestions: string[] = [...new Set(INDIAN_CITIES)].sort();
+  private activeLocation: LocationParams = {};
+
+  // ---------- Search results (GET Business/search, accumulated) ----------
+  searchResults: SearchResultVM[] = [];
+  searchLoading: boolean = false; // first load, nothing on screen yet
+  searchRefreshing: boolean = false; // re-search while results are on screen
+  searchError: boolean = false;
+  searchPageIndex: number = 1;
+  readonly searchPageSize: number = 10;
+  isLoadingMoreSearch: boolean = false;
+  searchHasMore: boolean = false;
+  resultsView: 'list' | 'map' = 'list';
+  selectedMapResultId: number | null = null;
+  mapEmbedUrl: SafeResourceUrl | null = null;
+  private searchSub?: Subscription;
+  private cityNames = new Set<string>();
+  private areaNames = new Set<string>();
 
   // ---------- Businesses (server-paged, accumulated) ----------
   businesses: BusinessDirectoryItem[] = [];
@@ -74,7 +246,7 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ---------- View / sort ----------
   viewMode: 'grid' | 'list' = 'grid';
-  sortBy: 'relevance' | 'rating' | 'reviews' | 'newest' = 'relevance';
+  sortBy: 'relevance' | 'rating' | 'reviews' | 'newest' | 'name' = 'relevance';
 
   // ---------- Filters (SINGLE-select for the 3 server filters) ----------
   selectedCategoryId: number | null = null;
@@ -184,11 +356,14 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private tracker: BusinessAnalyticsTracker,
+    private sanitizer: DomSanitizer,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
     this.fetchCategories();
     this.loadBusinesses(true);
+    this.loadWishlist();
   }
 
   ngAfterViewInit(): void {
@@ -197,6 +372,7 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.intersectionObserver?.disconnect();
+    this.searchSub?.unsubscribe();
     document.body.style.overflow = '';
   }
 
@@ -304,7 +480,11 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private reload(): void {
-    this.loadBusinesses(true);
+    if (this.isSearchMode) {
+      this.runSearch(true);
+    } else {
+      this.loadBusinesses(true);
+    }
   }
 
   private rebuildNameToIdMaps(items: BusinessDirectoryItem[]): void {
@@ -340,6 +520,19 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private triggerLoadMore(): void {
+    if (this.isSearchMode) {
+      if (
+        this.isLoadingMoreSearch ||
+        !this.searchHasMore ||
+        this.searchLoading ||
+        this.searchRefreshing
+      ) {
+        return;
+      }
+      this.searchPageIndex += 1;
+      this.runSearch(false);
+      return;
+    }
     if (this.isLoadingMore || !this.hasMoreFromServer) return;
     if (this.businessesLoading || this.businessesRefreshing) return;
 
@@ -357,22 +550,507 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onSearchInput(event: Event): void {
     this.searchQuery = (event.target as HTMLInputElement)?.value ?? '';
+    this.clearIfSearchBoxesEmptied();
+  }
+
+  onLocationInput(event: Event): void {
+    this.searchLocation = (event.target as HTMLInputElement)?.value ?? '';
+    this.clearIfSearchBoxesEmptied();
+  }
+
+  /** Emptying both boxes while a search is showing returns to the directory. */
+  private clearIfSearchBoxesEmptied(): void {
+    if (
+      this.isSearchMode &&
+      !this.searchQuery.trim() &&
+      !this.searchLocation.trim()
+    ) {
+      this.clearSearch();
+    }
+  }
+
+  get isSearchMode(): boolean {
+    return !!(this.appliedQuery.trim() || this.appliedLocation.trim());
   }
 
   performSearch(): void {
-    const term = this.searchQuery.trim();
-    this.appliedQuery = term;
+    this.appliedQuery = this.searchQuery.trim();
+    this.appliedLocation = this.searchLocation.trim();
 
-    if (term) {
+    if (this.appliedQuery) {
       this.businessService
-        .saveSearchHistory(term)
+        .saveSearchHistory(this.appliedQuery)
         .subscribe({ error: () => {} });
     }
-    this.businesses = [...this.businesses];
-    document
-      .getElementById('businesses-section')
-      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    if (!this.isSearchMode) {
+      // Both boxes empty -> back to the normal, unfiltered directory.
+      this.searchSub?.unsubscribe();
+      this.resetSearchState();
+      this.resetFilters();
+      this.sortBy = 'relevance';
+      this.loadBusinesses(true);
+    } else {
+      this.sortBy = 'relevance';
+      this.runSearch(true);
+    }
+
+    setTimeout(() => {
+      document
+        .getElementById('businesses-section')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      this.setupInfiniteScroll();
+    });
   }
+
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.searchLocation = '';
+    this.appliedQuery = '';
+    this.appliedLocation = '';
+    this.searchSub?.unsubscribe();
+    this.resetSearchState();
+    this.resetFilters();
+    this.sortBy = 'relevance';
+    this.loadBusinesses(true);
+  }
+
+  /** Clears every sidebar filter without reloading (callers reload). */
+  private resetFilters(): void {
+    this.selectedCategoryId = null;
+    this.selectedBusinessType = null;
+    this.selectedSellerType = null;
+    this.selectedCity = '';
+    this.selectedRatingMin = null;
+    this.selectedExperience = null;
+    this.verifiedOnly = false;
+    this.closeMobileFilters();
+  }
+
+  private resetSearchState(): void {
+    this.searchResults = [];
+    this.searchLoading = false;
+    this.searchRefreshing = false;
+    this.searchError = false;
+    this.isLoadingMoreSearch = false;
+    this.searchHasMore = false;
+    this.selectedMapResultId = null;
+    this.mapEmbedUrl = null;
+  }
+
+  // =========================================================
+  // SEARCH RESULTS (GET Business/search)
+  // =========================================================
+
+  /** Merge places from the directory into the built-in India-wide list. */
+  ensureLocationSuggestions(): void {
+    if (this.cityNames.size) return;
+    this.businessService
+      .getBusinessList({ pageIndex: 1, pageSize: 100 })
+      .subscribe(
+        (res) => {
+          const map = new Map<number, BusinessDirectoryItem>();
+          (res.items || []).forEach((b) => map.set(b.id, b));
+          this.buildLocationIndex(map);
+        },
+        () => {},
+      );
+  }
+
+  private buildLocationIndex(lookup: Map<number, BusinessDirectoryItem>): void {
+    const cityCounts = new Map<string, number>();
+    const combos = new Set<string>();
+    this.cityNames.clear();
+    this.areaNames.clear();
+
+    lookup.forEach((b) => {
+      const city = (b.businessAddressDto?.city || '').trim();
+      const area = (b.businessAddressDto?.area || '').trim();
+      if (city) {
+        this.cityNames.add(city);
+        cityCounts.set(city, (cityCounts.get(city) || 0) + 1);
+      }
+      if (area) this.areaNames.add(area);
+      if (city && area) combos.add(`${area}, ${city}`);
+    });
+
+    const cities = Array.from(cityCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([city]) => city);
+    this.locationSuggestions = Array.from(
+      new Set([
+        ...Array.from(combos).sort(), // "Area, City" from real listings
+        ...cities,
+        ...INDIAN_CITIES,
+      ]),
+    );
+  }
+
+  /** All spellings of a place name (e.g. Bangalore <-> Bengaluru). */
+  private nameVariants(name: string): string[] {
+    const lower = name.trim().toLowerCase();
+    const group = LOCATION_ALIASES.find((g) =>
+      g.some((n) => n.toLowerCase() === lower),
+    );
+    const known = [...this.cityNames, ...this.areaNames].find(
+      (n) => n.toLowerCase() === lower,
+    );
+    return Array.from(new Set([known || name.trim(), ...(group || [])]));
+  }
+
+  /**
+   * Turns the single free-text location box into API param sets to try, in
+   * order. The text can be any place in India, so when it is ambiguous we
+   * try it as a city first and then as an area (and with alternate spellings)
+   * until something returns results:
+   *   "560066"                -> pincode
+   *   "Whitefield, Bangalore" -> area + city (then city alone)
+   *   "Pune" / "Koramangala"  -> city, then area
+   */
+  private locationCandidates(text: string): LocationParams[] {
+    const value = (text || '').trim();
+    if (!value) return [{}];
+    if (/^\d{6}$/.test(value)) return [{ pincode: value }];
+
+    const parts = value
+      .split(',')
+      .map((p) => p.trim())
+      .filter(Boolean);
+
+    if (parts.length >= 2) {
+      const areas = this.nameVariants(parts[0]);
+      const cities = this.nameVariants(parts[1]);
+      return [
+        ...cities.flatMap((city) => areas.map((area) => ({ area, city }))),
+        ...cities.map((city) => ({ city })),
+      ];
+    }
+
+    const variants = this.nameVariants(value);
+    const knownArea = variants.some((v) => this.areaNames.has(v));
+    const knownCity = variants.some((v) => this.cityNames.has(v));
+    const asCity = variants.map((city) => ({ city }));
+    const asArea = variants.map((area) => ({ area }));
+    return knownArea && !knownCity
+      ? [...asArea, ...asCity]
+      : [...asCity, ...asArea];
+  }
+
+  /** Tries each location candidate until one returns results. */
+  private searchWithFallback(
+    base: Omit<BusinessSearchQuery, 'city' | 'area' | 'pincode'>,
+    candidates: LocationParams[],
+  ): Observable<BusinessSearchResult[]> {
+    const [first, ...rest] = candidates;
+    return this.businessService.searchBusinesses({ ...base, ...first }).pipe(
+      switchMap((list) => {
+        if (!(list || []).length && rest.length) {
+          return this.searchWithFallback(base, rest);
+        }
+        this.activeLocation = first; // keep paging with what worked
+        return of(list || []);
+      }),
+    );
+  }
+
+  /**
+   * @param reset true  -> page 1, replace results
+   *              false -> append next page
+   */
+  runSearch(reset: boolean): void {
+    if (reset) {
+      this.searchSub?.unsubscribe();
+      this.searchPageIndex = 1;
+      this.searchError = false;
+      this.isLoadingMoreSearch = false;
+      if (this.searchResults.length === 0) {
+        this.searchLoading = true;
+      } else {
+        this.searchRefreshing = true;
+      }
+    } else {
+      this.isLoadingMoreSearch = true;
+    }
+
+    const pageIndex = this.searchPageIndex;
+
+    const base = {
+      searchText: this.appliedQuery,
+      businessCategoryId: this.selectedCategoryId,
+      businessTypeId: this.selectedBusinessType
+        ? (this.businessTypeNameToId.get(this.selectedBusinessType) ?? null)
+        : null,
+      sellerTypeId: this.selectedSellerType
+        ? (this.sellerTypeNameToId.get(this.selectedSellerType) ?? null)
+        : null,
+      pageIndex,
+      pageSize: this.searchPageSize,
+    };
+    // First page tries every candidate; later pages reuse the one that worked.
+    const candidates = reset
+      ? this.locationCandidates(this.appliedLocation)
+      : [this.activeLocation];
+
+    this.searchSub = this.searchWithFallback(base, candidates)
+      .pipe(
+        switchMap((list) =>
+          // Directory data is only enrichment; search must work without it.
+          this.businessService
+            .resolveBusinessesByIds((list || []).map((r) => r.businessId))
+            .pipe(
+              catchError(() => of(new Map<number, BusinessDirectoryItem>())),
+              map((lookup) => ({ list, lookup })),
+            ),
+        ),
+      )
+      .subscribe(
+        ({ list, lookup }) => {
+          if (!this.cityNames.size && lookup.size)
+            this.buildLocationIndex(lookup);
+          const incoming = (list || []).map((r) => this.toSearchVM(r, lookup));
+          this.searchResults = reset
+            ? incoming
+            : this.searchResults.concat(
+                incoming.filter(
+                  (n) =>
+                    !this.searchResults.some(
+                      (e) => e.business.id === n.business.id,
+                    ),
+                ),
+              );
+          this.searchHasMore = (list || []).length >= this.searchPageSize;
+          this.searchLoading = false;
+          this.searchRefreshing = false;
+          this.isLoadingMoreSearch = false;
+
+          this.loadOfferingImages(incoming);
+          this.ensureMapSelection();
+          setTimeout(() => this.setupInfiniteScroll());
+        },
+        () => {
+          this.searchError = true;
+          this.searchLoading = false;
+          this.searchRefreshing = false;
+          this.isLoadingMoreSearch = false;
+        },
+      );
+  }
+
+  private toSearchVM(
+    r: BusinessSearchResult,
+    lookup: Map<number, BusinessDirectoryItem>,
+  ): SearchResultVM {
+    const known = lookup.get(r.businessId);
+    const business: BusinessDirectoryItem = known
+      ? { ...known }
+      : ({
+          id: r.businessId,
+          businessName: r.businessName,
+          logoUrl: r.logoUrl,
+          description: r.description,
+          businessAddressDto: {
+            city: r.city,
+            area: r.area,
+            pincode: r.pincode,
+          },
+        } as any);
+
+    // The search response is the source of truth for what it returns.
+    if (r.logoUrl) business.logoUrl = r.logoUrl;
+    if (r.businessName) business.businessName = r.businessName;
+
+    const offerings: SearchOfferingVM[] = (r.matchingOfferings || []).map(
+      (o) => ({
+        id: o.businessOfferingId,
+        name: (o.name || '').trim(),
+        description: this.stripHtml(o.description),
+        price: o.price ?? null,
+        businessId: r.businessId,
+        imageUrls: [],
+      }),
+    );
+
+    const score = Math.max(
+      r.relevanceScore || 0,
+      ...(r.matchingOfferings || []).map((o) => o.relevanceScore || 0),
+    );
+
+    const place = [r.area, r.city].filter(Boolean).join(', ');
+    return {
+      business,
+      location: r.pincode ? `${place} – ${r.pincode}` : place,
+      score,
+      offerings,
+    };
+  }
+
+  /** The search API has no offering image; fetch it per matching offering. */
+  private loadOfferingImages(results: SearchResultVM[]): void {
+    const pending: SearchOfferingVM[] = [];
+    results.forEach((r) => r.offerings.forEach((o) => pending.push(o)));
+    if (!pending.length) return;
+
+    const pick = (res: any, id: number): string => {
+      const rec = Array.isArray(res)
+        ? res.find((x: any) => Number(x?.id) === id)
+        : res;
+      return this.cleanImageUrl(rec?.imageUrl || '');
+    };
+
+    from(pending)
+      .pipe(
+        mergeMap(
+          (o) =>
+            this.businessService.getBusinessOfferingById(o.id).pipe(
+              map((res: any) => pick(res, o.id)),
+              catchError(() => of('')),
+              // Fall back to the business's offering list if the by-id call
+              // carried no image.
+              switchMap((url) =>
+                url
+                  ? of(url)
+                  : this.businessService
+                      .getBusinessOfferingsByBusinessId(o.businessId)
+                      .pipe(
+                        map((list: any) => pick(list, o.id)),
+                        catchError(() => of('')),
+                      ),
+              ),
+              map((url) => ({ o, url })),
+            ),
+          4,
+        ),
+      )
+      .subscribe(({ o, url }) => {
+        if (url) o.imageUrls = [url];
+      });
+  }
+
+  // ---------- Image fallbacks ----------
+
+  private failedImages = new Set<string>();
+
+  markImageFailed(url: string | null | undefined): void {
+    if (url) this.failedImages.add(url);
+  }
+
+  /** First usable business image: logo -> cover -> first gallery photo. */
+  businessImage(b: BusinessDirectoryItem): string {
+    const candidates = [
+      b.logoUrl,
+      b.coverImageUrl,
+      b.businessGalleryDtoList?.[0]?.thumbnailUrl,
+      b.businessGalleryDtoList?.[0]?.imageUrl,
+    ]
+      .map((u) => this.cleanImageUrl(u || ''))
+      .filter((u) => !!u && !this.failedImages.has(u));
+    return candidates[0] || '';
+  }
+
+  offeringImage(o: SearchOfferingVM): string {
+    return o.imageUrls.find((u) => !this.failedImages.has(u)) || '';
+  }
+
+  /** Trim, take the first URL if several are packed in one string, encode spaces. */
+  private cleanImageUrl(raw: string): string {
+    const first = (raw || '').split(/[,;|]/)[0].trim();
+    return first.replace(/\s/g, '%20');
+  }
+
+  get sortedSearchResults(): SearchResultVM[] {
+    const list = [...this.searchResults];
+    switch (this.sortBy) {
+      case 'newest':
+        return list.sort(
+          (a, b) =>
+            (b.business.establishedYear || 0) -
+            (a.business.establishedYear || 0),
+        );
+      case 'name':
+        return list.sort((a, b) =>
+          (a.business.businessName || '').localeCompare(
+            b.business.businessName || '',
+          ),
+        );
+      default:
+        return list.sort((a, b) => b.score - a.score);
+    }
+  }
+
+  get searchTitleQuery(): string {
+    return this.appliedQuery.trim();
+  }
+
+  get searchTitleLocation(): string {
+    return this.appliedLocation.trim();
+  }
+
+  get searchCountLabel(): string {
+    const n = this.searchResults.length;
+    if (this.searchLoading) return 'Searching…';
+    if (n === 0) return 'No businesses found';
+    const count = this.searchHasMore ? `${n}+` : `${n}`;
+    return `About ${count} ${n === 1 && !this.searchHasMore ? 'business' : 'businesses'} found`;
+  }
+
+  trackBySearchResult(_i: number, r: SearchResultVM): number {
+    return r.business.id;
+  }
+
+  trackBySearchOffering(_i: number, o: SearchOfferingVM): number {
+    return o.id;
+  }
+
+  formatPrice(price: number | null): string {
+    if (price === null || price === undefined) return '';
+    return `₹${Number(price).toLocaleString('en-IN')}`;
+  }
+
+  // ---------- List / Map toggle ----------
+
+  setResultsView(mode: 'list' | 'map'): void {
+    this.resultsView = mode;
+    if (mode === 'map') this.ensureMapSelection();
+  }
+
+  private ensureMapSelection(): void {
+    if (this.resultsView !== 'map' || !this.searchResults.length) return;
+    const current = this.searchResults.find(
+      (r) => r.business.id === this.selectedMapResultId,
+    );
+    this.selectMapResult(current || this.sortedSearchResults[0]);
+  }
+
+  selectMapResult(r: SearchResultVM | undefined): void {
+    if (!r) return;
+    this.selectedMapResultId = r.business.id;
+    // Build the SafeResourceUrl once per selection; a fresh object on every
+    // change-detection pass would reload the iframe continuously.
+    this.mapEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.google.com/maps?q=${encodeURIComponent(this.mapQuery(r))}&output=embed`,
+    );
+  }
+
+  private mapQuery(r: SearchResultVM): string {
+    const a = r.business.businessAddressDto;
+    return [r.business.businessName, a?.address, r.location]
+      .filter(Boolean)
+      .join(', ');
+  }
+
+  get selectedMapResult(): SearchResultVM | undefined {
+    return this.searchResults.find(
+      (r) => r.business.id === this.selectedMapResultId,
+    );
+  }
+
+  openInGoogleMaps(r: SearchResultVM): string {
+    return (
+      r.business.businessAddressDto?.googleMapURL ||
+      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(this.mapQuery(r))}`
+    );
+  }
+
   // =========================================================
   // CATEGORIES
   // =========================================================
@@ -605,13 +1283,7 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   clearAllFilters(): void {
-    this.selectedCategoryId = null;
-    this.selectedBusinessType = null;
-    this.selectedSellerType = null;
-    this.selectedCity = '';
-    this.selectedRatingMin = null;
-    this.selectedExperience = null;
-    this.verifiedOnly = false;
+    this.resetFilters();
     this.reload();
   }
 
@@ -630,22 +1302,7 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // =========================================================
 
   get filteredBusinesses(): BusinessDirectoryItem[] {
-    const q = this.appliedQuery.trim().toLowerCase();
-
     let result = this.businesses.filter((b: any) => {
-      if (q) {
-        const name = (b.businessName || '').toLowerCase();
-        const category = (b.businessCategory || '').toLowerCase();
-        const location = (this.getLocationLabel(b) || '').toLowerCase();
-        if (
-          !name.includes(q) &&
-          !category.includes(q) &&
-          !location.includes(q)
-        ) {
-          return false;
-        }
-      }
-
       if (
         this.selectedCity &&
         b.businessAddressDto?.city !== this.selectedCity
@@ -714,13 +1371,111 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // FAVORITES
   // =========================================================
 
-  toggleFavorite(business: BusinessDirectoryItem, event: Event): void {
-    event.stopPropagation();
-    if (this.favoriteIds.has(business.id)) {
-      this.favoriteIds.delete(business.id);
-    } else {
-      this.favoriteIds.add(business.id);
+  /** Loads this user's wishlisted business ids (API-backed). */
+  private loadWishlist(): void {
+    const uid = this.currentUserId;
+    if (!uid) {
+      this.favoriteIds = new Set();
+      return;
     }
+    this.businessService.getWishlistBusinesses(uid).subscribe(
+      (list) => {
+        const rows: any[] = Array.isArray(list)
+          ? list
+          : (list as any)?.items || (list as any)?.data || [];
+        this.favoriteIds = new Set(
+          rows
+            .filter((w) => !w.isDeleted)
+            .map((w) => Number(w.businessId))
+            .filter((id) => !!id),
+        );
+      },
+      (err) => console.error('Could not load wishlist', err),
+    );
+  }
+
+  private get currentUserId(): number {
+    return Number(localStorage.getItem('id')) || 0;
+  }
+
+  private wishlistBusy = new Set<number>();
+  private loginDialogOpen = false;
+
+  /** Opens the normal user login; resumes the wishlist action once logged in. */
+  private promptLogin(then: () => void): void {
+    if (this.loginDialogOpen) return;
+    this.loginDialogOpen = true;
+    this.notify('Please log in to use your wishlist.');
+    const ref = this.dialog.open(LoginComponent, {
+      panelClass: 'login-dialog-container',
+      autoFocus: false,
+    });
+    ref.afterClosed().subscribe(() => {
+      this.loginDialogOpen = false;
+      if (this.currentUserId) {
+        this.loadWishlist();
+        then();
+      }
+    });
+  }
+
+  toggleFavorite(business: BusinessDirectoryItem, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.currentUserId) {
+      this.promptLogin(() => this.toggleFavorite(business, event));
+      return;
+    }
+    const uid = this.currentUserId;
+    const id = Number(business?.id);
+    if (!id || this.wishlistBusy.has(id)) return;
+
+    const was = this.favoriteIds.has(id);
+    this.setFavorite(id, !was); // optimistic
+    this.wishlistBusy.add(id);
+
+    const call$ = was
+      ? this.businessService.removeBusinessFromWishlist(uid, id)
+      : this.businessService.addBusinessToWishlist(uid, id);
+
+    call$.subscribe(
+      () => {
+        this.wishlistBusy.delete(id);
+        this.notify(was ? 'Removed from wishlist' : 'Added to wishlist');
+        if (!was) {
+          this.trackBusinessAction(
+            business,
+            BusinessAnalyticsEventType.Wishlist,
+          );
+        }
+      },
+      (err) => {
+        console.error('Wishlist update failed', err);
+        this.setFavorite(id, was); // revert
+        this.wishlistBusy.delete(id);
+        this.notify(
+          err?.status === 401
+            ? 'Your session has expired. Please log in again.'
+            : 'Something went wrong. Please try again.',
+        );
+      },
+    );
+  }
+
+  /** Always assigns a new Set so the heart re-renders. */
+  private setFavorite(id: number, on: boolean): void {
+    const next = new Set(this.favoriteIds);
+    on ? next.add(id) : next.delete(id);
+    this.favoriteIds = next;
+  }
+
+  private notify(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+    });
   }
 
   isFavorite(business: BusinessDirectoryItem): boolean {
@@ -737,9 +1492,43 @@ export class BusinessHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   viewBusiness(business: BusinessDirectoryItem): void {
-    if (!business.tabRefGUID) return;
-    const cmds = buildBusinessCommands(business);
-    if (cmds) this.router.navigate(cmds);
+    if (business.tabRefGUID) {
+      const cmds = buildBusinessCommands(business);
+      if (cmds) this.router.navigate(cmds);
+      return;
+    }
+
+    // Search hits can arrive without a profile GUID; look it up on demand.
+    if (!business.id) return;
+    this.businessService
+      .resolveBusinessesByIds([business.id])
+      .subscribe((lookup) => {
+        const found = lookup.get(business.id);
+        if (found?.tabRefGUID) {
+          Object.assign(business, found, {
+            logoUrl: business.logoUrl || found.logoUrl,
+          });
+          const cmds = buildBusinessCommands(business);
+          if (cmds) {
+            this.router.navigate(cmds);
+            return;
+          }
+        }
+        this.notify('Could not open this business profile. Please try again.');
+      });
+  }
+
+  /** Offering rows are not links themselves: they open the business profile. */
+  openBusinessFromOffering(event: Event, r: SearchResultVM): void {
+    event.stopPropagation();
+    this.trackBusinessAction(
+      r.business,
+      BusinessAnalyticsEventType.ProfileView,
+      {
+        once: true,
+      },
+    );
+    this.viewBusiness(r.business);
   }
 
   trackByBusinessId(_index: number, business: BusinessDirectoryItem): number {

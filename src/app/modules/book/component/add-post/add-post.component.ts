@@ -633,16 +633,16 @@ export class AddPostComponent implements AfterViewInit {
   validatePostForm(payload: any): boolean {
     let flag = false;
     if (payload.title == '') this.showNotification('Title is required');
-    else if (payload.title.length < 15 || payload.title.length > 80)
-      this.showNotification('Title should be min 15 and max of 80 charecters');
+    else if (payload.title.length < 15 || payload.title.length > 120)
+      this.showNotification('Title should be min 15 and max of 120 charecters');
     else if (payload.discription == '')
       this.showNotification('Description is required');
     else if (
       payload.discription.length < 15 ||
-      payload.discription.length > 500
+      payload.discription.length > 10000
     )
       this.showNotification(
-        'Description should be min 15 and max 500 charecters',
+        'Description should be min 15 and max 10000 charecters',
       );
     else if (payload.price == 0) this.showNotification('Price is rerquired');
     else if (payload.price.length < 2)

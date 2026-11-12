@@ -10,6 +10,7 @@ import {
   map,
   Observable,
   of,
+  shareReplay,
   Subject,
   switchMap,
   tap,
@@ -23,6 +24,8 @@ import {
 import { environment } from 'src/environments/environment';
 import {
   BusinessDirectoryItem,
+  BusinessSearchQuery,
+  BusinessSearchResult,
   BusinessListItem,
   BusinessViewDto,
   BusinessProduct,
@@ -175,6 +178,91 @@ export class BusinessService {
           rememberBusinessGuids((res.items || []).map((b) => b.tabRefGUID)),
         ),
       );
+  }
+
+  // ---------- Search ----------
+
+  /**
+   * GET Business/search. Only non-empty params are sent. The endpoint returns a
+   * plain array (no total), so callers treat a full page as "maybe more".
+   */
+  searchBusinesses(query: BusinessSearchQuery): Observable<BusinessSearchResult[]> {
+    let params = new HttpParams()
+      .set('pageIndex', String(query.pageIndex))
+      .set('pageSize', String(query.pageSize));
+
+    const text = (query.searchText || '').trim();
+    if (text) params = params.set('searchText', text);
+    if (query.city) params = params.set('city', query.city);
+    if (query.area) params = params.set('area', query.area);
+    if (query.pincode) params = params.set('pincode', query.pincode);
+    if (query.businessCategoryId != null) {
+      params = params.set('businessCategoryId', String(query.businessCategoryId));
+    }
+    if (query.businessTypeId != null) {
+      params = params.set('businessTypeId', String(query.businessTypeId));
+    }
+    if (query.sellerTypeId != null) {
+      params = params.set('sellerTypeId', String(query.sellerTypeId));
+    }
+
+    return this.http
+      .get<BusinessSearchResult[] | { items?: BusinessSearchResult[] }>(
+        `${this.baseUrl}Business/search`,
+        { params },
+      )
+      .pipe(
+        map((res) =>
+          Array.isArray(res) ? res : ((res as any)?.items ?? []),
+        ),
+      );
+  }
+
+  private directoryCache = new Map<number, BusinessDirectoryItem>();
+  private crawlPage = 1;
+  private crawlDone = false;
+  private readonly CRAWL_PAGE_SIZE = 50;
+
+  /**
+   * The search endpoint only returns a numeric businessId (no profile GUID,
+   * category, verified flag or contacts). This pages through the same
+   * Business/List endpoint the browse cards use until every requested id has
+   * been found (or the list is exhausted) and returns the shared cache.
+   * Pages are fetched sequentially and remembered, so later searches are free.
+   */
+  resolveBusinessesByIds(
+    ids: number[],
+  ): Observable<Map<number, BusinessDirectoryItem>> {
+    const missing = ids.some((id) => !this.directoryCache.has(id));
+    if (!missing || this.crawlDone) return of(this.directoryCache);
+
+    const page = this.crawlPage;
+    return this.getBusinessList({
+      pageIndex: page,
+      pageSize: this.CRAWL_PAGE_SIZE,
+    }).pipe(
+      switchMap((res) => {
+        const items = res.items || [];
+        const before = this.directoryCache.size;
+        items.forEach((b) => this.directoryCache.set(b.id, b));
+        this.crawlPage = page + 1;
+
+        const addedNew = this.directoryCache.size > before;
+        const reachedTotal =
+          res.totalCount > 0 && this.directoryCache.size >= res.totalCount;
+        // Empty page, a response that ignores paging (nothing new), or all
+        // businesses loaded -> stop crawling.
+        if (!items.length || !addedNew || reachedTotal) this.crawlDone = true;
+
+        return this.resolveBusinessesByIds(ids);
+      }),
+      catchError(() => of(this.directoryCache)),
+    );
+  }
+
+  /** Cached directory entry, if it has already been fetched. */
+  getCachedDirectoryItem(id: number): BusinessDirectoryItem | undefined {
+    return this.directoryCache.get(id);
   }
 
   getBusinessCategories() {
