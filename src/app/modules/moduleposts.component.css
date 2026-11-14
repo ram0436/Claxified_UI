@@ -511,3 +511,42 @@
     margin: 14px 0 0;
   }
 }
+
+/* ===== Server-side paging (infinite scroll) ===== */
+.cp-scroll-sentinel {
+  width: 100%;
+  height: 1px;
+}
+
+.cp-loading-more {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.cp-load-error,
+.cp-end-of-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0;
+  font-size: 13.5px;
+  color: #6b7280;
+}
+
+.cp-load-error button {
+  background: #fff;
+  color: #e75462;
+  border: 1.5px solid #e75462;
+  padding: 6px 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.cp-load-error button:hover {
+  background: #e75462;
+  color: #fff;
+}

@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   baseUrl:
-    'https://claxified-api-czb6bderbcayayfq.southindia-01.azurewebsites.net/api/',
+    'https://testdev11-etdbb3ctgwgkc3f6.southindia-01.azurewebsites.net/api/',
   posthogKey: 'phc_uUyjE8QdZDBnhMuarN4t3FWshkPahiGzKZwXJM7aTFKu',
-  posthogHost: 'https://us.i.posthog.com', 
+  posthogHost: 'https://us.i.posthog.com',
 };
 
 /*

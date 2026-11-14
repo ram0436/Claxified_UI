@@ -21,6 +21,7 @@ import { FooterComponent } from "./component/footer/footer.component";
 import { LocationsComponent } from "./component/locations/locations.component";
 import { VacancyOpeningComponent } from "./component/vacancy-opening/vacancy-opening.component";
 import { GetHelpComponent } from "./component/get-help/get-help.component";
+import { ScrollSentinelDirective } from "./directive/scroll-sentinel.directive";
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { GetHelpComponent } from "./component/get-help/get-help.component";
     LocationsComponent,
     VacancyOpeningComponent,
     GetHelpComponent,
+    ScrollSentinelDirective,
   ],
   imports: [
     CommonModule,
@@ -54,6 +56,7 @@ import { GetHelpComponent } from "./component/get-help/get-help.component";
     HeaderComponent,
     FooterComponent,
     LocationsComponent,
+    ScrollSentinelDirective,
   ],
 })
 export class SharedModule {}

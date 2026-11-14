@@ -1,6 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { map, Observable } from 'rxjs';
+import {
+  buildPostsPageParams,
+  normalizePagedPosts,
+  PagedPosts,
+  PostsPageQuery,
+} from 'src/app/shared/model/PagedPosts';
 
 @Injectable({
   providedIn: 'root'
@@ -46,5 +53,18 @@ export class VehicleService {
   }
   getBikeModels(brandId : Number){
     return this.httpClient.get(`${this.BaseURL}Vehicle/GetBikeModel?bikeBrandId=` + brandId);
+  }
+
+  /**
+   * Server-side paged list: GET Vehicle?pageIndex=1&pageSize=10&subCategoryId=50
+   * (subCategoryId only sent when a sub-category is selected). The legacy
+   * getAllVehiclePosts() above is unchanged.
+   */
+  getPagedVehiclePosts(query: PostsPageQuery): Observable<PagedPosts> {
+    return this.httpClient
+      .get<any>(`${this.BaseURL}Vehicle`, {
+        params: buildPostsPageParams(query),
+      })
+      .pipe(map((res) => normalizePagedPosts(res, query)));
   }
 }

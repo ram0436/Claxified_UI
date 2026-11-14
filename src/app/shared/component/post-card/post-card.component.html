@@ -120,7 +120,10 @@
     <p class="noposts">No Posts found</p>
   </div>
 
-  <div class="load-more-container" *ngIf="displayedCardCount < cards.length">
+  <div
+    class="load-more-container"
+    *ngIf="!serverPaged && displayedCardCount < cards.length"
+  >
     <button class="load-more-btn" (click)="loadMoreCards()">
       <span class="material-icons-outlined"> keyboard_double_arrow_down </span>
       Load More
