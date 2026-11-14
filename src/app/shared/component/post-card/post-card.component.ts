@@ -39,6 +39,12 @@ export class PostCardComponent implements OnInit, OnChanges {
   @Input() increaseHeight = false;
   @Input() increaseMargin = false;
   @Input() columns: number = 4;
+  /**
+   * When true the parent loads pages from the server and passes the
+   * accumulated list, so show every card and hide the client-side
+   * "Load More" button. Defaults to false (unchanged behaviour).
+   */
+  @Input() serverPaged = false;
   currentDate: Date = new Date();
   math = Math;
 
@@ -151,7 +157,9 @@ export class PostCardComponent implements OnInit, OnChanges {
   updateCards() {
     const source =
       (this.searchCards?.length ? this.searchCards : this.cards) || [];
-    const slice = source.slice(0, this.displayedCardCount);
+    const slice = this.serverPaged
+      ? source
+      : source.slice(0, this.displayedCardCount);
     this.decorate(slice);
     this.paginatedCards = slice;
     this.cdr.markForCheck();

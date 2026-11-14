@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component } from "@angular/core";
 import { CommercialService } from "../../service/commercial.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CommonService } from "src/app/shared/service/common.service";
+import { ServerPagedPosts } from "src/app/shared/utils/server-paged-posts";
 
 import { GadgetType } from "src/app/shared/enum/GadgetType";
 import { VehicleType } from "src/app/shared/enum/VehicleType";
@@ -31,6 +32,14 @@ export class CommercialServicePostsComponent {
   cards: any = [];
   subscription: any;
   actualCards: any;
+
+  /** Server-side paging: page-by-page load + infinite scroll. */
+  readonly pager = new ServerPagedPosts(
+    (query) => this.commercialService.getPagedCommercialServicePosts(query),
+    () => this.onPagerChange()
+  );
+  /** Sidebar filter currently applied (client-side) to the loaded items. */
+  private activeFilter: any = null;
 
   // ===== Category switcher state =====
   browseCategories: any[] = [];
@@ -132,29 +141,67 @@ export class CommercialServicePostsComponent {
 
   getPosts() {
     this.cards = [];
-    this.commercialService
-      .getAllCommercialServicePosts()
-      .subscribe((data: any) => {
-        this.actualCards = data;
-        if (this.subCategoryId != 0) {
-          this.cards = this.actualCards.filter(
-            (card: any) =>
-              card.subCategoryId == this.subCategoryId &&
-              card.isVerified === true
-          );
-        } else {
-          this.cards = this.actualCards.filter(
-            (card: any) => card.isVerified === true
-          );
-        }
-        this.isLoading = false;
-        this.subCategoryId = 0;
-      });
+    this.actualCards = [];
+    this.activeFilter = null;
+    const subCategoryId = Number(this.subCategoryId);
+    this.subCategoryId = 0;
+    if (Number.isNaN(subCategoryId)) {
+      // Non-numeric ?sub= value: nothing can match (same as before).
+      this.pager.cancel();
+      this.isLoading = false;
+      return;
+    }
+    // Server-side load: first page only; more pages load on scroll.
+    this.isLoading = true;
+    this.pager.start(subCategoryId);
+  }
+
+  /** Called by the pager whenever a page arrives (or a request fails). */
+  private onPagerChange() {
+    this.actualCards = this.pager.items;
+    if (this.activeFilter) {
+      this.applyFilter(this.activeFilter);
+    } else {
+      this.cards = this.actualCards.filter(
+        (card: any) => card.isVerified === true
+      );
+    }
+    this.isLoading = this.pager.isLoadingFirst;
+    this.cdr.markForCheck();
+  }
+
+  /** Infinite scroll: fetch the next page from the server. */
+  loadMore() {
+    this.pager.loadMore();
+  }
+
+  retryLoad() {
+    this.isLoading = this.pager.items.length === 0;
+    this.pager.retry();
+  }
+
+  get scrollDisabled(): boolean {
+    return (
+      this.isLoading ||
+      this.pager.isLoadingFirst ||
+      this.pager.isLoadingMore ||
+      !this.pager.hasMore ||
+      this.pager.error
+    );
   }
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.pager.cancel();
   }
   filterPosts(data: any) {
+    this.activeFilter = data;
+    this.applyFilter(data);
+    this.isLoading = this.pager.isLoadingFirst;
+    this.cdr.detectChanges();
+  }
+
+  /** Applies the sidebar filter to everything loaded so far. */
+  private applyFilter(data: any) {
     const filterObj: { [key: string]: { operator: string; value: any } } = {};
     Object.keys(data).forEach((key) => {
       if (data[key] != null && data[key] != "") {
@@ -195,8 +242,6 @@ export class CommercialServicePostsComponent {
     );
     this.cards = [];
     this.cards = filteredData.filter((card: any) => card.isVerified === true);
-    this.isLoading = false;
-    this.cdr.detectChanges();
   }
 
   // ===== Category switcher =====

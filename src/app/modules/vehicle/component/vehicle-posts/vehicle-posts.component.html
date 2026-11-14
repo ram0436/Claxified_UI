@@ -20,8 +20,9 @@
           <div>
             <h1 class="cp-title">{{ category }}</h1>
             <p class="cp-subtitle" *ngIf="!isLoading">
-              {{ cards.length }}
-              {{ cards.length === 1 ? "listing" : "listings" }} available
+              {{ cards.length }}{{ pager.hasMore ? "+" : "" }}
+              {{ cards.length === 1 && !pager.hasMore ? "listing" : "listings" }}
+              available
             </p>
             <p class="cp-subtitle" *ngIf="isLoading">Loading listings…</p>
           </div>
@@ -148,11 +149,33 @@
         *ngIf="!isLoading"
         [cards]="displayedCards"
         [isLoading]="isLoading"
+        [serverPaged]="true"
         [increaseHeight]="true"
         [increaseMargin]="true"
         class="app-post-card"
         [columns]="4"
       ></app-post-card>
+
+      <!-- Server-side paging: next page loads as the sentinel nears view -->
+      <div class="cp-loading-more" *ngIf="pager.isLoadingMore">
+        <mat-spinner diameter="32"></mat-spinner>
+      </div>
+      <div class="cp-load-error" *ngIf="pager.error && !isLoading">
+        <span>Couldn't load listings.</span>
+        <button type="button" (click)="retryLoad()">Retry</button>
+      </div>
+      <div
+        class="cp-end-of-list"
+        *ngIf="!isLoading && !pager.hasMore && !pager.error && cards.length > 0"
+      >
+        You've reached the end of the listings
+      </div>
+      <div
+        appScrollSentinel
+        class="cp-scroll-sentinel"
+        [sentinelDisabled]="scrollDisabled"
+        (reached)="loadMore()"
+      ></div>
     </main>
   </div>
 </div>
