@@ -14,6 +14,7 @@ import {
   getCachedPostGuid,
   rememberPostGuids,
 } from '../utils/post-url.util';
+import { isFullGuid } from 'src/app/modules/business/utils/business-url.util';
 
 /**
  * Turns the short slug in  /classified-ads/{category}/{city}/{title}-{slug}
@@ -36,6 +37,9 @@ export class PostGuidResolver implements Resolve<string> {
   resolve(route: ActivatedRouteSnapshot): Observable<string> | string {
     const slug = extractPostUniqueSlug(route.paramMap.get('postSlug'));
     if (!slug) return '';
+
+    // URL already carries the complete tabRefGuid (works in incognito / fresh browsers)
+    if (isFullGuid(slug)) return slug;
 
     const cached = getCachedPostGuid(slug);
     if (cached) return cached;
