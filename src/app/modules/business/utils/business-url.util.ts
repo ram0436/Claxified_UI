@@ -25,11 +25,38 @@ export function getUniqueSlug(guid: string | null | undefined): string {
   return ((guid || '').trim().split('-')[0] || '').toLowerCase();
 }
 
-/** Last "-" separated part of "{business-name}-{area}-{unique-slug}" */
+const FULL_GUID_AT_END =
+  /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
+
+/** True when the value is a complete GUID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx). */
+export function isFullGuid(value: string | null | undefined): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    (value || '').trim(),
+  );
+}
+
+/**
+ * Identifier placed at the end of public URLs.
+ * TEMPORARY: the complete tabRefGuid is used (instead of the short getUniqueSlug())
+ * so links work in a fresh browser / incognito, where the slug -> GUID cache is empty.
+ * Switch back to getUniqueSlug() once the backend can resolve short slugs.
+ */
+export function getUrlGuidSlug(guid: string | null | undefined): string {
+  return (guid || '').trim().toLowerCase();
+}
+
+/**
+ * Identifier from the end of "{business-name}-{area}-{guid}".
+ * Returns the full GUID when the URL carries one, otherwise (legacy short links)
+ * the last "-" separated part.
+ */
 export function extractUniqueSlug(
   businessSlug: string | null | undefined,
 ): string {
-  const parts = (businessSlug || '').trim().split('-');
+  const value = (businessSlug || '').trim();
+  const full = value.match(FULL_GUID_AT_END);
+  if (full) return full[1].toLowerCase();
+  const parts = value.split('-');
   return (parts[parts.length - 1] || '').toLowerCase();
 }
 
@@ -96,7 +123,7 @@ export function forgetBusinessSlug(slug: string): void {
 /** Returns router commands: ['/business', city, 'name-area-slug'] or null if no GUID */
 export function buildBusinessCommands(b: BusinessUrlSource): string[] | null {
   const guid = b.tabRefGUID || b.businessId || '';
-  const uniqueSlug = getUniqueSlug(guid);
+  const uniqueSlug = getUrlGuidSlug(guid);
   if (!uniqueSlug) return null;
   rememberBusinessGuid(guid);
 

@@ -1,5 +1,7 @@
 import {
+  extractUniqueSlug,
   getUniqueSlug,
+  getUrlGuidSlug,
   slugify,
 } from '../../modules/business/utils/business-url.util';
 
@@ -11,7 +13,8 @@ import {
  * e.g.
  *   /classified-ads/properties/bangalore/furnished-4bhk-house-for-sale-in-bangalore-06f3e516
  *
- * {unique-slug} = first segment of the post tabRefGUID (up to the first "-").
+ * {unique-slug} = the complete post tabRefGUID (TEMPORARY, see getUrlGuidSlug()).
+ * Legacy links that carry only the first GUID segment are still resolved via the cache / resolver.
  */
 
 export const CATEGORY_ID_TO_SLUG: { [id: number]: string } = {
@@ -60,7 +63,7 @@ export function categorySlugFromId(id: number | string | null | undefined): stri
 /** Router commands, or null when the GUID / category cannot be determined */
 export function buildPostCommands(p: PostUrlSource): string[] | null {
   const guid = p.tableRefGuid || p.tabRefGuid || p.tabRefGUID || p.id || '';
-  const uniqueSlug = getUniqueSlug(guid);
+  const uniqueSlug = getUrlGuidSlug(guid);
   const category =
     categorySlugFromId(p.categoryId) || categorySlugFromName(p.category);
   if (!uniqueSlug || !category) return null;
@@ -78,10 +81,9 @@ export function buildPostPath(p: PostUrlSource): string {
   return cmds ? cmds.join('/') : '';
 }
 
-/** Last "-" separated part of "{title}-{unique-slug}" */
+/** Full GUID from the end of "{title}-{guid}", or the last "-" part for legacy short links */
 export function extractPostUniqueSlug(postSlug: string | null | undefined): string {
-  const parts = (postSlug || '').trim().split('-');
-  return (parts[parts.length - 1] || '').toLowerCase();
+  return extractUniqueSlug(postSlug);
 }
 
 // ---- slug -> full GUID cache (persisted: refresh / new tab stay instant) ----

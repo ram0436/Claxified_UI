@@ -19,6 +19,7 @@ import {
 import {
   forgetBusinessSlug,
   getCachedBusinessGuid,
+  isFullGuid,
   rememberBusinessGuids,
 } from '../utils/business-url.util';
 import { environment } from 'src/environments/environment';
@@ -304,6 +305,8 @@ export class BusinessService {
   }
 
   getBusinessBySlug(slug: string): Observable<BusinessViewDto> {
+    // URL already carries the complete tabRefGuid -> fetch directly (works in incognito)
+    if (isFullGuid(slug)) return this.getBusinessByGuid(slug);
     const cached = getCachedBusinessGuid(slug);
     if (cached) {
       return this.getBusinessByGuid(cached).pipe(
